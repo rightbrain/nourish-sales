@@ -1,0 +1,4 @@
+rbs_core:
+    resource: "@RbsCoreBundle/Controller/"
+    type:     annotation
+    prefix:   /
