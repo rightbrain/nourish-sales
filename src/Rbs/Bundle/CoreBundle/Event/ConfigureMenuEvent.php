@@ -13,6 +13,7 @@ class ConfigureMenuEvent extends Event
     const CONFIGURE_PURCHASE_MENU = 'core_bundle.menu_purchase';
     const CONFIGURE_INVENTORY_MENU = 'core_bundle.menu_inventory';
     const CONFIGURE_SETTING_MENU = 'core_bundle.menu_setting';
+    const CONFIGURE_USER_MENU = 'core_bundle.menu_user';
 
     private $factory;
     private $menu;

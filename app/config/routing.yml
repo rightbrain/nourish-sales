@@ -1,7 +1,19 @@
+rbs_user:
+    resource: "@RbsUserBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 rbs_core:
     resource: "@RbsCoreBundle/Controller/"
     type:     annotation
     prefix:   /
 
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+fos_user_group:
+    resource: "@FOSUserBundle/Resources/config/routing/group.xml"
+    prefix: /group
+    
 fos_js_routing:
     resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"

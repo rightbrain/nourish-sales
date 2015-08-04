@@ -1,5 +1,5 @@
 <?php
-namespace Rbs\Bundle\CoreBundle\Menu;
+namespace Rbs\Bundle\UserBundle\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Knp\Menu\MenuItem;
@@ -26,7 +26,6 @@ class MenuBuilder extends ContainerAware
         $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_SALES_MENU, new ConfigureMenuEvent($factory, $menu));
         $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_INVENTORY_MENU, new ConfigureMenuEvent($factory, $menu));
         $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_SETTING_MENU, new ConfigureMenuEvent($factory, $menu));
-        $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_USER_MENU, new ConfigureMenuEvent($factory, $menu));
 
         return $menu;
     }
