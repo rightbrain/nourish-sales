@@ -1,87 +1,82 @@
+{% extends "::base-login.html.twig" %}
+
 {% trans_default_domain 'FOSUserBundle' %}
 
-{% block fos_user_content %}
+    {% block fos_user_content %}
 
-    <!-- BEGIN LOGIN FORM -->
-    {% if error %}
-        <div class="alert alert-error">
-            <button class="close" data-dismiss="alert"></button>
-            {{ error|trans }}
-        </div>
-    {% endif %}
-
-    <form action="{{ path("fos_user_security_check") }}" method="post" class="login-form">
-        <input type="hidden" name="_csrf_token" value="{{ csrf_token }}"/>
-
-        <h3 class="form-title">Login to your account</h3>
-
-        <div class="form-group">
-            <label for="username"
-                   class="control-label visible-ie8 visible-ie9">{{ 'security.login.username'|trans }}</label>
-
-            <div class="input-icon">
-                <i class="fa fa-user"></i>
-                <input type="text" id="username" name="_username" value="{{ last_username }}" required="required"
-                       class="form-control placeholder-no-fix" style="padding-left: 30px !important;" autocomplete="off"
-                       placeholder="Username"/>
+        {% if error %}
+            <div class="alert alert-error">
+                <button class="close" data-dismiss="alert"></button>
+                {{ error|trans }}
             </div>
-        </div>
-        <div class="form-group">
-            <label for="password"
-                   class="control-label visible-ie8 visible-ie9">{{ 'security.login.password'|trans }}</label>
+        {% endif %}
 
-            <div class="input-icon">
-                <i class="fa fa-lock"></i>
-                <input type="password" id="password" name="_password" required="required"
-                       class="form-control placeholder-no-fix" style="padding-left: 30px !important;" autocomplete="off"
-                       placeholder="Password"/>
+        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+            <div class="page-body">
+                {#{% set avatar = profileImagePath(app.user.avatar) %}#}
+                {#{% set avatarUrl = avatar ? image(avatar).resize(200,200) :  asset('img/avatar-default.png') %}#}
+                {#<div class="page-lock-img" style="background-image: url('{{ avatarUrl }}')"></div>#}
+
+                <!-- Demo image  -->
+                <img class="page-lock-img" src="../../assets/admin/pages/media/profile/profile.jpg" alt="">
+                <!-- Demo image  -->
+
+                <div class="page-lock-info">
+                    <h1>{{ app.user.name }}</h1>
+                    <div class="relogin">
+                        <a href="{{ path('users_home') }}">Go to home</a> | <a href="{{ path('fos_user_security_logout') }}">Not {{app.user.name}} ?</a>
+                    </div>
+                </div>
             </div>
-        </div>
+        {% else %}
+            <!-- BEGIN LOGIN FORM -->
+            <form class="login-form" action="{{ path("fos_user_security_check") }}" method="post">
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                <h3 class="form-title">NSM Login</h3>
+                <div class="alert alert-danger display-hide">
+                    <button class="close" data-close="alert"></button>
+                        <span> Enter any username and password. </span>
+                </div>
 
-        <div class="form-actions">
-            <input type="checkbox" id="remember_me" name="_remember_me" value="on"/>
-            <label for="remember_me" class="checkbox">{{ 'security.login.remember_me'|trans }}</label>
+                <div class="form-group">
+                    <!--ie8, ie9 does not support html5 placeholder, so we just show field title for that-->
+                    <label class="control-label visible-ie8 visible-ie9">{{ 'security.login.username'|trans }}</label>
+                    <div class="input-icon">
+                        <i class="fa fa-user"></i>
+                        <input class="form-control placeholder-no-fix" type="text" placeholder="Username" name="_username" value="{{ last_username }}" required="required"/>
+                    </div>
+                </div>
 
-            <button type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}"
-                    class="btn blue pull-right">
-                Login <i class="m-icon-swapright m-icon-white"></i>
-            </button>
-        </div>
+                <div class="form-group">
+                    <label class="control-label visible-ie8 visible-ie9">{{ 'security.login.password'|trans }}</label>
+                    <div class="input-icon">
+                        <i class="fa fa-lock"></i>
+                        <input class="form-control placeholder-no-fix" type="password" placeholder="Password"  id="password" name="_password" required="required"/>
+                    </div>
+                </div>
 
-        <div class="forget-password">
-            <h4>Forgot your password ?</h4>
+                <div class="form-group">
+                    <label class="checkbox">
+                        <input type="checkbox" id="remember_me" name="_remember_me" value="on" /> {{ 'security.login.remember_me'|trans }}
+                    </label>
+                    <button type="submit" class="btn green-haze pull-right" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}">
+                        {{ 'security.login.submit'|trans }}
+                        <i class="m-icon-swapright m-icon-white"></i>
+                    </button>
+                </div>
 
-            <p>
-                <a href="javascript:;" id="forget-password">
-                    <i class="fa fa-forward"></i> Click here </a>
-                to reset your password.
-            </p>
-        </div>
+                <div class="forget-password">
+                    <h4>Forgot your password ?</h4>
+                    <p>
+                        no worries, click <a href="javascript:;" id="forget-password"> here </a>
+                        to reset your password.
+                    </p>
+                </div>
 
-    </form>
-
-    <form class="forget-form" action="index.html" method="post">
-        <h3>Forget Password ?</h3>
-
-        <p>Enter your e-mail address below to reset your password.</p>
-
-        <div class="form-group">
-            <div class="input-icon">
-                <i class="fa fa-envelope"></i>
-                <input class="form-control placeholder-no-fix" style="padding-left: 30px !important;" type="text"
-                       autocomplete="off" placeholder="Email"
-                       name="email"/>
-            </div>
-        </div>
-        <div class="form-actions">
-            <button type="button" id="back-btn" class="btn">
-                <i class="m-icon-swapleft"></i> Back
-            </button>
-            <button type="submit" class="btn blue pull-right">
-                Submit <i class="m-icon-swapright m-icon-white"></i>
-            </button>
-        </div>
-    </form>
-    <!-- END LOGIN FORM -->
+            </form>
+            <!-- END LOGIN FORM -->
+        {% endif %}
 
 {% endblock fos_user_content %}
+
+
