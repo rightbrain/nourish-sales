@@ -52,10 +52,16 @@ class Category
      */
     private $subCategories;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
+     **/
+    private $bundles;
+
     public function __construct()
     {
         $this->subCategories = new ArrayCollection();
         $this->item = new ArrayCollection();
+        $this->bundles = new ArrayCollection();
     }
 
     public function addSubCategory(SubCategory $subCategory)
@@ -177,5 +183,40 @@ class Category
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+    /**
+     * Add bundle
+     *
+     * @param Bundle $bundle
+     * @return $this
+     */
+    public function addBundle(Bundle $bundle)
+    {
+        if (!$this->getBundles()->contains($bundle)) {
+            $this->bundles->add($bundle);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove bundle
+     *
+     * @param Bundle $bundle
+     */
+    public function removeBundle(Bundle $bundle)
+    {
+        $this->bundles->removeElement($bundle);
+    }
+
+    /**
+     * Get bundle
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBundles()
+    {
+        return $this->bundles;
     }
 }

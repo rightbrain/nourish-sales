@@ -2,6 +2,7 @@
 namespace Rbs\Bundle\CoreBundle\Entity;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -99,6 +100,15 @@ class Project
      */
     private $isHeadOffice = false;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
+     **/
+    private $bundles;
+
+    public function __construct()
+    {
+        $this->bundles = new ArrayCollection();
+    }
 
     public function addUser(User $user)
     {
@@ -336,4 +346,38 @@ class Project
         $this->isHeadOffice = $isHeadOffice;
     }
 
+    /**
+     * Add bundle
+     *
+     * @param Bundle $bundle
+     * @return $this
+     */
+    public function addBundle(Bundle $bundle)
+    {
+        if (!$this->getBundles()->contains($bundle)) {
+            $this->bundles->add($bundle);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove bundle
+     *
+     * @param Bundle $bundle
+     */
+    public function removeBundle(Bundle $bundle)
+    {
+        $this->bundles->removeElement($bundle);
+    }
+
+    /**
+     * Get bundle
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBundles()
+    {
+        return $this->bundles;
+    }
 }

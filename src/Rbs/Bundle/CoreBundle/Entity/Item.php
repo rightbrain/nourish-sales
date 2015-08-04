@@ -77,6 +77,17 @@ class Item
     private $price;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
+     **/
+    private $bundles;
+
+    public function __construct()
+    {
+        $this->category = new ArrayCollection();
+        $this->bundles = new ArrayCollection();
+    }
+
+    /**
      * Get id
      *
      * @return integer
@@ -107,11 +118,6 @@ class Item
     public function getItemName()
     {
         return $this->getName();
-    }
-
-    public function __construct()
-    {
-        $this->category = new ArrayCollection();
     }
 
     public function addCategory(Category $category)
@@ -251,5 +257,40 @@ class Item
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * Add bundle
+     *
+     * @param Bundle $bundle
+     * @return $this
+     */
+    public function addBundle(Bundle $bundle)
+    {
+        if (!$this->getBundles()->contains($bundle)) {
+            $this->bundles->add($bundle);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Remove bundle
+     *
+     * @param Bundle $bundle
+     */
+    public function removeBundle(Bundle $bundle)
+    {
+        $this->bundles->removeElement($bundle);
+    }
+
+    /**
+     * Get bundle
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBundles()
+    {
+        return $this->bundles;
     }
 }
