@@ -21,6 +21,8 @@ class AppKernel extends Kernel
             new JMS\AopBundle\JMSAopBundle(),
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
+            new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),
+            new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
 
             new Rbs\Bundle\CoreBundle\RbsCoreBundle(),
         );

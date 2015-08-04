@@ -1,0 +1,255 @@
+<?php
+namespace Rbs\Bundle\CoreBundle\Entity;
+
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+
+/**
+ * Item
+ *
+ * @ORM\Table(name="items")
+ * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\ItemRepository")
+ */
+class Item
+{
+    use ORMBehaviors\Timestampable\Timestampable,
+        ORMBehaviors\SoftDeletable\SoftDeletable,
+        ORMBehaviors\Blameable\Blameable;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var Category
+     *
+     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Category", inversedBy="item")
+     * @ORM\JoinTable(name="item_categories",
+     *      joinColumns={@ORM\JoinColumn(name="item_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="categories_id", referencedColumnName="id")}
+     * )
+     * @ORM\JoinColumn(name="categories")
+     */
+    private $category;
+
+    /**
+     * @var ItemType
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\ItemType", inversedBy="item")
+     * @ORM\JoinColumn(name="item_types")
+     */
+    private $itemType;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="item_unit", type="string", length=255)
+     */
+    private $itemUnit;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="status", type="integer")
+     */
+    private $status;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="prices", type="float")
+     */
+    private $price;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set itemName
+     *
+     * @param string $itemName
+     * @return Item
+     */
+    public function setItemName($itemName)
+    {
+        $this->name = $itemName;
+
+        return $this;
+    }
+
+    /**
+     * Get itemName
+     *
+     * @return string
+     */
+    public function getItemName()
+    {
+        return $this->getName();
+    }
+
+    public function __construct()
+    {
+        $this->category = new ArrayCollection();
+    }
+
+    public function addCategory(Category $category)
+    {
+        $category->addItem($this);
+
+        if (!$this->getCategory()->contains($category)) {
+            $this->category->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category)
+    {
+        if ($this->getCategory()->contains($category)) {
+            $this->getCategory()->removeElement($category);
+        }
+    }
+
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * Set itemType
+     *
+     * @param ItemType $itemType
+     * @return $this
+     */
+    public function setItemType($itemType)
+    {
+        $this->itemType = $itemType;
+
+        return $this;
+    }
+
+    /**
+     * Get itemType
+     *
+     * @return ItemType
+     */
+    public function getItemType()
+    {
+        return $this->itemType;
+    }
+
+    /**
+     * Set itemUnit
+     *
+     * @param string $itemUnit
+     * @return $this
+     */
+    public function setItemUnit($itemUnit)
+    {
+        $this->itemUnit = $itemUnit;
+
+        return $this;
+    }
+
+    /**
+     * Get itemUnit
+     *
+     * @return string
+     */
+    public function getItemUnit()
+    {
+        return $this->itemUnit;
+    }
+
+    /**
+     * Set price
+     *
+     * @param float $price
+     * @return $this
+     */
+    public function setPrice($price)
+    {
+        $this->price = $price;
+
+        return $this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return float
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * Set status
+     *
+     * @param integer $status
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return integer
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function __toString()
+    {
+        return (string)$this->getId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+}
