@@ -17,12 +17,14 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
+            new FOS\UserBundle\FOSUserBundle(),
             new Knp\Bundle\MenuBundle\KnpMenuBundle(),
             new JMS\AopBundle\JMSAopBundle(),
             new JMS\SecurityExtraBundle\JMSSecurityExtraBundle(),
             new JMS\DiExtraBundle\JMSDiExtraBundle($this),
 
             new Rbs\Bundle\CoreBundle\RbsCoreBundle(),
+            new Rbs\Bundle\UserBundle\RbsUserBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

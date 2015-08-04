@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} : Group {% endblock %}
+
+{% block body %}
+
+    <table>
+        <thead>
+        <tr>
+            <th>SL</th>
+            <th>Name</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for group in groups %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ group.getName() }}</td>
+                <td>{{ group.getDescription() }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
