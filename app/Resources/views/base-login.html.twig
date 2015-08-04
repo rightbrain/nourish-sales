@@ -41,7 +41,7 @@
 <!-- END HEAD -->
 
 <!-- BEGIN BODY -->
-<body class="login">
+<body class="login {{ app.request.locale }}{% block bodyClass %}{% endblock bodyClass %}">
 
 {% block loginCenter %}
 
