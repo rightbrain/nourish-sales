@@ -2,15 +2,21 @@
 
 namespace Rbs\Bundle\UserBundle\Controller;
 
+use FOS\UserBundle\Event\FilterUserResponseEvent;
+use FOS\UserBundle\Event\FormEvent;
+use FOS\UserBundle\Event\GetResponseUserEvent;
+use FOS\UserBundle\FOSUserEvents;
 use Rbs\Bundle\UserBundle\Form\Type\UserForm;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdateForm;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdatePasswordForm;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 use Rbs\Bundle\UserBundle\Entity\User;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * User Controller.
@@ -120,7 +126,7 @@ class UserController extends Controller
                 $user->setPassword($form->get('plainPassword')->getData());
                 $user->setPlainPassword($form->get('plainPassword')->getData());
 
-                $this->getDoctrine()->getRepository('UserBundle:User')->update($user);
+                $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
 
                 $this->get('session')->getFlashBag()->add(
                     'notice',
@@ -131,7 +137,7 @@ class UserController extends Controller
             }
         }
 
-        return $this->render('RbsUserBundle:User:update.html.twig', array(
+        return $this->render('RbsUserBundle:User:update.password.html.twig', array(
             'form' => $form->createView()
         ));
     }

@@ -9,6 +9,10 @@
         <tr>
             <th>SL</th>
             <th>Username</th>
+            <th>Username</th>
+            <th>Username</th>
+            <th>pass change</th>
+            <th>details</th>
         </tr>
         </thead>
         <tbody>
@@ -16,6 +20,10 @@
             <tr>
                 <td>{{ loop.index }}</td>
                 <td>{{ user.username }}</td>
+                <td><a href="{{ path('user_update', {'id': user.getId()} ) }}">edit</a></td>
+                <td><a href="{{ path('user_delete', {'id': user.getId()} ) }}">delete</a></td>
+                <td><a href="{{ path('user_update_password', {'id': user.getId()} ) }}">pass change</a></td>
+                <td><a href="{{ path('user_details', {'id': user.getId()} ) }}">details</a></td>
             </tr>
         {% endfor %}
         </tbody>

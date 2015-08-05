@@ -1,8 +1,12 @@
+{% trans_default_domain 'FOSUserBundle' %}
+
 <table>
     <thead>
     <tr>
         <th>SL</th>
         <th>Name</th>
+        <th>Description</th>
+        <th>Description</th>
         <th>Description</th>
     </tr>
     </thead>
@@ -10,9 +14,10 @@
     {% for group in groups %}
         <tr>
             <td>{{ loop.index }}</td>
-            <td>{{ group.getName() }}</td>
-            <td>{{ group.getDescription() }}</td>
             <td><a href="{{ path('fos_user_group_show', {'groupName': group.getName()} ) }}">{{ group.getName() }}</a></td>
+            <td>{{ group.getDescription() }}</td>
+            <td><a href="{{ path('fos_user_group_edit', {'groupName': group.getName()} ) }}">edit</a></td>
+            <td><a href="{{ path('fos_user_group_delete', {'groupName': group.getName()} ) }}">delete</a></td>
         </tr>
     {% endfor %}
     </tbody>
