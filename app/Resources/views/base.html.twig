@@ -31,7 +31,7 @@
         {% endstylesheets %}
     {% endblock %}
 
-    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
 
 </head>
 <!-- BEGIN BODY -->
@@ -42,15 +42,15 @@
     <div class="page-header-inner">
         <!-- BEGIN LOGO -->
         <div class="page-logo">
-            <a href="index.html">
-                <img src="../../assets/admin/layout/img/logo.png" alt="logo" class="logo-default"/>
+            <a href="/">
+                <img src="{{ asset('assets/admin/layout/img/logo.png') }}" alt="logo" class="logo-default"/>
             </a>
             <div class="menu-toggler sidebar-toggler hide">
             </div>
         </div>
         <!-- END LOGO -->
         <!-- BEGIN RESPONSIVE MENU TOGGLER -->
-        <a href="javascript:;" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
+        <a href="javascript:" class="menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse">
         </a>
         <!-- END RESPONSIVE MENU TOGGLER -->
         <!-- BEGIN TOP NAVIGATION MENU -->
@@ -111,6 +111,8 @@
 {% block javascripts %}
 
     {% javascripts
+    'bundles/fosjsrouting/js/router.js'
+    'js/fos_js_routes.js'
     'assets/global/plugins/jquery.min.js'
     'assets/global/plugins/jquery-migrate.min.js'
     'assets/global/plugins/jquery-ui/jquery-ui.min.js'
@@ -123,6 +125,7 @@
     'assets/global/plugins/bootbox/bootbox.min.js'
     'assets/global/scripts/metronic.js'
     'assets/admin/layout/scripts/layout.js'
+    'assets/admin/pages/scripts/custom.js'
     output='js/compiled/all.js' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}

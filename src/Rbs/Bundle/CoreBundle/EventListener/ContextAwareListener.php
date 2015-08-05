@@ -1,7 +1,6 @@
 <?php
 namespace Rbs\Bundle\CoreBundle\EventListener;
 
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 
 abstract class ContextAwareListener

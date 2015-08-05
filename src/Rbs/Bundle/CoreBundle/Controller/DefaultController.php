@@ -2,14 +2,13 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
-class DefaultController extends Controller
+class DefaultController extends BaseController
 {
     /**
-     * @Route("/hello", name="homepage")
+     * @Route("/", name="homepage", options={"expose"=true})
      * @Template()
      */
     public function indexAction()
@@ -19,19 +18,11 @@ class DefaultController extends Controller
 
     /**
      * @Route("/hello2", name="homepage2")
-     * @Template()
+     * @Template("RbsCoreBundle:Default:index.html.twig")
      */
     public function index2Action()
     {
         return array();
     }
 
-    /**
-     * @Route("/hello3", name="homepage3")
-     * @Template()
-     */
-    public function index3Action()
-    {
-        return array();
-    }
 }

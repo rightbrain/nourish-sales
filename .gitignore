@@ -10,7 +10,8 @@
 /composer.phar
 /vendor/
 /web/bundles/
-
+/web/js
+/web/css
 
 # Configuration files
 app/config/parameters.ini
