@@ -43,7 +43,7 @@ class Category
      *
      * @ORM\Column(name="status", type="integer")
      */
-    private $status;
+    private $status = 1;
 
     /**
      * @var ArrayCollection

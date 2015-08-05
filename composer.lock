@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "36c224085f4dbe0273b38d03ed195814",
+    "hash": "7bf870d92932a665640abb0382aef469",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -1863,6 +1863,65 @@
             "time": "2015-05-28 14:22:40"
         },
         {
+            "name": "sg/datatablesbundle",
+            "version": "dev-master",
+            "target-dir": "Sg/DatatablesBundle",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stwe/DatatablesBundle.git",
+                "reference": "73ac0ed0ba5adbfe0139b19e1f1c073f4e4c120a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stwe/DatatablesBundle/zipball/73ac0ed0ba5adbfe0139b19e1f1c073f4e4c120a",
+                "reference": "73ac0ed0ba5adbfe0139b19e1f1c073f4e4c120a",
+                "shasum": ""
+            },
+            "require": {
+                "friendsofsymfony/jsrouting-bundle": "@stable",
+                "php": ">=5.3.2",
+                "symfony/framework-bundle": "~2.6"
+            },
+            "require-dev": {
+                "sensio/generator-bundle": "~2.3"
+            },
+            "suggest": {
+                "components/jquery": "1.11.3",
+                "datatables/datatables": "1.10.7",
+                "moment/moment": "2.10.2"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-0": {
+                    "Sg\\DatatablesBundle": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "stwe"
+                },
+                {
+                    "name": "SgDatatablesBundle contributors",
+                    "homepage": "https://github.com/stwe/DatatablesBundle/graphs/contributors"
+                }
+            ],
+            "description": "Symfony2 Datatable Bundle For Doctrine2 Entities",
+            "homepage": "https://github.com/stwe/DatatablesBundle",
+            "keywords": [
+                "Symfony2",
+                "datagrid",
+                "datatable",
+                "grid",
+                "pagination",
+                "table"
+            ],
+            "time": "2015-07-26 15:21:23"
+        },
+        {
             "name": "swiftmailer/swiftmailer",
             "version": "v5.4.1",
             "source": {
@@ -2371,7 +2430,8 @@
     "stability-flags": {
         "friendsofsymfony/jsrouting-bundle": 20,
         "friendsofsymfony/user-bundle": 20,
-        "knplabs/doctrine-behaviors": 20
+        "knplabs/doctrine-behaviors": 20,
+        "sg/datatablesbundle": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

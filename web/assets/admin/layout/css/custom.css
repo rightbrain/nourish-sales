@@ -62,3 +62,31 @@ Change Quick Sidebar Width
 .sidebar-toggler-wrapper .sidebar-toggler{
     margin-bottom: 15px;
 }
+
+/** Datatable Style Override */
+.dataTables_scrollBody table.dataTable{
+    margin-top: 0 !important;
+}
+
+.dataTables_info {
+    float: left;
+}
+
+.paging_full_numbers{
+    border: #ddd 1px solid;
+    padding: 6px;
+}
+.paging_full_numbers a{
+    padding: 6px 12px;
+    border-right: #ddd 1px solid;
+}
+.paging_full_numbers a.disabled{
+    color: #777;
+    cursor: not-allowed;
+}
+.paging_full_numbers a.last{
+    border-right: none;
+}
+.paging_full_numbers a.current{
+    font-weight: bold;
+}

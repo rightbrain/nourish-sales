@@ -6,3 +6,9 @@ services:
         arguments: [@security.authorization_checker]
         tags:
           - { name: kernel.event_listener, event: core_bundle.menu_main, method: onMenuConfigureMain, priority: 999 }
+
+
+    rbs_erp.core.datatable.category:
+        class: Rbs\Bundle\CoreBundle\Datatables\CategoryDatatable
+        tags:
+            - { name: sg.datatable.view }

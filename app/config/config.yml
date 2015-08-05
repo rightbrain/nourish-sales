@@ -35,6 +35,8 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    form:
+        resources: ['bootstrap_3_layout.html.twig']
 
 # Assetic Configuration
 assetic:
@@ -42,6 +44,7 @@ assetic:
     use_controller: false
     bundles:
         - RbsUserBundle
+        - RbsCoreBundle
     #java: /usr/bin/java
     filters:
         cssrewrite: ~
