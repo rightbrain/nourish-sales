@@ -42,7 +42,7 @@ class GroupController extends Controller
      * @param Request $request
      * @return null|RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function createAction(Request $request)
+    public function newAction(Request $request)
     {
         /** @var $groupManager \FOS\UserBundle\Model\GroupManagerInterface */
         $groupManager = $this->get('fos_user.group_manager');
@@ -81,8 +81,8 @@ class GroupController extends Controller
             return $response;
         }
 
-        return $this->render('RbsUserBundle:Group:new.html.twig', array(
-            'form' => $form->createView()
+        return $this->render('FOSUserBundle:Group:new.html.twig', array(
+            'form' => $form->createview(),
         ));
     }
 
