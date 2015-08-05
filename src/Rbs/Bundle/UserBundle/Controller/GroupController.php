@@ -24,14 +24,12 @@ class GroupController extends Controller
     /**
      * @Route("/groups", name="groups_home")
      * @Template()
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction(Request $request)
+    public function listAction()
     {
-        $groups = $this->getDoctrine()->getRepository('RbsUserBundle:Group')->groups();
+        $groups = $this->get('fos_user.group_manager')->findGroups();
 
-        return $this->render('RbsUserBundle:Group:index.html.twig', array(
+        return $this->render('RbsUserBundle:Group:list.html.twig', array(
             'groups' => $groups
         ));
     }

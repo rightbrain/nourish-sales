@@ -1,7 +1,19 @@
-<div class="fos_user_group_list">
-    <ul>
+<table>
+    <thead>
+    <tr>
+        <th>SL</th>
+        <th>Name</th>
+        <th>Description</th>
+    </tr>
+    </thead>
+    <tbody>
     {% for group in groups %}
-        <li><a href="{{ path('fos_user_group_show', {'groupName': group.getName()} ) }}">{{ group.getName() }}</a></li>
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ group.getName() }}</td>
+            <td>{{ group.getDescription() }}</td>
+            <td><a href="{{ path('fos_user_group_show', {'groupName': group.getName()} ) }}">{{ group.getName() }}</a></td>
+        </tr>
     {% endfor %}
-    </ul>
-</div>
+    </tbody>
+</table>
