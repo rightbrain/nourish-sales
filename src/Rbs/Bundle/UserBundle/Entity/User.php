@@ -4,10 +4,12 @@ namespace Rbs\Bundle\UserBundle\Entity;
 
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\UserBundle\Repository\UserRepository")
+ * @ORMSubscribedEvents()
  */
 class User extends BaseUser
 {
