@@ -1,8 +1,5 @@
-{% trans_default_domain 'FOSUserBundle' %}
-
-<form action="{{ path('fos_user_group_edit', {'groupName': group_name} ) }}" {{ form_enctype(form) }} method="POST" class="fos_user_group_edit">
+{{ form_start(form, {'method': 'POST', 'attr': {'id': 'form-user-add', 'class': 'form-horizontal'}}) }}
     {{ form_widget(form) }}
-    <div>
-        <input type="submit" value="{{ 'group.edit.submit'|trans }}" />
-    </div>
-</form>
+
+    {{ form_widget(form.submit, {'attr': {'class': 'btn green'}}) }}
+{{ form_end(form) }}

@@ -23,8 +23,8 @@ class ConfigureMenuListener extends ContextAwareListener
 
             $menu['User']->addChild('User List', array('route' => 'users_home'));
             $menu['User']->addChild('User Create', array('route' => 'user_create'));
-            $menu['User']->addChild('Group List', array('route' => 'fos_user_group_list'));
-            $menu['User']->addChild('Group Create', array('route' => 'fos_user_group_new'));
+            $menu['User']->addChild('Group List', array('route' => 'groups_home'));
+            $menu['User']->addChild('Group Create', array('route' => 'group_create'));
 
         return $menu;
         //}
