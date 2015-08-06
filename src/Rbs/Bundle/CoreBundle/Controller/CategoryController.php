@@ -3,12 +3,12 @@
 namespace Rbs\Bundle\CoreBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Form\Type\CategoryForm;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Rbs\Bundle\CoreBundle\Entity\Category;
-use Rbs\Bundle\CoreBundle\Form\CategoryType;
 
 /**
  * Category controller.
@@ -101,7 +101,7 @@ class CategoryController extends BaseController
      */
     private function createCreateForm(Category $entity)
     {
-        $form = $this->createForm(new CategoryType(), $entity, array(
+        $form = $this->createForm(new CategoryForm(), $entity, array(
             'action' => $this->generateUrl('category_create'),
             'method' => 'POST',
         ));
@@ -190,7 +190,7 @@ class CategoryController extends BaseController
     */
     private function createEditForm(Category $entity)
     {
-        $form = $this->createForm(new CategoryType(), $entity, array(
+        $form = $this->createForm(new CategoryForm(), $entity, array(
             'action' => $this->generateUrl('category_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
