@@ -36,6 +36,14 @@
             <argument type="service" id="service_container"/>
         </service>
 
+        <service id="rbs_erp.user.datatable.user" class="Rbs\Bundle\UserBundle\Datatables\UserDatatable">
+            <tag name="sg.datatable.view"/>
+        </service>
+
+        <service id="rbs_erp.group.datatable.group" class="Rbs\Bundle\UserBundle\Datatables\GroupDatatable">
+            <tag name="sg.datatable.view"/>
+        </service>
+
     </services>
 
 </container>

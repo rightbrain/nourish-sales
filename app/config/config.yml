@@ -46,6 +46,7 @@ assetic:
     use_controller: false
     bundles:
         - RbsUserBundle
+        - FOSUserBundle
         - RbsCoreBundle
     #java: /usr/bin/java
     filters:

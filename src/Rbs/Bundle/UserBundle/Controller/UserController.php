@@ -12,6 +12,7 @@ use Rbs\Bundle\UserBundle\Form\Type\UserUpdatePasswordForm;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
@@ -26,17 +27,35 @@ class UserController extends Controller
 {
     /**
      * @Route("/users", name="users_home")
+     * @Method("GET")
      * @Template()
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         $users = $this->getDoctrine()->getRepository('RbsUserBundle:User')->users();
+        $datatable = $this->get('rbs_erp.user.datatable.user');
+        $datatable->buildDatatable();
 
         return $this->render('RbsUserBundle:User:index.html.twig', array(
             'users' => $users,
+            'datatable' => $datatable
         ));
+    }
+
+    /**
+     * Lists all Category entities.
+     *
+     * @Route("/users_list_ajax", name="users_list_ajax", options={"expose"=true})
+     * @Method("GET")
+     */
+    public function listAjaxAction()
+    {
+        $datatable = $this->get('rbs_erp.user.datatable.user');
+        $datatable->buildDatatable();
+
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+
+        return $query->getResponse();
     }
 
     /**
@@ -75,7 +94,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user-update/{id}", name="user_update")
+     * @Route("/user-update/{id}", name="user_update", options={"expose"=true})
      * @Template()
      * @param Request $request
      * @param User $user
@@ -107,7 +126,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user-update-password/{id}", name="user_update_password")
+     * @Route("/user-update-password/{id}", name="user_update_password", options={"expose"=true})
      * @Template()
      * @param Request $request
      * @param User $user
@@ -143,7 +162,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user-enabled/{id}", name="user_enabled")
+     * @Route("/user-enabled/{id}", name="user_enabled", options={"expose"=true})
      * @Template()
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
@@ -180,7 +199,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user-details/{id}", name="user_details")
+     * @Route("/user-details/{id}", name="user_details", options={"expose"=true})
      * @Template()
      * @param Request $request
      * @param User $user
@@ -194,7 +213,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user-delete/{id}", name="user_delete")
+     * @Route("/user-delete/{id}", name="user_delete", options={"expose"=true})
      * @Template()
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse

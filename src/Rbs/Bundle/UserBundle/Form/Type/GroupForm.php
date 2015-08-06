@@ -38,6 +38,9 @@ class GroupForm extends AbstractType
             'multiple' => true,
             'attr'     => array('id' => 'my_multi_select2')
         ));
+
+        $builder
+            ->add('submit', 'submit');
     }
 
     /**

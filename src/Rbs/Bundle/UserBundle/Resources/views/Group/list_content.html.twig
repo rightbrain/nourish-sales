@@ -1,24 +1,21 @@
-{% trans_default_domain 'FOSUserBundle' %}
+{% block body %}
 
-<table>
-    <thead>
-    <tr>
-        <th>SL</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Description</th>
-        <th>Description</th>
-    </tr>
-    </thead>
-    <tbody>
-    {% for group in groups %}
-        <tr>
-            <td>{{ loop.index }}</td>
-            <td><a href="{{ path('fos_user_group_show', {'groupName': group.getName()} ) }}">{{ group.getName() }}</a></td>
-            <td>{{ group.getDescription() }}</td>
-            <td><a href="{{ path('fos_user_group_edit', {'groupName': group.getName()} ) }}">edit</a></td>
-            <td><a href="{{ path('fos_user_group_delete', {'groupName': group.getName()} ) }}">delete</a></td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>Groups
+                </div>
+            </div>
+            <div class="portlet-body">
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('group_create'), label: 'Add New', 'icon': 'plus'}) }}
+
+                <div class="dataTables_wrapper no-footer">
+                    {{ datatable_render_html(datatable) }}
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+{% endblock %}
