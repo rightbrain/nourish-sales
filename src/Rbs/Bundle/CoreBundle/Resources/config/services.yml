@@ -3,7 +3,7 @@ parameters:
 services:
     rbs_erp.core.configure_menu_listener:
         class: Rbs\Bundle\CoreBundle\EventListener\ConfigureMenuListener
-        arguments: [@security.authorization_checker]
+        arguments: [@service_container]
         tags:
           - { name: kernel.event_listener, event: core_bundle.menu_main, method: onMenuConfigureMain, priority: 999 }
 

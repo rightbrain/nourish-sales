@@ -32,8 +32,8 @@
         </service>
 
         <service id="rbs_erp.user.configure_menu_listener" class="Rbs\Bundle\UserBundle\EventListener\ConfigureMenuListener">
-            <tag name="kernel.event_listener" event="core_bundle.menu_user" method="onMenuConfigureMain" priority="999"/>
-            <argument type="service" id="security.authorization_checker"/>
+            <tag name="kernel.event_listener" event="core_bundle.menu_main" method="onMenuConfigureMain" priority="999"/>
+            <argument type="service" id="service_container"/>
         </service>
 
     </services>
