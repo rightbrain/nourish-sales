@@ -88,7 +88,7 @@
                 {% block page_title %}{% endblock %}
             </h3>
             <!-- END PAGE HEADER-->
-
+            {{ include(':_elements:flash-messages.html.twig') }}
             {% block body %}{% endblock %}
 
         </div>
@@ -125,7 +125,7 @@
     'assets/global/plugins/bootbox/bootbox.min.js'
     'assets/global/scripts/metronic.js'
     'assets/admin/layout/scripts/layout.js'
-    'assets/admin/pages/scripts/custom.js'
+    'assets/admin/layout/scripts/app.js'
     output='js/compiled/all.js' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
@@ -137,6 +137,7 @@
         {% block documentReady %}
         Metronic.init();
         Layout.init();
+        App.init();
         {% endblock documentReady %}
     });
 </script>

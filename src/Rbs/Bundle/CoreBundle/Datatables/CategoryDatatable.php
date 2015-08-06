@@ -33,37 +33,37 @@ class CategoryDatatable extends BaseDatatable
                     'end_html' => '</div>',
                     'actions' => array(
                         array(
-                            'route' => 'homepage',
-                            'route_parameters' => array(
-                                'id' => 'id'
-                            ),
-                            'label' => 'Show',
-                            'icon' => 'glyphicon glyphicon-eye-open',
-                            'attributes' => array(
-                                'rel' => 'tooltip',
-                                'title' => 'show-action',
-                                'class' => 'btn btn-default btn-xs',
-                                'role' => 'button'
-                            ),
-                            'role' => 'ROLE_ADMIN',
-                        ),
-                        array(
                             'route' => 'category_edit',
                             'route_parameters' => array(
                                 'id' => 'id'
                             ),
                             'label' => 'Edit',
-                            'icon' => 'glyphicon glyphicon-edit',
+                            'icon' => 'fa fa-pencil-square-o',
                             'attributes' => array(
                                 'rel' => 'tooltip',
-                                'title' => 'edit-action',
+                                'title' => 'Edit',
                                 'class' => 'btn btn-primary btn-xs',
                                 'role' => 'button'
                             ),
                             'confirm' => false,
                             'confirm_message' => 'Are you sure?',
                             'role' => 'ROLE_ADMIN',
-                        )
+                        ),
+                        array(
+                            'route' => 'category_delete',
+                            'route_parameters' => array(
+                                'id' => 'id'
+                            ),
+                            'label' => 'Delete',
+                            'icon' => 'fa fa-trash-o',
+                            'attributes' => array(
+                                'rel' => 'tooltip',
+                                'title' => 'Delete',
+                                'class' => 'btn btn-default btn-xs delete-list-btn',
+                                'role' => 'button'
+                            ),
+                            'role' => 'ROLE_ADMIN',
+                        ),
                     )
                 ))
         ;

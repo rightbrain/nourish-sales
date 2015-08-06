@@ -32,10 +32,11 @@ class CategoryController extends BaseController
         $entities = $em->getRepository('RbsCoreBundle:Category')->findAll();
         $datatable = $this->get('rbs_erp.core.datatable.category');
         $datatable->buildDatatable();
-
+        $deleteForm = $this->createDeleteForm(0);
         return array(
             'entities' => $entities,
-            'datatable' => $datatable
+            'datatable' => $datatable,
+            'deleteForm' => $deleteForm->createView()
         );
     }
 
@@ -234,7 +235,7 @@ class CategoryController extends BaseController
     /**
      * Deletes a Category entity.
      *
-     * @Route("/{id}", name="category_delete")
+     * @Route("/{id}", name="category_delete", options={"expose"=true})
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
@@ -250,6 +251,7 @@ class CategoryController extends BaseController
                 throw $this->createNotFoundException('Unable to find Category entity.');
             }
 
+            $this->flashMessage('success', 'Category Deleted Successfully');
             $em->remove($entity);
             $em->flush();
         }
@@ -266,10 +268,9 @@ class CategoryController extends BaseController
      */
     private function createDeleteForm($id)
     {
-        return $this->createFormBuilder()
+        return $this->createFormBuilder(null, array('attr' => array('id' => 'delete-form')))
             ->setAction($this->generateUrl('category_delete', array('id' => $id)))
             ->setMethod('DELETE')
-            ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
     }
