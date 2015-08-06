@@ -19,7 +19,7 @@ class MenuBuilder extends ContainerAware
                 'data-slide-speed' => '200',
 
             ));
-        $menu->addChild('Home', array('route' => 'homepage'));
+        $menu->addChild('Home', array('route' => 'homepage'))->setAttribute('icon', 'fa fa-home');
 
         $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_MAIN_MENU, new ConfigureMenuEvent($factory, $menu));
         $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_PURCHASE_MENU, new ConfigureMenuEvent($factory, $menu));

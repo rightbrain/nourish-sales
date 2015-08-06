@@ -17,8 +17,10 @@ class ConfigureMenuListener extends ContextAwareListener
 
             $menu->addChild('Manage System', array())
                 ->setAttribute('dropdown', true)
+                ->setAttribute('icon', 'fa fa-cog')
                 ->setLinkAttribute('data-hover', 'dropdown');
-            $menu['Manage System']->addChild('Category', array('route' => 'category'));
+            $menu['Manage System']->addChild('Category', array('route' => 'category'))
+                ->setAttribute('icon', 'fa fa-th-list');
             return $menu;
         //}
     }
