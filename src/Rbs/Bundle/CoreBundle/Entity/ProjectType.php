@@ -3,12 +3,14 @@ namespace Rbs\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
  * Project
  *
  * @ORM\Table(name="project_types")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\ProjectTypeRepository")
+ * @ORMSubscribedEvents()
  */
 class ProjectType
 {

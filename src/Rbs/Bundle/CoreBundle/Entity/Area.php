@@ -4,12 +4,14 @@ namespace Rbs\Bundle\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
  * Area
  *
  * @ORM\Table(name="areas")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\AreaRepository")
+ * @ORMSubscribedEvents()
  */
 class Area
 {

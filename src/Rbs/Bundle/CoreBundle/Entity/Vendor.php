@@ -5,12 +5,14 @@ namespace Rbs\Bundle\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
  * Vendor
  *
  * @ORM\Table(name="vendors")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\VendorRepository")
+ * @ORMSubscribedEvents()
  */
 class Vendor
 {

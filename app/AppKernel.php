@@ -25,6 +25,7 @@ class AppKernel extends Kernel
             new Knp\DoctrineBehaviors\Bundle\DoctrineBehaviorsBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
             new Sg\DatatablesBundle\SgDatatablesBundle(),
+            new Xiidea\EasyAuditBundle\XiideaEasyAuditBundle(),
 
             new Rbs\Bundle\CoreBundle\RbsCoreBundle(),
             new Rbs\Bundle\UserBundle\RbsUserBundle(),

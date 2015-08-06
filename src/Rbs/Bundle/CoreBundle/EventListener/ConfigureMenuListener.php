@@ -15,7 +15,7 @@ class ConfigureMenuListener extends ContextAwareListener
         $menu = $event->getMenu();
         //if ($this->authorizationChecker->isGranted('ROLE_DOCUMENT_ACCESS')) {
 
-            $menu->addChild('Manage System', array('route' => 'homepage'))
+            $menu->addChild('Manage System', array())
                 ->setAttribute('dropdown', true)
                 ->setLinkAttribute('data-hover', 'dropdown');
             $menu['Manage System']->addChild('Category', array('route' => 'category'));

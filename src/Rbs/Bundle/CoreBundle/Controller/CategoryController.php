@@ -4,7 +4,6 @@ namespace Rbs\Bundle\CoreBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -16,7 +15,7 @@ use Rbs\Bundle\CoreBundle\Form\CategoryType;
  *
  * @Route("/category")
  */
-class CategoryController extends Controller
+class CategoryController extends BaseController
 {
 
     /**
@@ -82,7 +81,8 @@ class CategoryController extends Controller
             $em->persist($entity);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('category_show', array('id' => $entity->getId())));
+            $this->flashMessage('success', 'Category Created Successfully');
+            return $this->redirect($this->generateUrl('category'));
         }
 
         return array(
@@ -221,8 +221,8 @@ class CategoryController extends Controller
 
         if ($editForm->isValid()) {
             $em->flush();
-
-            return $this->redirect($this->generateUrl('category_edit', array('id' => $id)));
+            $this->flashMessage('success', 'Updated Created Successfully');
+            return $this->redirect($this->generateUrl('category'));
         }
 
         return array(

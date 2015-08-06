@@ -6,12 +6,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
  * Item
  *
  * @ORM\Table(name="items")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\ItemRepository")
+ * @ORMSubscribedEvents()
  */
 class Item
 {

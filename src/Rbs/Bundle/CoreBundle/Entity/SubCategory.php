@@ -6,12 +6,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
  * SubCategory
  *
  * @ORM\Table(name="sub_categories")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\SubCategoryRepository")
+ * @ORMSubscribedEvents()
  */
 class SubCategory
 {

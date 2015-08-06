@@ -4,12 +4,14 @@ namespace Rbs\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
  * CostHeader
  *
  * @ORM\Table(name="cost_headers")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\CostHeaderRepository")
+ * @ORMSubscribedEvents()
  */
 class CostHeader
 {

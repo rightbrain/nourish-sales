@@ -4,12 +4,14 @@ namespace Rbs\Bundle\CoreBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
+use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
  * VendorAttach
  *
  * @ORM\Table(name="vendor_attaches")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\VendorAttachRepository")
+ * @ORMSubscribedEvents()
  * @ORM\HasLifecycleCallbacks
  */
 class VendorAttach
