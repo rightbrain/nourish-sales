@@ -41,7 +41,7 @@ class GroupDatatable extends BaseDatatable
                             'attributes' => array(
                                 'rel' => 'tooltip',
                                 'title' => 'edit-action',
-                                'class' => 'btn btn-primary btn-xs',
+                                'class' => 'btn btn-primary btn-xs delete-list-btn',
                                 'role' => 'button'
                             ),
                             'confirm' => false,
@@ -66,9 +66,11 @@ class GroupDatatable extends BaseDatatable
                             'attributes' => array(
                                 'rel' => 'tooltip',
                                 'title' => 'delete-action',
-                                'class' => 'btn btn-default btn-xs',
+                                'class' => 'btn btn-default btn-xs delete-list-btn',
                                 'role' => 'button'
                             ),
+                            'confirm' => false,
+                            'confirm_message' => 'Are you sure?',
                             'role' => 'ROLE_ADMIN',
                         )
                     )

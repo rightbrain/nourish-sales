@@ -43,7 +43,7 @@ class UserDatatable extends BaseDatatable
                             'attributes' => array(
                                 'rel' => 'tooltip',
                                 'title' => 'edit-action',
-                                'class' => 'btn btn-primary btn-xs',
+                                'class' => 'btn btn-primary btn-xs delete-list-btn',
                                 'role' => 'button'
                             ),
                             'confirm' => false,
@@ -60,7 +60,7 @@ class UserDatatable extends BaseDatatable
                             'attributes' => array(
                                 'rel' => 'tooltip',
                                 'title' => 'edit-password-action',
-                                'class' => 'btn btn-primary btn-xs',
+                                'class' => 'btn btn-primary btn-xs delete-list-btn',
                                 'role' => 'button'
                             ),
                             'confirm' => false,
@@ -85,11 +85,10 @@ class UserDatatable extends BaseDatatable
                             'attributes' => array(
                                 'rel' => 'tooltip',
                                 'title' => 'delete-action',
-                                'class' => 'btn btn-default btn-xs',
+                                'class' => 'btn btn-default btn-xs delete-list-btn',
                                 'role' => 'button'
                             ),
                             'role' => 'ROLE_ADMIN',
-                            'render_if' => array('isSuperAdmin')
                         ),
                         array(
                             'route' => 'user_enabled',
@@ -101,7 +100,7 @@ class UserDatatable extends BaseDatatable
                             'attributes' => array(
                                 'rel' => 'tooltip',
                                 'title' => 'enable-action',
-                                'class' => 'btn btn-primary btn-xs',
+                                'class' => 'btn btn-primary btn-xs delete-list-btn',
                                 'role' => 'button'
                             ),
                             'confirm' => false,
