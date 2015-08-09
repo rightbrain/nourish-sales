@@ -5,6 +5,8 @@ namespace Rbs\Bundle\UserBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserUpdatePasswordForm extends AbstractType
 {
@@ -21,6 +23,12 @@ class UserUpdatePasswordForm extends AbstractType
                 'first_options' => array('label' => 'form.password'),
                 'second_options' => array('label' => 'form.password_confirmation'),
                 'invalid_message' => 'fos_user.password.mismatch',
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Password should not be blank'
+                    )),
+                    new Length(array('min' => 6)),
+                ),
             ))
             ->add('submit', 'submit')
         ;

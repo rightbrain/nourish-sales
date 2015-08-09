@@ -6,6 +6,8 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserUpdateForm extends AbstractType
 {
@@ -17,8 +19,20 @@ class UserUpdateForm extends AbstractType
     {
         $builder
             ->add('email', 'email', array(
-                'label' => 'form.email', 'translation_domain' => 'FOSUserBundle'
+                'label' => 'form.email', 'translation_domain' => 'FOSUserBundle',
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Email should not be blank'
+                    )),
+                    new email()
+                ),
             ))
+        ;
+
+        $builder
+            ->add('profile', new ProfileForm());
+
+        $builder
             ->add('groups', 'entity', array(
                 'class' => 'Rbs\Bundle\UserBundle\Entity\Group',
                 'query_builder' => function(EntityRepository $groupRepository) {
@@ -30,9 +44,6 @@ class UserUpdateForm extends AbstractType
                 'multiple' => true,
             ))
         ;
-
-        $builder
-            ->add('profile', new ProfileForm());
 
         $builder
             ->add('submit', 'submit');

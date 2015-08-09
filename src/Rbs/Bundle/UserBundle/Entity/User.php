@@ -4,12 +4,21 @@ namespace Rbs\Bundle\UserBundle\Entity;
 
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
  * @ORM\Table(name="users")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\UserBundle\Repository\UserRepository")
  * @ORMSubscribedEvents()
+ * @UniqueEntity(
+ *     fields={"email"},
+ *     message="This email is already in use."
+ * )
+ * @UniqueEntity(
+ *     fields={"username"},
+ *     message="This username is already in use."
+ * )
  */
 class User extends BaseUser
 {

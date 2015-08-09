@@ -84,7 +84,7 @@ class GroupController extends Controller
 
             if (null === $response = $event->getResponse()) {
                 $this->get('session')->getFlashBag()->add(
-                    'success-status',
+                    'success',
                     'Group Created Successfully!'
                 );
             }
