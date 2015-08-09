@@ -29,10 +29,13 @@ class UserUpdateForm extends AbstractType
                 'property' => 'name',
                 'multiple' => true,
             ))
-            ->add('submit', 'submit');
+        ;
 
         $builder
             ->add('profile', new ProfileForm());
+
+        $builder
+            ->add('submit', 'submit');
     }
 
     /**

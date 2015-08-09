@@ -35,12 +35,15 @@ class UserForm extends AbstractType
                         ->setParameter('group', 'Super Administrator');
                 },
                 'property' => 'name',
-                'multiple' => true,
+                'multiple' => true
             ))
-            ->add('submit', 'submit');
+        ;
 
         $builder
             ->add('profile', new ProfileForm());
+
+        $builder
+            ->add('submit', 'submit');
     }
 
     /**

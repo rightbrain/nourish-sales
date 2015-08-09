@@ -76,4 +76,16 @@ class User extends BaseUser
 
         return $role[0];
     }
+
+    public function isSuperAdmin()
+    {
+        $groups = $this->getGroups();
+        foreach ($groups as $group) {
+            if ($group->hasRole('ROLE_SUPER_ADMIN')) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

@@ -89,6 +89,7 @@ class UserDatatable extends BaseDatatable
                                 'role' => 'button'
                             ),
                             'role' => 'ROLE_ADMIN',
+                            'render_if' => array('isSuperAdmin')
                         ),
                         array(
                             'route' => 'user_enabled',

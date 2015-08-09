@@ -35,8 +35,7 @@ class GroupForm extends AbstractType
 
         $builder->add('roles', 'choice', array(
             'choices'  => $this->permissionBuilder->getPermissionHierarchyForChoiceField(),
-            'multiple' => true,
-            'attr'     => array('id' => 'my_multi_select2')
+            'multiple' => true
         ));
 
         $builder
