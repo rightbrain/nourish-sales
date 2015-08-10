@@ -3,11 +3,11 @@
 namespace Rbs\Bundle\CoreBundle\Datatables;
 
 /**
- * Class CategoryDatatable
+ * Class AreaDatatable
  *
  * @package Rbs\Bundle\CoreBundle\Datatables
  */
-class CategoryDatatable extends BaseDatatable
+class AreaDatatable extends BaseDatatable
 {
     /**
      * {@inheritdoc}
@@ -18,22 +18,24 @@ class CategoryDatatable extends BaseDatatable
         $this->options->setOptions($this->defaultOptions());
 
         $this->ajax->setOptions(array(
-            'url' => $this->router->generate('category_list_ajax'),
+            'url' => $this->router->generate('area_list_ajax'),
             'type' => 'GET'
         ));
 
+
         $this->columnBuilder
-                ->add('name', 'column', array('title' => 'Name',))
-                //->add('status', 'column', array('title' => 'Status',))
-                ->add('createdAt', 'datetime', array('title' => 'Created At', 'date_format' => 'YYYY-MM-DD'))
+                ->add('areaName', 'column', array('title' => 'Area Name',))
+                ->add('level1.name', 'column', array('title' => 'Zilla',))
+                ->add('level2.name', 'column', array('title' => 'Thana',))
+                ->add('level3.name', 'column', array('title' => 'Union',))
                 ->add(null, 'action', array(
                     'width' => '180px',
                     'title' => 'Action',
                     'start_html' => '<div class="wrapper">',
                     'end_html' => '</div>',
                     'actions' => array(
-                        $this->makeActionButton('category_edit', array('id' => 'id'), 'ROLE_ADMIN', 'Edit', 'Edit', 'fa fa-pencil-square-o'),
-                        $this->makeActionButton('category_delete', array('id' => 'id'), 'ROLE_ADMIN', 'Delete', 'Delete', 'fa fa-trash-o', 'btn btn-default btn-xs delete-list-btn'),
+                        $this->makeActionButton('area_edit', array('id' => 'id'), 'ROLE_ADMIN', 'Edit', 'Edit', 'fa fa-pencil-square-o'),
+                        $this->makeActionButton('area_delete', array('id' => 'id'), 'ROLE_ADMIN', 'Delete', 'Delete', 'fa fa-trash-o', 'btn btn-default btn-xs delete-list-btn'),
                     )
                 ))
         ;
@@ -44,7 +46,7 @@ class CategoryDatatable extends BaseDatatable
      */
     public function getEntity()
     {
-        return 'Rbs\Bundle\CoreBundle\Entity\Category';
+        return 'Rbs\Bundle\CoreBundle\Entity\Area';
     }
 
     /**
@@ -52,6 +54,6 @@ class CategoryDatatable extends BaseDatatable
      */
     public function getName()
     {
-        return 'category_datatable';
+        return 'area_datatable';
     }
 }

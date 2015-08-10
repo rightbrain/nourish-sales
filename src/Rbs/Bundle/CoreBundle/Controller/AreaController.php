@@ -3,31 +3,32 @@
 namespace Rbs\Bundle\CoreBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
-use Rbs\Bundle\CoreBundle\Form\Type\CategoryForm;
+use Rbs\Bundle\CoreBundle\Form\Type\AreaForm;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Rbs\Bundle\CoreBundle\Entity\Category;
+use Rbs\Bundle\CoreBundle\Entity\Area;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Category controller.
+ * Area controller.
  *
- * @Route("/category")
+ * @Route("/area")
  */
-class CategoryController extends BaseController
+class AreaController extends BaseController
 {
 
     /**
-     * Lists all Category entities.
+     * Lists all Area entities.
      *
-     * @Route("", name="category")
+     * @Route("", name="area")
      * @Method("GET")
      * @Template()
      */
     public function indexAction()
     {
-        $datatable = $this->get('rbs_erp.core.datatable.category');
+        $datatable = $this->get('rbs_erp.core.datatable.area');
         $datatable->buildDatatable();
         $deleteForm = $this->createDeleteForm(0);
         return array(
@@ -37,39 +38,37 @@ class CategoryController extends BaseController
     }
 
     /**
-     * Lists all Category entities.
+     * Lists all Area entities.
      *
-     * @Route("/category_list_ajax", name="category_list_ajax", options={"expose"=true})
+     * @Route("/area_list_ajax", name="area_list_ajax", options={"expose"=true})
      * @Method("GET")
      */
     public function listAjaxAction()
     {
-        $datatable = $this->get('rbs_erp.core.datatable.category');
+        $datatable = $this->get('rbs_erp.core.datatable.area');
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("categories.deletedAt IS NULL");
+            $qb->andWhere("areas.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 
         return $query->getResponse();
     }
 
-
-
     /**
-     * Creates a new Category entity.
+     * Creates a new Area entity.
      *
-     * @Route("/", name="category_create")
+     * @Route("/", name="area_create")
      * @Method("POST")
-     * @Template("RbsCoreBundle:Category:new.html.twig")
+     * @Template("RbsCoreBundle:Area:new.html.twig")
      */
     public function createAction(Request $request)
     {
-        $entity = new Category();
+        $entity = new Area();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
@@ -78,8 +77,8 @@ class CategoryController extends BaseController
             $em->persist($entity);
             $em->flush();
 
-            $this->flashMessage('success', 'Category Created Successfully');
-            return $this->redirect($this->generateUrl('category'));
+            $this->flashMessage('success', 'Area Created Successfully');
+            return $this->redirect($this->generateUrl('area'));
         }
 
         return array(
@@ -89,16 +88,16 @@ class CategoryController extends BaseController
     }
 
     /**
-     * Creates a form to create a Category entity.
+     * Creates a form to create a Area entity.
      *
-     * @param Category $entity The entity
+     * @param Area $entity The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(Category $entity)
+    private function createCreateForm(Area $entity)
     {
-        $form = $this->createForm(new CategoryForm(), $entity, array(
-            'action' => $this->generateUrl('category_create'),
+        $form = $this->createForm(new AreaForm($this->get('request')), $entity, array(
+            'action' => $this->generateUrl('area_create'),
             'method' => 'POST',
         ));
 
@@ -108,15 +107,15 @@ class CategoryController extends BaseController
     }
 
     /**
-     * Displays a form to create a new Category entity.
+     * Displays a form to create a new Area entity.
      *
-     * @Route("/new", name="category_new")
+     * @Route("/new", name="area_new")
      * @Method("GET")
      * @Template()
      */
     public function newAction()
     {
-        $entity = new Category();
+        $entity = new Area();
         $form   = $this->createCreateForm($entity);
 
         return array(
@@ -126,9 +125,9 @@ class CategoryController extends BaseController
     }
 
     /**
-     * Finds and displays a Category entity.
+     * Finds and displays a Area entity.
      *
-     * @Route("/{id}", name="category_show")
+     * @Route("/{id}", name="area_show")
      * @Method("GET")
      * @Template()
      */
@@ -136,10 +135,10 @@ class CategoryController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('RbsCoreBundle:Category')->find($id);
+        $entity = $em->getRepository('RbsCoreBundle:Area')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Category entity.');
+            throw $this->createNotFoundException('Unable to find Area entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -151,9 +150,9 @@ class CategoryController extends BaseController
     }
 
     /**
-     * Displays a form to edit an existing Category entity.
+     * Displays a form to edit an existing Area entity.
      *
-     * @Route("/{id}/edit", name="category_edit", options={"expose"=true})
+     * @Route("/{id}/edit", name="area_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
      */
@@ -161,10 +160,10 @@ class CategoryController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('RbsCoreBundle:Category')->find($id);
+        $entity = $em->getRepository('RbsCoreBundle:Area')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Category entity.');
+            throw $this->createNotFoundException('Unable to find Area entity.');
         }
 
         $editForm = $this->createEditForm($entity);
@@ -178,16 +177,16 @@ class CategoryController extends BaseController
     }
 
     /**
-    * Creates a form to edit a Category entity.
+    * Creates a form to edit a Area entity.
     *
-    * @param Category $entity The entity
+    * @param Area $entity The entity
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(Category $entity)
+    private function createEditForm(Area $entity)
     {
-        $form = $this->createForm(new CategoryForm(), $entity, array(
-            'action' => $this->generateUrl('category_update', array('id' => $entity->getId())),
+        $form = $this->createForm(new AreaForm($this->get('request')), $entity, array(
+            'action' => $this->generateUrl('area_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
@@ -196,20 +195,20 @@ class CategoryController extends BaseController
         return $form;
     }
     /**
-     * Edits an existing Category entity.
+     * Edits an existing Area entity.
      *
-     * @Route("/{id}", name="category_update")
+     * @Route("/{id}", name="area_update")
      * @Method("PUT")
-     * @Template("RbsCoreBundle:Category:edit.html.twig")
+     * @Template("RbsCoreBundle:Area:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('RbsCoreBundle:Category')->find($id);
+        $entity = $em->getRepository('RbsCoreBundle:Area')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Category entity.');
+            throw $this->createNotFoundException('Unable to find Area entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -218,8 +217,9 @@ class CategoryController extends BaseController
 
         if ($editForm->isValid()) {
             $em->flush();
-            $this->flashMessage('success', 'Updated Created Successfully');
-            return $this->redirect($this->generateUrl('category'));
+
+            $this->flashMessage('success', 'Area Updated Successfully');
+            return $this->redirect($this->generateUrl('area'));
         }
 
         return array(
@@ -228,10 +228,11 @@ class CategoryController extends BaseController
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
-     * Deletes a Category entity.
+     * Deletes a Area entity.
      *
-     * @Route("/{id}", name="category_delete", options={"expose"=true})
+     * @Route("/{id}", name="area_delete", options={"expose"=true})
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
@@ -241,22 +242,21 @@ class CategoryController extends BaseController
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('RbsCoreBundle:Category')->find($id);
+            $entity = $em->getRepository('RbsCoreBundle:Area')->find($id);
 
             if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Category entity.');
+                throw $this->createNotFoundException('Unable to find Area entity.');
             }
 
-            $this->flashMessage('success', 'Category Deleted Successfully');
             $em->remove($entity);
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('category'));
+        return $this->redirect($this->generateUrl('area'));
     }
 
     /**
-     * Creates a form to delete a Category entity by id.
+     * Creates a form to delete a Area entity by id.
      *
      * @param mixed $id The entity id
      *
@@ -265,9 +265,33 @@ class CategoryController extends BaseController
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder(null, array('attr' => array('id' => 'delete-form')))
-            ->setAction($this->generateUrl('category_delete', array('id' => $id)))
+            ->setAction($this->generateUrl('area_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->getForm()
         ;
     }
+
+    /**
+     *
+     * @Route("/filter-area/", name="area_filter", options={"expose"=true})
+     */
+    public function areaFilterAction(Request $request)
+    {
+        $areas = array();
+        if ($request->query->get('id')) {
+            $areas = $this->getDoctrine()->getRepository('RbsCoreBundle:Address')->findBy(
+                array(
+                    'c4' => $request->query->get('id')
+                )
+            );
+        }
+
+        $html = '<option value="">Choose an option</option>';
+        foreach ($areas as $r) {
+            $html .= '<option value="'.$r->getId().'">'.$r->getName().'</option>';
+        }
+
+        return new Response($html);
+    }
+
 }

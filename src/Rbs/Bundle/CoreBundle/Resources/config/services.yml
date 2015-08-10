@@ -12,3 +12,8 @@ services:
         class: Rbs\Bundle\CoreBundle\Datatables\CategoryDatatable
         tags:
             - { name: sg.datatable.view }
+
+    rbs_erp.core.datatable.area:
+            class: Rbs\Bundle\CoreBundle\Datatables\AreaDatatable
+            tags:
+                - { name: sg.datatable.view }
