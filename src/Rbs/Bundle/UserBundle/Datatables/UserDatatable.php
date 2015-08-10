@@ -89,6 +89,7 @@ class UserDatatable extends BaseDatatable
                                 'role' => 'button'
                             ),
                             'role' => 'ROLE_ADMIN',
+                            'render_if' => array('isSuperAdmin')
                         ),
                         array(
                             'route' => 'user_enabled',
@@ -106,6 +107,25 @@ class UserDatatable extends BaseDatatable
                             'confirm' => false,
                             'confirm_message' => 'Are you sure?',
                             'role' => 'ROLE_ADMIN',
+                            'render_if' => array('disabled', 'isSuperAdmin')
+                        ),
+                        array(
+                            'route' => 'user_enabled',
+                            'route_parameters' => array(
+                                'id' => 'id'
+                            ),
+                            'label' => 'Disable',
+                            'icon' => 'glyphicon glyphicon-edit',
+                            'attributes' => array(
+                                'rel' => 'tooltip',
+                                'title' => 'disable-action',
+                                'class' => 'btn btn-primary btn-xs delete-list-btn',
+                                'role' => 'button'
+                            ),
+                            'confirm' => false,
+                            'confirm_message' => 'Are you sure?',
+                            'role' => 'ROLE_ADMIN',
+                            'render_if' => array('enabled', 'isSuperAdmin')
                         )
                     )
                 ))

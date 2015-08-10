@@ -95,6 +95,6 @@ class User extends BaseUser
             }
         }
 
-        return true;
+        return parent::isSuperAdmin();
     }
 }

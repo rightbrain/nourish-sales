@@ -30,7 +30,9 @@ class UserUpdatePasswordForm extends AbstractType
                     new Length(array('min' => 6)),
                 ),
             ))
-            ->add('submit', 'submit')
+            ->add('submit', 'submit', array(
+                'attr'     => array('class' => 'btn green')
+            ))
         ;
     }
 
