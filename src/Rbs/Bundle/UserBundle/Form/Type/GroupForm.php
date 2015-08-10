@@ -49,7 +49,10 @@ class GroupForm extends AbstractType
         ));
 
         $builder
-            ->add('submit', 'submit');
+            ->add('submit', 'submit', array(
+                'attr'     => array('class' => 'btn green')
+            ))
+        ;
     }
 
     /**

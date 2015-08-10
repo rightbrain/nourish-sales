@@ -786,6 +786,8 @@ class DatatableQuery
             $user = $this->em->getRepository('RbsUserBundle:User')->find($item['id']);
             if ($user) {
                 $item['isSuperAdmin'] = !$user->isSuperAdmin();
+                $item['enabled'] = $user->isEnabled();
+                $item['disabled'] = !$user->isEnabled();
             }
             $output['data'][] = $item;
         }
