@@ -23,7 +23,7 @@ class UserDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-                ->add('profile.user.username', 'column', array('title' => 'User name',))
+            ->add('username', 'column', array('title' => 'User name',))
                 ->add('profile.fullName', 'column', array('title' => 'FullName',))
                 ->add('profile.cellphone', 'column', array('title' => 'Cellphone',))
                 ->add('profile.designation', 'column', array('title' => 'Designation',))

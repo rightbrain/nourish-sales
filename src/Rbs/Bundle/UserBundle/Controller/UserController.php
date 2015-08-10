@@ -2,22 +2,14 @@
 
 namespace Rbs\Bundle\UserBundle\Controller;
 
-use FOS\UserBundle\Event\FilterUserResponseEvent;
-use FOS\UserBundle\Event\FormEvent;
-use FOS\UserBundle\Event\GetResponseUserEvent;
-use FOS\UserBundle\FOSUserEvents;
-use Rbs\Bundle\UserBundle\Form\Type\UserForm;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdateForm;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdatePasswordForm;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-
-use Rbs\Bundle\UserBundle\Entity\User;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * User Controller.
@@ -53,14 +45,14 @@ class UserController extends Controller
         $datatable = $this->get('rbs_erp.user.datatable.user');
         $datatable->buildDatatable();
 
-        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        $query = $this->get('rbs_erp.user.datatables.query')->getQueryFrom($datatable);
 
         return $query->getResponse();
     }
 
     /**
      * @Route("/user-create", name="user_create")
-     * @Template()
+     * @Template("RbsUserBundle:User:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
@@ -88,14 +80,14 @@ class UserController extends Controller
             }
         }
 
-        return $this->render('RbsUserBundle:User:new.html.twig', array(
+        return array(
             'form' => $form->createView()
-        ));
+        );
     }
 
     /**
      * @Route("/user-update/{id}", name="user_update", options={"expose"=true})
-     * @Template()
+     * @Template("RbsUserBundle:User:update.html.twig")
      * @param Request $request
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -120,14 +112,14 @@ class UserController extends Controller
             }
         }
 
-        return $this->render('RbsUserBundle:User:update.html.twig', array(
+        return array(
             'form' => $form->createView()
-        ));
+        );
     }
 
     /**
      * @Route("/user-update-password/{id}", name="user_update_password", options={"expose"=true})
-     * @Template()
+     * @Template("RbsUserBundle:User:update.password.html.twig")
      * @param Request $request
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -156,14 +148,13 @@ class UserController extends Controller
             }
         }
 
-        return $this->render('RbsUserBundle:User:update.password.html.twig', array(
+        return array(
             'form' => $form->createView()
-        ));
+        );
     }
 
     /**
      * @Route("/user-enabled/{id}", name="user_enabled", options={"expose"=true})
-     * @Template()
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -205,7 +196,7 @@ class UserController extends Controller
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function detailsAction(Request $request, User $user)
+    public function detailsAction(User $user)
     {
         return $this->render('RbsUserBundle:User:details.html.twig', array(
             'user' => $user
@@ -214,7 +205,6 @@ class UserController extends Controller
 
     /**
      * @Route("/user-delete/{id}", name="user_delete", options={"expose"=true})
-     * @Template()
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
