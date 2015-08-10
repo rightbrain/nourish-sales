@@ -3,122 +3,29 @@
 {% block title %}{{ parent() }} : User create {% endblock %}
 
 {% block body %}
-
-            {{ form_start(form, {'method': 'POST', 'attr': {'id': 'form-user-add', 'class': 'form-horizontal'}}) }}
-
-            <div class="alert alert-error {% if not form.vars.errors|length %} hide {% endif %}">
-                <button class="close" data-dismiss="alert"></button>
-                You have some form errors. Please check below.
-                {{ form_errors(form) }}
-            </div>
-
-            <div class="portlet box green">
-                <div class="portlet-title">
-                    <div class="caption">
-                        <i class="icon-user"></i>User Form
-                    </div>
-                </div>
-                <div class="portlet-body form">
-                    <!-- BEGIN FORM-->
-                        <div class="form-body">
-
-                            <div class="form-group">
-                                <label class="col-md-3 control-label"> Full Name</label>
-                                <div class="col-md-6">
-                                    <div class="input-icon right">
-                                        <span class="input-group-btn"></span>
-                                        {{ form_widget(form.profile.fullName, {'attr': {'class': 'form-control span5 m-wrap', 'data-required': '1' }}) }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-3 control-label"> Cellphone</label>
-                                <div class="col-md-6">
-                                    <div class="input-icon right">
-                                        <span class="input-group-btn"></span>
-                                        {{ form_widget(form.profile.cellphone, {'attr': {'class': 'form-control span5 m-wrap', 'data-required': '1' }}) }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-3 control-label"> Designation</label>
-                                <div class="col-md-6">
-                                    <div class="input-icon right">
-                                        <span class="input-group-btn"></span>
-                                        {{ form_widget(form.profile.designation, {'attr': {'class': 'form-control span5 m-wrap', 'data-required': '1' }}) }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-3 control-label"> Username</label>
-                                <div class="col-md-6">
-                                    <div class="input-icon right">
-                                        <span class="input-group-btn"></span>
-                                        {{ form_widget(form.username, {'attr': {'class': 'form-control span5 m-wrap', 'data-required': '1' }}) }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="{{ form.plainPassword.first.vars.id }}" class="col-md-3 control-label required">
-                                    Password <span class="required">*</span>
-                                </label>
-                                <div class="col-md-6">
-                                    <div class="input-icon right">
-                                        <i class="icon-lock"></i>
-                                        {{ form_widget(form.plainPassword.first, {'attr': { 'class': 'form-control span6 m-wrap', 'data-required': '1', 'autocomplete' : 'off' , 'autofill' : 'off' }}) }}
-                                        <span class="help-inline">{{ form_errors(form.plainPassword.first) }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="{{ form.plainPassword.second.vars.id }}" class="col-md-3 control-label required">
-                                    Confirm Password <span class="required">*</span>
-                                </label>
-                                <div class="col-md-6">
-                                    <div class="input-icon right">
-                                        <i class="icon-lock"></i>
-                                        {{ form_widget(form.plainPassword.second, {'attr': { 'class': 'form-control span6 m-wrap', 'data-required': '1' }}) }}
-                                        <span class="help-inline">{{ form_errors(form.plainPassword.second) }}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label class="col-md-3 control-label">Email</label>
-                                <div class="col-md-6">
-                                    <div class="input-icon right">
-                                        <span class="input-group-btn"></span>
-                                        {{ form_widget(form.email, {'attr': { 'class': 'form-control span5 m-wrap', 'rows': '3' }}) }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group last">
-                                <label class="control-label col-md-3">Groups</label>
-                                <div class="col-md-9">
-                                    {{ form_widget(form.groups, {'attr': {'style': 'height:200px;', 'id': '' } } ) }}
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="form-actions">
-                            <div class="row">
-                                <div class="col-md-offset-3 col-md-9">
-                                    {{ form_widget(form.submit, {'attr': {'class': 'btn green'}}) }}
-                                    <button type="button" class="btn default">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-                    <!-- END FORM-->
-                </div>
-            </div>
-
-            {{ form_end(form) }}
-
+    {% include "RbsUserBundle:User:new_content.html.twig" %}
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets  filter='cssrewrite'
+    "assets/global/plugins/jquery-multi-select/css/multi-select.css"
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+    "assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js"
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock javascripts %}
+
+{% block documentReady %}
+    {{ parent() }}
+    $("select[multiple=multiple]").multiSelect({selectableOptgroup: true});
+{% endblock documentReady %}

@@ -5,6 +5,7 @@ namespace Rbs\Bundle\UserBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class GroupForm extends AbstractType
 {
@@ -24,19 +25,27 @@ class GroupForm extends AbstractType
     {
         $builder->add('name', null, array(
             'label' => 'Name',
-            'attr'  => array('class' => 'span5')
+            'attr'  => array('class' => 'span5'),
+            'constraints' => array(
+                new NotBlank(array('message'=>'Name should not be blank'))
+            ),
         ));
 
         $builder->add('description', 'textarea', array(
             'label'    => 'Description',
             'required' => false,
-            'attr'     => array('class' => 'span5', 'rows' => 3)
+            'attr'     => array('class' => 'span5', 'rows' => 3),
+            'constraints' => array(
+                new NotBlank(array('message'=>'Description should not be blank'))
+            ),
         ));
 
         $builder->add('roles', 'choice', array(
             'choices'  => $this->permissionBuilder->getPermissionHierarchyForChoiceField(),
             'multiple' => true,
-            'attr'     => array('id' => 'my_multi_select2')
+            'constraints' => array(
+                new NotBlank(array('message'=>'Roles should not be blank'))
+            ),
         ));
 
         $builder
