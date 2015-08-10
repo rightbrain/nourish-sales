@@ -44,6 +44,13 @@
             <tag name="sg.datatable.view"/>
         </service>
 
+        <service id="rbs_erp.user.datatables.query"
+                 class="Rbs\Bundle\UserBundle\Service\Datatable\DatatableDataManager">
+            <argument type="service" id="request_stack"/>
+            <argument type="service" id="sg_datatables.serializer"/>
+            <argument>%sg_datatables.query%</argument>
+        </service>
+
     </services>
 
 </container>
