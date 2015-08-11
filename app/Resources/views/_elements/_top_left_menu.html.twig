@@ -2,14 +2,14 @@
     <ul class="nav navbar-nav pull-right">
         <li class="dropdown dropdown-user">
             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                <img alt="" class="img-circle" src="../../assets/admin/layout/img/avatar3_small.jpg"/>
+                {#<img alt="" class="img-circle" src="../../assets/admin/layout/img/avatar3_small.jpg"/>#}
 					<span class="username username-hide-on-mobile">
-					Nick </span>
+					{{ app.user.profile.fullName is defined ? app.user.profile.fullName : app.user.username }} </span>
                 <i class="fa fa-angle-down"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-default">
                 <li>
-                    <a href="extra_profile.html">
+                    <a href="{{ path('fos_user_profile_show') }}">
                         <i class="icon-user"></i> My Profile </a>
                 </li>
                 <li>
@@ -19,7 +19,7 @@
             </ul>
         </li>
         <li class="dropdown dropdown-quick-sidebar-toggler">
-            <a href="javascript:;" class="dropdown-toggle">
+            <a href="{{ path('fos_user_security_logout') }}" class="dropdown-toggle">
                 <i class="icon-logout"></i>
             </a>
         </li>
