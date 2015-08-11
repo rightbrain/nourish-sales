@@ -192,6 +192,7 @@ class ProjectTypeController extends BaseController
 
         return $form;
     }
+
     /**
      * Edits an existing ProjectType entity.
      *
@@ -225,6 +226,7 @@ class ProjectTypeController extends BaseController
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a ProjectType entity.
      *

@@ -37,6 +37,10 @@ services:
         class: Rbs\Bundle\CoreBundle\Datatables\ItemTypeDatatable
         tags:
             - { name: sg.datatable.view }
+    rbs_erp.core.datatable.item:
+        class: Rbs\Bundle\CoreBundle\Datatables\ItemDatatable
+        tags:
+            - { name: sg.datatable.view }
     rbs_erp.core.datatable.vendor:
         class: Rbs\Bundle\CoreBundle\Datatables\VendorDatatable
         tags:

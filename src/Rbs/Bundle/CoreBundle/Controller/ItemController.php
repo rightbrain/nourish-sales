@@ -7,27 +7,27 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Rbs\Bundle\CoreBundle\Entity\ItemType;
-use Rbs\Bundle\CoreBundle\Form\Type\ItemTypeForm;
+use Rbs\Bundle\CoreBundle\Entity\Item;
+use Rbs\Bundle\CoreBundle\Form\Type\ItemForm;
 
 /**
- * ItemType controller.
+ * Item controller.
  *
- * @Route("/itemtype")
+ * @Route("/item")
  */
-class ItemTypeController extends BaseController
+class ItemController extends BaseController
 {
 
     /**
-     * Lists all ItemType entities.
+     * Lists all Item entities.
      *
-     * @Route("", name="itemtype")
+     * @Route("", name="item")
      * @Method("GET")
      * @Template()
      */
     public function indexAction()
     {
-        $datatable = $this->get('rbs_erp.core.datatable.item_type');
+        $datatable = $this->get('rbs_erp.core.datatable.item');
         $datatable->buildDatatable();
         $deleteForm = $this->createDeleteForm(0);
         return array(
@@ -39,19 +39,19 @@ class ItemTypeController extends BaseController
     /**
      * Lists all Area entities.
      *
-     * @Route("/item_type_list_ajax", name="item_type_list_ajax", options={"expose"=true})
+     * @Route("/item_list_ajax", name="item_list_ajax", options={"expose"=true})
      * @Method("GET")
      */
     public function listAjaxAction()
     {
-        $datatable = $this->get('rbs_erp.core.datatable.item_type');
+        $datatable = $this->get('rbs_erp.core.datatable.item');
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("item_types.deletedAt IS NULL");
+            $qb->andWhere("items.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 
@@ -59,15 +59,15 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Creates a new ItemType entity.
+     * Creates a new Item entity.
      *
-     * @Route("/", name="itemtype_create")
+     * @Route("/", name="item_create")
      * @Method("POST")
-     * @Template("RbsCoreBundle:ItemType:new.html.twig")
+     * @Template("RbsCoreBundle:Item:new.html.twig")
      */
     public function createAction(Request $request)
     {
-        $entity = new ItemType();
+        $entity = new Item();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
@@ -75,8 +75,8 @@ class ItemTypeController extends BaseController
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
-            $this->flashMessage('success', 'Item Type Created Successfully');
-            return $this->redirect($this->generateUrl('itemtype'));
+            $this->flashMessage('success', 'Item Created Successfully');
+            return $this->redirect($this->generateUrl('item'));
         }
 
         return array(
@@ -86,16 +86,16 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Creates a form to create a ItemType entity.
+     * Creates a form to create a Item entity.
      *
-     * @param ItemType $entity The entity
+     * @param Item $entity The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(ItemType $entity)
+    private function createCreateForm(Item $entity)
     {
-        $form = $this->createForm(new ItemTypeForm(), $entity, array(
-            'action' => $this->generateUrl('itemtype_create'),
+        $form = $this->createForm(new ItemForm(), $entity, array(
+            'action' => $this->generateUrl('item_create'),
             'method' => 'POST',
         ));
 
@@ -105,15 +105,15 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Displays a form to create a new ItemType entity.
+     * Displays a form to create a new Item entity.
      *
-     * @Route("/new", name="itemtype_new")
+     * @Route("/new", name="item_new")
      * @Method("GET")
      * @Template()
      */
     public function newAction()
     {
-        $entity = new ItemType();
+        $entity = new Item();
         $form   = $this->createCreateForm($entity);
 
         return array(
@@ -123,9 +123,9 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Finds and displays a ItemType entity.
+     * Finds and displays a Item entity.
      *
-     * @Route("/{id}", name="itemtype_show")
+     * @Route("/{id}", name="item_show")
      * @Method("GET")
      * @Template()
      */
@@ -133,10 +133,10 @@ class ItemTypeController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('RbsCoreBundle:ItemType')->find($id);
+        $entity = $em->getRepository('RbsCoreBundle:Item')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find ItemType entity.');
+            throw $this->createNotFoundException('Unable to find Item entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -148,9 +148,9 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Displays a form to edit an existing ItemType entity.
+     * Displays a form to edit an existing Item entity.
      *
-     * @Route("/{id}/edit", name="itemtype_edit", options={"expose"=true})
+     * @Route("/{id}/edit", name="item_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
      */
@@ -158,10 +158,10 @@ class ItemTypeController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('RbsCoreBundle:ItemType')->find($id);
+        $entity = $em->getRepository('RbsCoreBundle:Item')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find ItemType entity.');
+            throw $this->createNotFoundException('Unable to find Item entity.');
         }
 
         $editForm = $this->createEditForm($entity);
@@ -175,16 +175,16 @@ class ItemTypeController extends BaseController
     }
 
     /**
-    * Creates a form to edit a ItemType entity.
+    * Creates a form to edit a Item entity.
     *
-    * @param ItemType $entity The entity
+    * @param Item $entity The entity
     *
     * @return \Symfony\Component\Form\Form The form
     */
-    private function createEditForm(ItemType $entity)
+    private function createEditForm(Item $entity)
     {
-        $form = $this->createForm(new ItemTypeForm(), $entity, array(
-            'action' => $this->generateUrl('itemtype_update', array('id' => $entity->getId())),
+        $form = $this->createForm(new ItemForm(), $entity, array(
+            'action' => $this->generateUrl('item_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
@@ -192,22 +192,21 @@ class ItemTypeController extends BaseController
 
         return $form;
     }
-
     /**
-     * Edits an existing ItemType entity.
+     * Edits an existing Item entity.
      *
-     * @Route("/{id}", name="itemtype_update")
+     * @Route("/{id}", name="item_update")
      * @Method("PUT")
-     * @Template("RbsCoreBundle:ItemType:edit.html.twig")
+     * @Template("RbsCoreBundle:Item:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('RbsCoreBundle:ItemType')->find($id);
+        $entity = $em->getRepository('RbsCoreBundle:Item')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find ItemType entity.');
+            throw $this->createNotFoundException('Unable to find Item entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -216,8 +215,8 @@ class ItemTypeController extends BaseController
 
         if ($editForm->isValid()) {
             $em->flush();
-            $this->flashMessage('success', 'Item Type Updated Successfully');
-            return $this->redirect($this->generateUrl('itemtype'));
+            $this->flashMessage('success', 'Item Update Successfully');
+            return $this->redirect($this->generateUrl('item'));
         }
 
         return array(
@@ -228,9 +227,9 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Deletes a ItemType entity.
+     * Deletes a Item entity.
      *
-     * @Route("/{id}", name="itemtype_delete", options={"expose"=true})
+     * @Route("/{id}", name="item_delete", options={"expose"=true})
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
@@ -240,21 +239,21 @@ class ItemTypeController extends BaseController
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('RbsCoreBundle:ItemType')->find($id);
+            $entity = $em->getRepository('RbsCoreBundle:Item')->find($id);
 
             if (!$entity) {
-                throw $this->createNotFoundException('Unable to find ItemType entity.');
+                throw $this->createNotFoundException('Unable to find Item entity.');
             }
-            $this->flashMessage('success', 'Item Type Deleted Successfully');
+            $this->flashMessage('success', 'Item Deleted Successfully');
             $em->remove($entity);
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('itemtype'));
+        return $this->redirect($this->generateUrl('item'));
     }
 
     /**
-     * Creates a form to delete a ItemType entity by id.
+     * Creates a form to delete a Item entity by id.
      *
      * @param mixed $id The entity id
      *
@@ -262,8 +261,8 @@ class ItemTypeController extends BaseController
      */
     private function createDeleteForm($id)
     {
-        return $this->createFormBuilder(null, array('attr' => array('id' => 'delete-form')))
-            ->setAction($this->generateUrl('itemtype_delete', array('id' => $id)))
+        return $this->createFormBuilder()
+            ->setAction($this->generateUrl('item_delete', array('id' => $id)))
             ->setMethod('DELETE')
             ->getForm()
         ;

@@ -192,6 +192,7 @@ class CostHeaderController extends BaseController
 
         return $form;
     }
+
     /**
      * Edits an existing CostHeader entity.
      *
@@ -225,6 +226,7 @@ class CostHeaderController extends BaseController
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a CostHeader entity.
      *

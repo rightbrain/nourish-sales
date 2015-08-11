@@ -194,6 +194,7 @@ class AreaController extends BaseController
 
         return $form;
     }
+
     /**
      * Edits an existing Area entity.
      *

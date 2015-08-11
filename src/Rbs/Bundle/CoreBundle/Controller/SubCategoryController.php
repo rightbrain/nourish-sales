@@ -192,6 +192,7 @@ class SubCategoryController extends BaseController
 
         return $form;
     }
+
     /**
      * Edits an existing SubCategory entity.
      *
@@ -225,6 +226,7 @@ class SubCategoryController extends BaseController
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
      * Deletes a SubCategory entity.
      *
