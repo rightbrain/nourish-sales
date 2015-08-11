@@ -13,6 +13,8 @@ abstract class ContextAwareListener
     /** @var Request */
     protected $request;
 
+    private $route;
+
     /**
      * @param AuthorizationChecker $context
      */
@@ -21,6 +23,11 @@ abstract class ContextAwareListener
         $this->container = $container;
         $this->authorizationChecker = $container->get('security.authorization_checker');
         $this->request = $container->get('request');
+        $this->route = $this->request->get('_route');
+    }
 
+    protected function isMatch($pattern)
+    {
+        return strpos($this->route, $pattern) === 0;
     }
 }

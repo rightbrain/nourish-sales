@@ -22,56 +22,55 @@ class ConfigureMenuListener extends ContextAwareListener
 
             $menu['Manage System']->addChild('Items', array('route' => 'item'))
                 ->setAttribute('icon', 'fa fa-th-list');
-            if (strpos($this->request->get('_route'), 'item') === 0 && strpos($this->request->get('_route'), 'itemtype') === false) {
+            if ($this->isMatch('item') && !$this->isMatch('itemtype')) {
                 $menu['Manage System']->getChild('Items')->setCurrent(true);
             }
 
             $menu['Manage System']->addChild('Item Types', array('route' => 'itemtype'))
                 ->setAttribute('icon', 'fa fa-th-list');
-            if (strpos($this->request->get('_route'), 'itemtype') === 0) {
+            if ($this->isMatch('itemtype')) {
                 $menu['Manage System']->getChild('Item Types')->setCurrent(true);
             }
 
             $menu['Manage System']->addChild('Categories', array('route' => 'category'))
                 ->setAttribute('icon', 'fa fa-th-list');
-            if (strpos($this->request->get('_route'), 'category') === 0) {
+            if ($this->isMatch('category')) {
                 $menu['Manage System']->getChild('Categories')->setCurrent(true);
             }
 
             $menu['Manage System']->addChild('Sub Categories', array('route' => 'subcategory'))
                 ->setAttribute('icon', 'fa fa-th-list');
-            //if (in_array($this->request->get('_route'), array('subcategory_edit', 'subcategory_update', 'subcategory_new', 'subcategory_create'))) {
-            if (strpos($this->request->get('_route'), 'subcategory') === 0) {
+            if ($this->isMatch('subcategory')) {
                 $menu['Manage System']->getChild('Sub Categories')->setCurrent(true);
             }
 
             $menu['Manage System']->addChild('Areas', array('route' => 'area'))
                 ->setAttribute('icon', 'fa fa-map-marker');
-            if (strpos($this->request->get('_route'), 'area') === 0) {
+            if ($this->isMatch('area')) {
                 $menu['Manage System']->getChild('Areas')->setCurrent(true);
             }
 
             $menu['Manage System']->addChild('Projects', array('route' => 'project'))
                 ->setAttribute('icon', 'fa fa-th-list');
-            if (strpos($this->request->get('_route'), 'project') === 0) {
+            if ($this->isMatch('project') && !$this->isMatch('projecttype')) {
                 $menu['Manage System']->getChild('Projects')->setCurrent(true);
             }
 
             $menu['Manage System']->addChild('Project Types', array('route' => 'projecttype'))
                 ->setAttribute('icon', 'fa fa-th-list');
-            if (strpos($this->request->get('_route'), 'projecttype') === 0) {
+            if ($this->isMatch('projecttype')) {
                 $menu['Manage System']->getChild('Project Types')->setCurrent(true);
             }
 
             $menu['Manage System']->addChild('Cost Header', array('route' => 'cost_header'))
                 ->setAttribute('icon', 'fa fa-th-list');
-            if (strpos($this->request->get('_route'), 'cost_header') === 0) {
+            if ($this->isMatch('cost_header')) {
                 $menu['Manage System']->getChild('Cost Header')->setCurrent(true);
             }
 
             $menu['Manage System']->addChild('Vendors', array('route' => 'vendor'))
                 ->setAttribute('icon', 'fa fa-th-list');
-            if (strpos($this->request->get('_route'), 'vendor') === 0) {
+            if ($this->isMatch('vendor')) {
                 $menu['Manage System']->getChild('Vendors')->setCurrent(true);
             }
         }
