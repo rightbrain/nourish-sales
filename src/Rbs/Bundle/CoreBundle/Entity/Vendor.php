@@ -128,7 +128,7 @@ class Vendor
     protected $area;
 
     /**
-     * @var ItemType
+     * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\ItemType", inversedBy="vendors", cascade={"persist"})
      */
@@ -139,7 +139,12 @@ class Vendor
      *
      * @ORM\Column(name="status", type="integer")
      */
-    private $status;
+    private $status = 1;
+
+    public function __construct()
+    {
+        $this->itemTypes = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -149,6 +154,11 @@ class Vendor
     public function getId()
     {
         return $this->id;
+    }
+
+    public function __toString()
+    {
+        return $this->getVendorName();
     }
 
     /**
@@ -470,10 +480,31 @@ class Vendor
     }
 
     /**
-     * @return Area
+     * @return ArrayCollection
      */
     public function getItemTypes()
     {
         return $this->itemTypes;
+    }
+
+    /**
+     * @param ItemType $bundle
+     * @return $this
+     */
+    public function addItemType(ItemType $itemType)
+    {
+        if (!$this->getItemTypes()->contains($itemType)) {
+            $this->itemTypes->add($itemType);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ItemType $bundle
+     */
+    public function removeBundle(ItemType $itemType)
+    {
+        $this->itemTypes->removeElement($itemType);
     }
 }

@@ -2,8 +2,10 @@
 
 namespace Rbs\Bundle\UserBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Rbs\Bundle\CoreBundle\Entity\Project;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
@@ -43,12 +45,18 @@ class User extends BaseUser
      */
     protected $groups;
 
+    /**
+     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Project", inversedBy="users")
+     * @ORM\JoinTable(name="users_projects")
+     **/
+    private $projects;
+
     protected $role;
 
     public function __construct()
     {
         parent::__construct();
-        // your own logic
+        $this->projects = new ArrayCollection();
     }
 
     /**
@@ -96,5 +104,34 @@ class User extends BaseUser
         }
 
         return parent::isSuperAdmin();
+    }
+
+    /**
+     * @param Project $project
+     * @return $this
+     */
+    public function addProject(Project $project)
+    {
+        if (!$this->getProjects()->contains($project)) {
+            $this->projects->add($project);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Project $project
+     */
+    public function removeProject(Project $project)
+    {
+        $this->projects->removeElement($project);
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getProjects()
+    {
+        return $this->projects;
     }
 }

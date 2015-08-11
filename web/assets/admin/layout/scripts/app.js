@@ -19,9 +19,17 @@ var App = function() {
         });
     }
 
+    var handleMultiSelect = function() {
+        if (!$().multiSelect) {
+            return;
+        }
+        $("select[multiple=multiple]").multiSelect({selectableOptgroup: true});
+    };
+
     function init()
     {
         initDeleteButton();
+        handleMultiSelect();
     }
 
     return {

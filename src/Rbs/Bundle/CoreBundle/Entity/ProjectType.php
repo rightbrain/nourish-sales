@@ -39,7 +39,7 @@ class ProjectType
      *
      * @ORM\Column(name="status", type="integer")
      */
-    private $status;
+    private $status = 1;
     /**
      * Get id
      *
@@ -48,6 +48,11 @@ class ProjectType
     public function getId()
     {
         return $this->id;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 
     /**

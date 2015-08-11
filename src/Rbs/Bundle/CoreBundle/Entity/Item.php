@@ -69,7 +69,7 @@ class Item
      *
      * @ORM\Column(name="status", type="integer")
      */
-    private $status;
+    private $status = 1;
 
     /**
      * @var float

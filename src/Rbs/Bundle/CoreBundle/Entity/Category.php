@@ -66,6 +66,11 @@ class Category
         $this->bundles = new ArrayCollection();
     }
 
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
     public function addSubCategory(SubCategory $subCategory)
     {
         $subCategory->setCategory($this);

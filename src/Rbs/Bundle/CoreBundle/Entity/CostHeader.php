@@ -48,7 +48,7 @@ class CostHeader
      *
      * @ORM\Column(name="status", type="integer")
      */
-    private $status;
+    private $status = 1;
 
     /**
      * Get id

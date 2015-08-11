@@ -55,7 +55,7 @@ class ItemType
      *
      * @ORM\Column(name="status", type="integer")
      */
-    private $status;
+    private $status = 1;
 
     /**
      * Get id
@@ -65,6 +65,11 @@ class ItemType
     public function getId()
     {
         return $this->id;
+    }
+
+    public function __toString()
+    {
+        return $this->getItemType();
     }
 
     /**
@@ -127,5 +132,26 @@ class ItemType
     public function getVendors()
     {
         return $this->vendors;
+    }
+
+    /**
+     * @param ItemType $vendor
+     * @return $this
+     */
+    public function addVendor(Vendor $vendor)
+    {
+        if (!$this->getVendors()->contains($vendor)) {
+            $this->vendors->add($vendor);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Vendor $vendor
+     */
+    public function removeVendor(Vendor $vendor)
+    {
+        $this->vendors->removeElement($vendor);
     }
 }

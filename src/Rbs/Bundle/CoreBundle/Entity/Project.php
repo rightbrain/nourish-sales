@@ -56,7 +56,7 @@ class Project
      *
      * @ORM\Column(name="status", type="integer")
      */
-    private $status;
+    private $status = 1;
 
     /**
      * @var User
@@ -110,6 +110,7 @@ class Project
     public function __construct()
     {
         $this->bundles = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     public function addUser(User $user)

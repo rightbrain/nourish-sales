@@ -42,7 +42,7 @@ class SubCategory
      *
      * @ORM\Column(name="status", type="integer")
      */
-    private $status;
+    private $status = 1;
 
     /**
      * @var Category
@@ -74,6 +74,11 @@ class SubCategory
      * @ORM\JoinColumn(name="category_sub_heads", nullable=true)
      */
     private $subHead;
+
+    public function __toString()
+    {
+        return $this->getSubCategoryName();
+    }
 
     /**
      * Set head
