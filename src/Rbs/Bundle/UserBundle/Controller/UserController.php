@@ -45,9 +45,9 @@ class UserController extends Controller
         $datatable = $this->get('rbs_erp.user.datatable.user');
         $datatable->buildDatatable();
 
-        $query = $this->get('rbs_erp.user.datatables.query')->getQueryFrom($datatable);
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
 
-        return $query->getUserResponse();
+        return $query->getResponse();
     }
 
     /**

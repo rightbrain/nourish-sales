@@ -1,6 +1,7 @@
 <?php
 
 namespace Rbs\Bundle\UserBundle\Datatables;
+use FOS\UserBundle\Model\User;
 
 /**
  * Class UserDatatable
@@ -9,6 +10,21 @@ namespace Rbs\Bundle\UserBundle\Datatables;
  */
 class UserDatatable extends BaseDatatable
 {
+    public function getLineFormatter()
+    {
+        /** @var User $user */
+        $formatter = function($line){
+            $user = $this->em->getRepository('RbsUserBundle:User')->find($line['id']);
+            $line["isSuperAdmin"] = !$user->isSuperAdmin();
+            $line['enabled'] = $user->isEnabled();
+            $line['disabled'] = !$user->isEnabled();
+
+            return $line;
+        };
+
+        return $formatter;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -27,6 +43,9 @@ class UserDatatable extends BaseDatatable
                 ->add('profile.fullName', 'column', array('title' => 'FullName',))
                 ->add('profile.cellphone', 'column', array('title' => 'Cellphone',))
                 ->add('profile.designation', 'column', array('title' => 'Designation',))
+                ->add('isSuperAdmin', 'virtual', array('visible' => false))
+                ->add('enabled', 'virtual', array('visible' => false))
+                ->add('disabled', 'virtual', array('visible' => false))
                 ->add(null, 'action', array(
                     'width' => '180px',
                     'title' => 'Update',
