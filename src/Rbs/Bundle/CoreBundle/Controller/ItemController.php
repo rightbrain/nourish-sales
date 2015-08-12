@@ -267,4 +267,26 @@ class ItemController extends BaseController
             ->getForm()
         ;
     }
+
+    /**
+     * Status Change
+     *
+     * @Route("/status-change/{id}", name="item_statue_change", options={"expose"=true})
+     * @Method("GET")
+     */
+    public function statusChangeAction(Item $item)
+    {
+        if ($item->getStatus() === 1) {
+            $item->setStatus(0);
+            $this->flashMessage('success', 'Item Disabled Successfully');
+        } else {
+            $item->setStatus(1);
+            $this->flashMessage('success', 'Item Enabled Successfully');
+        }
+
+        $this->getDoctrine()->getManager()->persist($item);
+        $this->getDoctrine()->getManager()->flush();
+
+        return $this->redirect($this->generateUrl('item'));
+    }
 }

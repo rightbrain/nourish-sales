@@ -19,6 +19,20 @@ var App = function() {
         });
     }
 
+    function initConfirmationButton()
+    {
+        $('body').on('click', '.confirmation-btn', function(){
+            var url = $(this).attr('href');
+            bootbox.confirm("Are you sure?", function(result) {
+                if (result) {
+                    document.location.href = url;
+                }
+            });
+
+            return false;
+        });
+    }
+
     var handleMultiSelect = function() {
         if (!$().multiSelect) {
             return;
@@ -29,6 +43,7 @@ var App = function() {
     function init()
     {
         initDeleteButton();
+        initConfirmationButton();
         handleMultiSelect();
     }
 

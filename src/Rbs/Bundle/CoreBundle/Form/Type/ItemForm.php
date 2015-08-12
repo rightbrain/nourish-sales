@@ -4,7 +4,7 @@ namespace Rbs\Bundle\CoreBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ItemForm extends AbstractType
 {
@@ -15,6 +15,9 @@ class ItemForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('status', 'choice', array(
+                'choices' => array('Disable', 'Enable')
+            ))
             ->add('name')
             ->add('itemUnit')
             ->add('price')
@@ -25,9 +28,9 @@ class ItemForm extends AbstractType
     }
     
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'data_class' => 'Rbs\Bundle\CoreBundle\Entity\Item'
