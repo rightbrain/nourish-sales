@@ -27,7 +27,7 @@ class BaseDatatable extends AbstractDatatableView
             'scroll_y' => '',
             'searching' => true,
             'server_side' => true,
-            'state_save' => false,
+            'state_save' => true,
             'delay' => 0
         );
     }
@@ -65,7 +65,7 @@ class BaseDatatable extends AbstractDatatableView
     {
     }
 
-    protected function makeActionButton($route, $routeParam = array(), $role = 'ROLE_USER', $label = "", $buttonTitle = "", $icon = "", $btnClass = "btn btn-primary btn-xs")
+    protected function makeActionButton($route, $routeParam = array(), $role = 'ROLE_USER', $label = "", $buttonTitle = "", $icon = "", $btnClass = "btn btn-primary btn-xs", $additional = array())
     {
         $data = array(
             'route' => $route,
@@ -82,6 +82,6 @@ class BaseDatatable extends AbstractDatatableView
             'confirm_message' => 'Are you sure?',
             'role' => $role,
         );
-        return $data;
+        return array_merge($data, $additional);
     }
 }
