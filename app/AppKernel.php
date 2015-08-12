@@ -30,6 +30,7 @@ class AppKernel extends Kernel
 
             new Rbs\Bundle\CoreBundle\RbsCoreBundle(),
             new Rbs\Bundle\UserBundle\RbsUserBundle(),
+            new Rbs\Bundle\SalesBundle\RbsSalesBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

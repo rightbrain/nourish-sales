@@ -1,3 +1,8 @@
+rbs_sales:
+    resource: "@RbsSalesBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
 rbs_user:
     resource: "@RbsUserBundle/Controller/"
     type:     annotation
