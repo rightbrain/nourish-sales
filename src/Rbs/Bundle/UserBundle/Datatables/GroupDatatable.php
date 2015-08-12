@@ -75,29 +75,29 @@ class GroupDatatable extends BaseDatatable
                         )
                     )
                 ))
-                ->add(null, 'action', array(
-                    'width' => '180px',
-                    'title' => 'Show',
-                    'start_html' => '<div class="wrapper">',
-                    'end_html' => '</div>',
-                    'actions' => array(
-                        array(
-                            'route' => 'group_details',
-                            'route_parameters' => array(
-                                'id' => 'id'
-                            ),
-                            'label' => 'Details',
-                            'icon' => 'glyphicon',
-                            'attributes' => array(
-                                'rel' => 'tooltip',
-                                'title' => 'details-action',
-                                'class' => 'btn btn-primary btn-xs',
-                                'role' => 'button'
-                            ),
-                            'role' => 'ROLE_ADMIN',
-                        )
-                    )
-                ))
+//                ->add(null, 'action', array(
+//                    'width' => '180px',
+//                    'title' => 'Show',
+//                    'start_html' => '<div class="wrapper">',
+//                    'end_html' => '</div>',
+//                    'actions' => array(
+//                        array(
+//                            'route' => 'group_details',
+//                            'route_parameters' => array(
+//                                'id' => 'id'
+//                            ),
+//                            'label' => 'Details',
+//                            'icon' => 'glyphicon',
+//                            'attributes' => array(
+//                                'rel' => 'tooltip',
+//                                'title' => 'details-action',
+//                                'class' => 'btn btn-primary btn-xs',
+//                                'role' => 'button'
+//                            ),
+//                            'role' => 'ROLE_ADMIN',
+//                        )
+//                    )
+//                ))
         ;
     }
 
