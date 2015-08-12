@@ -16,7 +16,7 @@ class CategoryForm extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('bundles')
+            ->add('bundles', null, array('label' => 'Modules'))
         ;
     }
     

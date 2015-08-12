@@ -488,7 +488,7 @@ class Vendor
     }
 
     /**
-     * @param ItemType $bundle
+     * @param ItemType $itemType
      * @return $this
      */
     public function addItemType(ItemType $itemType)
@@ -501,7 +501,7 @@ class Vendor
     }
 
     /**
-     * @param ItemType $bundle
+     * @param ItemType $itemType
      */
     public function removeBundle(ItemType $itemType)
     {

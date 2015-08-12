@@ -20,7 +20,7 @@ class ItemForm extends AbstractType
             ->add('price')
             ->add('itemType')
             ->add('category')
-            ->add('bundles')
+            ->add('bundles', null, array('label' => 'Modules'))
         ;
     }
     

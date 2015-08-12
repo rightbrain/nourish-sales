@@ -16,7 +16,8 @@ class ItemTypeForm extends AbstractType
     {
         $builder
             ->add('itemType')
-            ->add('vendors')
+            //->add('vendors')
+            ->add('bundles', null, array('label' => 'Modules'))
         ;
     }
     

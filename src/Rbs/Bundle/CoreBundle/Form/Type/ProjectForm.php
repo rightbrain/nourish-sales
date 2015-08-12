@@ -26,7 +26,7 @@ class ProjectForm extends AbstractType
             ->add('projectArea')
             ->add('projectCategory')
             ->add('users')
-            ->add('bundles')
+            ->add('bundles', null, array('label' => 'Modules'))
         ;
     }
 

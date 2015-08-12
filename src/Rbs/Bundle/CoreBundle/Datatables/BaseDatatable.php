@@ -57,6 +57,14 @@ class BaseDatatable extends AbstractDatatableView
         );
     }
 
+    public function getEntity()
+    {
+    }
+
+    public function getName()
+    {
+    }
+
     protected function makeActionButton($route, $routeParam = array(), $role = 'ROLE_USER', $label = "", $buttonTitle = "", $icon = "", $btnClass = "btn btn-primary btn-xs")
     {
         $data = array(
@@ -76,8 +84,4 @@ class BaseDatatable extends AbstractDatatableView
         );
         return $data;
     }
-
-    public function getEntity(){}
-
-    public function getName(){}
 }

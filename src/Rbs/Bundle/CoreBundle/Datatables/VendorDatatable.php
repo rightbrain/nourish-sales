@@ -23,19 +23,18 @@ class VendorDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-                ->add('vendorName', 'column', array('title' => 'Name',))
-                ->add('contractPerson', 'column', array('title' => 'Contract Person',))
-                ->add('contractNo', 'column', array('title' => 'Contract No',))
-                ->add('area.areaName', 'column', array('title' => 'Area',))
-                ->add(null, 'action', array(
-                    'width' => '180px',
-                    'title' => 'Action',
-                    'actions' => array(
-                        $this->makeActionButton('vendor_edit', array('id' => 'id'), 'ROLE_ADMIN', 'Edit', 'Edit', 'fa fa-pencil-square-o'),
-                        $this->makeActionButton('vendor_delete', array('id' => 'id'), 'ROLE_ADMIN', 'Delete', 'Delete', 'fa fa-trash-o', 'btn btn-default btn-xs delete-list-btn'),
-                    )
-                ))
-                ;
+            ->add('vendorName', 'column', array('title' => 'Name',))
+            ->add('contractPerson', 'column', array('title' => 'Contract Person',))
+            ->add('contractNo', 'column', array('title' => 'Contract No',))
+            ->add('area.areaName', 'column', array('title' => 'Area',))
+            ->add(null, 'action', array(
+                'width' => '180px',
+                'title' => 'Action',
+                'actions' => array(
+                    $this->makeActionButton('vendor_edit', array('id' => 'id'), 'ROLE_ADMIN', 'Edit', 'Edit', 'fa fa-pencil-square-o'),
+                    $this->makeActionButton('vendor_delete', array('id' => 'id'), 'ROLE_ADMIN', 'Delete', 'Delete', 'fa fa-trash-o', 'btn btn-default btn-xs delete-list-btn'),
+                )
+            ));
     }
 
     /**
