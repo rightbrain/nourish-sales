@@ -27,6 +27,14 @@ class UserForm extends AbstractType
                     ))
                 ),
             ))
+            ->add('userType', 'choice', array(
+                'empty_value' => 'Select user type',
+                'choices'  => array(
+                    'User' => 'User',
+                    'Agent' => 'Agent'
+                ),
+                'required' => false,
+            ))
             ->add('plainPassword', 'repeated', array(
                 'type' => 'password',
                 'options' => array('translation_domain' => 'FOSUserBundle'),

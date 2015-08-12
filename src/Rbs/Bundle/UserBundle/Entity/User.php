@@ -32,6 +32,13 @@ class User extends BaseUser
     protected $id;
 
     /**
+     * @var array $type
+     *
+     * @ORM\Column(name="user_type", type="string", length=255, columnDefinition="ENUM('User', 'Customer', 'Agent')")
+     */
+    private $userType;
+
+    /**
      * @ORM\OneToOne(targetEntity="Profile", mappedBy="user", cascade={"persist"})
      */
     protected $profile;
@@ -133,5 +140,21 @@ class User extends BaseUser
     public function getProjects()
     {
         return $this->projects;
+    }
+
+    /**
+     * @return array
+     */
+    public function getUserType()
+    {
+        return $this->userType;
+    }
+
+    /**
+     * @param array $userType
+     */
+    public function setUserType($userType)
+    {
+        $this->userType = $userType;
     }
 }
