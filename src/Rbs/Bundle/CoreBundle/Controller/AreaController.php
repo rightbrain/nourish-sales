@@ -2,7 +2,9 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\Address;
 use Rbs\Bundle\CoreBundle\Form\Type\AreaForm;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -28,6 +30,47 @@ class AreaController extends BaseController
      */
     public function indexAction()
     {
+        /*set_time_limit(0);
+        $em = $this->getDoctrine()->getManager();
+        $addressRepo = $em->getRepository('RbsCoreBundle:Address');
+        $addresses = $addressRepo->findAll();
+        $vendor = $em->getRepository('RbsCoreBundle:Vendor')->find(1);
+        foreach ($addresses as $address) {
+            $area = false;
+            switch ($address->getLevel()) {
+                case 2:
+                    $area = new Area();
+                    $area->setLevel1($address);
+                    $area->setAreaName($address->getName());
+                    break;
+                case 3:
+                    $area = new Area();
+                    $l1 = $addressRepo->findOneBy(array('id' => $address->getC4()));
+                    $area->setLevel1($l1);
+                    $area->setLevel2($address);
+                    $area->setAreaName($address->getName() . ', '. $l1->getName());
+                    break;
+                case 4:
+                    $area = new Area();
+                    $l1 = $addressRepo->findOneBy(array('id' => $address->getC4()));
+                    $area->setLevel1($l1);
+                    $l2 = $addressRepo->findOneBy(array('id' => $l1->getC4()));
+                    $area->setLevel2($l2);
+                    $area->setLevel3($address);
+                    $area->setAreaName($address->getName().', '.$l2->getName().', '.$l1->getName());
+                    break;
+
+            }
+            if ($area) {
+                //$vendor->setArea($area);
+                $area->setStatus(0);
+                $em->persist($area);
+                $em->flush();
+                $em->clear($area);
+                $em->clear($address);
+            }
+        }*/
+
         $datatable = $this->get('rbs_erp.core.datatable.area');
         $datatable->buildDatatable();
         $deleteForm = $this->createDeleteForm(0);

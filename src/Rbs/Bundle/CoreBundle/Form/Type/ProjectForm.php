@@ -21,10 +21,18 @@ class ProjectForm extends AbstractType
             ->add('projectName')
             ->add('address')
             ->add('costCenterNumber')
-            ->add('projectHead')
-            ->add('projectContactPerson')
-            ->add('projectArea')
-            ->add('projectCategory')
+            ->add('projectHead', null, array(
+                'attr' => array('class' => 'select2me')
+            ))
+            ->add('projectContactPerson', null, array(
+                'attr' => array('class' => 'select2me')
+            ))
+            ->add('projectArea', null, array(
+                'attr' => array('class' => 'select2me')
+            ))
+            ->add('projectCategory', null, array(
+                'attr' => array('class' => 'select2me')
+            ))
             ->add('users')
             ->add('bundles', null, array('label' => 'Modules'))
         ;

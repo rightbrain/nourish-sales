@@ -27,7 +27,9 @@ class VendorForm extends AbstractType
             ->add('bankAccountName')
             ->add('branchName')
             ->add('PaymentType')
-            ->add('area')
+            ->add('area', null, array(
+                'attr' => array('class' => 'select2me')
+            ))
             ->add('itemTypes')
         ;
     }

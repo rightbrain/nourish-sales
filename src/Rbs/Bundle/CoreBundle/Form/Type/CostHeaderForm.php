@@ -16,7 +16,9 @@ class CostHeaderForm extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('subCategory')
+            ->add('subCategory', null, array(
+                'attr' => array('class' => 'select2me')
+            ))
         ;
     }
     
