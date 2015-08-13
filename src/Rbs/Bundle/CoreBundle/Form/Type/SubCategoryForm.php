@@ -17,8 +17,12 @@ class SubCategoryForm extends AbstractType
         $builder
             ->add('subCategoryName')
             ->add('category')
-            ->add('head')
-            ->add('subHead')
+            ->add('head', null, array(
+                'attr' => array('class' => 'select2me')
+            ))
+            ->add('subHead', null, array(
+                'attr' => array('class' => 'select2me')
+            ))
         ;
     }
 

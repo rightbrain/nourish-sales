@@ -16,14 +16,18 @@ class ItemForm extends AbstractType
     {
         $builder
             ->add('status', 'choice', array(
-                'choices' => array('Disable', 'Enable')
+                'choices' => array('Disable', 'Enable'),
             ))
             ->add('name')
             ->add('itemUnit')
             ->add('price')
-            ->add('itemType')
+            ->add('itemType', null, array(
+                'attr' => array('class' => 'select2me')
+            ))
             ->add('category')
-            ->add('bundles', null, array('label' => 'Modules'))
+            ->add('bundles', null, array(
+                'label' => 'Modules'
+            ))
         ;
     }
     
