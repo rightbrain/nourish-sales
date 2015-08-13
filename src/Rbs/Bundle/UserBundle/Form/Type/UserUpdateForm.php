@@ -27,6 +27,14 @@ class UserUpdateForm extends AbstractType
                     new email()
                 ),
             ))
+            ->add('userType', 'choice', array(
+                'empty_value' => 'Select user type',
+                'choices'  => array(
+                    'User' => 'User',
+                    'Agent' => 'Agent'
+                ),
+                'required' => false,
+            ))
         ;
 
         $builder
