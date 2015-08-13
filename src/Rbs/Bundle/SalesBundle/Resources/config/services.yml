@@ -1,3 +1,23 @@
 parameters:
 
 services:
+    rbs_erp.sales.configure_menu_listener:
+        class: Rbs\Bundle\SalesBundle\EventListener\ConfigureMenuListener
+        arguments: [@service_container]
+        tags:
+          - { name: kernel.event_listener, event: sales_bundle.menu_main, method: onMenuConfigureMain, priority: 999 }
+
+    rbs_erp.sales.datatable.customer:
+        class: Rbs\Bundle\SalesBundle\Datatables\CustomerDatatable
+        tags:
+            - { name: sg.datatable.view }
+
+    rbs_erp.sales.registration.form.type:
+        class: Rbs\Bundle\SalesBundle\Form\Type\CustomerForm
+        tags:
+            - { name: form.type, alias: rbs_user_bundle_user }
+        arguments: ['%fos_user.model.user.class%']
+
+
+
+

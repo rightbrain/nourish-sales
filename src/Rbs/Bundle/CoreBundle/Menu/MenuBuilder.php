@@ -27,6 +27,7 @@ class MenuBuilder extends ContainerAware
         $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_INVENTORY_MENU, new ConfigureMenuEvent($factory, $menu));
         $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_SETTING_MENU, new ConfigureMenuEvent($factory, $menu));
         $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_USER_MENU, new ConfigureMenuEvent($factory, $menu));
+        $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_CUSTOMER_MENU, new ConfigureMenuEvent($factory, $menu));
 
         return $menu;
     }

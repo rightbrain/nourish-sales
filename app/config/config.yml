@@ -48,6 +48,7 @@ assetic:
         - RbsUserBundle
         - FOSUserBundle
         - RbsCoreBundle
+        - RbsSalesBundle
     #java: /usr/bin/java
     filters:
         cssrewrite: ~
