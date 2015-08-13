@@ -4,31 +4,30 @@ namespace Rbs\Bundle\CoreBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Rbs\Bundle\CoreBundle\Entity\Vendor;
-use Rbs\Bundle\CoreBundle\Form\Type\VendorForm;
+use Rbs\Bundle\CoreBundle\Entity\Warehouse;
+use Rbs\Bundle\CoreBundle\Form\Type\WarehouseForm;
 
 /**
- * Vendor controller.
+ * Warehouse controller.
  *
- * @Route("/vendor")
+ * @Route("/warehouse")
  */
-class VendorController extends Controller
+class WarehouseController extends BaseController
 {
 
     /**
-     * Lists all Vendor entities.
+     * Lists all Warehouse entities.
      *
-     * @Route("", name="vendor")
+     * @Route("", name="warehouse")
      * @Method("GET")
      * @Template()
      */
     public function indexAction()
     {
-        $datatable = $this->get('rbs_erp.core.datatable.vendor');
+        $datatable = $this->get('rbs_erp.core.datatable.warehouse');
         $datatable->buildDatatable();
         $deleteForm = $this->createDeleteForm(0);
         return array(
@@ -40,19 +39,19 @@ class VendorController extends Controller
     /**
      * Lists all Area entities.
      *
-     * @Route("/vendor_list_ajax", name="vendor_list_ajax", options={"expose"=true})
+     * @Route("/warehouse_list_ajax", name="warehouse_list_ajax", options={"expose"=true})
      * @Method("GET")
      */
     public function listAjaxAction()
     {
-        $datatable = $this->get('rbs_erp.core.datatable.vendor');
+        $datatable = $this->get('rbs_erp.core.datatable.warehouse');
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("vendors.deletedAt IS NULL");
+            $qb->andWhere("warehouses.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 
@@ -60,15 +59,15 @@ class VendorController extends Controller
     }
 
     /**
-     * Creates a new Vendor entity.
+     * Creates a new Warehouse entity.
      *
-     * @Route("/", name="vendor_create")
+     * @Route("/", name="warehouse_create")
      * @Method("POST")
-     * @Template("RbsCoreBundle:Vendor:new.html.twig")
+     * @Template("RbsCoreBundle:Warehouse:new.html.twig")
      */
     public function createAction(Request $request)
     {
-        $entity = new Vendor();
+        $entity = new Warehouse();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
@@ -76,27 +75,27 @@ class VendorController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
-            $this->addFlash('success', 'Vendor Created Successfully');
-            return $this->redirect($this->generateUrl('vendor'));
+            $this->flashMessage('success', 'Warehouse Created Successfully');
+            return $this->redirect($this->generateUrl('warehouse'));
         }
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
     /**
-     * Creates a form to create a Vendor entity.
+     * Creates a form to create a Warehouse entity.
      *
-     * @param Vendor $entity The entity
+     * @param Warehouse $entity The entity
      *
      * @return \Symfony\Component\Form\Form The form
      */
-    private function createCreateForm(Vendor $entity)
+    private function createCreateForm(Warehouse $entity)
     {
-        $form = $this->createForm(new VendorForm(), $entity, array(
-            'action' => $this->generateUrl('vendor_create'),
+        $form = $this->createForm(new WarehouseForm(), $entity, array(
+            'action' => $this->generateUrl('warehouse_create'),
             'method' => 'POST',
         ));
 
@@ -106,27 +105,27 @@ class VendorController extends Controller
     }
 
     /**
-     * Displays a form to create a new Vendor entity.
+     * Displays a form to create a new Warehouse entity.
      *
-     * @Route("/new", name="vendor_new")
+     * @Route("/new", name="warehouse_new")
      * @Method("GET")
      * @Template()
      */
     public function newAction()
     {
-        $entity = new Vendor();
-        $form   = $this->createCreateForm($entity);
+        $entity = new Warehouse();
+        $form = $this->createCreateForm($entity);
 
         return array(
             'entity' => $entity,
-            'form'   => $form->createView(),
+            'form' => $form->createView(),
         );
     }
 
     /**
-     * Finds and displays a Vendor entity.
+     * Finds and displays a Warehouse entity.
      *
-     * @Route("/{id}", name="vendor_show")
+     * @Route("/{id}", name="warehouse_show")
      * @Method("GET")
      * @Template()
      */
@@ -134,24 +133,24 @@ class VendorController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('RbsCoreBundle:Vendor')->find($id);
+        $entity = $em->getRepository('RbsCoreBundle:Warehouse')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Vendor entity.');
+            throw $this->createNotFoundException('Unable to find Warehouse entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
+            'entity' => $entity,
             'delete_form' => $deleteForm->createView(),
         );
     }
 
     /**
-     * Displays a form to edit an existing Vendor entity.
+     * Displays a form to edit an existing Warehouse entity.
      *
-     * @Route("/{id}/edit", name="vendor_edit", options={"expose"=true})
+     * @Route("/{id}/edit", name="warehouse_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
      */
@@ -159,33 +158,33 @@ class VendorController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('RbsCoreBundle:Vendor')->find($id);
+        $entity = $em->getRepository('RbsCoreBundle:Warehouse')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Vendor entity.');
+            throw $this->createNotFoundException('Unable to find Warehouse entity.');
         }
 
         $editForm = $this->createEditForm($entity);
         $deleteForm = $this->createDeleteForm($id);
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
 
     /**
-    * Creates a form to edit a Vendor entity.
-    *
-    * @param Vendor $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
-    private function createEditForm(Vendor $entity)
+     * Creates a form to edit a Warehouse entity.
+     *
+     * @param Warehouse $entity The entity
+     *
+     * @return \Symfony\Component\Form\Form The form
+     */
+    private function createEditForm(Warehouse $entity)
     {
-        $form = $this->createForm(new VendorForm(), $entity, array(
-            'action' => $this->generateUrl('vendor_update', array('id' => $entity->getId())),
+        $form = $this->createForm(new WarehouseForm(), $entity, array(
+            'action' => $this->generateUrl('warehouse_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));
 
@@ -193,21 +192,22 @@ class VendorController extends Controller
 
         return $form;
     }
+
     /**
-     * Edits an existing Vendor entity.
+     * Edits an existing Warehouse entity.
      *
-     * @Route("/{id}", name="vendor_update")
+     * @Route("/{id}", name="warehouse_update")
      * @Method("PUT")
-     * @Template("RbsCoreBundle:Vendor:edit.html.twig")
+     * @Template("RbsCoreBundle:Warehouse:edit.html.twig")
      */
     public function updateAction(Request $request, $id)
     {
         $em = $this->getDoctrine()->getManager();
 
-        $entity = $em->getRepository('RbsCoreBundle:Vendor')->find($id);
+        $entity = $em->getRepository('RbsCoreBundle:Warehouse')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Vendor entity.');
+            throw $this->createNotFoundException('Unable to find Warehouse entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -216,20 +216,21 @@ class VendorController extends Controller
 
         if ($editForm->isValid()) {
             $em->flush();
-            $this->addFlash('success', 'Vendor Updated Successfully');
-            return $this->redirect($this->generateUrl('vendor'));
+            $this->flashMessage('success', 'Warehouse Updated Successfully');
+            return $this->redirect($this->generateUrl('warehouse'));
         }
 
         return array(
-            'entity'      => $entity,
-            'edit_form'   => $editForm->createView(),
+            'entity' => $entity,
+            'edit_form' => $editForm->createView(),
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
-     * Deletes a Vendor entity.
+     * Deletes a Warehouse entity.
      *
-     * @Route("/{id}", name="vendor_delete", options={"expose"=true})
+     * @Route("/{id}", name="warehouse_delete", options={"expose"=true})
      * @Method("DELETE")
      */
     public function deleteAction(Request $request, $id)
@@ -239,21 +240,21 @@ class VendorController extends Controller
 
         if ($form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $entity = $em->getRepository('RbsCoreBundle:Vendor')->find($id);
+            $entity = $em->getRepository('RbsCoreBundle:Warehouse')->find($id);
 
             if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Vendor entity.');
+                throw $this->createNotFoundException('Unable to find Warehouse entity.');
             }
-            $this->addFlash('success', 'Vendor Deleted Successfully');
+
             $em->remove($entity);
             $em->flush();
         }
 
-        return $this->redirect($this->generateUrl('vendor'));
+        return $this->redirect($this->generateUrl('warehouse'));
     }
 
     /**
-     * Creates a form to delete a Vendor entity by id.
+     * Creates a form to delete a Warehouse entity by id.
      *
      * @param mixed $id The entity id
      *
@@ -262,9 +263,8 @@ class VendorController extends Controller
     private function createDeleteForm($id)
     {
         return $this->createFormBuilder(null, array('attr' => array('id' => 'delete-form')))
-            ->setAction($this->generateUrl('vendor_delete', array('id' => $id)))
+            ->setAction($this->generateUrl('warehouse_delete', array('id' => $id)))
             ->setMethod('DELETE')
-            ->getForm()
-        ;
+            ->getForm();
     }
 }

@@ -45,3 +45,7 @@ services:
         class: Rbs\Bundle\CoreBundle\Datatables\VendorDatatable
         tags:
             - { name: sg.datatable.view }
+    rbs_erp.core.datatable.warehouse:
+        class: Rbs\Bundle\CoreBundle\Datatables\WarehouseDatatable
+        tags:
+            - { name: sg.datatable.view }

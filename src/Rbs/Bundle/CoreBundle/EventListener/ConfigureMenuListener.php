@@ -62,6 +62,12 @@ class ConfigureMenuListener extends ContextAwareListener
                 $menu['Manage System']->getChild('Project Types')->setCurrent(true);
             }
 
+            $menu['Manage System']->addChild('Warehouses', array('route' => 'warehouse'))
+                ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('warehouse')) {
+                $menu['Manage System']->getChild('Warehouses')->setCurrent(true);
+            }
+
             $menu['Manage System']->addChild('Cost Header', array('route' => 'cost_header'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('cost_header')) {
