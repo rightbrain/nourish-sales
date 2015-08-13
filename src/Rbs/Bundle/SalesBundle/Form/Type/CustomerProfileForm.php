@@ -1,12 +1,12 @@
 <?php
 
-namespace Rbs\Bundle\UserBundle\Form\Type;
+namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProfileForm extends AbstractType
+class CustomerProfileForm extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -17,7 +17,6 @@ class ProfileForm extends AbstractType
         $builder
             ->add('fullName')
             ->add('cellphone')
-            ->add('designation')
             ->add('address')
         ;
     }

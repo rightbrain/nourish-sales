@@ -11,19 +11,6 @@ use Rbs\Bundle\SalesBundle\Entity\Customer;
  */
 class CustomerDatatable extends BaseDatatable
 {
-    public function getLineFormatter()
-    {
-        /** @var Customer $customer */
-        $formatter = function($line){
-            $customer = $this->em->getRepository('RbsSalesBundle:Customer')->find($line['id']);
-            $line["status"] = !$customer->isSoftDeleted();
-
-            return $line;
-        };
-
-        return $formatter;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -38,7 +25,6 @@ class CustomerDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-            ->add('status', 'virtual', array('visible' => false))
             ->add('user.username', 'column', array('title' => 'Customer name'))
             ->add(null, 'action', array(
                 'width' => '180px',
@@ -86,8 +72,7 @@ class CustomerDatatable extends BaseDatatable
                         ),
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
-                        'role' => 'ROLE_ADMIN',
-                        'render_if' => array('status', 'status')
+                        'role' => 'ROLE_ADMIN'
                     )
                 )
             ))

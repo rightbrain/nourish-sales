@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Controller;
 
+use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Customer;
 use Rbs\Bundle\SalesBundle\Form\Type\CustomerUpdateForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -45,7 +46,12 @@ class UserCustomerController extends Controller
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
-
+        /** @var QueryBuilder $qb */
+        $function = function($qb)
+        {
+            $qb->andWhere("customers.deletedAt IS NULL");
+        };
+        $query->addWhereAll($function);
         return $query->getResponse();
     }
 
@@ -209,9 +215,8 @@ class UserCustomerController extends Controller
      */
     public function deleteAction(Customer $customer)
     {
-        $customer->setStatus(0);
-
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->update($customer);
+        $this->getDoctrine()->getManager()->remove($customer);
+        $this->getDoctrine()->getManager()->flush();
 
         $this->get('session')->getFlashBag()->add(
             'success',

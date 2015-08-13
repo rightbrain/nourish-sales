@@ -54,6 +54,13 @@ class Profile
     private $designation;
 
     /**
+     * @var text
+     *
+     * @ORM\Column(name="address", type="text", nullable=true)
+     */
+    private $address;
+
+    /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $path;
@@ -279,5 +286,21 @@ class Profile
         return null === $this->path
             ? null
             : $this->getUploadDir() . '/' . $this->path;
+    }
+
+    /**
+     * @return text
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param text $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
     }
 }

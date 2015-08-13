@@ -3,7 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
-use Rbs\Bundle\UserBundle\Form\Type\ProfileForm;
+use Rbs\Bundle\SalesBundle\Form\Type\CustomerProfileForm;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -59,7 +59,7 @@ class UserCustomerForm extends AbstractType
         ;
 
         $builder
-            ->add('profile', new ProfileForm());
+            ->add('profile', new CustomerProfileForm());
 
     }
 

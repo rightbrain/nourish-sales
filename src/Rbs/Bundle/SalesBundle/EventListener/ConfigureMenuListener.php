@@ -16,13 +16,14 @@ class ConfigureMenuListener extends ContextAwareListener
         /** @var MenuItem $menu */
         $menu = $event->getMenu();
         //if ($this->authorizationChecker->isGranted('ROLE_DOCUMENT_ACCESS')) {
+//        $childMenu = $menu->getChild('User');
+//        $childMenu->addChild('Customer', array('route' => ''))
+//                ->setAttribute('dropdown', true);
+////                ->setAttribute('icon', 'fa fa-user')
+////                ->setLinkAttribute('data-hover', 'dropdown');
 
-            $menu->addChild('Customer', array('route' => ''))
-                ->setAttribute('dropdown', true)
-                ->setAttribute('icon', 'fa fa-user')
-                ->setLinkAttribute('data-hover', 'dropdown');
-
-            $menu['Customer']->addChild('Customer List', array('route' => 'customers_home'));
+        $menu['User']->addChild('Customer List', array('route' => 'customers_home'));
+        $menu['User']->addChild('Customer Create', array('route' => 'customer_create'));
 
         return $menu;
         //}

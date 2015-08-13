@@ -1,7 +1,9 @@
 <?php
 namespace Rbs\Bundle\SalesBundle\Entity;
 
+use Rbs\Bundle\CoreBundle\Entity\Area;
 use Rbs\Bundle\CoreBundle\Entity\Bundle;
+use Rbs\Bundle\CoreBundle\Entity\Warehouse;
 use Rbs\Bundle\UserBundle\Entity\User;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -43,11 +45,49 @@ class Customer
     protected $user;
 
     /**
-     * @var integer
+     * @var float
      *
-     * @ORM\Column(name="status", type="integer")
+     * @ORM\Column(name="credit_limit", type="float", nullable=true)
      */
-    private $status = 1;
+    private $creditLimit;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="balance", type="float", nullable=true)
+     */
+    private $balance;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="customer_ID", type="string", length=255, nullable=true)
+     */
+    private $customerID;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="agent", nullable=true)
+     */
+    private $agent;
+
+    /**
+     * @var Warehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Warehouse")
+     * @ORM\JoinColumn(name="warehouse", nullable=true)
+     */
+    private $warehouse;
+
+    /**
+     * @var Area
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Area")
+     * @ORM\JoinColumn(name="area", nullable=true)
+     */
+    private $area;
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
@@ -67,40 +107,6 @@ class Customer
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set status
-     *
-     * @param integer $status
-     * @return $this
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-
-        return $this;
-    }
-
-    /**
-     * Get status
-     *
-     * @return integer
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    public function isSoftDeleted()
-    {
-        $customer = $this->getStatus();
-
-        if ($customer == 1) {
-            return false;
-        }
-
-        return true;
     }
 
     public function __toString()
@@ -157,5 +163,101 @@ class Customer
     public function setUser($user)
     {
         $this->user = $user;
+    }
+
+    /**
+     * @return float
+     */
+    public function getCreditLimit()
+    {
+        return $this->creditLimit;
+    }
+
+    /**
+     * @param float $creditLimit
+     */
+    public function setCreditLimit($creditLimit)
+    {
+        $this->creditLimit = $creditLimit;
+    }
+
+    /**
+     * @return float
+     */
+    public function getBalance()
+    {
+        return $this->balance;
+    }
+
+    /**
+     * @param float $balance
+     */
+    public function setBalance($balance)
+    {
+        $this->balance = $balance;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCustomerID()
+    {
+        return $this->customerID;
+    }
+
+    /**
+     * @param string $customerID
+     */
+    public function setCustomerID($customerID)
+    {
+        $this->customerID = $customerID;
+    }
+
+    /**
+     * @return User
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param User $agent
+     */
+    public function setAgent($agent)
+    {
+        $this->agent = $agent;
+    }
+
+    /**
+     * @return Warehouse
+     */
+    public function getWarehouse()
+    {
+        return $this->warehouse;
+    }
+
+    /**
+     * @param Warehouse $warehouse
+     */
+    public function setWarehouse($warehouse)
+    {
+        $this->warehouse = $warehouse;
+    }
+
+    /**
+     * @return Area
+     */
+    public function getArea()
+    {
+        return $this->area;
+    }
+
+    /**
+     * @param Area $area
+     */
+    public function setArea($area)
+    {
+        $this->area = $area;
     }
 }
