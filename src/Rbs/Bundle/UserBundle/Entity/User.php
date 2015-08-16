@@ -34,7 +34,7 @@ class User extends BaseUser
     /**
      * @var array $type
      *
-     * @ORM\Column(name="user_type", type="string", length=255, columnDefinition="ENUM('User', 'Customer', 'Agent')")
+     * @ORM\Column(name="user_type", type="string", length=255, columnDefinition="ENUM('USER', 'CUSTOMER', 'AGENT')")
      */
     private $userType;
 

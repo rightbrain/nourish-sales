@@ -30,8 +30,8 @@ class UserForm extends AbstractType
             ->add('userType', 'choice', array(
                 'empty_value' => 'Select user type',
                 'choices'  => array(
-                    'User' => 'User',
-                    'Agent' => 'Agent'
+                    'USER' => 'USER',
+                    'AGENT' => 'AGENT'
                 ),
                 'required' => false,
             ))
