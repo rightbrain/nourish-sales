@@ -50,6 +50,7 @@ class UserController extends Controller
         $function = function($qb)
         {
             $qb->andWhere("users.userType NOT IN('CUSTOMER')");
+            $qb->andWhere("users.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 

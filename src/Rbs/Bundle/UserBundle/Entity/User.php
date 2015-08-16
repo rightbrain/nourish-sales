@@ -2,6 +2,9 @@
 
 namespace Rbs\Bundle\UserBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,6 +27,10 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  */
 class User extends BaseUser
 {
+    use ORMBehaviors\Timestampable\Timestampable,
+        ORMBehaviors\SoftDeletable\SoftDeletable,
+        ORMBehaviors\Blameable\Blameable;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
