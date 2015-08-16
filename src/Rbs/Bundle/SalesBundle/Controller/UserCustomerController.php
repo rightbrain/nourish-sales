@@ -5,6 +5,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Customer;
 use Rbs\Bundle\SalesBundle\Form\Type\CustomerUpdateForm;
+use Rbs\Bundle\UserBundle\Form\Type\UserUpdatePasswordForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -122,42 +123,42 @@ class UserCustomerController extends Controller
             'form' => $form->createView()
         );
     }
-//
-//    /**
-//     * @Route("/user-update-password/{id}", name="user_update_password", options={"expose"=true})
-//     * @Template("RbsUserBundle:User:update.password.html.twig")
-//     * @param Request $request
-//     * @param User $user
-//     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-//     */
-//    public function updatePasswordAction(Request $request, User $user)
-//    {
-//        $form = $this->createForm(new UserUpdatePasswordForm(), $user);
-//
-//        if ($request->getMethod() == 'POST') {
-//
-//            $form->handleRequest($request);
-//
-//            if ($form->isValid()) {
-//
-//                $user->setPassword($form->get('plainPassword')->getData());
-//                $user->setPlainPassword($form->get('plainPassword')->getData());
-//
-//                $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
-//
-//                $this->get('session')->getFlashBag()->add(
-//                    'notice',
-//                    'Password Successfully Change'
-//                );
-//
-//                return $this->redirect($this->generateUrl('users_home'));
-//            }
-//        }
-//
-//        return array(
-//            'form' => $form->createView()
-//        );
-//    }
+
+    /**
+     * @Route("/customer-update-password/{id}", name="customer_update_password", options={"expose"=true})
+     * @Template("RbsSalesBundle:Customer:update.password.html.twig")
+     * @param Request $request
+     * @param Customer $customer
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    public function updatePasswordAction(Request $request, Customer $customer)
+    {
+        $form = $this->createForm(new UserUpdatePasswordForm(), $customer->getUser());
+
+        if ($request->getMethod() == 'POST') {
+
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+
+                $customer->getUser()->setPassword($form->get('plainPassword')->getData());
+                $customer->getUser()->setPlainPassword($form->get('plainPassword')->getData());
+
+                $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($customer);
+
+                $this->get('session')->getFlashBag()->add(
+                    'notice',
+                    'Password Successfully Change'
+                );
+
+                return $this->redirect($this->generateUrl('customers_home'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
+    }
 
     /**
      * @Route("/customer-details/{id}", name="customer_details", options={"expose"=true})

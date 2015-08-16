@@ -48,6 +48,22 @@ class CustomerDatatable extends BaseDatatable
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_ADMIN',
+                    ),
+                    array(
+                        'route' => 'customer_update_password',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Edit pass',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'edit-password-action',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button'
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?'
                     )
                 )
             ))
