@@ -58,8 +58,6 @@ class User extends BaseUser
      **/
     private $projects;
 
-    protected $role;
-
     public function __construct()
     {
         parent::__construct();
@@ -82,23 +80,6 @@ class User extends BaseUser
         $profile->setUser($this);
 
         $this->profile = $profile;
-    }
-
-    public function setRole($role)
-    {
-        $this->setRoles(array($role));
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRole()
-    {
-        $role = $this->getRoles();
-
-        return $role[0];
     }
 
     public function isSuperAdmin()
