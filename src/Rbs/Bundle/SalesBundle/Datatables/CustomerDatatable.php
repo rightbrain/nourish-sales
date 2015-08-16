@@ -27,7 +27,7 @@ class CustomerDatatable extends BaseDatatable
         $this->columnBuilder
             ->add('user.username', 'column', array('title' => 'Customer name'))
             ->add(null, 'action', array(
-                'width' => '180px',
+                'width' => '200px',
                 'title' => 'Update',
                 'start_html' => '<div class="wrapper">',
                 'end_html' => '</div>',
@@ -89,15 +89,7 @@ class CustomerDatatable extends BaseDatatable
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_ADMIN'
-                    )
-                )
-            ))
-            ->add(null, 'action', array(
-                'width' => '180px',
-                'title' => 'Show',
-                'start_html' => '<div class="wrapper">',
-                'end_html' => '</div>',
-                'actions' => array(
+                    ),
                     array(
                         'route' => 'customer_details',
                         'route_parameters' => array(
@@ -108,7 +100,7 @@ class CustomerDatatable extends BaseDatatable
                         'attributes' => array(
                             'rel' => 'tooltip',
                             'title' => 'show-action',
-                            'class' => 'btn btn-default btn-xs',
+                            'class' => 'btn btn-primary btn-xs',
                             'role' => 'button'
                         ),
                         'confirm' => false,
@@ -116,6 +108,30 @@ class CustomerDatatable extends BaseDatatable
                     )
                 )
             ))
+//            ->add(null, 'action', array(
+//                'width' => '180px',
+//                'title' => 'Show',
+//                'start_html' => '<div class="wrapper">',
+//                'end_html' => '</div>',
+//                'actions' => array(
+//                    array(
+//                        'route' => 'customer_details',
+//                        'route_parameters' => array(
+//                            'id' => 'id'
+//                        ),
+//                        'label' => 'Show',
+//                        'icon' => 'glyphicon',
+//                        'attributes' => array(
+//                            'rel' => 'tooltip',
+//                            'title' => 'show-action',
+//                            'class' => 'btn btn-default btn-xs',
+//                            'role' => 'button'
+//                        ),
+//                        'confirm' => false,
+//                        'confirm_message' => 'Are you sure?'
+//                    )
+//                )
+//            ))
         ;
     }
 
