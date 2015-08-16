@@ -49,7 +49,7 @@ class UserController extends Controller
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("users.userType NOT IN('Customer')");
+            $qb->andWhere("users.userType NOT IN('CUSTOMER')");
         };
         $query->addWhereAll($function);
 
