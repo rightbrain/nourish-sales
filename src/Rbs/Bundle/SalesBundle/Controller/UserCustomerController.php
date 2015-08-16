@@ -74,6 +74,7 @@ class UserCustomerController extends Controller
 
             if ($form->isValid()) {
 
+                $customer->getUser()->setEnabled(1);
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->create($customer);
 
                 $this->get('session')->getFlashBag()->add(
@@ -193,20 +194,19 @@ class UserCustomerController extends Controller
 //            return $enabled;
 //        }
 //    }
-//
-//    /**
-//     * @Route("/user-details/{id}", name="user_details", options={"expose"=true})
-//     * @Template()
-//     * @param Request $request
-//     * @param User $user
-//     * @return \Symfony\Component\HttpFoundation\Response
-//     */
-//    public function detailsAction(User $user)
-//    {
-//        return $this->render('RbsUserBundle:User:details.html.twig', array(
-//            'user' => $user
-//        ));
-//    }
+
+    /**
+     * @Route("/customer-details/{id}", name="customer_details", options={"expose"=true})
+     * @Template()
+     * @param Customer $customer
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function detailsAction(Customer $customer)
+    {
+        return $this->render('RbsSalesBundle:Customer:details.html.twig', array(
+            'customer' => $customer
+        ));
+    }
 
     /**
      * @Route("/customer-delete/{id}", name="customer_delete", options={"expose"=true})
