@@ -158,42 +158,6 @@ class UserCustomerController extends Controller
 //            'form' => $form->createView()
 //        );
 //    }
-//
-//    /**
-//     * @Route("/user-enabled/{id}", name="user_enabled", options={"expose"=true})
-//     * @param User $user
-//     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-//     */
-//    public function userEnabledAction(User $user)
-//    {
-//        $enabled = $this->isUserEnabled($user);
-//
-//        $user->setEnabled($enabled);
-//
-//        $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
-//
-//        $this->get('session')->getFlashBag()->add(
-//            'success',
-//            'User Successfully Enabled'
-//        );
-//
-//        return $this->redirect($this->generateUrl('users_home'));
-//    }
-//
-//    /**
-//     * @param User $user
-//     * @return int
-//     */
-//    protected function isUserEnabled(User $user)
-//    {
-//        if ($user->isEnabled()) {
-//            $enabled = 0;
-//            return $enabled;
-//        } else {
-//            $enabled = 1;
-//            return $enabled;
-//        }
-//    }
 
     /**
      * @Route("/customer-details/{id}", name="customer_details", options={"expose"=true})
