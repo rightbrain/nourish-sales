@@ -42,6 +42,7 @@ class UserDatatable extends BaseDatatable
         $this->columnBuilder
                 ->add('username', 'column', array('title' => 'User name',))
                 ->add('profile.fullName', 'column', array('title' => 'FullName',))
+                ->add('userType', 'column', array('title' => 'User Type',))
                 ->add('profile.cellphone', 'column', array('title' => 'Cellphone',))
                 ->add('profile.designation', 'column', array('title' => 'Designation',))
                 ->add('isSuperAdmin', 'virtual', array('visible' => false))
