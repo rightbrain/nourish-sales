@@ -19,6 +19,7 @@ class ProfileForm extends AbstractType
             ->add('cellphone')
             ->add('designation')
             ->add('address')
+            ->add('file')
         ;
     }
 

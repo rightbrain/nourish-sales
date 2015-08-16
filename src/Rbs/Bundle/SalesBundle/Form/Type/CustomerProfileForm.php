@@ -18,6 +18,7 @@ class CustomerProfileForm extends AbstractType
             ->add('fullName')
             ->add('cellphone')
             ->add('address')
+            ->add('file')
         ;
     }
 

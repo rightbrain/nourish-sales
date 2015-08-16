@@ -254,7 +254,7 @@ class Profile
     {
         // the absolute directory path where uploaded
         // documents should be saved
-        return __DIR__ . '/../../../../web/' . $this->getUploadDir();
+        return __DIR__ . '/../../../../../web/' . $this->getUploadDir();
     }
 
     public function getUploadDir()
@@ -272,6 +272,13 @@ class Profile
         if ($file = $this->getAbsolutePath()) {
             unlink($file);
         }
+    }
+
+    public function removeFile($file)
+    {
+        $file_path = $this->getUploadRootDir().'/'.$file;
+
+        if(file_exists($file_path)) unlink($file_path);
     }
 
     public function getAbsolutePath()
