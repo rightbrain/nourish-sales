@@ -39,6 +39,9 @@ class UserRepository extends EntityRepository
     public function users()
     {
         $query = $this->createQueryBuilder('u');
+        $query->where('u.userType = :User OR u.userType = :Agent');
+        $query->setParameter('User', 'User');
+        $query->setParameter('Agent', 'Agent');
 
         return $query->getQuery()->getResult();
     }
