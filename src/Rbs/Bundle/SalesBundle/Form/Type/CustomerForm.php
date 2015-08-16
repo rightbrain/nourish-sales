@@ -8,6 +8,8 @@ use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CustomerForm extends AbstractType
 {
@@ -18,7 +20,16 @@ class CustomerForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('customerID')
+            ->add('customerID', 'text', array(
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Customer ID should not be blank'
+                    )),
+                    new Length(array(
+                        'min' => 4
+                    )),
+                )
+            ))
             ->add('creditLimit')
             ->add('balance')
             ->add('agent', 'entity', array(
