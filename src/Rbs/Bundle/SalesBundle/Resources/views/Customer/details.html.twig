@@ -7,12 +7,8 @@
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <p>Username : {{ user.username }}</p>
-            <p>FullName : {{ user.profile.fullname }}</p>
-            <p>Groups : </p>
-            {% for userGroup in user.groups %}
-                {{ userGroup.name }}<br>
-            {% endfor %}
+            <p>Customer Name : {{ customer.user.username }}</p>
+            <p>FullName : {{ customer.user.profile.fullname }}</p>
         </div>
     </div>
 </div>

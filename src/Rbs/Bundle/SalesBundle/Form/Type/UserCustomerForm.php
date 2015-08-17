@@ -30,7 +30,7 @@ class UserCustomerForm extends AbstractType
             ))
             ->add('userType', 'choice', array(
                 'choices'  => array(
-                    'Customer' => 'Customer'
+                    'CUSTOMER' => 'CUSTOMER'
                 ),
                 'data' => 'Customer'
             ))

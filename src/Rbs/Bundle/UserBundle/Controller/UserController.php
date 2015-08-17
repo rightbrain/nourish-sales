@@ -46,6 +46,13 @@ class UserController extends Controller
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb */
+        $function = function($qb)
+        {
+            $qb->andWhere("users.userType NOT IN('CUSTOMER')");
+            $qb->andWhere("users.deletedAt IS NULL");
+        };
+        $query->addWhereAll($function);
 
         return $query->getResponse();
     }
@@ -192,7 +199,6 @@ class UserController extends Controller
     /**
      * @Route("/user-details/{id}", name="user_details", options={"expose"=true})
      * @Template()
-     * @param Request $request
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -210,6 +216,7 @@ class UserController extends Controller
      */
     public function deleteAction(User $user)
     {
+        $user->getProfile()->removeFile($user->getProfile()->getPath());
         $this->getDoctrine()->getRepository('RbsUserBundle:User')->delete($user);
 
         $this->get('session')->getFlashBag()->add(

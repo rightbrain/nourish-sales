@@ -1,4 +1,21 @@
 {{ form_start(form, {'method': 'POST'}) }}
-{#{{ form_start(form, {'method': 'POST', 'attr': {'id': 'form_sample_1'}}) }}#}
-    {{ form_widget(form) }}
+
+    {{ form_widget(form.customerID, { 'attr': {'class': ''} }) }}
+    {{ form_widget(form.creditLimit, { 'attr': {'class': ''} }) }}
+    {{ form_widget(form.balance, { 'attr': {'class': ''} }) }}
+    {{ form_widget(form.agent, { 'attr': {'class': ''} }) }}
+
+    {{ form_widget(form.warehouse, { 'attr': {'class': ''} }) }}
+    {{ form_widget(form.area, { 'attr': {'class': ''} }) }}
+    {{ form_widget(form.agent, { 'attr': {'class': ''} }) }}
+
+    {{ form_widget(form.user.email, { 'attr': {'class': ''} }) }}
+
+    {{ form_widget(form.user.profile.fullName, { 'attr': {'class': ''} }) }}
+    {{ form_widget(form.user.profile.cellphone, { 'attr': {'class': ''} }) }}
+    {{ form_widget(form.user.profile.address, { 'attr': {'class': ''} }) }}
+    {{ form_widget(form.user.profile.file, { 'attr': {'class': ''} }) }}
+
+    {{ form_widget(form.submit, { 'attr': {'class': ''} }) }}
+
 {{ form_end(form) }}

@@ -2,6 +2,9 @@
 
 namespace Rbs\Bundle\UserBundle\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,6 +27,10 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  */
 class User extends BaseUser
 {
+    use ORMBehaviors\Timestampable\Timestampable,
+        ORMBehaviors\SoftDeletable\SoftDeletable,
+        ORMBehaviors\Blameable\Blameable;
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -34,7 +41,7 @@ class User extends BaseUser
     /**
      * @var array $type
      *
-     * @ORM\Column(name="user_type", type="string", length=255, columnDefinition="ENUM('User', 'Customer', 'Agent')")
+     * @ORM\Column(name="user_type", type="string", length=255, columnDefinition="ENUM('USER', 'CUSTOMER', 'AGENT')")
      */
     private $userType;
 
@@ -58,8 +65,6 @@ class User extends BaseUser
      **/
     private $projects;
 
-    protected $role;
-
     public function __construct()
     {
         parent::__construct();
@@ -82,23 +87,6 @@ class User extends BaseUser
         $profile->setUser($this);
 
         $this->profile = $profile;
-    }
-
-    public function setRole($role)
-    {
-        $this->setRoles(array($role));
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getRole()
-    {
-        $role = $this->getRoles();
-
-        return $role[0];
     }
 
     public function isSuperAdmin()
