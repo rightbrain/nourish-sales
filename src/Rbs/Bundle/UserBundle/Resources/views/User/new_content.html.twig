@@ -1,6 +1,35 @@
 {{ form_start(form, {'method': 'POST'}) }}
-{#{{ form_start(form, {'method': 'POST', 'attr': {'id': 'form_sample_1'}}) }}#}
-    {{ form_widget(form) }}
+
+    <h4>User Profile Information</h4>
+
+        {{ form_row(form.profile.fullName, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.userType, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.profile.designation, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.profile.cellphone, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.profile.address, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.groups, { 'attr': {'class': ''} }) }}
+
+    <div class="form-group">
+        <label for="inputEmail12" class="col-md-2 control-label">Photo</label>
+        <div class="col-md-4">
+            <div class="input-icon">
+                <i class="fa fa-folder"></i>
+                {{ form_widget(form.profile.file, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <h4>User Login Information</h4>
+
+    {{ form_row(form.username, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.plainPassword.first, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.plainPassword.second, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.email, { 'attr': {'class': ''} }) }}
+    <hr>
+
+    {{ form_row(form.submit, { 'attr': {'class': ''} }) }}
+
 {{ form_end(form) }}
 
 
