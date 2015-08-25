@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\AreaRepository;
 use Rbs\Bundle\CoreBundle\Repository\WarehouseRepository;
+use Rbs\Bundle\SalesBundle\Repository\CustomerGroupRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -18,6 +19,12 @@ class CustomerUpdateForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('VIP', 'choice', array(
+                'choices'  => array(
+                    '0' => 'Not',
+                    '1' => 'Yes'
+                )
+            ))
             ->add('customerID')
             ->add('creditLimit')
             ->add('balance')
@@ -57,6 +64,18 @@ class CustomerUpdateForm extends AbstractType
                 {
                     return $repository->createQueryBuilder('a')
                         ->orderBy('a.areaName','ASC');
+                }
+            ))
+            ->add('customerGroup', 'entity', array(
+                'class' => 'RbsSalesBundle:CustomerGroup',
+                'property' => 'label',
+                'required' => false,
+                'empty_value' => 'Select Group',
+                'empty_data' => null,
+                'query_builder' => function (CustomerGroupRepository $repository)
+                {
+                    return $repository->createQueryBuilder('cg')
+                        ->orderBy('cg.label','ASC');
                 }
             ))
         ;

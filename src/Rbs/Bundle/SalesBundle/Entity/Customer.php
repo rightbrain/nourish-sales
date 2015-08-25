@@ -45,6 +45,14 @@ class Customer
     protected $user;
 
     /**
+     * @var CustomerGroup
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\CustomerGroup", inversedBy="customer")
+     * @ORM\JoinColumn(name="item_types")
+     */
+    private $customerGroup;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="credit_limit", type="float", nullable=true)
@@ -64,6 +72,13 @@ class Customer
      * @ORM\Column(name="customer_ID", type="string", length=255, nullable=true)
      */
     private $customerID;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="vip", type="boolean", nullable=true)
+     */
+    private $VIP;
 
     /**
      * @var User
@@ -259,5 +274,37 @@ class Customer
     public function setArea($area)
     {
         $this->area = $area;
+    }
+
+    /**
+     * @return CustomerGroup
+     */
+    public function getCustomerGroup()
+    {
+        return $this->customerGroup;
+    }
+
+    /**
+     * @param CustomerGroup $customerGroup
+     */
+    public function setCustomerGroup($customerGroup)
+    {
+        $this->customerGroup = $customerGroup;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isVIP()
+    {
+        return $this->VIP;
+    }
+
+    /**
+     * @param boolean $VIP
+     */
+    public function setVIP($VIP)
+    {
+        $this->VIP = $VIP;
     }
 }
