@@ -38,6 +38,7 @@ class CustomerUpdateForm extends AbstractType
                 {
                     return $repository->createQueryBuilder('u')
                         ->where('u.userType = :Agent')
+                        ->andWhere('u.deletedAt IS NULL')
                         ->setParameter('Agent', 'Agent')
                         ->orderBy('u.username','ASC');
                 }
@@ -51,6 +52,7 @@ class CustomerUpdateForm extends AbstractType
                 'query_builder' => function (WarehouseRepository $repository)
                 {
                     return $repository->createQueryBuilder('w')
+                        ->where('w.deletedAt IS NULL')
                         ->orderBy('w.name','ASC');
                 }
             ))
@@ -63,6 +65,7 @@ class CustomerUpdateForm extends AbstractType
                 'query_builder' => function (AreaRepository $repository)
                 {
                     return $repository->createQueryBuilder('a')
+                        ->where('a.deletedAt IS NULL')
                         ->orderBy('a.areaName','ASC');
                 }
             ))
@@ -75,6 +78,7 @@ class CustomerUpdateForm extends AbstractType
                 'query_builder' => function (CustomerGroupRepository $repository)
                 {
                     return $repository->createQueryBuilder('cg')
+                        ->where('cg.deletedAt IS NULL')
                         ->orderBy('cg.label','ASC');
                 }
             ))

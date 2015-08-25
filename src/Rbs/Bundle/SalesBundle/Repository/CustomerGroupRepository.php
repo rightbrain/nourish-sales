@@ -35,4 +35,11 @@ class CustomerGroupRepository extends EntityRepository
         $this->_em->flush();
         return $this->_em;
     }
+
+    public function customerGroups()
+    {
+        $query = $this->createQueryBuilder('cg');
+
+        return $query->getQuery()->getResult();
+    }
 }
