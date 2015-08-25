@@ -79,6 +79,13 @@ class Item
     private $price;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="SKU", type="string", length=255)
+     */
+    private $SKU;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
      **/
     private $bundles;
@@ -294,5 +301,21 @@ class Item
     public function getBundles()
     {
         return $this->bundles;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSKU()
+    {
+        return $this->SKU;
+    }
+
+    /**
+     * @param string $SKU
+     */
+    public function setSKU($SKU)
+    {
+        $this->SKU = $SKU;
     }
 }
