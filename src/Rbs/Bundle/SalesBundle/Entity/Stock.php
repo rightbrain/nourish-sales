@@ -44,7 +44,7 @@ class Stock
      * @var StockHistory
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\StockHistory", inversedBy="stock")
-     * @ORM\JoinColumn(name="stock_history")
+     * @ORM\JoinColumn(name="stock_histories")
      */
     private $stockHistory;
 
