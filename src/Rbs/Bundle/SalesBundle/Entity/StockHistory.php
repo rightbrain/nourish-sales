@@ -62,6 +62,13 @@ class StockHistory
     private $toWarehouse;
 
     /**
+     * @var text
+     *
+     * @ORM\Column(name="description", type="text", nullable=true)
+     */
+    private $description;
+
+    /**
      * Get id
      *
      * @return integer
@@ -138,5 +145,21 @@ class StockHistory
     public function setStock($stock)
     {
         $this->stock = $stock;
+    }
+
+    /**
+     * @return text
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param text $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
     }
 }

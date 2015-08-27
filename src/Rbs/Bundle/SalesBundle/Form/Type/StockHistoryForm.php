@@ -61,6 +61,7 @@ class StockHistoryForm extends AbstractType
                         ->orderBy('w.name','ASC');
                 }
             ))
+            ->add('description')
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')
             ))
