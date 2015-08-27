@@ -4,6 +4,16 @@
 
 {% block body %}
 
+    <div class="modal fade" id="ajax" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-12">
         <div class="portlet box blue">
             <div class="portlet-title">
@@ -12,13 +22,13 @@
                 </div>
             </div>
             <div class="portlet-body">
-                {#{{ include('_elements/_back_to_list_button.html.twig', {url: path('stock_create'), label: 'Add New', 'icon': 'plus'}) }}#}
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('stock_history_create'), label: 'Add Stock Quantity', 'icon': 'plus'}) }}
 
                 <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}
                     <div style="clear: both"></div>
                 </div>
+                {#<a class=" btn default" href="{{ path('stock_history_create') }}" data-target="#ajax" data-toggle="modal">#}
+                    {#View Demo </a>#}
             </div>
         </div>
     </div>

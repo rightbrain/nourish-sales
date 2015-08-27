@@ -28,89 +28,34 @@ class StockDatatable extends BaseDatatable
             ->add('item.name', 'column', array('title' => 'Item name'))
             ->add('onHand', 'column', array('title' => 'On Hand'))
             ->add('onHold', 'column', array('title' => 'On Hold'))
-            ->add('availableOnDemand', 'column', array('title' => 'Available'))
-//            ->add(null, 'action', array(
-//                'width' => '200px',
-//                'title' => 'Update',
-//                'start_html' => '<div class="wrapper">',
-//                'end_html' => '</div>',
-//                'actions' => array(
-//                    array(
-//                        'route' => 'customer_update',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'Edit',
-//                        'icon' => 'glyphicon glyphicon-edit',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'edit-action',
-//                            'class' => 'btn btn-primary btn-xs',
-//                            'role' => 'button'
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?',
-//                        'role' => 'ROLE_ADMIN',
-//                    ),
-//                    array(
-//                        'route' => 'customer_update_password',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'Edit pass',
-//                        'icon' => 'glyphicon glyphicon-edit',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'edit-password-action',
-//                            'class' => 'btn btn-primary btn-xs',
-//                            'role' => 'button'
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?'
-//                    )
-//                )
-//            ))
-//            ->add(null, 'action', array(
-//                'width' => '180px',
-//                'title' => 'Action',
-//                'start_html' => '<div class="wrapper">',
-//                'end_html' => '</div>',
-//                'actions' => array(
-//                    array(
-//                        'route' => 'customer_delete',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'Delete',
-//                        'icon' => 'glyphicon',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'delete-action',
-//                            'class' => 'btn btn-default btn-xs delete-list-btn',
-//                            'role' => 'button'
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?',
-//                        'role' => 'ROLE_ADMIN'
-//                    ),
-//                    array(
-//                        'route' => 'customer_details',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'Show',
-//                        'icon' => 'glyphicon',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'show-action',
-//                            'class' => 'btn btn-primary btn-xs',
-//                            'role' => 'button'
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?'
-//                    )
-//                )
-//            ))
+            ->add('availableOnDemand', 'column', array('title' => 'Available On Demand'))
+            ->add(null, 'action', array(
+                'width' => '200px',
+                'title' => 'Add',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'stock_create',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Add Stock',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'edit-action',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button',
+                            'data-target' => "#ajax",
+                            'data-toggle'=>"modal"
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_ADMIN',
+                    )
+                )
+            ))
         ;
     }
 

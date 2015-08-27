@@ -4,7 +4,8 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Stock;
-use Rbs\Bundle\SalesBundle\Form\Type\StockForm;
+use Rbs\Bundle\SalesBundle\Entity\StockHistory;
+use Rbs\Bundle\SalesBundle\Form\Type\StockHistoryForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -19,13 +20,37 @@ class StockController extends Controller
 {
     /**
      * @Route("/stocks", name="stocks_home")
-     * @Method("GET")
      * @Template()
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         $datatable = $this->get('rbs_erp.sales.datatable.stock');
         $datatable->buildDatatable();
+
+        if ('POST' === $request->getMethod()) {
+            $stockHistory = new StockHistory();
+            $form = $this->createForm(new StockHistoryForm(), $stockHistory);
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $stockID = (int)$request->request->all()['stock']['stockID'];
+                $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->find($stockID);
+                $quantity = $form->getData()->getQuantity();
+                $quantity = $stock->getOnHand() + $quantity;
+                $stock->setOnHand($quantity);
+                $stockHistory->setStock($stock);
+
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:StockHistory')->create($stockHistory);
+                $this->checkAvailableOnDemand($stock);
+
+                $this->get('session')->getFlashBag()->add(
+                    'success','Stock Item Quantity Add Successfully!'
+                );
+            }
+        }
 
         return $this->render('RbsSalesBundle:Stock:index.html.twig', array(
             'datatable' => $datatable
@@ -55,136 +80,35 @@ class StockController extends Controller
     }
 
     /**
-     * @Route("/stock-create", name="stock_create")
+     * @param $stock
+     */
+    protected function checkAvailableOnDemand($stock)
+    {
+        if ($stock->getOnHand() < $stock->getOnHold()) {
+            $stock->setAvailableOnDemand(0);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+        } elseif ($stock->getOnHand() >= $stock->getOnHold()) {
+            $stock->setAvailableOnDemand(1);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+        }
+    }
+
+    /**
+     * @Route("/stock-create", name="stock_create", options={"expose"=true})
      * @Template("RbsSalesBundle:Stock:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function createAction(Request $request)
     {
-        $stock = new Stock();
-
-        $form = $this->createForm(new StockForm(), $stock);
-
-        if ('POST' === $request->getMethod()) {
-            $form->handleRequest($request);
-
-            if ($form->isValid()) {
-
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->create($stock);
-
-                $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'Stock Create Successfully!'
-                );
-
-                return $this->redirect($this->generateUrl('stocks_home'));
-            }
-        }
+        $stockHistory = new StockHistory();
+        $form = $this->createForm(new StockHistoryForm(), $stockHistory);
+        $stockID = $request->query->all()['id'];
+        $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->find($stockID);
 
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'stock' => $stock
         );
     }
-
-//    /**
-//     * @Route("/customer-update/{id}", name="customer_update", options={"expose"=true})
-//     * @Template("RbsSalesBundle:Customer:update.html.twig")
-//     * @param Request $request
-//     * @param Customer $customer
-//     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-//     */
-//    public function updateAction(Request $request, Customer $customer)
-//    {
-//        $form = $this->createForm(new CustomerUpdateForm(), $customer);
-//
-//        if ('POST' === $request->getMethod()) {
-//            $form->handleRequest($request);
-//
-//            if ($form->isValid()) {
-//
-//                $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->update($customer);
-//
-//                $this->get('session')->getFlashBag()->add(
-//                    'success',
-//                    'User Updated Successfully!'
-//                );
-//
-//                return $this->redirect($this->generateUrl('customers_home'));
-//            }
-//        }
-//
-//        return array(
-//            'form' => $form->createView()
-//        );
-//    }
-//
-//    /**
-//     * @Route("/customer-update-password/{id}", name="customer_update_password", options={"expose"=true})
-//     * @Template("RbsSalesBundle:Customer:update.password.html.twig")
-//     * @param Request $request
-//     * @param Customer $customer
-//     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
-//     */
-//    public function updatePasswordAction(Request $request, Customer $customer)
-//    {
-//        $form = $this->createForm(new UserUpdatePasswordForm(), $customer->getUser());
-//
-//        if ($request->getMethod() == 'POST') {
-//
-//            $form->handleRequest($request);
-//
-//            if ($form->isValid()) {
-//
-//                $customer->getUser()->setPassword($form->get('plainPassword')->getData());
-//                $customer->getUser()->setPlainPassword($form->get('plainPassword')->getData());
-//
-//                $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($customer);
-//
-//                $this->get('session')->getFlashBag()->add(
-//                    'notice',
-//                    'Password Successfully Change'
-//                );
-//
-//                return $this->redirect($this->generateUrl('customers_home'));
-//            }
-//        }
-//
-//        return array(
-//            'form' => $form->createView()
-//        );
-//    }
-//
-//    /**
-//     * @Route("/customer-details/{id}", name="customer_details", options={"expose"=true})
-//     * @Template()
-//     * @param Customer $customer
-//     * @return \Symfony\Component\HttpFoundation\Response
-//     */
-//    public function detailsAction(Customer $customer)
-//    {
-//        return $this->render('RbsSalesBundle:Customer:details.html.twig', array(
-//            'customer' => $customer
-//        ));
-//    }
-//
-//    /**
-//     * @Route("/customer-delete/{id}", name="customer_delete", options={"expose"=true})
-//     * @param Customer $customer
-//     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-//     */
-//    public function deleteAction(Customer $customer)
-//    {
-//        $customer->getUser()->getProfile()->removeFile($customer->getUser()->getProfile()->getPath());
-//
-//        $this->getDoctrine()->getManager()->remove($customer);
-//        $this->getDoctrine()->getManager()->flush();
-//
-//        $this->get('session')->getFlashBag()->add(
-//            'success',
-//            'Customer Successfully Delete'
-//        );
-//
-//        return $this->redirect($this->generateUrl('customers_home'));
-//    }
 }

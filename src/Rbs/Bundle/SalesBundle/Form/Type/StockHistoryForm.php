@@ -25,19 +25,8 @@ class StockHistoryForm extends AbstractType
                     new NotBlank(array('message'=>'Name should not be blank'))
                 )
             ))
-            ->add('stock', 'entity', array(
-                'class' => 'RbsSalesBundle:Stock',
-                'property' => 'item.name',
-                'required' => false,
-                'empty_value' => 'Select Item',
-                'empty_data' => null,
-                'query_builder' => function (StockRepository $repository)
-                {
-                    return $repository->createQueryBuilder('s')
-                        ->join('s.item', 'i')
-                        ->where('i.deletedAt IS NULL')
-                        ->orderBy('i.name','ASC');
-                }
+            ->add('stockID', 'hidden', array(
+                'mapped' => false
             ))
             ->add('fromFactory', 'entity', array(
                 'class' => 'RbsCoreBundle:Project',
