@@ -1,8 +1,6 @@
 <?php
 namespace Rbs\Bundle\SalesBundle\Entity;
 
-use Rbs\Bundle\CoreBundle\Entity\Bundle;
-
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -36,7 +34,7 @@ class CustomerGroup
      *
      * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\Customer", mappedBy="customerGroup")
      */
-    private $customer;
+    private $customers;
 
     /**
      * @var string
@@ -44,16 +42,6 @@ class CustomerGroup
      * @ORM\Column(name="label", type="string", length=255, nullable=true)
      */
     private $label;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
-     **/
-    private $bundles;
-
-    public function __construct()
-    {
-        $this->bundles = new ArrayCollection();
-    }
 
     /**
      * Get id
@@ -68,41 +56,6 @@ class CustomerGroup
     public function __toString()
     {
         return (string)$this->getId();
-    }
-
-    /**
-     * Add bundle
-     *
-     * @param Bundle $bundle
-     * @return $this
-     */
-    public function addBundle(Bundle $bundle)
-    {
-        if (!$this->getBundles()->contains($bundle)) {
-            $this->bundles->add($bundle);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Remove bundle
-     *
-     * @param Bundle $bundle
-     */
-    public function removeBundle(Bundle $bundle)
-    {
-        $this->bundles->removeElement($bundle);
-    }
-
-    /**
-     * Get bundle
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBundles()
-    {
-        return $this->bundles;
     }
 
     /**
@@ -124,16 +77,16 @@ class CustomerGroup
     /**
      * @return ArrayCollection
      */
-    public function getCustomer()
+    public function getCustomers()
     {
-        return $this->customer;
+        return $this->customers;
     }
 
     /**
-     * @param ArrayCollection $customer
+     * @param ArrayCollection $customers
      */
-    public function setCustomer($customer)
+    public function setCustomers($customers)
     {
-        $this->customer = $customer;
+        $this->customers = $customers;
     }
 }

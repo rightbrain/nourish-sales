@@ -1,8 +1,6 @@
 <?php
 namespace Rbs\Bundle\SalesBundle\Entity;
 
-use Rbs\Bundle\CoreBundle\Entity\Bundle;
-
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\CoreBundle\Entity\Item;
@@ -36,17 +34,16 @@ class Stock
      * @var Item
      *
      * @ORM\OneToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item")
-     * @ORM\JoinColumn(name="items", nullable=false)
+     * @ORM\JoinColumn(name="item", nullable=false)
      */
     private $item;
 
     /**
-     * @var StockHistory
+     * @var ArrayCollection
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\StockHistory", inversedBy="stock")
-     * @ORM\JoinColumn(name="stock_histories")
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\StockHistory", mappedBy="stock")
      */
-    private $stockHistory;
+    private $stockHistories;
 
     /**
      * @var integer
@@ -63,21 +60,11 @@ class Stock
     private $onHold;
 
     /**
-     * @var integer
+     * @var boolean
      *
-     * @ORM\Column(name="available_on_demand", type="integer", nullable=true)
+     * @ORM\Column(name="available_on_demand", type="boolean", nullable=true)
      */
     private $availableOnDemand;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
-     **/
-    private $bundles;
-
-    public function __construct()
-    {
-        $this->bundles = new ArrayCollection();
-    }
 
     /**
      * Get id
@@ -92,41 +79,6 @@ class Stock
     public function __toString()
     {
         return (string)$this->getId();
-    }
-
-    /**
-     * Add bundle
-     *
-     * @param Bundle $bundle
-     * @return $this
-     */
-    public function addBundle(Bundle $bundle)
-    {
-        if (!$this->getBundles()->contains($bundle)) {
-            $this->bundles->add($bundle);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Remove bundle
-     *
-     * @param Bundle $bundle
-     */
-    public function removeBundle(Bundle $bundle)
-    {
-        $this->bundles->removeElement($bundle);
-    }
-
-    /**
-     * Get bundle
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBundles()
-    {
-        return $this->bundles;
     }
 
     /**
@@ -162,38 +114,6 @@ class Stock
     }
 
     /**
-     * @return int
-     */
-    public function getAvailableOnDemand()
-    {
-        return $this->availableOnDemand;
-    }
-
-    /**
-     * @param int $availableOnDemand
-     */
-    public function setAvailableOnDemand($availableOnDemand)
-    {
-        $this->availableOnDemand = $availableOnDemand;
-    }
-
-    /**
-     * @return StockHistory
-     */
-    public function getStockHistory()
-    {
-        return $this->stockHistory;
-    }
-
-    /**
-     * @param StockHistory $stockHistory
-     */
-    public function setStockHistory($stockHistory)
-    {
-        $this->stockHistory = $stockHistory;
-    }
-
-    /**
      * @return Item
      */
     public function getItem()
@@ -207,5 +127,37 @@ class Stock
     public function setItem($item)
     {
         $this->item = $item;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAvailableOnDemand()
+    {
+        return $this->availableOnDemand;
+    }
+
+    /**
+     * @param boolean $availableOnDemand
+     */
+    public function setAvailableOnDemand($availableOnDemand)
+    {
+        $this->availableOnDemand = $availableOnDemand;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getStockHistories()
+    {
+        return $this->stockHistories;
+    }
+
+    /**
+     * @param ArrayCollection $stockHistories
+     */
+    public function setStockHistories($stockHistories)
+    {
+        $this->stockHistories = $stockHistories;
     }
 }

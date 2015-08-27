@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 
-{% block title %}{{ parent() }} : Customer {% endblock %}
+{% block title %}{{ parent() }} : Stock {% endblock %}
 
 {% block body %}
 
@@ -8,12 +8,12 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-globe"></i>Customers
+                    <i class="fa fa-globe"></i>Stock
                 </div>
             </div>
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_create'), label: 'Add New', 'icon': 'plus'}) }}
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_group_create'), label: 'Add New Customer Group', 'icon': 'plus'}) }}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('stock_history_create'), label: 'Add New', 'icon': 'plus'}) }}
+
                 <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}
                     <div style="clear: both"></div>

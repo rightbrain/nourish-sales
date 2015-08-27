@@ -1,9 +1,6 @@
 <?php
 namespace Rbs\Bundle\SalesBundle\Entity;
 
-use Rbs\Bundle\CoreBundle\Entity\Bundle;
-
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\CoreBundle\Entity\Project;
 use Rbs\Bundle\CoreBundle\Entity\Warehouse;
@@ -41,9 +38,10 @@ class StockHistory
     private $quantity;
 
     /**
-     * @var ArrayCollection
+     * @var Stock
      *
-     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\Stock", mappedBy="stockHistory")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Stock", inversedBy="stockHistories")
+     * @ORM\JoinColumn(name="stock")
      */
     private $stock;
 
@@ -51,7 +49,7 @@ class StockHistory
      * @var Project
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Project")
-     * @ORM\JoinColumn(name="from_factories", nullable=false)
+     * @ORM\JoinColumn(name="from_factory", nullable=false)
      */
     private $fromFactory;
 
@@ -59,19 +57,9 @@ class StockHistory
      * @var Warehouse
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Warehouse")
-     * @ORM\JoinColumn(name="to_warehouses", nullable=false)
+     * @ORM\JoinColumn(name="to_warehouse", nullable=false)
      */
     private $toWarehouse;
-
-    /**
-     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
-     **/
-    private $bundles;
-
-    public function __construct()
-    {
-        $this->bundles = new ArrayCollection();
-    }
 
     /**
      * Get id
@@ -89,41 +77,6 @@ class StockHistory
     }
 
     /**
-     * Add bundle
-     *
-     * @param Bundle $bundle
-     * @return $this
-     */
-    public function addBundle(Bundle $bundle)
-    {
-        if (!$this->getBundles()->contains($bundle)) {
-            $this->bundles->add($bundle);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Remove bundle
-     *
-     * @param Bundle $bundle
-     */
-    public function removeBundle(Bundle $bundle)
-    {
-        $this->bundles->removeElement($bundle);
-    }
-
-    /**
-     * Get bundle
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBundles()
-    {
-        return $this->bundles;
-    }
-
-    /**
      * @return int
      */
     public function getQuantity()
@@ -137,22 +90,6 @@ class StockHistory
     public function setQuantity($quantity)
     {
         $this->quantity = $quantity;
-    }
-
-    /**
-     * @return ArrayCollection
-     */
-    public function getStock()
-    {
-        return $this->stock;
-    }
-
-    /**
-     * @param ArrayCollection $stock
-     */
-    public function setStock($stock)
-    {
-        $this->stock = $stock;
     }
 
     /**
@@ -185,5 +122,21 @@ class StockHistory
     public function setToWarehouse($toWarehouse)
     {
         $this->toWarehouse = $toWarehouse;
+    }
+
+    /**
+     * @return Stock
+     */
+    public function getStock()
+    {
+        return $this->stock;
+    }
+
+    /**
+     * @param Stock $stock
+     */
+    public function setStock($stock)
+    {
+        $this->stock = $stock;
     }
 }

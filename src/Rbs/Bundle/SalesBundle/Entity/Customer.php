@@ -2,11 +2,9 @@
 namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Rbs\Bundle\CoreBundle\Entity\Area;
-use Rbs\Bundle\CoreBundle\Entity\Bundle;
 use Rbs\Bundle\CoreBundle\Entity\Warehouse;
 use Rbs\Bundle\UserBundle\Entity\User;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -47,8 +45,8 @@ class Customer
     /**
      * @var CustomerGroup
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\CustomerGroup", inversedBy="customer")
-     * @ORM\JoinColumn(name="item_types")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\CustomerGroup", inversedBy="customers")
+     * @ORM\JoinColumn(name="customer_group")
      */
     private $customerGroup;
 
@@ -105,16 +103,6 @@ class Customer
     private $area;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
-     **/
-    private $bundles;
-
-    public function __construct()
-    {
-        $this->bundles = new ArrayCollection();
-    }
-
-    /**
      * Get id
      *
      * @return integer
@@ -127,41 +115,6 @@ class Customer
     public function __toString()
     {
         return (string)$this->getId();
-    }
-
-    /**
-     * Add bundle
-     *
-     * @param Bundle $bundle
-     * @return $this
-     */
-    public function addBundle(Bundle $bundle)
-    {
-        if (!$this->getBundles()->contains($bundle)) {
-            $this->bundles->add($bundle);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Remove bundle
-     *
-     * @param Bundle $bundle
-     */
-    public function removeBundle(Bundle $bundle)
-    {
-        $this->bundles->removeElement($bundle);
-    }
-
-    /**
-     * Get bundle
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBundles()
-    {
-        return $this->bundles;
     }
 
     /**
