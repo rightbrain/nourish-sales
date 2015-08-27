@@ -81,13 +81,7 @@ class StockHistoryController extends Controller
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:StockHistory')->create($stockHistory);
 
-                if( $stock->getOnHand() < $stock->getOnHold() ){
-                    $stock->setAvailableOnDemand(0);
-                    $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
-                }elseif( $stock->getOnHand() >= $stock->getOnHold() ){
-                    $stock->setAvailableOnDemand(1);
-                    $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
-                }
+                $this->checkAvailableOnDemand($stock);
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
@@ -101,5 +95,19 @@ class StockHistoryController extends Controller
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @param $stock
+     */
+    protected function checkAvailableOnDemand($stock)
+    {
+        if ($stock->getOnHand() < $stock->getOnHold()) {
+            $stock->setAvailableOnDemand(0);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+        } elseif ($stock->getOnHand() >= $stock->getOnHold()) {
+            $stock->setAvailableOnDemand(1);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+        }
     }
 }
