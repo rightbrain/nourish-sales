@@ -20,7 +20,11 @@ class StockHistoryForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('quantity')
+            ->add('quantity', 'text', array(
+                'constraints' => array(
+                    new NotBlank(array('message'=>'Name should not be blank'))
+                )
+            ))
             ->add('stock', 'entity', array(
                 'class' => 'RbsSalesBundle:Stock',
                 'property' => 'item.name',
