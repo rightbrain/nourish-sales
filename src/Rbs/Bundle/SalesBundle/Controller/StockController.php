@@ -49,6 +49,8 @@ class StockController extends Controller
                 $this->get('session')->getFlashBag()->add(
                     'success','Stock Item Quantity Add Successfully!'
                 );
+                return $this->redirect($this->generateUrl('stocks_home'));
+                // if not user redirect url it take value again and again
             }
         }
 
@@ -110,5 +112,20 @@ class StockController extends Controller
             'form' => $form->createView(),
             'stock' => $stock
         );
+    }
+
+    /**
+     * @Route("/stock-history", name="stock_history", options={"expose"=true})
+     * @Template()
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function stockHistoryAction(Request $request)
+    {
+
+
+        return $this->render('RbsSalesBundle:Stock:history.html.twig', array(
+
+        ));
     }
 }

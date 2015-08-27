@@ -31,7 +31,7 @@ class StockDatatable extends BaseDatatable
             ->add('availableOnDemand', 'column', array('title' => 'Available On Demand'))
             ->add(null, 'action', array(
                 'width' => '200px',
-                'title' => 'Add',
+                'title' => 'Action',
                 'start_html' => '<div class="wrapper">',
                 'end_html' => '</div>',
                 'actions' => array(
@@ -48,6 +48,25 @@ class StockDatatable extends BaseDatatable
                             'class' => 'btn btn-primary btn-xs',
                             'role' => 'button',
                             'data-target' => "#ajax",
+                            'data-toggle'=>"modal"
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_ADMIN',
+                    ),
+                    array(
+                        'route' => 'stock_history',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'History',
+                        'icon' => 'glyphicon',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'show-action',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button',
+                            'data-target' => "#ajaxHistory",
                             'data-toggle'=>"modal"
                         ),
                         'confirm' => false,

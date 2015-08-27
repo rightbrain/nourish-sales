@@ -17,20 +17,20 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class StockHistoryController extends Controller
 {
-    /**
-     * @Route("/stock-history", name="stock_history_home")
-     * @Method("GET")
-     * @Template()
-     */
-    public function indexAction()
-    {
-        $datatable = $this->get('rbs_erp.sales.datatable.stock.history');
-        $datatable->buildDatatable();
-
-        return $this->render('RbsSalesBundle:StockHistory:index.html.twig', array(
-            'datatable' => $datatable
-        ));
-    }
+//    /**
+//     * @Route("/stock-history", name="stock_history_home")
+//     * @Method("GET")
+//     * @Template()
+//     */
+//    public function indexAction()
+//    {
+//        $datatable = $this->get('rbs_erp.sales.datatable.stock.history');
+//        $datatable->buildDatatable();
+//
+//        return $this->render('RbsSalesBundle:StockHistory:index.html.twig', array(
+//            'datatable' => $datatable
+//        ));
+//    }
 
     /**
      * Lists all Category entities.
