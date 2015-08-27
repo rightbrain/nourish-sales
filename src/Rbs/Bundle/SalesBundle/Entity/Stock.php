@@ -48,21 +48,21 @@ class Stock
     /**
      * @var integer
      *
-     * @ORM\Column(name="on_hand", type="integer", nullable=true)
+     * @ORM\Column(name="on_hand", type="integer", options={"default" = 0})
      */
     private $onHand;
 
     /**
      * @var integer
      *
-     * @ORM\Column(name="on_hold", type="integer", nullable=true)
+     * @ORM\Column(name="on_hold", type="integer", options={"default" = 0})
      */
     private $onHold;
 
     /**
      * @var boolean
      *
-     * @ORM\Column(name="available_on_demand", type="boolean", nullable=true)
+     * @ORM\Column(name="available_on_demand", type="boolean", options={"default" = false})
      */
     private $availableOnDemand;
 

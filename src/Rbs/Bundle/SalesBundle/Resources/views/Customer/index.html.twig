@@ -12,8 +12,9 @@
                 </div>
             </div>
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_create'), label: 'Add New', 'icon': 'plus'}) }}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_create'), label: 'Add New Customer', 'icon': 'plus'}) }}
                 {{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_group_create'), label: 'Add New Customer Group', 'icon': 'plus'}) }}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_groups_home'), label: 'View Customer Group', 'icon': 'plus'}) }}
                 <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}
                     <div style="clear: both"></div>
