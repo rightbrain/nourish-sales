@@ -40,7 +40,7 @@ class CustomerRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('c');
         $query->join('c.user', 'u');
-        $query->andWhere('u.userType = :Customer');
+        $query->where('u.userType = :Customer');
         $query->setParameter('Customer', 'Customer');
 
         return $query->getQuery()->getResult();
