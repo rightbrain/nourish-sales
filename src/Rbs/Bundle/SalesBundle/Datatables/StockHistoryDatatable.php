@@ -2,7 +2,15 @@
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
-use Rbs\Bundle\SalesBundle\Entity\StockHistory;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\TranslatorInterface;
+use Twig_Environment;
+
 
 /**
  * Class CustomerDatatable
@@ -11,103 +19,52 @@ use Rbs\Bundle\SalesBundle\Entity\StockHistory;
  */
 class StockHistoryDatatable extends BaseDatatable
 {
+    /** @var Request */
+    protected $request;
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        TokenStorageInterface $securityToken,
+        Twig_Environment $twig,
+        TranslatorInterface $translator,
+        RouterInterface $router,
+        EntityManagerInterface $em,
+        ContainerInterface $container
+    )
+    {
+        $template = array(
+            'base' => 'SgDatatablesBundle:Datatable:datatable.html.twig',
+            'html' => 'SgDatatablesBundle:Datatable:datatable_html.html.twig',
+            'js' => 'SgDatatablesBundle:Datatable:datatable_js.html.twig',
+        );
+        parent::__construct($authorizationChecker, $securityToken, $twig, $translator, $router, $em, $template);
+
+        $this->request = $container->get('request');
+    }
+
     /**
      * {@inheritdoc}
      */
     public function buildDatatable()
     {
+        $stockId = $this->request->get('stock');
         $this->features->setFeatures($this->defaultFeatures());
         $this->options->setOptions($this->defaultOptions());
 
         $this->ajax->setOptions(array(
-            'url' => $this->router->generate('stock_history_list_ajax'),
+            'url' => $this->router->generate('stock_history_list_ajax', array('stock' => $stockId)),
             'type' => 'GET'
         ));
 
         $this->columnBuilder
-            ->add('stock.item.name', 'column', array('title' => 'Item name'))
-//            ->add(null, 'action', array(
-//                'width' => '200px',
-//                'title' => 'Update',
-//                'start_html' => '<div class="wrapper">',
-//                'end_html' => '</div>',
-//                'actions' => array(
-//                    array(
-//                        'route' => 'customer_update',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'Edit',
-//                        'icon' => 'glyphicon glyphicon-edit',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'edit-action',
-//                            'class' => 'btn btn-primary btn-xs',
-//                            'role' => 'button'
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?',
-//                        'role' => 'ROLE_ADMIN',
-//                    ),
-//                    array(
-//                        'route' => 'customer_update_password',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'Edit pass',
-//                        'icon' => 'glyphicon glyphicon-edit',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'edit-password-action',
-//                            'class' => 'btn btn-primary btn-xs',
-//                            'role' => 'button'
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?'
-//                    )
-//                )
-//            ))
-//            ->add(null, 'action', array(
-//                'width' => '180px',
-//                'title' => 'Action',
-//                'start_html' => '<div class="wrapper">',
-//                'end_html' => '</div>',
-//                'actions' => array(
-//                    array(
-//                        'route' => 'customer_delete',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'Delete',
-//                        'icon' => 'glyphicon',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'delete-action',
-//                            'class' => 'btn btn-default btn-xs delete-list-btn',
-//                            'role' => 'button'
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?',
-//                        'role' => 'ROLE_ADMIN'
-//                    ),
-//                    array(
-//                        'route' => 'customer_details',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'Show',
-//                        'icon' => 'glyphicon',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'show-action',
-//                            'class' => 'btn btn-primary btn-xs',
-//                            'role' => 'button'
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?'
-//                    )
-//                )
-//            ))
+            ->add('createdAt', 'datetime', array(
+                'title' => 'Date',
+                'date_format' => 'LLL' // default = "lll"
+            ))
+            ->add('createdBy.username', 'column', array('title' => 'CreatedBy'))
+            ->add('fromFactory.projectName', 'column', array('title' => 'Factory Name'))
+            ->add('toWarehouse.name', 'column', array('title' => 'Warehouse'))
+            ->add('quantity', 'column', array('title' => 'Quantity'))
+            ->add('description', 'column', array('title' => 'Description'))
         ;
     }
 

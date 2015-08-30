@@ -4,6 +4,10 @@ namespace Rbs\Bundle\SalesBundle\Datatables;
 
 use Sg\DatatablesBundle\Datatable\View\AbstractDatatableView;
 use Sg\DatatablesBundle\Datatable\View\Style;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig_Environment;
 
 /**
  * Class CategoryDatatable

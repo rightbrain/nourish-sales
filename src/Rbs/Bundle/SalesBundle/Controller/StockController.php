@@ -107,9 +107,9 @@ class StockController extends Controller
     public function stockHistoryAction(Request $request)
     {
         $stock = $request->query->all()['id'];
-        $stockHistories = $this->getDoctrine()->getRepository('RbsSalesBundle:StockHistory')->findBy(array(
-            'stock' => $stock
-        ));
+        $stockHistories = $this->getDoctrine()->getRepository('RbsSalesBundle:StockHistory')->findBy(
+            array('stock'=>$stock), array('id'=>'DESC'), 10
+        );
 
         return $this->render('RbsSalesBundle:Stock:history.html.twig', array(
             'stockHistories' => $stockHistories

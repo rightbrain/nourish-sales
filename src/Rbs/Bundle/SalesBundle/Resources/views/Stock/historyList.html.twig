@@ -1,33 +1,14 @@
 {% extends '::base.html.twig' %}
 
-{% block title %}{{ parent() }} : Stock {% endblock %}
+{% block title %}{{ parent() }} : Stock History {% endblock %}
 
 {% block body %}
-
-    <div class="modal fade" id="ajax" role="basic" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="ajaxHistory" role="basic" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-body">
-
-                </div>
-            </div>
-        </div>
-    </div>
 
     <div class="col-md-12">
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-globe"></i>Stock
+                    {{ stockHistories[0].stock.item.name }}'s Stock History
                 </div>
             </div>
             <div class="portlet-body">
@@ -63,3 +44,4 @@
 
     {{ datatable_render_js(datatable) }}
 {% endblock %}
+

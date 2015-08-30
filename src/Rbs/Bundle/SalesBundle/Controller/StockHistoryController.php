@@ -12,102 +12,56 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * User Controller.
+ * Stock History Controller.
  *
  */
 class StockHistoryController extends Controller
 {
-//    /**
-//     * @Route("/stock-history", name="stock_history_home")
-//     * @Method("GET")
-//     * @Template()
-//     */
-//    public function indexAction()
-//    {
-//        $datatable = $this->get('rbs_erp.sales.datatable.stock.history');
-//        $datatable->buildDatatable();
-//
-//        return $this->render('RbsSalesBundle:StockHistory:index.html.twig', array(
-//            'datatable' => $datatable
-//        ));
-//    }
+    /**
+     * @Route("/stock-history-list/{stock}", name="stock_history_list", options={"expose"=true})
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function stockHistoryAllAction(Request $request)
+    {
+        $stock = $request->attributes->get('stock');
+        $stockHistories = $this->getDoctrine()->getRepository('RbsSalesBundle:StockHistory')->findBy(array(
+            'stock' => $stock
+        ));
+
+        $datatable = $this->get('rbs_erp.sales.datatable.stock.history');
+        $datatable->buildDatatable();
+
+        return $this->render('RbsSalesBundle:Stock:historyList.html.twig', array(
+            'stockHistories' => $stockHistories,
+            'datatable' => $datatable
+        ));
+    }
 
     /**
      * Lists all Category entities.
      *
-     * @Route("/stock_history_list_ajax", name="stock_history_list_ajax", options={"expose"=true})
+     * @Route("/stock_history_list_ajax/{stock}", name="stock_history_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function listAjaxAction()
+    public function listAjaxAction(Request $request)
     {
+        $stock = $request->attributes->get('stock');
         $datatable = $this->get('rbs_erp.sales.datatable.stock.history');
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
-        /** @var QueryBuilder $qb */
-        $function = function($qb)
+        /** @var QueryBuilder $qb
+         * @param $qb
+         */
+        $function = function($qb) use ($stock)
         {
-//            $qb->join("stock_histories.stock", 'stock');
-//            $qb->join("stock.item", 'item');
-//            $qb->andWhere("stock_histories.deletedAt IS NULL");
+            $qb->andWhere("stock_histories.stock = :stock");
+            $qb->setParameter("stock", $stock);
         };
         $query->addWhereAll($function);
         return $query->getResponse();
-    }
-
-    /**
-     * @Route("/stock-history-create", name="stock_history_create")
-     * @Template("RbsSalesBundle:StockHistory:new.html.twig")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     */
-    public function createAction(Request $request)
-    {
-        $stockHistory = new StockHistory();
-
-        $form = $this->createForm(new StockHistoryForm(), $stockHistory);
-
-        if ('POST' === $request->getMethod()) {
-            $form->handleRequest($request);
-
-            if ($form->isValid()) {
-
-                $quantity = $form->getData()->getQuantity();
-                $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->find($stockHistory->getStock()->getId());
-                $quantity = $stock->getOnHand() + $quantity;
-                $stock->setOnHand($quantity);
-
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
-
-                $this->getDoctrine()->getRepository('RbsSalesBundle:StockHistory')->create($stockHistory);
-
-                $this->checkAvailableOnDemand($stock);
-
-                $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'Stock Item Quantity Add Successfully!'
-                );
-
-                return $this->redirect($this->generateUrl('stocks_home'));
-            }
-        }
-
-        return array(
-            'form' => $form->createView()
-        );
-    }
-
-    /**
-     * @param $stock
-     */
-    protected function checkAvailableOnDemand($stock)
-    {
-        if ($stock->getOnHand() < $stock->getOnHold()) {
-            $stock->setAvailableOnDemand(0);
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
-        } elseif ($stock->getOnHand() >= $stock->getOnHold()) {
-            $stock->setAvailableOnDemand(1);
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
-        }
     }
 }
