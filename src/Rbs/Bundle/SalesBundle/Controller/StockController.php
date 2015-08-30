@@ -35,22 +35,7 @@ class StockController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $stockID = (int)$request->request->all()['stock']['stockID'];
-                $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->find($stockID);
-                $quantity = $form->getData()->getQuantity();
-                $quantity = $stock->getOnHand() + $quantity;
-                $stock->setOnHand($quantity);
-                $stockHistory->setStock($stock);
-
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
-                $this->getDoctrine()->getRepository('RbsSalesBundle:StockHistory')->create($stockHistory);
-                $this->checkAvailableOnDemand($stock);
-
-                $this->get('session')->getFlashBag()->add(
-                    'success','Stock Item Quantity Add Successfully!'
-                );
-                return $this->redirect($this->generateUrl('stocks_home'));
-                // if not user redirect url it take value again and again
+                return $this->save($request, $form, $stockHistory);
             }
         }
 
@@ -116,16 +101,44 @@ class StockController extends Controller
 
     /**
      * @Route("/stock-history", name="stock_history", options={"expose"=true})
-     * @Template()
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function stockHistoryAction(Request $request)
     {
-
+        $stock = $request->query->all()['id'];
+        $stockHistories = $this->getDoctrine()->getRepository('RbsSalesBundle:StockHistory')->findBy(array(
+            'stock' => $stock
+        ));
 
         return $this->render('RbsSalesBundle:Stock:history.html.twig', array(
-
+            'stockHistories' => $stockHistories
         ));
+    }
+
+    /**
+     * @param Request $request
+     * @param $form
+     * @param $stockHistory
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    protected function save(Request $request, $form, $stockHistory)
+    {
+        $stockID = (int)$request->request->all()['stock']['stockID'];
+        $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->find($stockID);
+        $quantity = $form->getData()->getQuantity();
+        $quantity = $stock->getOnHand() + $quantity;
+        $stock->setOnHand($quantity);
+        $stockHistory->setStock($stock);
+
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:StockHistory')->create($stockHistory);
+        $this->checkAvailableOnDemand($stock);
+
+        $this->get('session')->getFlashBag()->add(
+            'success', 'Stock Item Quantity Add Successfully!'
+        );
+        return $this->redirect($this->generateUrl('stocks_home'));
+        // if not user redirect url it take value again and again
     }
 }
