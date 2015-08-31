@@ -79,6 +79,13 @@ class Item
     private $price;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="due_amount", type="float")
+     */
+    private $dueAmount;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="SKU", type="string", length=255)
@@ -317,5 +324,21 @@ class Item
     public function setSKU($SKU)
     {
         $this->SKU = $SKU;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDueAmount()
+    {
+        return $this->dueAmount;
+    }
+
+    /**
+     * @param float $dueAmount
+     */
+    public function setDueAmount($dueAmount)
+    {
+        $this->dueAmount = $dueAmount;
     }
 }
