@@ -1,0 +1,14 @@
+{{ form_start(form, {'method': 'POST'}) }}
+
+<ul id="orderItems" class="tags" data-prototype="{% filter escape %}
+    {{ include('RbsSalesBundle:Order:order_item_content.html.twig', { 'form': form.orderItems.vars.prototype }) }}
+    {% endfilter %}">
+
+    {% for orderItem in form.orderItems %}
+        <li>
+            {{ form_widget(orderItem.paidAmount, { 'attr': {'class': 'form-control', 'style': 'width: 200px;', 'placeholder': ' Select Item'} }) }}
+        </li>
+    {% endfor %}
+</ul>
+
+{{ form_end(form) }}

@@ -1,0 +1,234 @@
+<?php
+namespace Rbs\Bundle\SalesBundle\Entity;
+
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
+
+/**
+ * Stock
+ *
+ * @ORM\Table(name="orders")
+ * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\OrderRepository")
+ * @ORMSubscribedEvents()
+ */
+class Order
+{
+    use ORMBehaviors\Timestampable\Timestampable,
+        ORMBehaviors\SoftDeletable\SoftDeletable,
+        ORMBehaviors\Blameable\Blameable;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\OrderItem", mappedBy="order", cascade={"persist", "remove"})
+     */
+    private $orderItems;
+
+    /**
+     * @var Customer
+     *
+     * @ORM\OneToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Customer")
+     * @ORM\JoinColumn(name="customer", nullable=false)
+     */
+    private $customer;
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="delivery_state", type="string", length=255, columnDefinition="ENUM('ON_HOLD', 'READY', 'PARTIALLY_SHIPPED', 'SHIPPED')", nullable=true)
+     */
+    private $deliveryState;
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="payment_state", type="string", length=255, columnDefinition="ENUM('PENDING', 'PARTIALLY_PAID', 'PAID')", nullable=true)
+     */
+    private $paymentState;
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="order_state", type="string", length=255, columnDefinition="ENUM('PENDING', 'HOLD', 'PROCESSING', 'COMPLETE', 'CANCEL')", nullable=true)
+     */
+    private $orderState;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="total_amount", type="float", options={"default" = 0}, nullable=true)
+     */
+    private $totalAmount;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="paid_amount", type="float", options={"default" = 0}, nullable=true)
+     */
+    private $paidAmount;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function __toString()
+    {
+        return (string)$this->getId();
+    }
+
+    public function __construct()
+    {
+        $this->orderItems = new ArrayCollection();
+    }
+
+    /**
+     * @param \Rbs\Bundle\SalesBundle\Entity\OrderItem $order
+     */
+    public function addOrder($order)
+    {
+        if (!$this->getOrderItems()->contains($order)) {
+            $order->setOrder($this);
+            $this->getOrderItems()->add($order);
+        }
+    }
+
+    /**
+     * @param \Rbs\Bundle\SalesBundle\Entity\OrderItem $order
+     */
+    public function removeOrder($order)
+    {
+        if ($this->getOrderItems()->contains($order)) {
+            $this->getOrderItems()->removeElement($order);
+        }
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getOrderItems()
+    {
+        return $this->orderItems;
+    }
+
+    /**
+     * @param ArrayCollection $orderItems
+     */
+    public function setOrderItems($orderItems)
+    {
+        $this->orderItems = $orderItems;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDeliveryState()
+    {
+        return $this->deliveryState;
+    }
+
+    /**
+     * @param array $deliveryState
+     */
+    public function setDeliveryState($deliveryState)
+    {
+        $this->deliveryState = $deliveryState;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPaymentState()
+    {
+        return $this->paymentState;
+    }
+
+    /**
+     * @param array $paymentState
+     */
+    public function setPaymentState($paymentState)
+    {
+        $this->paymentState = $paymentState;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrderState()
+    {
+        return $this->orderState;
+    }
+
+    /**
+     * @param array $orderState
+     */
+    public function setOrderState($orderState)
+    {
+        $this->orderState = $orderState;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalAmount()
+    {
+        return $this->totalAmount;
+    }
+
+    /**
+     * @param float $totalAmount
+     */
+    public function setTotalAmount($totalAmount)
+    {
+        $this->totalAmount = $totalAmount;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPaidAmount()
+    {
+        return $this->paidAmount;
+    }
+
+    /**
+     * @param float $paidAmount
+     */
+    public function setPaidAmount($paidAmount)
+    {
+        $this->paidAmount = $paidAmount;
+    }
+
+    /**
+     * @return Customer
+     */
+    public function getCustomer()
+    {
+        return $this->customer;
+    }
+
+    /**
+     * @param Customer $customer
+     */
+    public function setCustomer($customer)
+    {
+        $this->customer = $customer;
+    }
+}
