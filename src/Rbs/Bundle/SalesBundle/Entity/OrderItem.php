@@ -34,7 +34,7 @@ class OrderItem
     /**
      * @var Item
      *
-     * @ORM\OneToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item")
      * @ORM\JoinColumn(name="item_id", nullable=true)
      */
     private $item;
