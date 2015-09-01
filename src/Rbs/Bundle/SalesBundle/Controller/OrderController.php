@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -69,6 +70,12 @@ class OrderController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
+
+                /** @var OrderItem $orderItems */
+                foreach ($order->getOrderItems() as $orderItems) {
+                    $orderItems->setOrder($order);
+                }
+//                var_dump($order->getOrderItems());die;
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
 

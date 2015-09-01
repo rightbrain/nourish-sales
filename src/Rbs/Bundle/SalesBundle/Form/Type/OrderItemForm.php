@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\CoreBundle\Repository\ItemRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,7 +18,26 @@ class OrderItemForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('paidAmount', 'text');
+            ->add('item', 'entity', array(
+                'class' => 'RbsCoreBundle:Item',
+                'property' => 'name',
+                'required' => false,
+                'empty_value' => 'Select Item',
+                'empty_data' => null,
+                'query_builder' => function (ItemRepository $repository)
+                {
+                    return $repository->createQueryBuilder('i')
+                        ->where('i.deletedAt IS NULL')
+                        ->orderBy('i.name','ASC');
+                }
+            ))
+            ->add('quantity', 'text', array(
+
+            ))
+            ->add('price', 'text', array(
+
+            ))
+        ;
     }
 
     /**

@@ -120,20 +120,25 @@ class Order
         }
     }
 
+    public function addOrderItems(OrderItem $item)
+    {
+        $item->setOrder($this);
+        $this->orderItems[] = $item;
+
+        return $this;
+    }
+
+    public function removeOrderItems(OrderItem $item)
+    {
+        $this->orderItems->removeElement($item);
+    }
+
     /**
      * @return ArrayCollection
      */
     public function getOrderItems()
     {
         return $this->orderItems;
-    }
-
-    /**
-     * @param ArrayCollection $orderItems
-     */
-    public function setOrderItems($orderItems)
-    {
-        $this->orderItems = $orderItems;
     }
 
     /**

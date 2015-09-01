@@ -2,6 +2,8 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\SalesBundle\Repository\CustomerRepository;
+use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,8 +19,24 @@ class OrderForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('paidAmount');
-
+            ->add('customer', 'entity', array(
+                'class' => 'RbsSalesBundle:Customer',
+                'property' => 'user.username',
+                'required' => false,
+                'empty_value' => 'Select Customer',
+                'empty_data' => null,
+                'query_builder' => function (CustomerRepository $repository)
+                {
+                    return $repository->createQueryBuilder('c')
+                        ->join('c.user', 'u')
+                        ->where('u.deletedAt IS NULL')
+                        ->andWhere('u.enabled = 1')
+                        ->andWhere('u.userType = :CUSTOMER')
+                        ->setParameter('CUSTOMER', 'CUSTOMER')
+                        ->orderBy('u.username','ASC');
+                }
+            ))
+        ;
         $builder
             ->add('orderItems', 'collection', array(
                 'type' => new OrderItemForm(),
@@ -30,7 +48,6 @@ class OrderForm extends AbstractType
                 )
             ))
         ;
-
         $builder
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')

@@ -26,6 +26,13 @@ class OrderDatatable extends BaseDatatable
 
         $this->columnBuilder
             ->add('id', 'column', array('title' => 'Order ID'))
+            ->add('customer.user.username', 'column', array('title' => 'Customer'))
+            ->add('customer.user.username', 'column', array('title' => 'Customer'))
+            ->add('deliveryState', 'column', array('title' => 'Delivery State'))
+            ->add('paymentState', 'column', array('title' => 'Payment State'))
+            ->add('orderState', 'column', array('title' => 'Order State'))
+            ->add('totalAmount', 'column', array('title' => 'Total Amount'))
+            ->add('paidAmount', 'column', array('title' => 'Paid Amount'))
 //            ->add(null, 'action', array(
 //                'width' => '200px',
 //                'title' => 'Action',
@@ -33,38 +40,17 @@ class OrderDatatable extends BaseDatatable
 //                'end_html' => '</div>',
 //                'actions' => array(
 //                    array(
-//                        'route' => 'stock_create',
+//                        'route' => 'order_edit',
 //                        'route_parameters' => array(
 //                            'id' => 'id'
 //                        ),
-//                        'label' => 'Add Stock',
+//                        'label' => 'Edit Order',
 //                        'icon' => 'glyphicon glyphicon-edit',
 //                        'attributes' => array(
 //                            'rel' => 'tooltip',
 //                            'title' => 'edit-action',
 //                            'class' => 'btn btn-primary btn-xs',
 //                            'role' => 'button',
-//                            'data-target' => "#ajax",
-//                            'data-toggle'=>"modal"
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?',
-//                        'role' => 'ROLE_ADMIN',
-//                    ),
-//                    array(
-//                        'route' => 'stock_history',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'History',
-//                        'icon' => 'glyphicon',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'show-action',
-//                            'class' => 'btn btn-primary btn-xs',
-//                            'role' => 'button',
-//                            'data-target' => "#ajaxHistory",
-//                            'data-toggle'=>"modal"
 //                        ),
 //                        'confirm' => false,
 //                        'confirm_message' => 'Are you sure?',

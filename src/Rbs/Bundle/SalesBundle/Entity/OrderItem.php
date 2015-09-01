@@ -1,26 +1,19 @@
 <?php
 namespace Rbs\Bundle\SalesBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\CoreBundle\Entity\Item;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
-use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
  * Stock
  *
  * @ORM\Table(name="order_items")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\OrderItemRepository")
- * @ORMSubscribedEvents()
  */
 class OrderItem
 {
-    use ORMBehaviors\Timestampable\Timestampable,
-        ORMBehaviors\SoftDeletable\SoftDeletable,
-        ORMBehaviors\Blameable\Blameable;
-
     /**
      * @var integer
      *
@@ -34,7 +27,7 @@ class OrderItem
      * @var Order
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order", inversedBy="orderItems", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="order", nullable=false)
+     * @ORM\JoinColumn(name="order_id", nullable=true)
      */
     private $order;
 
@@ -42,7 +35,7 @@ class OrderItem
      * @var Item
      *
      * @ORM\OneToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item")
-     * @ORM\JoinColumn(name="item", nullable=false)
+     * @ORM\JoinColumn(name="item_id", nullable=true)
      */
     private $item;
 
