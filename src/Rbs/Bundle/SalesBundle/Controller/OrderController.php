@@ -97,4 +97,47 @@ class OrderController extends Controller
             'form' => $form->createView(),
         );
     }
+
+    /**
+     * @Route("/order-update/{id}", name="order_update", options={"expose"=true})
+     * @Template("RbsSalesBundle:Order:new.html.twig")
+     * @param Request $request
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function updateAction(Request $request, Order $order)
+    {
+        $form = $this->createForm(new OrderForm(), $order);
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+            $totalAmount = 0;
+
+            if ($form->isValid()) {
+
+                /** @var OrderItem $orderItems */
+                foreach ($order->getOrderItems() as $orderItems) {
+                    $orderItems->getQuantity();
+                    $orderItems->setOrder($order);
+                    $orderItems->setTotalAmount($orderItems->getQuantity() * $orderItems->getPrice());
+
+                    $totalAmount += $orderItems->getTotalAmount();
+                }
+                $order->setTotalAmount($totalAmount);
+
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
+
+                $this->get('session')->getFlashBag()->add(
+                    'success',
+                    'Order Update Successfully!'
+                );
+
+                return $this->redirect($this->generateUrl('orders_home'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
 }

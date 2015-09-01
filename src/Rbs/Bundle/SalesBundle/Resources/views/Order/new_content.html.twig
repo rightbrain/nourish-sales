@@ -18,7 +18,7 @@
 
         {% for orderItem in form.orderItems %}
 
-            <div style="background: #F1F3FA;height: 105px;">
+            <div style="background: #F1F3FA;height: 105px;margin-bottom: 10px;">
                 <div class="form-group">
                     <label class="col-md-2 control-label" style="margin-top: 10px;">Item</label>
                     <div class="col-md-4" style="margin-top: 10px;">
@@ -55,8 +55,12 @@
         {% endfor %}
     </span>
 
-<div class="col-md-2" style="float:right;">
-    {{ form_row(form.submit) }}
+<div class="form-group">
+    <div class="col-md-2" style="float:right;">
+        <div class="input-icon">
+            {{ form_row(form.submit) }}
+        </div>
+    </div>
 </div>
 
 {{ form_end(form) }}

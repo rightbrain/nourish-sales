@@ -25,39 +25,39 @@ class OrderDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-            ->add('id', 'column', array('title' => 'Order ID'))
+            ->add('id', 'column', array('title' => 'OrderID'))
             ->add('customer.user.username', 'column', array('title' => 'Customer'))
             ->add('customer.user.username', 'column', array('title' => 'Customer'))
-            ->add('deliveryState', 'column', array('title' => 'Delivery State'))
-            ->add('paymentState', 'column', array('title' => 'Payment State'))
-            ->add('orderState', 'column', array('title' => 'Order State'))
+            ->add('deliveryState', 'column', array('title' => 'Delivery'))
+            ->add('paymentState', 'column', array('title' => 'Payment'))
+            ->add('orderState', 'column', array('title' => 'Order'))
             ->add('totalAmount', 'column', array('title' => 'Total Amount'))
             ->add('paidAmount', 'column', array('title' => 'Paid Amount'))
-//            ->add(null, 'action', array(
-//                'width' => '200px',
-//                'title' => 'Action',
-//                'start_html' => '<div class="wrapper">',
-//                'end_html' => '</div>',
-//                'actions' => array(
-//                    array(
-//                        'route' => 'order_edit',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'Edit Order',
-//                        'icon' => 'glyphicon glyphicon-edit',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'edit-action',
-//                            'class' => 'btn btn-primary btn-xs',
-//                            'role' => 'button',
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?',
-//                        'role' => 'ROLE_ADMIN',
-//                    )
-//                )
-//            ))
+            ->add(null, 'action', array(
+                'width' => '200px',
+                'title' => 'Action',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'order_update',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Edit',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'edit-action',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button',
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_ADMIN',
+                    )
+                )
+            ))
         ;
     }
 
