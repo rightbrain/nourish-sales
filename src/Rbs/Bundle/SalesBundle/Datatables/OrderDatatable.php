@@ -55,6 +55,22 @@ class OrderDatatable extends BaseDatatable
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_ADMIN',
+                    ),
+                    array(
+                        'route' => 'order_details',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Show',
+                        'icon' => 'glyphicon',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'show-action',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button'
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?'
                     )
                 )
             ))

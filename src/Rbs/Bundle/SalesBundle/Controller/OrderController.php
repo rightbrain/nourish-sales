@@ -140,4 +140,16 @@ class OrderController extends Controller
             'form' => $form->createView(),
         );
     }
+
+    /**
+     * @Route("/order-details/{id}", name="order_details", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function detailsAction(Order $order)
+    {
+        return $this->render('RbsSalesBundle:Order:details.html.twig', array(
+            'order' => $order
+        ));
+    }
 }
