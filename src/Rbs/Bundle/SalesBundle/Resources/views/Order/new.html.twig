@@ -48,8 +48,8 @@
     $("select[multiple=multiple]").multiSelect({selectableOptgroup: true});
 
     var $collectionHolder;
-    var $addTagLink = $('<a href="#" class="add_tag_link blue btn">Add Item</a>');
-    var $newLinkLi = $('<div style="float: right;"></div>').append($addTagLink);
+    var $addTagLink = $('<a href="#" class="add_tag_link blue btn" id="add_order_item">Add Item</a>');
+    var $newLinkLi = $('<div style="float: right;display: none;" class="hide_button" ></div>').append($addTagLink);
     $collectionHolder = $('span.tags');
     $collectionHolder.append($newLinkLi);
     $collectionHolder.data('index', $collectionHolder.find(':input').length);
@@ -71,6 +71,11 @@
         var $newFormLi = $('<div></div>').append(newForm);
         $newLinkLi.before($newFormLi);
         addTagFormDeleteLink($newFormLi);
+
+        $("#order_orderItems_" + index + "_item").change(function () {
+            var item = $(this).val();
+            findItem(item, index);
+        });
     }
 
     function addTagFormDeleteLink($tagFormLi) {
@@ -81,5 +86,27 @@
             $tagFormLi.remove();
         });
     }
+
+    function findItem(item, index) {
+        $.ajax({
+            type: "post",
+            url: Routing.generate('find_item_ajax'),
+            data: "item=" + item,
+            dataType: 'json',
+            success: function (response) {
+                var price = response.price;
+                $("#order_orderItems_" + index + "_price").val(price);
+            }
+        });
+    }
+
+    $("#order_customer").change(function () {
+        var customer = $(this).val();
+        if(customer==false){
+            $('.hide_button').hide();
+        }else{
+            $('.hide_button').show();
+        }
+    });
 
 {% endblock documentReady %}

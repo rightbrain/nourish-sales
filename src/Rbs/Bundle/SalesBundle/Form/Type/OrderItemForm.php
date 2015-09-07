@@ -35,7 +35,7 @@ class OrderItemForm extends AbstractType
 
             ))
             ->add('price', 'text', array(
-
+                'read_only' => true
             ))
         ;
     }
