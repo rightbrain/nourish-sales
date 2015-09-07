@@ -81,7 +81,7 @@ class Item
     /**
      * @var float
      *
-     * @ORM\Column(name="due_amount", type="float")
+     * @ORM\Column(name="due_amount", type="float", nullable=true)
      */
     private $dueAmount;
 
