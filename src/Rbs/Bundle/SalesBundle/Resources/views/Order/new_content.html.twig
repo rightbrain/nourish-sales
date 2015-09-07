@@ -36,56 +36,46 @@
         </div>
     </div>
 
+    <div class="form-group">
+        <label class="col-md-2 control-label">Credit Limit</label>
+        <div class="col-md-6" style="margin-top: 10px;">
+            <div class="input-icon">
+                <div class="credit_limit">00</div>
+            </div>
+        </div>
+    </div>
+
+<br/>
+
+    <h3 class="hide_button table" style="display: none;">Item Information:</h3>
+    <table class="hide_button table" style="display: none;margin-bottom:0!important;">
+        <thead style="background: #ddd;">
+        <tr>
+            <th style="width: 160px;">Item</th>
+            <th style="width: 160px;">Quantity</th>
+            <th style="width: 150px;">Available</th>
+            <th style="width: 160px;">Price</th>
+            <th style="width: 150px;">Total</th>
+            <th style="width: 120px;"></th>
+        </tr>
+        </thead>
+    </table>
+
     <span id="orderItems" class="tags" data-prototype="
         {% filter escape %}
         {{ include('RbsSalesBundle:Order:order_item_content.html.twig', { 'form': form.orderItems.vars.prototype }) }}
         {% endfilter %}">
-
         {% for orderItem in form.orderItems %}
-
-            <div style="background: #F1F3FA;height: 105px;margin-bottom: 10px;">
-                <div class="form-group">
-                    <label class="col-md-2 control-label" style="margin-top: 10px;">Item</label>
-                    <div class="col-md-4" style="margin-top: 10px;">
-                        <div class="input-icon">
-                            {{ form_widget(orderItem.item) }}
-                        </div>
-                    </div>
-
-                    <label class="col-md-1 control-label"style="margin-top: 10px;">Quantity</label>
-                    <div class="col-md-4"style="margin-top: 10px;">
-                        <div class="input-icon">
-                            {{ form_widget(orderItem.quantity) }}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-2 control-label">Price</label>
-                    <div class="col-md-4">
-                        <div class="input-icon">
-                            {{ form_widget(orderItem.price) }}
-                        </div>
-                    </div>
-
-                    <label class="col-md-1 control-label"></label>
-                    <div class="col-md-4">
-                        <div class="input-icon">
-
-                        </div>
-                    </div>
-                </div>
-            </div>
 
         {% endfor %}
     </span>
 
-<div class="form-group hide_button" style="display: none;">
-    <div class="col-md-2" style="float:right;">
-        <div class="input-icon">
-            {{ form_row(form.submit) }}
+    <div class="form-group hide_button" style="display: none;">
+        <div class="col-md-2" style="float:right;">
+            <div class="input-icon">
+                {{ form_row(form.submit) }}
+            </div>
         </div>
     </div>
-</div>
 
 {{ form_end(form) }}

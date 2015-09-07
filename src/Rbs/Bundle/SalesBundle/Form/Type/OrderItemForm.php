@@ -32,11 +32,13 @@ class OrderItemForm extends AbstractType
                 }
             ))
             ->add('quantity', 'text', array(
-
+            ))
+            ->add('totalAmount', 'text', array(
             ))
             ->add('price', 'text', array(
                 'read_only' => true
             ))
+            ->add('remove', 'button')
         ;
     }
 

@@ -53,9 +53,6 @@
     $collectionHolder = $('span.tags');
     $collectionHolder.append($newLinkLi);
     $collectionHolder.data('index', $collectionHolder.find(':input').length);
-    {#$collectionHolder.find('div').each(function() {#}
-        {#addTagFormDeleteLink($(this));#}
-    {#});#}
 
     $addTagLink.on('click', function(e) {
         e.preventDefault();
@@ -70,20 +67,15 @@
         $collectionHolder.data('index', index + 1);
         var $newFormLi = $('<div></div>').append(newForm);
         $newLinkLi.before($newFormLi);
-        addTagFormDeleteLink($newFormLi);
 
         $("#order_orderItems_" + index + "_item").change(function () {
             var item = $(this).val();
             findItem(item, index);
         });
-    }
 
-    function addTagFormDeleteLink($tagFormLi) {
-        var $removeFormA = $('<a href="#">Delete Item</a>');
-        $tagFormLi.append($removeFormA);
-        $removeFormA.on('click', function(e) {
-            e.preventDefault();
-            $tagFormLi.remove();
+        $("#order_orderItems_" + index + "_remove").click(function () {
+            var parent = $(this).closest('tr');
+            parent.remove();
         });
     }
 
@@ -104,7 +96,18 @@
         var customer = $(this).val();
         if(customer==false){
             $('.hide_button').hide();
+            $( "div.credit_limit" ).html('00');
         }else{
+            $.ajax({
+                type: "post",
+                url: Routing.generate('find_customer_ajax'),
+                data: "customer=" + customer,
+                dataType: 'json',
+                success: function (response) {
+                    var creditLimit = response.creditLimit;
+                    $( "div.credit_limit" ).html(creditLimit);
+                }
+            });
             $('.hide_button').show();
         }
     });
