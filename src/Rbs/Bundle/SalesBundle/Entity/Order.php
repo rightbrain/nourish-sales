@@ -80,6 +80,27 @@ class Order
     private $paidAmount;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="order_via", type="string", length=250, nullable=true)
+     */
+    private $orderVia;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="ref_sms", type="string", length=250, nullable=true)
+     */
+    private $refSMS;
+
+    /**
+     * @var text
+     *
+     * @ORM\Column(name="remarks", type="text", nullable=true)
+     */
+    private $remark;
+
+    /**
      * Get id
      *
      * @return integer
@@ -235,5 +256,53 @@ class Order
     public function setCustomer($customer)
     {
         $this->customer = $customer;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrderVia()
+    {
+        return $this->orderVia;
+    }
+
+    /**
+     * @param string $orderVia
+     */
+    public function setOrderVia($orderVia)
+    {
+        $this->orderVia = $orderVia;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRefSMS()
+    {
+        return $this->refSMS;
+    }
+
+    /**
+     * @param string $refSMS
+     */
+    public function setRefSMS($refSMS)
+    {
+        $this->refSMS = $refSMS;
+    }
+
+    /**
+     * @return text
+     */
+    public function getRemark()
+    {
+        return $this->remark;
+    }
+
+    /**
+     * @param text $remark
+     */
+    public function setRemark($remark)
+    {
+        $this->remark = $remark;
     }
 }

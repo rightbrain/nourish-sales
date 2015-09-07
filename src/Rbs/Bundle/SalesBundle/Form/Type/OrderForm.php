@@ -36,6 +36,9 @@ class OrderForm extends AbstractType
                         ->orderBy('u.username','ASC');
                 }
             ))
+            ->add('orderVia')
+            ->add('refSMS')
+            ->add('remark')
         ;
         $builder
             ->add('orderItems', 'collection', array(
