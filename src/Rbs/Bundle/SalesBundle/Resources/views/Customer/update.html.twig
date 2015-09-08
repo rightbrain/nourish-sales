@@ -3,7 +3,20 @@
 {% block title %}{{ parent() }} : Customer update {% endblock %}
 
 {% block body %}
-    {% include "RbsSalesBundle:Customer:update_content.html.twig" %}
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>Update Customer
+                </div>
+            </div>
+            <div class="portlet-body">
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customers_home'), label: 'Back to List', 'icon': 'plus'}) }}
+                {% include "RbsSalesBundle:Customer:update_content.html.twig" %}
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
 {% endblock %}
 
 {% block stylesheets %}

@@ -1,5 +1,4 @@
-<form action="{{ path('group_create') }}" method="POST" class="fos_user_group_new">
-{#<form action="{{ path('group_create') }}" method="POST" class="fos_user_group_new" id="form_sample_1">#}
+{{ form_start(form, {'method': 'POST'}) }}
     {{ form_widget(form) }}
-</form>
+{{ form_end(form) }}
 

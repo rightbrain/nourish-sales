@@ -3,7 +3,20 @@
 {% block title %}{{ parent() }} : Group Update {% endblock %}
 
 {% block body %}
-    {% include "RbsUserBundle:Group:edit_content.html.twig" %}
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i> Group Update
+                </div>
+            </div>
+            <div class="portlet-body">
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('groups_home'), label: 'Back to List', 'icon': 'plus'}) }}
+                {% include "RbsUserBundle:Group:edit_content.html.twig" %}
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
 {% endblock body %}
 
 {% block stylesheets %}

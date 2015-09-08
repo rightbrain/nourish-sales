@@ -79,6 +79,20 @@ class Item
     private $price;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="due_amount", type="float", nullable=true)
+     */
+    private $dueAmount;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="SKU", type="string", length=255)
+     */
+    private $SKU;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
      **/
     private $bundles;
@@ -294,5 +308,37 @@ class Item
     public function getBundles()
     {
         return $this->bundles;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSKU()
+    {
+        return $this->SKU;
+    }
+
+    /**
+     * @param string $SKU
+     */
+    public function setSKU($SKU)
+    {
+        $this->SKU = $SKU;
+    }
+
+    /**
+     * @return float
+     */
+    public function getDueAmount()
+    {
+        return $this->dueAmount;
+    }
+
+    /**
+     * @param float $dueAmount
+     */
+    public function setDueAmount($dueAmount)
+    {
+        $this->dueAmount = $dueAmount;
     }
 }

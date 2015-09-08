@@ -12,6 +12,27 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.stock:
+        class: Rbs\Bundle\SalesBundle\Datatables\StockDatatable
+        tags:
+            - { name: sg.datatable.view }
+
+    rbs_erp.sales.datatable.order:
+        class: Rbs\Bundle\SalesBundle\Datatables\OrderDatatable
+        tags:
+            - { name: sg.datatable.view }
+
+    rbs_erp.sales.datatable.stock.history:
+        class: Rbs\Bundle\SalesBundle\Datatables\StockHistoryDatatable
+        tags:
+            - { name: sg.datatable.view }
+        arguments: [@security.context, @security.token_storage, @twig, @translator.data_collector, @router, @doctrine.orm.entity_manager, @service_container]
+
+    rbs_erp.sales.datatable.customer.group:
+        class: Rbs\Bundle\SalesBundle\Datatables\CustomerGroupDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.registration.form.type:
         class: Rbs\Bundle\SalesBundle\Form\Type\CustomerForm
         tags:

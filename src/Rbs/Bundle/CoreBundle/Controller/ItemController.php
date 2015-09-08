@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Rbs\Bundle\CoreBundle\Entity\Item;
 use Rbs\Bundle\CoreBundle\Form\Type\ItemForm;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Item controller.
@@ -292,5 +293,26 @@ class ItemController extends BaseController
         $this->getDoctrine()->getManager()->flush();
 
         return $this->redirect($this->generateUrl('item'));
+    }
+
+    /**
+     * find item ajax
+     * @Route("find_item_ajax", name="find_item_ajax", options={"expose"=true})
+     * @param Request $request
+     * @return Response
+     */
+    public function findItemAction(Request $request)
+    {
+        $itemId = $request->request->get('item');
+
+        $item = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->find($itemId);
+
+        $response = new Response(json_encode(array(
+            'price' => $item->getPrice()
+        )));
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 }

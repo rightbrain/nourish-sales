@@ -3,7 +3,20 @@
 {% block title %}{{ parent() }} : User update {% endblock %}
 
 {% block body %}
-    {% include "RbsUserBundle:User:update_content.html.twig" %}
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>Update User
+                </div>
+            </div>
+            <div class="portlet-body">
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('users_home'), label: 'Back to List', 'icon': 'plus'}) }}
+                {% include "RbsUserBundle:User:update_content.html.twig" %}
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
 {% endblock %}
 
 {% block stylesheets %}

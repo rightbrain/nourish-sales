@@ -1,25 +1,56 @@
 {{ form_start(form, {'method': 'POST'}) }}
 
-    {{ form_widget(form.customerID, { 'attr': {'class': ''} }) }}
-    {{ form_widget(form.creditLimit, { 'attr': {'class': ''} }) }}
-    {{ form_widget(form.balance, { 'attr': {'class': ''} }) }}
-    {{ form_widget(form.agent, { 'attr': {'class': ''} }) }}
+    <h4>Customer Profile Information</h4>
 
-    {{ form_widget(form.warehouse, { 'attr': {'class': ''} }) }}
-    {{ form_widget(form.area, { 'attr': {'class': ''} }) }}
-    {{ form_widget(form.agent, { 'attr': {'class': ''} }) }}
+    <div class="form-group">
+        <label for="inputEmail12" class="col-md-2 control-label">VIP</label>
+        <div class="col-md-2">
+            <div class="input-icon">
+                {{ form_widget(form.VIP, { 'attr': {'class': ''} }) }}
+            </div>
+        </div>
+    </div>
 
-    {{ form_widget(form.user.username, { 'attr': {'class': ''} }) }}
-    {{ form_widget(form.user.userType, { 'attr': {'class': ''} }) }}
-    {{ form_widget(form.user.plainPassword.first, { 'attr': {'class': ''} }) }}
-    {{ form_widget(form.user.plainPassword.second, { 'attr': {'class': ''} }) }}
-    {{ form_widget(form.user.email, { 'attr': {'class': ''} }) }}
+    <div class="form-group">
+        <label for="inputEmail12" class="col-md-2 control-label">Customer ID</label>
+        <div class="col-md-10">
+            <div class="input-icon">
+                {{ form_widget(form.customerID, { 'attr': {'class': ''} }) }}
+            </div>
+        </div>
+    </div>
 
-    {{ form_widget(form.user.profile.fullName, { 'attr': {'class': ''} }) }}
-    {{ form_widget(form.user.profile.cellphone, { 'attr': {'class': ''} }) }}
-    {{ form_widget(form.user.profile.address, { 'attr': {'class': ''} }) }}
-    {{ form_widget(form.user.profile.file, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.user.profile.fullName, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.user.userType, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.creditLimit, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.balance, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.agent, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.warehouse, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.area, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.agent, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.user.profile.cellphone, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.user.profile.address, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.customerGroup, { 'attr': {'class': ''} }) }}
 
-    {{ form_widget(form.submit, { 'attr': {'class': ''} }) }}
+    <div class="form-group">
+        <label for="inputEmail12" class="col-md-2 control-label">Photo</label>
+        <div class="col-md-4">
+            <div class="input-icon">
+                <i class="fa fa-folder"></i>
+                {{ form_widget(form.user.profile.file, { 'attr': {'class': 'form-control'} }) }}
+            </div>
+        </div>
+    </div>
+
+    <hr>
+    <h4>Customer Login Information</h4>
+
+    {{ form_row(form.user.username, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.user.plainPassword.first, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.user.plainPassword.second, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.user.email, { 'attr': {'class': ''} }) }}
+    <hr>
+
+    {{ form_row(form.submit, { 'attr': {'class': ''} }) }}
 
 {{ form_end(form) }}

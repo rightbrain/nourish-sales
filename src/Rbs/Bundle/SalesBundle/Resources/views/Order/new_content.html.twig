@@ -1,0 +1,81 @@
+{{ form_start(form, {'method': 'POST'}) }}
+
+    <div class="form-group">
+        <label class="col-md-2 control-label">Customer</label>
+        <div class="col-md-6" style="margin-top: 10px;">
+            <div class="input-icon">
+                {{ form_widget(form.customer) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2 control-label">Order Via</label>
+        <div class="col-md-6" style="margin-top: 10px;">
+            <div class="input-icon">
+                {{ form_widget(form.orderVia) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2 control-label">Ref. SMS</label>
+        <div class="col-md-6" style="margin-top: 10px;">
+            <div class="input-icon">
+                {{ form_widget(form.refSMS) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2 control-label">Remark</label>
+        <div class="col-md-6" style="margin-top: 10px;">
+            <div class="input-icon">
+                {{ form_widget(form.remark) }}
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-2 control-label">Credit Limit</label>
+        <div class="col-md-6" style="margin-top: 10px;">
+            <div class="input-icon">
+                <div class="credit_limit">00</div>
+            </div>
+        </div>
+    </div>
+
+<br/>
+
+    <h3 class="hide_button table" style="display: none;">Item Information:</h3>
+    <table class="hide_button table" style="display: none;margin-bottom:0!important;">
+        <thead style="background: #ddd;">
+        <tr>
+            <th style="width: 160px;">Item</th>
+            <th style="width: 160px;">Quantity</th>
+            <th style="width: 150px;">Available</th>
+            <th style="width: 160px;">Price</th>
+            <th style="width: 150px;">Total</th>
+            <th style="width: 120px;"></th>
+        </tr>
+        </thead>
+    </table>
+
+    <span id="orderItems" class="tags" data-prototype="
+        {% filter escape %}
+        {{ include('RbsSalesBundle:Order:order_item_content.html.twig', { 'form': form.orderItems.vars.prototype }) }}
+        {% endfilter %}">
+        {% for orderItem in form.orderItems %}
+
+        {% endfor %}
+    </span>
+
+    <div class="form-group hide_button" style="display: none;">
+        <div class="col-md-2" style="float:right;">
+            <div class="input-icon">
+                {{ form_row(form.submit) }}
+            </div>
+        </div>
+    </div>
+
+{{ form_end(form) }}

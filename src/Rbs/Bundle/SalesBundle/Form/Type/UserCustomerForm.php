@@ -32,7 +32,7 @@ class UserCustomerForm extends AbstractType
                 'choices'  => array(
                     'CUSTOMER' => 'CUSTOMER'
                 ),
-                'data' => 'Customer'
+                'data' => 'CUSTOMER'
             ))
             ->add('plainPassword', 'repeated', array(
                 'type' => 'password',

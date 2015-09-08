@@ -1,0 +1,115 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} : Order create {% endblock %}
+
+{% block body %}
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    Order Information
+                </div>
+            </div>
+            <div class="portlet-body">
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('orders_home'), label: 'Back to List', 'icon': 'plus'}) }}
+                {% include "RbsSalesBundle:Order:new_content.html.twig" %}
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets  filter='cssrewrite'
+    "assets/global/plugins/jquery-multi-select/css/multi-select.css"
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+
+{% endblock stylesheets %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+    "assets/global/plugins/select2/select2.min.js"
+    "assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js"
+
+    "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
+    "assets/admin/pages/scripts/form-validation.js"
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock javascripts %}
+{#<script>#}
+{% block documentReady %}
+    {{ parent() }}
+    FormValidation.init();
+    $("select[multiple=multiple]").multiSelect({selectableOptgroup: true});
+
+    var $collectionHolder;
+    var $addTagLink = $('<a href="#" class="add_tag_link blue btn" id="add_order_item">Add Item</a>');
+    var $newLinkLi = $('<div style="float: right;display: none;" class="hide_button" ></div>').append($addTagLink);
+    $collectionHolder = $('span.tags');
+    $collectionHolder.append($newLinkLi);
+    $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+    $addTagLink.on('click', function(e) {
+        e.preventDefault();
+        addTagForm($collectionHolder, $newLinkLi);
+    });
+
+    function addTagForm($collectionHolder, $newLinkLi) {
+        var prototype = $collectionHolder.data('prototype');
+        var index = $collectionHolder.data('index');
+        var newForm = prototype.replace(/__name__/g, index);
+
+        $collectionHolder.data('index', index + 1);
+        var $newFormLi = $('<div></div>').append(newForm);
+        $newLinkLi.before($newFormLi);
+
+        $("#order_orderItems_" + index + "_item").change(function () {
+            var item = $(this).val();
+            findItem(item, index);
+        });
+
+        $("#order_orderItems_" + index + "_remove").click(function () {
+            var parent = $(this).closest('tr');
+            parent.remove();
+        });
+    }
+
+    function findItem(item, index) {
+        $.ajax({
+            type: "post",
+            url: Routing.generate('find_item_ajax'),
+            data: "item=" + item,
+            dataType: 'json',
+            success: function (response) {
+                var price = response.price;
+                $("#order_orderItems_" + index + "_price").val(price);
+            }
+        });
+    }
+
+    $("#order_customer").change(function () {
+        var customer = $(this).val();
+        if(customer==false){
+            $('.hide_button').hide();
+            $( "div.credit_limit" ).html('00');
+        }else{
+            $.ajax({
+                type: "post",
+                url: Routing.generate('find_customer_ajax'),
+                data: "customer=" + customer,
+                dataType: 'json',
+                success: function (response) {
+                    var creditLimit = response.creditLimit;
+                    $( "div.credit_limit" ).html(creditLimit);
+                }
+            });
+            $('.hide_button').show();
+        }
+    });
+
+{% endblock documentReady %}

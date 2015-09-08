@@ -22,10 +22,14 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-user')
                 ->setLinkAttribute('data-hover', 'dropdown');
 
-            $menu['User']->addChild('User List', array('route' => 'users_home'));
-            $menu['User']->addChild('User Create', array('route' => 'user_create'));
-            $menu['User']->addChild('Group List', array('route' => 'groups_home'));
-            $menu['User']->addChild('Group Create', array('route' => 'group_create'));
+            $menu['User']->addChild('User List', array('route' => 'users_home'))
+                ->setAttribute('icon', 'fa fa-th-list');
+            $menu['User']->addChild('User Create', array('route' => 'user_create'))
+                ->setAttribute('icon', 'fa fa-th-list');
+            $menu['User']->addChild('Group List', array('route' => 'groups_home'))
+                ->setAttribute('icon', 'fa fa-th-list');
+            $menu['User']->addChild('Group Create', array('route' => 'group_create'))
+                ->setAttribute('icon', 'fa fa-th-list');
 
         return $menu;
         //}

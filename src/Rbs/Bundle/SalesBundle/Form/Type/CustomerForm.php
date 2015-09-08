@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\AreaRepository;
 use Rbs\Bundle\CoreBundle\Repository\WarehouseRepository;
+use Rbs\Bundle\SalesBundle\Repository\CustomerGroupRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,6 +21,12 @@ class CustomerForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('VIP', 'choice', array(
+                'choices'  => array(
+                    '0' => 'Not',
+                    '1' => 'Yes'
+                )
+            ))
             ->add('customerID', 'text', array(
                 'constraints' => array(
                     new NotBlank(array(
@@ -42,6 +49,7 @@ class CustomerForm extends AbstractType
                 {
                     return $repository->createQueryBuilder('u')
                         ->where('u.userType = :Agent')
+                        ->andWhere('u.deletedAt IS NULL')
                         ->setParameter('Agent', 'Agent')
                         ->orderBy('u.username','ASC');
                 }
@@ -55,6 +63,7 @@ class CustomerForm extends AbstractType
                 'query_builder' => function (WarehouseRepository $repository)
                 {
                     return $repository->createQueryBuilder('w')
+                        ->where('w.deletedAt IS NULL')
                         ->orderBy('w.name','ASC');
                 }
             ))
@@ -67,7 +76,21 @@ class CustomerForm extends AbstractType
                 'query_builder' => function (AreaRepository $repository)
                 {
                     return $repository->createQueryBuilder('a')
+                        ->where('a.deletedAt IS NULL')
                         ->orderBy('a.areaName','ASC');
+                }
+            ))
+            ->add('customerGroup', 'entity', array(
+                'class' => 'RbsSalesBundle:CustomerGroup',
+                'property' => 'label',
+                'required' => false,
+                'empty_value' => 'Select Group',
+                'empty_data' => null,
+                'query_builder' => function (CustomerGroupRepository $repository)
+                {
+                    return $repository->createQueryBuilder('cg')
+                        ->where('cg.deletedAt IS NULL')
+                        ->orderBy('cg.label','ASC');
                 }
             ))
         ;

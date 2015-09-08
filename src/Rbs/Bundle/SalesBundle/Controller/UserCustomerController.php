@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * User Controller.
@@ -191,5 +192,27 @@ class UserCustomerController extends Controller
         );
 
         return $this->redirect($this->generateUrl('customers_home'));
+    }
+
+    /**
+     * find customer ajax
+     * @Route("find_customer_ajax", name="find_customer_ajax", options={"expose"=true})
+     * @param Request $request
+     * @return Response
+     */
+    public function findCustomerAction(Request $request)
+    {
+        $customerId = $request->request->get('customer');
+
+        $customer = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->find($customerId);
+
+        $response = new Response(json_encode(array(
+            'creditLimit' => $customer->getCreditLimit(),
+            'balance' => $customer->getBalance()
+        )));
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 }
