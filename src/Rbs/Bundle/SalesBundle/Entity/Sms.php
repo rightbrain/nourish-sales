@@ -31,7 +31,7 @@ class Sms
     /**
      * @var Order
      *
-     * @ORM\OneToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order")
+     * @ORM\OneToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order", inversedBy="refSMS")
      * @ORM\JoinColumn(name="order_id", nullable=true)
      */
     private $order;
@@ -59,7 +59,7 @@ class Sms
     private $date;
 
     /**
-     * @var text
+     * @var string
      *
      * @ORM\Column(name="texts", type="text")
      */
@@ -136,22 +136,6 @@ class Sms
     }
 
     /**
-     * @return text
-     */
-    public function getText()
-    {
-        return $this->text;
-    }
-
-    /**
-     * @param text $text
-     */
-    public function setText($text)
-    {
-        $this->text = $text;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getDate()
@@ -181,5 +165,21 @@ class Sms
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return string
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
+
+    /**
+     * @param string $text
+     */
+    public function setText($text)
+    {
+        $this->text = $text;
     }
 }

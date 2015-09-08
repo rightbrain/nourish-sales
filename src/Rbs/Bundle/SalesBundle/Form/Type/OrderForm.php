@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\SalesBundle\Repository\CustomerRepository;
+use Rbs\Bundle\SalesBundle\Repository\SmsRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -36,8 +37,23 @@ class OrderForm extends AbstractType
                         ->orderBy('u.username','ASC');
                 }
             ))
-            ->add('orderVia')
-            ->add('refSMS')
+            ->add('orderVia', 'text')
+            ->add('refSMS', 'entity', array(
+                'class' => 'RbsSalesBundle:Sms',
+                'property' => 'cellNumber',
+                'required' => false,
+                'empty_value' => 'Select SMS',
+                'empty_data' => null,
+                'query_builder' => function (SmsRepository $repository)
+                {
+                    return $repository->createQueryBuilder('sms')
+                        ->where('sms.deletedAt IS NULL')
+                        ->andWhere('sms.status = :UNREAD')
+                        ->andWhere('sms.order IS NULL')
+                        ->setParameter('UNREAD', 'UNREAD')
+                        ->orderBy('sms.id','DESC');
+                }
+            ))
             ->add('remark')
         ;
         $builder
