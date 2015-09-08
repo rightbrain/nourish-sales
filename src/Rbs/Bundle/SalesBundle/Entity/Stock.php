@@ -50,21 +50,21 @@ class Stock
      *
      * @ORM\Column(name="on_hand", type="integer", options={"default" = 0})
      */
-    private $onHand;
+    private $onHand = 0;
 
     /**
      * @var integer
      *
      * @ORM\Column(name="on_hold", type="integer", options={"default" = 0})
      */
-    private $onHold;
+    private $onHold = 0;
 
     /**
      * @var boolean
      *
      * @ORM\Column(name="available_on_demand", type="boolean", options={"default" = false})
      */
-    private $availableOnDemand;
+    private $availableOnDemand = 0;
 
     /**
      * Get id
@@ -91,10 +91,13 @@ class Stock
 
     /**
      * @param int $onHand
+     * @return $this
      */
     public function setOnHand($onHand)
     {
         $this->onHand = $onHand;
+
+        return $this;
     }
 
     /**
@@ -107,10 +110,13 @@ class Stock
 
     /**
      * @param int $onHold
+     * @return $this
      */
     public function setOnHold($onHold)
     {
         $this->onHold = $onHold;
+
+        return $this;
     }
 
     /**
@@ -123,10 +129,13 @@ class Stock
 
     /**
      * @param Item $item
+     * @return $this
      */
     public function setItem($item)
     {
         $this->item = $item;
+
+        return $this;
     }
 
     /**
@@ -139,10 +148,13 @@ class Stock
 
     /**
      * @param boolean $availableOnDemand
+     * @return $this
      */
     public function setAvailableOnDemand($availableOnDemand)
     {
         $this->availableOnDemand = $availableOnDemand;
+
+        return $this;
     }
 
     /**
@@ -155,9 +167,25 @@ class Stock
 
     /**
      * @param ArrayCollection $stockHistories
+     * @return $this
      */
     public function setStockHistories($stockHistories)
     {
         $this->stockHistories = $stockHistories;
+
+        return $this;
+    }
+
+    public function isStockAvailable()
+    {
+        if ($this->item && $this->item->isDeleted()) {
+            return false;
+        }
+
+        if ($this->isAvailableOnDemand()) {
+            return true;
+        }
+
+        return 0 < ($this->getOnHand() - $this->getOnHold());
     }
 }
