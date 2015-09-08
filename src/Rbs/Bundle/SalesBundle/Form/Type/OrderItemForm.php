@@ -34,6 +34,7 @@ class OrderItemForm extends AbstractType
             ->add('quantity', 'text', array(
             ))
             ->add('totalAmount', 'text', array(
+                'read_only' => true
             ))
             ->add('price', 'text', array(
                 'read_only' => true

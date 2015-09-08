@@ -1,9 +1,9 @@
 <table class="table">
     <tr>
         <td style="width: 150px;">{{ form_widget(form.item, { 'attr': {'style': 'width: 150px;'}}) }}</td>
-        <td style="width: 150px;">{{ form_widget(form.quantity, { 'attr': {'style': 'width: 145px;'}}) }}</td>
+        <td style="width: 150px;">{{ form_widget(form.quantity, { 'attr': {'style': 'width: 145px;display:none;', 'class': 'quantity'}}) }}</td>
         <td style="width: 150px;">Available</td>
-        <td style="width: 150px;">{{ form_widget(form.price, { 'attr': {'style': 'width: 150px;'}}) }}</td>
+        <td style="width: 150px;">{{ form_widget(form.price, { 'attr': {'style': 'width: 150px;', 'class': 'price'}}) }}</td>
         <td style="width: 150px;">{{ form_widget(form.totalAmount, { 'attr': {'style': 'width: 145px;', 'class': 'total_price'}} ) }}</td>
         <td style="width: 120px;">{{ form_widget(form.remove) }}</td>
     </tr>
