@@ -12,6 +12,7 @@ var Order = function()
         $("#order_orderItems_" + index + "_item").change(function () {
             var item = $(this).val();
             findItem(item, index);
+            findStockItem(item, index);
         });
 
         $("#order_orderItems_" + index + "_remove").click(function () {
@@ -30,6 +31,28 @@ var Order = function()
                 var price = response.price;
                 $("#order_orderItems_" + index + "_price").val(price);
                 $('.quantity').show();
+            }
+        });
+    }
+
+    function findStockItem(item, index) {
+        $.ajax({
+            type: "post",
+            url: Routing.generate('find_stock_item_ajax'),
+            data: "item=" + item,
+            dataType: 'json',
+            success: function (response) {
+                var onHand = response.onHand;
+                var onHold = response.onHold;
+                var available = response.available;
+
+                if(available==1){
+                    availableOnDemand = 'AvailableOnDemand';
+                }else{
+                    availableOnDemand = parseFloat(onHand)-parseFloat(onHold);
+                }
+
+                $( "div#availableOnDemand" ).html(availableOnDemand);
             }
         });
     }
