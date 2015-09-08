@@ -18,6 +18,8 @@ services:
             - { name: form.type, alias: rbs_user_bundle_user }
         arguments: ['%fos_user.model.user.class%']
 
-
-
-
+    rbs_erp.sales.stock_create.listener:
+        class: Rbs\Bundle\SalesBundle\EventListener\StockCreateListener
+        tags:
+            - { name: kernel.event_listener, event: core.item.created, method: onCreated }
+        arguments: [@doctrine.orm.entity_manager]

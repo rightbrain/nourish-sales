@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\CoreBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Event\ItemEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -76,6 +77,9 @@ class ItemController extends BaseController
             $em->persist($entity);
             $em->flush();
             $this->flashMessage('success', 'Item Created Successfully');
+
+            $this->dispatch('core.item.created', new ItemEvent($entity));
+
             return $this->redirect($this->generateUrl('item'));
         }
 
