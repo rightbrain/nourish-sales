@@ -11,6 +11,19 @@ use Rbs\Bundle\SalesBundle\Entity\Stock;
  */
 class StockDatatable extends BaseDatatable
 {
+    public function getLineFormatter()
+    {
+        /** @var Stock $stock */
+        $formatter = function($line){
+            $stock = $this->em->getRepository('RbsSalesBundle:Stock')->find($line['id']);
+            $line['available'] = $stock->isAvailableOnDemand();
+            $line['notAvailable'] = !$stock->isAvailableOnDemand();
+
+            return $line;
+        };
+
+        return $formatter;
+    }
     /**
      * {@inheritdoc}
      */
@@ -28,7 +41,8 @@ class StockDatatable extends BaseDatatable
             ->add('item.name', 'column', array('title' => 'Item name'))
             ->add('onHand', 'column', array('title' => 'On Hand'))
             ->add('onHold', 'column', array('title' => 'On Hold'))
-            ->add('availableOnDemand', 'column', array('title' => 'Available On Demand'))
+            ->add('available', 'virtual', array('visible' => false))
+            ->add('notAvailable', 'virtual', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Action',
@@ -72,6 +86,50 @@ class StockDatatable extends BaseDatatable
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_ADMIN',
+                    )
+                )
+            ))
+            ->add(null, 'action', array(
+                'width' => '200px',
+                'title' => 'Available On Demand',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'stock_available',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Enable',
+                        'icon' => 'glyphicon',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'available-action',
+                            'class' => 'btn btn-primary btn-xs green',
+                            'role' => 'button',
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_ADMIN',
+                        'render_if' => array('notAvailable')
+                    ),
+                    array(
+                        'route' => 'stock_available',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Disable',
+                        'icon' => 'glyphicon',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'not-available-action',
+                            'class' => 'btn btn-primary btn-xs red',
+                            'role' => 'button',
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_ADMIN',
+                        'render_if' => array('available')
                     )
                 )
             ))

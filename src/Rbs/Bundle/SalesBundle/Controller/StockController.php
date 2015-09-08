@@ -117,6 +117,42 @@ class StockController extends Controller
     }
 
     /**
+     * @Route("/stock-available", name="stock_available", options={"expose"=true})
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function stockAvailableAction(Request $request)
+    {
+        $stockId = $request->query->all()['id'];
+        $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->find($stockId);
+
+        $available = $this->isAvailable($stock);
+
+        $stock->setAvailableOnDemand($available);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+
+        $this->get('session')->getFlashBag()->add(
+            'success', 'Stock Item Available Set Successfully!'
+        );
+        return $this->redirect($this->generateUrl('stocks_home'));
+    }
+
+    /**
+     * @param Stock $stock
+     * @return int
+     */
+    protected function isAvailable(Stock $stock)
+    {
+        if ($stock->isAvailableOnDemand()) {
+            $available = 0;
+            return $available;
+        } else {
+            $available = 1;
+            return $available;
+        }
+    }
+
+    /**
      * @param Request $request
      * @param $form
      * @param $stockHistory
