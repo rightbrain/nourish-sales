@@ -17,6 +17,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.sms:
+        class: Rbs\Bundle\SalesBundle\Datatables\SmsDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.order:
         class: Rbs\Bundle\SalesBundle\Datatables\OrderDatatable
         tags:
