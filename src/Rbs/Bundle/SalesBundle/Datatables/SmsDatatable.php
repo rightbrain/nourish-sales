@@ -25,12 +25,12 @@ class SmsDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-            ->add('id', 'column', array('title' => 'id'))
             ->add('date', 'datetime', array(
                     'title' => 'Date',
                     'date_format' => 'LLL' ))
             ->add('cellNumber', 'column', array('title' => 'Mobile'))
             ->add('order', 'column', array('title' => 'Order Number'))
+            ->add('text', 'column', array('title' => 'SMS Text'))
             ->add('status', 'column', array('title' => 'Status'))
 
 //            ->add(null, 'action', array(
