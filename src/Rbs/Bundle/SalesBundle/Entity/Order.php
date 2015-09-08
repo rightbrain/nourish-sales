@@ -305,4 +305,16 @@ class Order
     {
         $this->remark = $remark;
     }
+
+    /** @return float */
+    public function getItemsTotalAmount()
+    {
+        $total = 0;
+        /** @var OrderItem $item */
+        foreach($this->orderItems as $item) {
+            $total += $item->getTotalAmount();
+        }
+
+        return $total;
+    }
 }

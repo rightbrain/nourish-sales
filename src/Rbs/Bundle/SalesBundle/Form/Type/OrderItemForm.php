@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\ItemRepository;
+use Rbs\Bundle\SalesBundle\RbsSalesBundle;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -28,7 +29,9 @@ class OrderItemForm extends AbstractType
                 {
                     return $repository->createQueryBuilder('i')
                         ->where('i.deletedAt IS NULL')
-                        ->orderBy('i.name','ASC');
+                        ->orderBy('i.name','ASC')
+                        ->join('i.bundles', 'bundles')
+                        ->andWhere('bundles.id = :saleBundleId')->setParameter('saleBundleId', RbsSalesBundle::ID);
                 }
             ))
             ->add('quantity', 'text', array(

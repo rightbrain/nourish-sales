@@ -177,4 +177,14 @@ class OrderItem
     {
         $this->order = $order;
     }
+
+    public function calculateTotalAmount($isSetTotalAmount = false)
+    {
+        $amount = $this->getQuantity() * $this->getPrice();
+        if ($isSetTotalAmount) {
+            $this->setTotalAmount($amount);
+        }
+
+        return $amount;
+    }
 }
