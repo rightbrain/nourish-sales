@@ -1,16 +1,19 @@
 <div class="modal-header portlet-title box blue">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-    <h4 class="modal-title">Item Name : {{ stockHistories[0].stock.item.name | default('') }}</h4>
+    <h4 class="modal-title">Item Name : {{ stock.item.name | default('') }}</h4>
 </div>
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
+            {% if stockHistories is empty %}
+                No Stock History Found
+            {% else %}
             <table class="table-bordered table-striped table-condensed flip-content">
                 <thead class="flip-content">
                 <tr>
                     <th class="numeric">Sl</th>
                     <th class="numeric">Date</th>
-                    <th class="numeric">CreatedBy</th>
+                    <th class="numeric">Added By</th>
                     <th class="numeric">Factory Name</th>
                     <th class="numeric">Warehouse</th>
                     <th class="numeric">Quantity</th>
@@ -31,11 +34,14 @@
                 {% endfor %}
                 </tbody>
             </table>
+            {% endif %}
         </div>
     </div>
 </div>
 <div class="modal-footer">
-    <a class="btn blue" href="#" onclick="javascript: window.open('/stock-history-list/{{ stockHistories[0].stock.id }}')">
+    {% if stockHistories is not empty %}
+    <a class="btn blue" href="{{ path('stock_history_list', {"stock": stock.id}) }}" target="_blank">
         More >>
     </a>
+    {% endif %}
 </div>

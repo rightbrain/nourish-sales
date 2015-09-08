@@ -6,6 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Stock;
 use Rbs\Bundle\SalesBundle\Entity\StockHistory;
 use Rbs\Bundle\SalesBundle\Form\Type\StockHistoryForm;
+use Rbs\Bundle\SalesBundle\RbsSalesBundle;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -57,19 +58,22 @@ class StockController extends Controller
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
-        $function = function($qb)
-        {
+        $function = function ($qb) {
             $qb->join("stocks.item", 'i');
             $qb->andWhere("stocks.deletedAt IS NULL");
+            // Show only Sales Bundle
+            $qb->join("i.bundles", 'bundles');
+            $qb->andWhere("bundles.id = :bundle")->setParameter('bundle', RbsSalesBundle::ID);
         };
         $query->addWhereAll($function);
+
         return $query->getResponse();
     }
 
     /**
      * @param $stock
      */
-    protected function checkAvailableOnDemand($stock)
+    protected function checkAvailableOnDemand(Stock $stock)
     {
         if ($stock->getOnHand() < $stock->getOnHold()) {
             $stock->setAvailableOnDemand(0);
@@ -108,11 +112,12 @@ class StockController extends Controller
     {
         $stock = $request->query->all()['id'];
         $stockHistories = $this->getDoctrine()->getRepository('RbsSalesBundle:StockHistory')->findBy(
-            array('stock'=>$stock), array('id'=>'DESC'), 10
+            array('stock' => $stock), array('id' => 'DESC'), 10
         );
 
         return $this->render('RbsSalesBundle:Stock:history.html.twig', array(
-            'stockHistories' => $stockHistories
+            'stockHistories' => $stockHistories,
+            'stock' => $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->find($stock)
         ));
     }
 

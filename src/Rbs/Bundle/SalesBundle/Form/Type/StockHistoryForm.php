@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\ProjectRepository;
 use Rbs\Bundle\CoreBundle\Repository\WarehouseRepository;
+use Rbs\Bundle\SalesBundle\RbsSalesBundle;
 use Rbs\Bundle\SalesBundle\Repository\StockRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -38,7 +39,9 @@ class StockHistoryForm extends AbstractType
                 {
                     return $repository->createQueryBuilder('p')
                         ->where('p.deletedAt IS NULL')
-                        ->orderBy('p.projectName','ASC');
+                        ->orderBy('p.projectName','ASC')
+                        ->join('p.bundles', 'bundles')
+                        ->andWhere('bundles.id = :salesBundleId')->setParameter('salesBundleId', RbsSalesBundle::ID);
                 }
             ))
             ->add('toWarehouse', 'entity', array(

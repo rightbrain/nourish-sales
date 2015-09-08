@@ -28,7 +28,13 @@ class StockDatatable extends BaseDatatable
             ->add('item.name', 'column', array('title' => 'Item name'))
             ->add('onHand', 'column', array('title' => 'On Hand'))
             ->add('onHold', 'column', array('title' => 'On Hold'))
-            ->add('availableOnDemand', 'column', array('title' => 'Available On Demand'))
+            ->add('availableOnDemand', 'boolean',
+                array(
+                    'title' => 'Available On Demand',
+                    'true_label' => 'Yes',
+                    'false_label' => 'No'
+                )
+            )
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Action',
