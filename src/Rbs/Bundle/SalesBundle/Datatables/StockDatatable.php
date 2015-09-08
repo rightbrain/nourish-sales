@@ -105,7 +105,7 @@ class StockDatatable extends BaseDatatable
                         'attributes' => array(
                             'rel' => 'tooltip',
                             'title' => 'available-action',
-                            'class' => 'btn btn-primary btn-xs green',
+                            'class' => 'btn btn-primary btn-xs green delete-list-btn',
                             'role' => 'button',
                         ),
                         'confirm' => false,
@@ -123,7 +123,7 @@ class StockDatatable extends BaseDatatable
                         'attributes' => array(
                             'rel' => 'tooltip',
                             'title' => 'not-available-action',
-                            'class' => 'btn btn-primary btn-xs red',
+                            'class' => 'btn btn-primary btn-xs red delete-list-btn',
                             'role' => 'button',
                         ),
                         'confirm' => false,
