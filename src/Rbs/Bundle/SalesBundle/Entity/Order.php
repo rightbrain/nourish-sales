@@ -84,17 +84,15 @@ class Order
      *
      * @ORM\Column(name="order_via", type="string", length=250, nullable=true)
      */
-    private $orderVia;
+    private $orderVia = 'SYSTEM';
+
+    /**
+     * @ORM\OneToOne(targetEntity="Sms", mappedBy="order", cascade={"persist"})
+     */
+    protected $refSMS;
 
     /**
      * @var string
-     *
-     * @ORM\Column(name="ref_sms", type="string", length=250, nullable=true)
-     */
-    private $refSMS;
-
-    /**
-     * @var text
      *
      * @ORM\Column(name="remarks", type="text", nullable=true)
      */
@@ -277,33 +275,33 @@ class Order
     /**
      * @return string
      */
-    public function getRefSMS()
-    {
-        return $this->refSMS;
-    }
-
-    /**
-     * @param string $refSMS
-     */
-    public function setRefSMS($refSMS)
-    {
-        $this->refSMS = $refSMS;
-    }
-
-    /**
-     * @return text
-     */
     public function getRemark()
     {
         return $this->remark;
     }
 
     /**
-     * @param text $remark
+     * @param string $remark
      */
     public function setRemark($remark)
     {
         $this->remark = $remark;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRefSMS()
+    {
+        return $this->refSMS;
+    }
+
+    /**
+     * @param mixed $refSMS
+     */
+    public function setRefSMS($refSMS)
+    {
+        $this->refSMS = $refSMS;
     }
 
     /** @return float */
