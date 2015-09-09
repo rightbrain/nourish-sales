@@ -21,6 +21,7 @@ var Order = function()
             }
             var parent = $(this).closest('tr');
             parent.remove();
+            totalAmountCalculate();
         });
     }
 
@@ -57,6 +58,26 @@ var Order = function()
         });
     }
 
+    function totalAmountCalculate() {
+        var subTotal = 0;
+        var totalAmount = 0;
+        $('.total_price').each(function () {
+            subTotal = parseFloat($(this).val());
+            totalAmount += subTotal;
+        });
+
+        $("#order_totalAmount").val(totalAmount);
+    }
+
+    function totalPriceCalculation() {
+        var price = parseFloat($(this).closest('td').parent('tr').find('.price').val());
+        var quantity = parseFloat($(this).closest('td').parent('tr').find('.quantity').val());
+        if (!price) { price = 0; }
+        if (!quantity) { quantity = 0; }
+        $(this).closest('td').parent('tr').find('.total_price').val(price * quantity);
+        totalAmountCalculate();
+    }
+
     function setOrderItemValue(collectionHolder, index, onHand, onHold, availableOnDemand, price, itemUnit){
         var row = collectionHolder.find('tbody tr:eq('+index+')');
         var stockAvailableInfo = 'Available On Demand';
@@ -67,23 +88,6 @@ var Order = function()
         row.find('.stock-available').text(stockAvailableInfo);
         row.find('.quantity').val(0);
         row.find('.item-unit').text(itemUnit);
-    }
-
-    function totalPriceCalculation() {
-        var subTotal = 0;
-        var totalAmount = 0;
-        var price = parseFloat($(this).closest('td').parent('tr').find('.price').val());
-        var quantity = parseFloat($(this).closest('td').parent('tr').find('.quantity').val());
-        if (!price) { price = 0; }
-        if (!quantity) { quantity = 0; }
-        $(this).closest('td').parent('tr').find('.total_price').val(price * quantity);
-
-        $('.total_price').each(function() {
-            subTotal = parseFloat($(this).val());
-            totalAmount += subTotal;
-        });
-
-        $("#order_totalAmount").val(totalAmount);
     }
 
     function newOrder()
