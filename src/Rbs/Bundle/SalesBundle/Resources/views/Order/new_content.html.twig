@@ -52,8 +52,8 @@
         <thead style="background: #ddd;">
         <tr>
             <th style="width: 190px;">Item</th>
-            <th style="width: 130px;text-align: center;">Quantity</th>
-            <th style="width: 150px;">Available</th>
+            <th style="width: 130px;">Quantity</th>
+            <th style="width: 150px;text-align: center;">Available</th>
             <th style="width: 160px;">Price</th>
             <th style="width: 150px;">Total</th>
             <th style="width: 120px;"></th>
@@ -69,6 +69,18 @@
 
         {% endfor %}
     </span>
+    <table class="table">
+        <tfoot>
+            <tr>
+                <td style="width: 190px;"></td>
+                <td style="width: 130px;"></td>
+                <td style="width: 150px;"></td>
+                <td style="width: 160px;text-align: right;">Total</td>
+                <td style="width: 150px;">{{ form_widget(form.totalAmount, { 'attr': {'style': 'width: 145px;margin-left: 15px;'}} ) }}</td>
+                <td style="width: 120px;"></td>
+            </tr>
+        </tfoot>
+    </table>
 
     <div class="form-group hide_button" style="display: none;">
         <div class="col-md-2" style="float:right;">

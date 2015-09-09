@@ -58,12 +58,20 @@ var Order = function()
     }
 
     function totalPriceCalculation() {
-
+        var subTotal = 0;
+        var totalAmount = 0;
         var price = parseFloat($(this).closest('td').parent('tr').find('.price').val());
         var quantity = parseFloat($(this).closest('td').parent('tr').find('.quantity').val());
         if (!price) { price = 0; }
         if (!quantity) { quantity = 0; }
         $(this).closest('td').parent('tr').find('.total_price').val(price * quantity);
+
+        $('.total_price').each(function() {
+            subTotal = parseFloat($(this).val());
+            totalAmount += subTotal;
+        });
+
+        $("#order_totalAmount").val(totalAmount);
     }
 
     function newOrder()
