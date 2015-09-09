@@ -7,7 +7,7 @@ var Order = function()
 
         $collectionHolder.data('index', index + 1);
         var $newFormLi = $('<div></div>').append(newForm);
-        $newLinkLi.before($newFormLi);
+        $newLinkLi.after($newFormLi);
 
         $("#order_orderItems_" + index + "_item").change(function () {
             var item = $(this).val();
@@ -78,7 +78,7 @@ var Order = function()
     {
         var $collectionHolder;
         var $addTagLink = $('<a href="#" class="add_tag_link blue btn" id="add_order_item">Add Item</a>');
-        var $newLinkLi = $('<div style="float: right;display: none;" class="hide_button" ></div>').append($addTagLink);
+        var $newLinkLi = $('<div style="float: right;display: none;margin-top: -70px!important;" class="hide_button" ></div>').append($addTagLink);
         $collectionHolder = $('span.tags');
         $collectionHolder.append($newLinkLi);
         $collectionHolder.data('index', $collectionHolder.find(':input').length);
