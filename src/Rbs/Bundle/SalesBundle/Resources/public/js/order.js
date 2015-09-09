@@ -7,11 +7,12 @@ var Order = function()
 
         $collectionHolder.data('index', index + 1);
         var $newFormLi = $('<div></div>').append(newForm);
-        $newLinkLi.before($newFormLi);
+        $newLinkLi.after($newFormLi);
 
         $("#order_orderItems_" + index + "_item").change(function () {
             var item = $(this).val();
             findItem(item, index);
+            findStockItem(item, index);
         });
 
         $("#order_orderItems_" + index + "_remove").click(function () {
@@ -34,20 +35,50 @@ var Order = function()
         });
     }
 
-    function totalPriceCalculation() {
+    function findStockItem(item, index) {
+        $.ajax({
+            type: "post",
+            url: Routing.generate('find_stock_item_ajax'),
+            data: "item=" + item,
+            dataType: 'json',
+            success: function (response) {
+                var onHand = response.onHand;
+                var onHold = response.onHold;
+                var available = response.available;
 
+                if(available==1){
+                    availableOnDemand = 'AvailableOnDemand';
+                }else{
+                    availableOnDemand = parseFloat(onHand)-parseFloat(onHold);
+                }
+
+                $( "div#availableOnDemand" ).html(availableOnDemand);
+            }
+        });
+    }
+
+    function totalPriceCalculation() {
+        var subTotal = 0;
+        var totalAmount = 0;
         var price = parseFloat($(this).closest('td').parent('tr').find('.price').val());
         var quantity = parseFloat($(this).closest('td').parent('tr').find('.quantity').val());
         if (!price) { price = 0; }
         if (!quantity) { quantity = 0; }
         $(this).closest('td').parent('tr').find('.total_price').val(price * quantity);
+
+        $('.total_price').each(function() {
+            subTotal = parseFloat($(this).val());
+            totalAmount += subTotal;
+        });
+
+        $("#order_totalAmount").val(totalAmount);
     }
 
     function newOrder()
     {
         var $collectionHolder;
         var $addTagLink = $('<a href="#" class="add_tag_link blue btn" id="add_order_item">Add Item</a>');
-        var $newLinkLi = $('<div style="float: right;display: none;" class="hide_button" ></div>').append($addTagLink);
+        var $newLinkLi = $('<div style="float: right;display: none;margin-top: -70px!important;" class="hide_button" ></div>').append($addTagLink);
         $collectionHolder = $('span.tags');
         $collectionHolder.append($newLinkLi);
         $collectionHolder.data('index', $collectionHolder.find(':input').length);

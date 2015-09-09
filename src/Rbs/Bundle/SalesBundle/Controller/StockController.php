@@ -12,6 +12,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * User Controller.
@@ -68,6 +69,31 @@ class StockController extends Controller
         $query->addWhereAll($function);
 
         return $query->getResponse();
+    }
+
+    /**
+     * find stock item ajax
+     * @Route("find_stock_item_ajax", name="find_stock_item_ajax", options={"expose"=true})
+     * @param Request $request
+     * @return Response
+     */
+    public function findItemAction(Request $request)
+    {
+        $item = $request->request->get('item');
+
+        $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(array(
+            'item' => $item
+        ));
+
+        $response = new Response(json_encode(array(
+            'onHand' => $stock->getOnHand(),
+            'onHold' => $stock->getOnHold(),
+            'available' => $stock->isAvailableOnDemand(),
+        )));
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
     }
 
     /**

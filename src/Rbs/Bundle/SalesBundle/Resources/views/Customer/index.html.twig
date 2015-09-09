@@ -12,10 +12,12 @@
                 </div>
             </div>
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_create'), label: 'Add New Customer', 'icon': 'plus'}) }}
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_group_create'), label: 'Add New Customer Group', 'icon': 'plus'}) }}
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_groups_home'), label: 'View Customer Group', 'icon': 'plus'}) }}
-                <div class="dataTables_wrapper no-footer">
+                <div>
+                <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_create'), label: 'Add New Customer', 'icon': 'plus'}) }}</div>
+                <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_group_create'), label: 'Add New Customer Group', 'icon': 'plus'}) }}</div>
+                <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_groups_home'), label: 'View Customer Group', 'icon': 'plus'}) }}</div>
+                </div>
+                    <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}
                     <div style="clear: both"></div>
                 </div>
@@ -29,6 +31,7 @@
     {{ parent() }}
     {% stylesheets
     'assets/global/plugins/datatables/examples/resources/bootstrap/3/dataTables.bootstrap.css'
+    "bundles/rbssales/css/style.css"
     filter='cssrewrite' output='css/compiled/datatable.css' %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}

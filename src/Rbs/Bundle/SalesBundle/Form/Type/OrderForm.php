@@ -38,6 +38,9 @@ class OrderForm extends AbstractType
                 }
             ))
             ->add('orderVia', 'text')
+            ->add('totalAmount', 'text', array(
+                'read_only' => true
+            ))
             ->add('refSMS', 'entity', array(
                 'class' => 'RbsSalesBundle:Sms',
                 'property' => 'cellNumber',
