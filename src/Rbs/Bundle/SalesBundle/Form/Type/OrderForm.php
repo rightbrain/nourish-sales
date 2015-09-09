@@ -37,7 +37,6 @@ class OrderForm extends AbstractType
                         ->orderBy('u.username','ASC');
                 }
             ))
-            ->add('orderVia', 'text')
             ->add('totalAmount', 'text', array(
                 'read_only' => true
             ))

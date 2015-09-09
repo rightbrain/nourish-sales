@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -85,15 +86,15 @@ class StockController extends Controller
             'item' => $item
         ));
 
-        $response = new Response(json_encode(array(
-            'onHand' => $stock->getOnHand(),
-            'onHold' => $stock->getOnHold(),
+        $response = array(
+            'onHand'    => $stock->getOnHand(),
+            'onHold'    => $stock->getOnHold(),
             'available' => $stock->isAvailableOnDemand(),
-        )));
+            'price'     => $stock->getItem()->getPrice(),
+            'itemUnit'  => $stock->getItem()->getItemUnit(),
+        );
 
-        $response->headers->set('Content-Type', 'application/json');
-
-        return $response;
+        return new JsonResponse($response);
     }
 
     /**
