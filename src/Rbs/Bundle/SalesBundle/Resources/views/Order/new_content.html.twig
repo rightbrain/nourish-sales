@@ -51,7 +51,15 @@
         {{ include('RbsSalesBundle:Order:order_item_content.html.twig', { 'form': form.orderItems.vars.prototype }) }}
         {% endfilter %}">
             {% for orderItem in form.orderItems %}
-
+                <tr>
+                    <td>{{ form_widget(orderItem.item, { 'attr': {}}) }}</td>
+                    <td>{{ form_widget(orderItem.quantity, { 'attr': {'class': 'quantity'}}) }}</td>
+                    <td class="item-unit text-center"></td>
+                    <td class="stock-available text-center"></td>
+                    <td class="item-price">{{ form_widget(orderItem.price, { 'attr': {'class': 'price'}}) }}</td>
+                    <td>{{ form_widget(orderItem.totalAmount, { 'attr': {'class': 'total_price'}} ) }}</td>
+                    <td>{{ form_widget(orderItem.remove) }}</td>
+                </tr>
             {% endfor %}
             </tbody>
             <tfoot>
