@@ -39,7 +39,7 @@ class Order
     /**
      * @var Customer
      *
-     * @ORM\OneToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Customer")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Customer")
      * @ORM\JoinColumn(name="customer", nullable=false)
      */
     private $customer;
