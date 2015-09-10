@@ -27,7 +27,6 @@ class OrderDatatable extends BaseDatatable
         $this->columnBuilder
             ->add('id', 'column', array('title' => 'OrderID'))
             ->add('customer.user.username', 'column', array('title' => 'Customer'))
-            ->add('customer.user.username', 'column', array('title' => 'Customer'))
             ->add('deliveryState', 'column', array('title' => 'Delivery'))
             ->add('paymentState', 'column', array('title' => 'Payment'))
             ->add('orderState', 'column', array('title' => 'Order'))

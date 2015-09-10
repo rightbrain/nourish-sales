@@ -96,7 +96,7 @@ class OrderController extends Controller
 
     /**
      * @Route("/order-update/{id}", name="order_update", options={"expose"=true})
-     * @Template("RbsSalesBundle:Order:new.html.twig")
+     * @Template("RbsSalesBundle:Order:edit.html.twig")
      * @param Request $request
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response

@@ -1,5 +1,37 @@
 var Order = function()
 {
+    var customer = $("#order_customer").val();
+    if (customer) {
+        $.ajax({
+            type: "post",
+            url: Routing.generate('find_customer_ajax'),
+            data: "customer=" + customer,
+            dataType: 'json',
+            success: function (response) {
+                var creditLimit = response.creditLimit;
+                $("div.credit_limit").html(creditLimit);
+            },
+            error: function(){
+                Metronic.unblockUI();
+            }
+        });
+    }
+
+    function bindItemChangeEvent(collectionHolder) {
+        collectionHolder.find('tr').each(function(index, elm){
+            $(elm).find('select').change(function(){
+                findStockItem($(this).val(), index);
+
+                $("#order_orderItems_" + index + "_remove").click(function () {
+                    var parent = $(this).closest('tr');
+                    parent.remove();
+                    totalAmountCalculate();
+                });
+
+            }).trigger('change');
+        });
+    }
+
     function addItemForm($collectionHolder) {
         var prototype = $collectionHolder.data('prototype');
         var index = $collectionHolder.data('index');
@@ -97,7 +129,9 @@ var Order = function()
         }
         row.find('.item-price input').val(price);
         row.find('.stock-available').text(stockAvailableInfo);
-        row.find('.quantity').val(0);
+        if (itemQty) {
+            row.find('.quantity').val(itemQty);
+        }
         row.find('.item-unit').text(itemUnit);
     }
 
@@ -120,7 +154,7 @@ var Order = function()
         var $addTagLink = $('#add_order_item');
         $collectionHolder = $('tbody.tags');
         $collectionHolder.data('index', $collectionHolder.find(':input').length);
-
+        bindItemChangeEvent($collectionHolder);
         $addTagLink.on('click', function(e) {
             e.preventDefault();
             addItemForm($collectionHolder);
