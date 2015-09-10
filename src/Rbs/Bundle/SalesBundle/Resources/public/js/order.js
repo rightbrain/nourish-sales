@@ -19,8 +19,7 @@ var Order = function()
                 bootbox.alert("Minimum One Item Require.");
                 return false;
             }
-            var parent = $(this).closest('tr');
-            parent.remove();
+            $('#order-item-'+index).remove();
             totalAmountCalculate();
         });
     }
@@ -28,7 +27,16 @@ var Order = function()
     function findStockItem(item, index) {
         var collectionHolder = $('.order-item-list');
         if (item == "") {
-            setOrderItemValue(collectionHolder, index, 0, 0, false, 0, 0);
+            setOrderItemValue(index, 0, 0, false, 0, '');
+            totalAmountCalculate();
+            return false;
+        }
+
+        // Check Duplicate Item Select
+        if (isItemExits(collectionHolder, item, index)) {
+            var selectedItem = $('#order-item-'+index).find('select');
+            toastr.error(selectedItem.find(":selected").text() + " Item Already Selected.");
+            selectedItem.val("").trigger('change');
             return false;
         }
 
@@ -49,7 +57,7 @@ var Order = function()
                 var available = response.available;
                 var price = response.price;
                 var itemUnit = response.itemUnit;
-                setOrderItemValue(collectionHolder, index, onHand, onHold, available, price, itemUnit);
+                setOrderItemValue(index, onHand, onHold, available, price, itemUnit);
                 Metronic.unblockUI(collectionHolder);
             },
             error: function(){
@@ -63,7 +71,9 @@ var Order = function()
         var totalAmount = 0;
         $('.total_price').each(function () {
             subTotal = parseFloat($(this).val());
-            totalAmount += subTotal;
+            if (subTotal) {
+                totalAmount += subTotal;
+            }
         });
 
         $("#order_totalAmount").val(totalAmount);
@@ -78,9 +88,10 @@ var Order = function()
         totalAmountCalculate();
     }
 
-    function setOrderItemValue(collectionHolder, index, onHand, onHold, availableOnDemand, price, itemUnit){
-        var row = collectionHolder.find('tbody tr:eq('+index+')');
+    function setOrderItemValue(index, onHand, onHold, availableOnDemand, price, itemUnit){
+        var row = $('#order-item-'+index);
         var stockAvailableInfo = 'Available On Demand';
+
         if (!availableOnDemand) {
             stockAvailableInfo = parseInt(onHand) - parseInt(onHold);
         }
@@ -88,6 +99,19 @@ var Order = function()
         row.find('.stock-available').text(stockAvailableInfo);
         row.find('.quantity').val(0);
         row.find('.item-unit').text(itemUnit);
+    }
+
+    function isItemExits(collectionHolder, item, index)
+    {
+        var found = false;
+        collectionHolder.find('tbody tr').not('#order-item-'+index).each(function(i, el){
+            if (item == $(el).find('select').val()) {
+                found = true;
+                return false;
+            }
+        });
+
+        return found;
     }
 
     function newOrder()
@@ -133,7 +157,7 @@ var Order = function()
             }
         });
 
-        $('.quantity').live("click keyup", (totalPriceCalculation));
+        $('.order-item-list tbody').on("click keyup", ".quantity", (totalPriceCalculation));
     }
 
     function init()

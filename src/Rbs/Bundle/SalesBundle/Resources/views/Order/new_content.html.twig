@@ -42,8 +42,8 @@
                 <th style="width: 20px;" class="text-center">Unit</th>
                 <th style="width: 150px;" class="text-center">Available</th>
                 <th style="width: 50px;">Price</th>
-                <th style="width: 50px;">Total</th>
-                <th style="width: 120px;"></th>
+                <th style="width: 70px;">Total</th>
+                <th style="width: 70px;"></th>
             </tr>
             </thead>
             <tbody id="orderItems" class="tags" data-prototype="
@@ -61,8 +61,7 @@
                 <td></td>
                 <td></td>
                 <th>Total</th>
-                <th>{{ form_widget(form.totalAmount, { 'attr': {'style': ''}} ) }}</th>
-                <td></td>
+                <th colspan="2">{{ form_widget(form.totalAmount, { 'attr': {'style': ''}} ) }}</th>
             </tr>
             <tr>
                 <td colspan="6"></td>
