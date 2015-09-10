@@ -23,13 +23,21 @@ var Order = function()
                 findStockItem($(this).val(), index);
 
                 $("#order_orderItems_" + index + "_remove").click(function () {
-                    var parent = $(this).closest('tr');
-                    parent.remove();
-                    totalAmountCalculate();
+                    deleteOrderItemHandler(collectionHolder, index);
                 });
 
             }).trigger('change');
         });
+    }
+
+    function deleteOrderItemHandler(collectionHolder, index)
+    {
+        if (collectionHolder.find('tr').length == 1) {
+            bootbox.alert("Minimum One Item Require.");
+            return false;
+        }
+        $('#order-item-'+index).remove();
+        totalAmountCalculate();
     }
 
     function addItemForm($collectionHolder) {
@@ -47,12 +55,7 @@ var Order = function()
         });
 
         $("#order_orderItems_" + index + "_remove").click(function () {
-            if ($collectionHolder.find('tr').length == 1) {
-                bootbox.alert("Minimum One Item Require.");
-                return false;
-            }
-            $('#order-item-'+index).remove();
-            totalAmountCalculate();
+            deleteOrderItemHandler($collectionHolder, index);
         });
     }
 
@@ -65,12 +68,12 @@ var Order = function()
         }
 
         // Check Duplicate Item Select
-        if (isItemExits(collectionHolder, item, index)) {
+        /*if (isItemExits(collectionHolder, item, index)) {
             var selectedItem = $('#order-item-'+index).find('select');
             toastr.error(selectedItem.find(":selected").text() + " Item Already Selected.");
             selectedItem.val("").trigger('change');
             return false;
-        }
+        }*/
 
         Metronic.blockUI({
             target: collectionHolder,
@@ -89,7 +92,8 @@ var Order = function()
                 var available = response.available;
                 var price = response.price;
                 var itemUnit = response.itemUnit;
-                setOrderItemValue(index, onHand, onHold, available, price, itemUnit);
+                console.log(index);
+                setOrderItemValue(index, onHand, onHold, available, price, itemUnit, false);
                 Metronic.unblockUI(collectionHolder);
             },
             error: function(){
@@ -120,8 +124,9 @@ var Order = function()
         totalAmountCalculate();
     }
 
-    function setOrderItemValue(index, onHand, onHold, availableOnDemand, price, itemUnit){
+    function setOrderItemValue(index, onHand, onHold, availableOnDemand, price, itemUnit, itemQty){
         var row = $('#order-item-'+index);
+        console.log(row);
         var stockAvailableInfo = 'Available On Demand';
 
         if (!availableOnDemand) {

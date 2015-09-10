@@ -3,7 +3,7 @@
 <div class="form-group">
     <label class="col-md-2 control-label">Customer</label>
     <div class="col-md-6" style="margin-top: 10px;">
-        {{ form_widget(form.customer) }}
+        {{ order.customer.user.profile.fullName }}
         {#{{ form_widget(form.customer, { 'attr':{'disabled':'disabled'} }) }}#}
     </div>
 </div>
@@ -43,16 +43,16 @@
             <th style="width: 20px;" class="text-center">Unit</th>
             <th style="width: 150px;" class="text-center">Available</th>
             <th style="width: 50px;">Price</th>
-            <th style="width: 50px;">Total</th>
-            <th style="width: 120px;"></th>
+            <th style="width: 70px;">Total</th>
+            <th style="width: 70px;"></th>
         </tr>
         </thead>
         <tbody id="orderItems" class="tags" data-prototype="
         {% filter escape %}
         {{ include('RbsSalesBundle:Order:order_item_content.html.twig', { 'form': form.orderItems.vars.prototype }) }}
         {% endfilter %}">
-        {% for orderItem in form.orderItems %}
-            <tr>
+        {% for i, orderItem in form.orderItems %}
+            <tr id="order-item-{{ i }}">
                 <td>{{ form_widget(orderItem.item) }}</td>
                 <td>{{ form_widget(orderItem.quantity, { 'attr': {'class': 'quantity'}}) }}</td>
                 <td class="item-unit text-center"></td>
@@ -70,8 +70,7 @@
             <td></td>
             <td></td>
             <th>Total</th>
-            <th>{{ form_widget(form.totalAmount, { 'attr': {'style': ''}} ) }}</th>
-            <td></td>
+            <th colspan="2">{{ form_widget(form.totalAmount, { 'attr': {'style': ''}} ) }}</th>
         </tr>
         <tr>
             <td colspan="6"></td>

@@ -19,33 +19,37 @@ class OrderForm extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('customer', 'entity', array(
-                'class' => 'RbsSalesBundle:Customer',
-                'property' => 'user.username',
-                'required' => false,
-                'empty_value' => 'Select Customer',
-                'empty_data' => null,
-                'query_builder' => function (CustomerRepository $repository)
-                {
-                    return $repository->createQueryBuilder('c')
-                        ->join('c.user', 'u')
-                        ->where('u.deletedAt IS NULL')
-                        ->andWhere('u.enabled = 1')
-                        ->andWhere('u.userType = :CUSTOMER')
-                        ->setParameter('CUSTOMER', 'CUSTOMER')
-                        ->orderBy('u.username','ASC');
-                }
-            ))
-            ->add('totalAmount', 'text', array(
+        $customer = $options['data']->getCustomer();
+        if (!$customer) {
+            $builder
+                ->add('customer', 'entity', array(
+                    'class' => 'RbsSalesBundle:Customer',
+                    'property' => 'user.username',
+                    'required' => false,
+                    'empty_value' => 'Select Customer',
+                    'empty_data' => null,
+                    'query_builder' => function (CustomerRepository $repository)
+                    {
+                        return $repository->createQueryBuilder('c')
+                            ->join('c.user', 'u')
+                            ->where('u.deletedAt IS NULL')
+                            ->andWhere('u.enabled = 1')
+                            ->andWhere('u.userType = :CUSTOMER')
+                            ->setParameter('CUSTOMER', 'CUSTOMER')
+                            ->orderBy('u.username','ASC');
+                    }
+                ));
+        }
+
+        $builder->add('totalAmount', 'text', array(
                 'read_only' => true
             ))
             ->add('refSMS', 'entity', array(
-                'class' => 'RbsSalesBundle:Sms',
-                'property' => 'cellNumber',
-                'required' => false,
-                'empty_value' => 'Select SMS',
-                'empty_data' => null,
+                'class'         => 'RbsSalesBundle:Sms',
+                'property'      => 'cellNumber',
+                'required'      => false,
+                'empty_value'   => 'Select SMS',
+                'empty_data'    => null,
                 'query_builder' => function (SmsRepository $repository)
                 {
                     return $repository->createQueryBuilder('sms')
@@ -60,13 +64,14 @@ class OrderForm extends AbstractType
         ;
         $builder
             ->add('orderItems', 'collection', array(
-                'type' => new OrderItemForm(),
+                'type'         => new OrderItemForm(),
                 'allow_add'    => true,
                 'allow_delete' => true,
-                'prototype' => true,
-                'label_attr' => array(
-                    'class' => 'hidden'
-                )
+                'by_reference' => false,
+                'prototype'    => true,
+                'label_attr'   => array(
+                    'class' => 'hidden',
+                ),
             ))
         ;
         $builder

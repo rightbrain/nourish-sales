@@ -106,20 +106,17 @@ class OrderController extends Controller
         $form = $this->createForm(new OrderForm(), $order);
 
         if ('POST' === $request->getMethod()) {
+            $oldItems = $order->getOrderItems();
             $form->handleRequest($request);
-            $totalAmount = 0;
 
             if ($form->isValid()) {
 
                 /** @var OrderItem $orderItems */
                 foreach ($order->getOrderItems() as $orderItems) {
-                    $orderItems->getQuantity();
                     $orderItems->setOrder($order);
-                    $orderItems->setTotalAmount($orderItems->getQuantity() * $orderItems->getPrice());
-
-                    $totalAmount += $orderItems->getTotalAmount();
+                    $orderItems->calculateTotalAmount(true);
                 }
-                $order->setTotalAmount($totalAmount);
+                $order->setTotalAmount($order->getItemsTotalAmount());
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
 
@@ -134,6 +131,7 @@ class OrderController extends Controller
 
         return array(
             'form' => $form->createView(),
+            'order' => $order
         );
     }
 

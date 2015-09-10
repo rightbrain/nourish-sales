@@ -32,7 +32,7 @@ class Order
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\OrderItem", mappedBy="order", cascade={"persist", "remove"})
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\OrderItem", mappedBy="order", cascade={"persist", "remove"}, orphanRemoval=true))
      */
     private $orderItems;
 
@@ -139,16 +139,18 @@ class Order
         }
     }
 
-    public function addOrderItems(OrderItem $item)
+    public function addOrderItem(OrderItem $item)
     {
-        $item->setOrder($this);
-        $this->orderItems[] = $item;
+        if (!$this->orderItems->contains($item)) {
+            $this->orderItems->add($item);
+        }
 
         return $this;
     }
 
-    public function removeOrderItems(OrderItem $item)
+    public function removeOrderItem(OrderItem $item)
     {
+        $item->setOrder(null);
         $this->orderItems->removeElement($item);
     }
 
