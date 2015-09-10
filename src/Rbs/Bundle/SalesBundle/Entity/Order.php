@@ -291,7 +291,7 @@ class Order
     }
 
     /**
-     * @return mixed
+     * @return Sms
      */
     public function getRefSMS()
     {

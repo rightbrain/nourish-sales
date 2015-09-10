@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\Sms;
 
 /**
  * SmsRepository
@@ -12,5 +13,10 @@ use Doctrine\ORM\EntityRepository;
  */
 class SmsRepository extends EntityRepository
 {
-
+    public function removeOrder(Sms $sms)
+    {
+        $sms->setOrder(null);
+        $this->_em->persist($sms);
+        $this->_em->flush();
+    }
 }

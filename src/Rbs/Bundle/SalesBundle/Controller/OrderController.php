@@ -106,7 +106,7 @@ class OrderController extends Controller
         $form = $this->createForm(new OrderForm(), $order);
 
         if ('POST' === $request->getMethod()) {
-            $oldItems = $order->getOrderItems();
+            $sms = $order->getRefSMS();
             $form->handleRequest($request);
 
             if ($form->isValid()) {
@@ -118,6 +118,7 @@ class OrderController extends Controller
                 }
                 $order->setTotalAmount($order->getItemsTotalAmount());
 
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
 
                 $this->get('session')->getFlashBag()->add(

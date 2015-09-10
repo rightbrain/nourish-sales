@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\Order;
 
 /**
  * OrderRepository
@@ -17,9 +18,10 @@ class OrderRepository extends EntityRepository
         return $this->findAll();
     }
 
-    public function create($data)
+    public function create(Order $data)
     {
         $this->_em->persist($data);
+        $data->getRefSMS()->setOrder($data);
         $this->_em->flush();
     }
 

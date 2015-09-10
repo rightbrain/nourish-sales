@@ -20,6 +20,8 @@ class OrderForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $customer = $options['data']->getCustomer();
+        $refSMS = $options['data']->getRefSms();
+
         if (!$customer) {
             $builder
                 ->add('customer', 'entity', array(
@@ -50,14 +52,18 @@ class OrderForm extends AbstractType
                 'required'      => false,
                 'empty_value'   => 'Select SMS',
                 'empty_data'    => null,
-                'query_builder' => function (SmsRepository $repository)
+                'query_builder' => function (SmsRepository $repository) use ($refSMS)
                 {
-                    return $repository->createQueryBuilder('sms')
+                    $query = $repository->createQueryBuilder('sms')
                         ->where('sms.deletedAt IS NULL')
                         ->andWhere('sms.status = :UNREAD')
                         ->andWhere('sms.order IS NULL')
                         ->setParameter('UNREAD', 'UNREAD')
                         ->orderBy('sms.id','DESC');
+                    if ($refSMS) {
+                        $query->orWhere("sms.id = :smsId")->setParameter("smsId", $refSMS->getId());
+                    }
+                    return $query;
                 }
             ))
             ->add('remark')
