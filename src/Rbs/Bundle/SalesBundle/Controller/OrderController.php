@@ -147,4 +147,16 @@ class OrderController extends Controller
             'order' => $order
         ));
     }
+
+    /**
+     * @Route("/order-summery-view/{id}", name="order_summery_view", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function stockHistoryAction(Order $order)
+    {
+        return $this->render('RbsSalesBundle:Order:summeryView.html.twig', array(
+            'order' => $order
+        ));
+    }
 }

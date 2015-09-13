@@ -73,6 +73,33 @@ class OrderDatatable extends BaseDatatable
                     )
                 )
             ))
+            ->add(null, 'action', array(
+                'width' => '200px',
+                'title' => 'Summery View',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'order_summery_view',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Summery View',
+                        'icon' => 'glyphicon',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'show-action',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button',
+                            'data-target' => "#ajaxSummeryView",
+                            'data-toggle'=>"modal"
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_ADMIN',
+                    )
+                )
+            ))
         ;
     }
 
