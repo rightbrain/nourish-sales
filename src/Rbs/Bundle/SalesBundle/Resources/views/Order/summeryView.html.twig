@@ -52,11 +52,13 @@
     </div>
 </div>
 <div class="modal-footer">
-    <a class="btn blue" href="{{ path('order_approve', {"id": order.id}) }}">
-        Order Approve
-    </a>
-    <a class="btn blue" href="{{ path('order_update', {"id": order.id}) }}" target="_blank">
-       Edit
-    </a>
+    {% if order.orderState == 'PENDING' %}
+        <a class="btn blue" href="{{ path('order_approve', {"id": order.id}) }}">
+            Order Approve
+        </a>
+        <a class="btn blue" href="{{ path('order_update', {"id": order.id}) }}" target="_blank">
+           Edit
+        </a>
+    {% endif %}
 </div>
 <div style="clear: both"></div>

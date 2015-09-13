@@ -317,4 +317,14 @@ class Order
 
         return $total;
     }
+
+    public function isPending()
+    {
+        $state = false;
+        if($this->orderState == 'PENDING'){
+            $state = true;
+        }
+
+        return $state;
+    }
 }
