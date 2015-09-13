@@ -112,7 +112,6 @@ class OrderController extends Controller
     public function updateAction(Request $request, Order $order)
     {
         $form = $this->createForm(new OrderForm(), $order);
-        $approveState = $request->server->get('QUERY_STRING');
 
         if ('POST' === $request->getMethod()) {
             $sms = $order->getRefSMS();
@@ -127,9 +126,9 @@ class OrderController extends Controller
                 }
                 $order->setTotalAmount($order->getItemsTotalAmount());
 
-                if($approveState == 'PROCESSING'){
-                    $order->setOrderState('PROCESSING');
-                }
+                $order->setOrderState('PROCESSING');
+                $order->setPaymentState('PENDING');
+                $order->setDeliveryState('PENDING');
 
                 if($order->getRefSMS()){
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
@@ -189,6 +188,13 @@ class OrderController extends Controller
      */
     public function summeryViewAction(Order $order)
     {
+        $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
+        /** @var OrderItem $item */
+        foreach ($order->getOrderItems() as $item) {
+            $stockItem = $stockRepo->findOneBy(array('item' => $item->getItem()->getId()));
+            $item->isAvailable = $stockItem->isStockAvailable($item->getQuantity());
+        }
+
         return $this->render('RbsSalesBundle:Order:summeryView.html.twig', array(
             'order' => $order
         ));
