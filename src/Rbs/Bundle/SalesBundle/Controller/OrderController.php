@@ -78,6 +78,10 @@ class OrderController extends Controller
                 }
                 $order->setTotalAmount($order->getItemsTotalAmount());
 
+                $order->setOrderState('PENDING');
+                $order->setPaymentState('PENDING');
+                $order->setDeliveryState('PENDING');
+
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
 
                 $this->get('session')->getFlashBag()->add(
