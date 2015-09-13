@@ -38,6 +38,7 @@
     {{ parent() }}
     {% stylesheets
     'assets/global/plugins/datatables/examples/resources/bootstrap/3/dataTables.bootstrap.css'
+    "bundles/rbssales/css/style.css"
     filter='cssrewrite' output='css/compiled/datatable.css' %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
