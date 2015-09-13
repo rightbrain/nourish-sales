@@ -17,12 +17,27 @@ class OrderDatatable extends BaseDatatable
     public function buildDatatable()
     {
         $this->features->setFeatures($this->defaultFeatures());
-        $this->options->setOptions($this->defaultOptions());
+        $this->options->setOptions(array_merge($this->defaultOptions(), array(
+            'individual_filtering' => true,
+            'individual_filtering_position' => 'head'
+        )));
 
         $this->ajax->setOptions(array(
             'url' => $this->router->generate('orders_list_ajax'),
             'type' => 'GET'
         ));
+
+        $this->callbacks->setCallbacks(array
+            (
+                'draw_callback' => "function( settings ) {
+                        console.log('draw callback');
+                    }",
+                'pre_draw_callback' => "function( settings ) {
+                        preinitDatatable();
+                        console.log('pre draw');
+                    }"
+            )
+        );
 
         $this->columnBuilder
             ->add('id', 'column', array('title' => 'OrderID'))

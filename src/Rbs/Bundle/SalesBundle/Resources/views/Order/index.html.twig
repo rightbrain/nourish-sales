@@ -3,7 +3,53 @@
 {% block title %}{{ parent() }} : Order {% endblock %}
 
 {% block body %}
-
+    <style>
+        .dataTables_scrollHead table thead tr:nth-child(2), .dataTables_wrapper.no-footer table tfoot tr{
+            display: none;
+        }
+        #external_filter_container > div{
+            display: inline-block;
+            margin-right: 5px;
+        }
+    </style>
+    <script>
+        function preinitDatatable(){
+            $('.dataTables_scrollHead').find('table thead tr').eq(1).remove();
+            if (!$('#external_filter_container').length) {
+                $('<div id="external_filter_container">' +
+                        'Filter: <div id="order-status"></div>' +
+                        '<div id="order-payment-status"></div>' +
+                        '<div id="order-delivery-status"></div>' +
+                        '</div>').appendTo('#order_datatable_filter');
+            }
+            $("#order_datatable").dataTable().yadcf([
+                        {
+                            column_number: 2,
+                            data: ["On Hold", "PENDING", "PARTIALLY_SHIPPED", "SHIPPED"],
+                            filter_container_id: "order-payment-status",
+                            filter_reset_button_text: false,
+                            filter_default_label: "Delivery State"
+                        },
+                        {
+                            column_number: 3,
+                            data: ["PENDING", "PARTIALLY_PAID", "PAID"],
+                            filter_container_id: "order-delivery-status",
+                            filter_reset_button_text: false,
+                            filter_default_label: "Payment State"
+                        },
+                        {
+                            column_number: 4,
+                            data: ["PENDING", "PROCESSING"],
+                            filter_container_id: "order-status",
+                            filter_reset_button_text: false,
+                            filter_default_label: "Order State"
+                        }
+                    ]
+            );
+            $('#order_datatable_filter').find('select').addClass("form-control");
+            $('#order_datatable_filter').addClass('pull-right').find('label').remove();
+        }
+    </script>
     <div class="col-md-12">
         <div class="portlet box blue">
             <div class="portlet-title">
@@ -38,9 +84,16 @@
     'assets/global/plugins/datatables/all.min.js'
     'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js'
     'assets/global/plugins/moment.min.js'
+    'assets/global/plugins/datatables/extensions/yadcf/jquery.dataTables.yadcf.js'
     output='js/compiled/datatable.js' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
     {{ datatable_render_js(datatable) }}
 {% endblock %}
+
+{% block documentReady %}
+    {{ parent() }}
+    {#<script>#}
+
+{% endblock documentReady %}
