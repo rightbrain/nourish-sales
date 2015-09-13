@@ -73,7 +73,7 @@
             <th colspan="2">{{ form_widget(form.totalAmount, { 'attr': {'style': ''}} ) }}</th>
         </tr>
         <tr>
-            <td colspan="6"></td>
+            <td colspan="6"><input id="order_customer" type="hidden" value="{{ order.customer.id }}"></td>
             <td>{{ form_row(form.submit) }}</td>
         </tr>
         </tfoot>
