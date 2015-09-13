@@ -176,7 +176,7 @@ class Stock
         return $this;
     }
 
-    public function isStockAvailable()
+    public function isStockAvailable($quantity = 0)
     {
         if ($this->item && $this->item->isDeleted()) {
             return false;
@@ -186,6 +186,6 @@ class Stock
             return true;
         }
 
-        return 0 < ($this->getOnHand() - $this->getOnHold());
+        return $quantity < ($this->getOnHand() - $this->getOnHold());
     }
 }

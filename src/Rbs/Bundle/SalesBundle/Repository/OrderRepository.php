@@ -21,7 +21,9 @@ class OrderRepository extends EntityRepository
     public function create(Order $data)
     {
         $this->_em->persist($data);
-        $data->getRefSMS()->setOrder($data);
+        if($data->getRefSMS()){
+            $data->getRefSMS()->setOrder($data);
+        }
         $this->_em->flush();
     }
 
@@ -31,9 +33,12 @@ class OrderRepository extends EntityRepository
         $this->_em->flush();
     }
 
-    public function update($data)
+    public function update(Order $data)
     {
         $this->_em->persist($data);
+        if($data->getRefSMS()){
+            $data->getRefSMS()->setOrder($data);
+        }
         $this->_em->flush();
         return $this->_em;
     }

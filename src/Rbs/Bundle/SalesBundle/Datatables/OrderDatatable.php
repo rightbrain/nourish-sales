@@ -11,6 +11,20 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
  */
 class OrderDatatable extends BaseDatatable
 {
+    public function getLineFormatter()
+    {
+        /** @var Order $order */
+        $formatter = function($line){
+            $order = $this->em->getRepository('RbsSalesBundle:Order')->find($line['id']);
+            $line["enabled"] = $order->isPending();
+            $line["disabled"] = !$order->isPending();
+
+            return $line;
+        };
+
+        return $formatter;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -47,6 +61,8 @@ class OrderDatatable extends BaseDatatable
             ->add('orderState', 'column', array('title' => 'Order'))
             ->add('totalAmount', 'column', array('title' => 'Total Amount'))
             ->add('paidAmount', 'column', array('title' => 'Paid Amount'))
+            ->add('enabled', 'virtual', array('visible' => false))
+            ->add('disabled', 'virtual', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Action',
@@ -69,13 +85,40 @@ class OrderDatatable extends BaseDatatable
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_ADMIN',
+                    )
+                )
+            ))
+            ->add(null, 'action', array(
+                'width' => '200px',
+                'title' => 'Details/Summery',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'order_summery_view',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Summery View',
+                        'icon' => 'glyphicon',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'show-action',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button',
+                            'data-target' => "#ajaxSummeryView",
+                            'data-toggle'=>"modal"
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'render_if' => array('enabled')
                     ),
                     array(
                         'route' => 'order_details',
                         'route_parameters' => array(
                             'id' => 'id'
                         ),
-                        'label' => 'Show',
+                        'label' => 'Show Details',
                         'icon' => 'glyphicon',
                         'attributes' => array(
                             'rel' => 'tooltip',
@@ -84,7 +127,8 @@ class OrderDatatable extends BaseDatatable
                             'role' => 'button'
                         ),
                         'confirm' => false,
-                        'confirm_message' => 'Are you sure?'
+                        'confirm_message' => 'Are you sure?',
+                        'render_if' => array('disabled')
                     )
                 )
             ))

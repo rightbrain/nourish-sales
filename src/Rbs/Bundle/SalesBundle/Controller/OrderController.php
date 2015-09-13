@@ -78,6 +78,14 @@ class OrderController extends Controller
                 }
                 $order->setTotalAmount($order->getItemsTotalAmount());
 
+                $order->setOrderState('PROCESSING');
+                $order->setPaymentState('PENDING');
+                $order->setDeliveryState('PENDING');
+
+                if($order->getRefSMS()){
+                    $order->getRefSMS()->setStatus('READ');
+                }
+
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
 
                 $this->get('session')->getFlashBag()->add(
@@ -118,7 +126,14 @@ class OrderController extends Controller
                 }
                 $order->setTotalAmount($order->getItemsTotalAmount());
 
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
+                $order->setOrderState('PROCESSING');
+                $order->setPaymentState('PENDING');
+                $order->setDeliveryState('PENDING');
+
+                if($order->getRefSMS()){
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
+                }
+
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
 
                 $this->get('session')->getFlashBag()->add(
@@ -144,6 +159,43 @@ class OrderController extends Controller
     public function detailsAction(Order $order)
     {
         return $this->render('RbsSalesBundle:Order:details.html.twig', array(
+            'order' => $order
+        ));
+    }
+
+    /**
+     * @Route("/order-approve/{id}", name="order_approve", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function orderApproveAction(Order $order)
+    {
+        $order->setOrderState('PROCESSING');
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Order Approve Successfully!'
+        );
+
+        return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
+     * @Route("/order-summery-view/{id}", name="order_summery_view", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function summeryViewAction(Order $order)
+    {
+        $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
+        /** @var OrderItem $item */
+        foreach ($order->getOrderItems() as $item) {
+            $stockItem = $stockRepo->findOneBy(array('item' => $item->getItem()->getId()));
+            $item->isAvailable = $stockItem->isStockAvailable($item->getQuantity());
+        }
+
+        return $this->render('RbsSalesBundle:Order:summeryView.html.twig', array(
             'order' => $order
         ));
     }

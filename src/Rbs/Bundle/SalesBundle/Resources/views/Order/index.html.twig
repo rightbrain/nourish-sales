@@ -3,6 +3,18 @@
 {% block title %}{{ parent() }} : Order {% endblock %}
 
 {% block body %}
+
+    <div class="modal fade" id="ajaxSummeryView" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="{{ asset('assets/global/img/loading-spinner-grey.gif') }}" alt="" class="loading">
+                    <span> &nbsp;&nbsp;Loading... </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <style>
         .dataTables_scrollHead table thead tr:nth-child(2), .dataTables_wrapper.no-footer table tfoot tr{
             display: none;
@@ -73,6 +85,7 @@
     {{ parent() }}
     {% stylesheets
     'assets/global/plugins/datatables/examples/resources/bootstrap/3/dataTables.bootstrap.css'
+    "bundles/rbssales/css/style.css"
     filter='cssrewrite' output='css/compiled/datatable.css' %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
@@ -91,9 +104,3 @@
 
     {{ datatable_render_js(datatable) }}
 {% endblock %}
-
-{% block documentReady %}
-    {{ parent() }}
-    {#<script>#}
-
-{% endblock documentReady %}

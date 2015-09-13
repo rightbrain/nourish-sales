@@ -47,7 +47,7 @@ class Order
     /**
      * @var array $type
      *
-     * @ORM\Column(name="delivery_state", type="string", length=255, columnDefinition="ENUM('ON_HOLD', 'READY', 'PARTIALLY_SHIPPED', 'SHIPPED')", nullable=true)
+     * @ORM\Column(name="delivery_state", type="string", length=255, columnDefinition="ENUM('PENDING', 'ON_HOLD', 'READY', 'PARTIALLY_SHIPPED', 'SHIPPED')", nullable=true)
      */
     private $deliveryState;
 
@@ -316,5 +316,15 @@ class Order
         }
 
         return $total;
+    }
+
+    public function isPending()
+    {
+        $state = false;
+        if($this->orderState == 'PENDING'){
+            $state = true;
+        }
+
+        return $state;
     }
 }
