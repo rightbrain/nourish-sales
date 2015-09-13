@@ -78,9 +78,13 @@ class OrderController extends Controller
                 }
                 $order->setTotalAmount($order->getItemsTotalAmount());
 
-                $order->setOrderState('PENDING');
+                $order->setOrderState('PROCESSING');
                 $order->setPaymentState('PENDING');
-                $order->setDeliveryState('PROCESSING');
+                $order->setDeliveryState('PENDING');
+
+                if($order->getRefSMS()){
+                    $order->getRefSMS()->setStatus('READ');
+                }
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
 
@@ -108,6 +112,7 @@ class OrderController extends Controller
     public function updateAction(Request $request, Order $order)
     {
         $form = $this->createForm(new OrderForm(), $order);
+        $approveState = $request->server->get('QUERY_STRING');
 
         if ('POST' === $request->getMethod()) {
             $sms = $order->getRefSMS();
@@ -122,7 +127,14 @@ class OrderController extends Controller
                 }
                 $order->setTotalAmount($order->getItemsTotalAmount());
 
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
+                if($approveState == 'PROCESSING'){
+                    $order->setOrderState('PROCESSING');
+                }
+
+                if($order->getRefSMS()){
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
+                }
+
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
 
                 $this->get('session')->getFlashBag()->add(
@@ -175,7 +187,7 @@ class OrderController extends Controller
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function stockHistoryAction(Order $order)
+    public function summeryViewAction(Order $order)
     {
         return $this->render('RbsSalesBundle:Order:summeryView.html.twig', array(
             'order' => $order
