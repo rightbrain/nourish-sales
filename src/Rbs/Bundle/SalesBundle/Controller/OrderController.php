@@ -80,7 +80,7 @@ class OrderController extends Controller
 
                 $order->setOrderState('PENDING');
                 $order->setPaymentState('PENDING');
-                $order->setDeliveryState('PENDING');
+                $order->setDeliveryState('PROCESSING');
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
 
