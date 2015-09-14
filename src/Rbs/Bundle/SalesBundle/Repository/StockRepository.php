@@ -3,6 +3,9 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Entity\OrderItem;
+use Rbs\Bundle\SalesBundle\Entity\Stock;
 
 /**
  * StockRepository
@@ -34,5 +37,28 @@ class StockRepository extends EntityRepository
         $this->_em->persist($data);
         $this->_em->flush();
         return $this->_em;
+    }
+
+    public function updateStock(Order $order)
+    {
+        /** @var OrderItem $orderItem */
+        foreach ($order->getOrderItems() as $orderItem) {
+            /** @var Stock $stock */
+            $stock = $this->findOneBy(array('item' => $orderItem->getItem()->getId()));
+            $stock->setOnHold($stock->getOnHold() + $orderItem->getQuantity());
+            $this->_em->persist($stock);
+        }
+        $this->_em->flush();
+    }
+
+    public function extractOrderItemQuantity(Order $order)
+    {
+        $data = array();
+        /** @var OrderItem $orderItem */
+        foreach ($order->getOrderItems() as $orderItem) {
+            $data[$orderItem->getItem()->getId()] = $orderItem->getQuantity();
+        }
+
+        return $data;
     }
 }

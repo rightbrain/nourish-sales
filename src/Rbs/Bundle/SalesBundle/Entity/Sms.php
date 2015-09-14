@@ -32,7 +32,7 @@ class Sms
      * @var Order
      *
      * @ORM\OneToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order", inversedBy="refSMS")
-     * @ORM\JoinColumn(name="order_id", nullable=true)
+     * @ORM\JoinColumn(name="order_id", nullable=true, onDelete="SET NULL")
      */
     private $order;
 

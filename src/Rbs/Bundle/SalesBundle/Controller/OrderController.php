@@ -71,22 +71,9 @@ class OrderController extends Controller
 
             if ($form->isValid()) {
 
-                /** @var OrderItem $orderItems */
-                foreach ($order->getOrderItems() as $orderItems) {
-                    $orderItems->setOrder($order);
-                    $orderItems->calculateTotalAmount(true);
-                }
-                $order->setTotalAmount($order->getItemsTotalAmount());
-
-                $order->setOrderState('PROCESSING');
-                $order->setPaymentState('PENDING');
-                $order->setDeliveryState('PENDING');
-
-                if($order->getRefSMS()){
-                    $order->getRefSMS()->setStatus('READ');
-                }
-
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
+                $em = $this->getDoctrine()->getManager();
+                $em->getRepository('RbsSalesBundle:Order')->create($order);
+                $em->getRepository('RbsSalesBundle:Stock')->updateStock($order);
 
                 $this->get('session')->getFlashBag()->add(
                     'success',

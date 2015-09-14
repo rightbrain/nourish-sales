@@ -27,7 +27,7 @@ class OrderItem
      * @var Order
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order", inversedBy="orderItems", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="order_id", nullable=true)
+     * @ORM\JoinColumn(name="order_id", nullable=true, onDelete="CASCADE")
      */
     private $order;
 

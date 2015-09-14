@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 
 /**
  * OrderRepository
@@ -18,12 +19,25 @@ class OrderRepository extends EntityRepository
         return $this->findAll();
     }
 
-    public function create(Order $data)
+    public function create(Order $order)
     {
-        $this->_em->persist($data);
-        if($data->getRefSMS()){
-            $data->getRefSMS()->setOrder($data);
+        /** @var OrderItem $orderItems */
+        foreach ($order->getOrderItems() as $orderItems) {
+            $orderItems->setOrder($order);
+            $orderItems->calculateTotalAmount(true);
         }
+        $order->setTotalAmount($order->getItemsTotalAmount());
+
+        $order->setOrderState('PROCESSING');
+        $order->setPaymentState('PENDING');
+        $order->setDeliveryState('PENDING');
+
+        if($order->getRefSMS()){
+            $order->getRefSMS()->setStatus('READ');
+            $order->getRefSMS()->setOrder($order);
+        }
+
+        $this->_em->persist($order);
         $this->_em->flush();
     }
 
