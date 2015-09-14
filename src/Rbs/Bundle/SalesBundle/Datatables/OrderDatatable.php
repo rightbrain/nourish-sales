@@ -16,6 +16,7 @@ class OrderDatatable extends BaseDatatable
         /** @var Order $order */
         $formatter = function($line){
             $order = $this->em->getRepository('RbsSalesBundle:Order')->find($line['id']);
+            $line["isCancel"] = !$order->isCancel();
             $line["isComplete"] = !$order->isComplete();
             $line["enabled"] = $order->isPending();
             $line["disabled"] = !$order->isPending();
@@ -63,6 +64,7 @@ class OrderDatatable extends BaseDatatable
             ->add('totalAmount', 'column', array('title' => 'Total Amount'))
             ->add('paidAmount', 'column', array('title' => 'Paid Amount'))
             ->add('isComplete', 'virtual', array('visible' => false))
+            ->add('isCancel', 'virtual', array('visible' => false))
             ->add('enabled', 'virtual', array('visible' => false))
             ->add('disabled', 'virtual', array('visible' => false))
             ->add(null, 'action', array(
@@ -87,7 +89,7 @@ class OrderDatatable extends BaseDatatable
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_ADMIN',
-                        'render_if' => array('isComplete')
+                        'render_if' => array('isComplete', 'isCancel')
                     )
                 )
             ))
