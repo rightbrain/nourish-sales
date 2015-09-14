@@ -78,9 +78,7 @@ class OrderController extends Controller
                 }
                 $order->setTotalAmount($order->getItemsTotalAmount());
 
-                $order->setOrderState('PROCESSING');
-                $order->setPaymentState('PENDING');
-                $order->setDeliveryState('PENDING');
+                $this->setStatus($order);
 
                 if($order->getRefSMS()){
                     $order->getRefSMS()->setStatus('READ');
@@ -126,9 +124,7 @@ class OrderController extends Controller
                 }
                 $order->setTotalAmount($order->getItemsTotalAmount());
 
-                $order->setOrderState('PROCESSING');
-                $order->setPaymentState('PENDING');
-                $order->setDeliveryState('PENDING');
+                $this->setStatus($order);
 
                 if($order->getRefSMS()){
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
@@ -199,5 +195,15 @@ class OrderController extends Controller
         return $this->render('RbsSalesBundle:Order:summeryView.html.twig', array(
             'order' => $order
         ));
+    }
+
+    /**
+     * @param Order $order
+     */
+    public function setStatus(Order $order)
+    {
+        $order->setOrderState('PROCESSING');
+        $order->setPaymentState('PENDING');
+        $order->setDeliveryState('PENDING');
     }
 }
