@@ -29,11 +29,13 @@ class OrderRepository extends EntityRepository
         $this->_em->flush();
     }
 
-    public function update(Order $order)
+    public function update(Order $order, $resetStatus = false)
     {
         $this->calculateOrderAmount($order);
-        $this->setStatus($order);
         $this->setSms($order);
+        if ($resetStatus) {
+            $this->setStatus($order);
+        }
 
         $this->_em->flush();
         return $this->_em;

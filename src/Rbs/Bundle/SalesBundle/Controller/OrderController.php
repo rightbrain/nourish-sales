@@ -113,7 +113,7 @@ class OrderController extends Controller
                     $em->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
                 }
 
-                $em->getRepository('RbsSalesBundle:Order')->update($order);
+                $em->getRepository('RbsSalesBundle:Order')->update($order, true);
                 $stockRepo->subtractFromOnHold($oldQty);
                 $stockRepo->addStockToOnHold($order);
 
