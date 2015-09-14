@@ -179,6 +179,25 @@ class OrderController extends Controller
     }
 
     /**
+     * @Route("/order-cancel/{id}", name="order_cancel", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function orderCancelAction(Order $order)
+    {
+        $order->setOrderState('CANCEL');
+
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Order Cancel Successfully!'
+        );
+
+        return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
      * @Route("/order-summery-view/{id}", name="order_summery_view", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
