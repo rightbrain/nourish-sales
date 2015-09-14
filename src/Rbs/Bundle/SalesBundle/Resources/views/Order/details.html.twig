@@ -18,11 +18,10 @@
                     <p>Order Number : {{ order.id }}</p>
                     <p>Customer Name : {{ order.customer.user.username }}</p>
                     <p>Created By : {{ order.createdBy.username }}</p>
-                    <p>Total Amount : {{ order.totalAmount }}</p>
-                    <p>Paid Amount : {{ order.paidAmount }}</p>
+                    <p>Order Amount : {{ order.totalAmount }}</p>
                     <p>Remarks : {{ order.remark }}</p>
 
-                    <table class="table-bordered table-striped table-condensed flip-content">
+                    <table class="table-bordered table-striped table-condensed flip-content col-md-12">
                         <thead class="flip-content">
                         <tr>
                             <th class="numeric">Sl</th>
@@ -48,11 +47,19 @@
                     </table>
 
                     <div style="clear: both"></div>
+
+                    <div class="modal-footer">
+                        {% if order.orderState != 'COMPLETE' %}
+                            <a class="btn blue delete-list-btn" href="{{ path('order_cancel', {"id": order.id}) }}">
+                                Order Cancel
+                            </a>
+                        {% endif %}
+                    </div>
+
                 </div>
             </div>
         </div>
-    </div>
 
-    <div style="clear: both"></div>
+    </div>
 
 {% endblock %}
