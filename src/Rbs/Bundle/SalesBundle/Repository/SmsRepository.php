@@ -16,6 +16,7 @@ class SmsRepository extends EntityRepository
     public function removeOrder(Sms $sms)
     {
         $sms->setOrder(null);
+        $sms->setStatus('UNREAD');
         $this->_em->persist($sms);
         $this->_em->flush();
     }
