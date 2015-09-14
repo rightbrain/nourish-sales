@@ -49,7 +49,7 @@
                     <div style="clear: both"></div>
 
                     <div class="modal-footer">
-                        {% if order.orderState != 'COMPLETE' or order.orderState != 'CANCEL' %}
+                        {% if order.orderState != 'COMPLETE' and order.orderState != 'CANCEL' %}
                             <a class="btn blue delete-list-btn red" href="{{ path('order_cancel', {"id": order.id}) }}">
                                 Order Cancel
                             </a>
