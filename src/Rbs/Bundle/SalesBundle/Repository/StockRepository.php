@@ -39,7 +39,7 @@ class StockRepository extends EntityRepository
         return $this->_em;
     }
 
-    public function updateStock(Order $order)
+    public function addStockToOnHold(Order $order)
     {
         /** @var OrderItem $orderItem */
         foreach ($order->getOrderItems() as $orderItem) {
@@ -47,8 +47,18 @@ class StockRepository extends EntityRepository
             $stock = $this->findOneBy(array('item' => $orderItem->getItem()->getId()));
             $stock->setOnHold($stock->getOnHold() + $orderItem->getQuantity());
             $this->_em->persist($stock);
+            $this->_em->flush();
         }
-        $this->_em->flush();
+    }
+
+    public function subtractFromOnHold(array $items)
+    {
+        foreach ($items as $itemId => $qty) {
+            $stock = $this->findOneBy(array('item' => $itemId));
+            $stock->setOnHold($stock->getOnHold() - $qty);
+            $this->_em->persist($stock);
+            $this->_em->flush();
+        }
     }
 
     public function extractOrderItemQuantity(Order $order)

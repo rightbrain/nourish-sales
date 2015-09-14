@@ -73,7 +73,7 @@ class OrderController extends Controller
 
                 $em = $this->getDoctrine()->getManager();
                 $em->getRepository('RbsSalesBundle:Order')->create($order);
-                $em->getRepository('RbsSalesBundle:Stock')->updateStock($order);
+                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order);
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
@@ -99,18 +99,23 @@ class OrderController extends Controller
     public function updateAction(Request $request, Order $order)
     {
         $form = $this->createForm(new OrderForm(), $order);
-
+        $em = $this->getDoctrine()->getManager();
         if ('POST' === $request->getMethod()) {
+
             $sms = $order->getRefSMS();
+            $stockRepo = $em->getRepository('RbsSalesBundle:Stock');
+            $oldQty = $stockRepo->extractOrderItemQuantity($order);
             $form->handleRequest($request);
 
             if ($form->isValid()) {
 
                 if ($sms) {
-                    $this->getDoctrine()->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
+                    $em->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
                 }
 
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+                $em->getRepository('RbsSalesBundle:Order')->update($order);
+                $stockRepo->subtractFromOnHold($oldQty);
+                $stockRepo->addStockToOnHold($order);
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
