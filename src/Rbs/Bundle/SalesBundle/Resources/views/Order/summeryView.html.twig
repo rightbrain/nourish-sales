@@ -55,6 +55,9 @@
     </div>
 </div>
 <div class="modal-footer">
+    <a class="btn blue delete-list-btn" href="{{ path('order_cancel', {"id": order.id}) }}">
+        Order Cancel
+    </a>
     {% if available == false %}
         <a class="btn blue" href="{{ path('order_update', {"id": order.id}) }}" target="_blank">
             Edit
