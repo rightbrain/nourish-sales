@@ -50,8 +50,11 @@
 
                     <div class="modal-footer">
                         {% if order.orderState != 'COMPLETE' %}
-                            <a class="btn blue delete-list-btn" href="{{ path('order_cancel', {"id": order.id}) }}">
+                            <a class="btn blue delete-list-btn red" href="{{ path('order_cancel', {"id": order.id}) }}">
                                 Order Cancel
+                            </a>
+                            <a class="btn blue delete-list-btn" href="{{ path('order_hold', {"id": order.id}) }}">
+                                Order Hold
                             </a>
                         {% endif %}
                     </div>
