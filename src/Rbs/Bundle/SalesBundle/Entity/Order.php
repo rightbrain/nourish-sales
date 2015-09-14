@@ -337,4 +337,14 @@ class Order
 
         return $state;
     }
+
+    public function isCancel()
+    {
+        $state = false;
+        if($this->orderState == 'CANCEL'){
+            $state = true;
+        }
+
+        return $state;
+    }
 }
