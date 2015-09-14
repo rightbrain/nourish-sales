@@ -6,7 +6,7 @@
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <div class="portlet box blue">
+            <div class="portlet box">
 
                 <div class="portlet-body">
                     <div class="dataTables_wrapper no-footer">
@@ -27,6 +27,7 @@
                             </tr>
                             </thead>
                             <tbody>
+                            {% set available = true %}
                             {% for index, orderItem in order.orderItems %}
                                 <tr>
                                     <td class="numeric">{{ index + 1 }}.</td>
@@ -37,6 +38,7 @@
                                             <i class="fa fa-check green"></i>
                                         {% else %}
                                             <i class="fa fa-times red"></i>
+                                            {% set available = false %}
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -53,13 +55,19 @@
     </div>
 </div>
 <div class="modal-footer">
-    {% if order.orderState == 'PENDING' %}
-        <a class="btn blue" href="{{ path('order_approve', {"id": order.id}) }}">
-            Order Approve
+    <a class="btn blue delete-list-btn" href="{{ path('order_hold', {"id": order.id}) }}">
+        Order Hold
+    </a>
+    <a class="btn blue delete-list-btn red" href="{{ path('order_cancel', {"id": order.id}) }}">
+        Order Cancel
+    </a>
+    {% if available == false %}
+        <a class="btn blue delete-list-btn" href="{{ path('order_update', {"id": order.id}) }}" target="_blank">
+            Edit
         </a>
-        <a class="btn blue" href="{{ path('order_update', {"id": order.id}) }}" target="_blank">
-           Edit
+    {% else %}
+        <a class="btn green delete-list-btn" href="{{ path('order_approve', {"id": order.id}) }}">
+            Order Approve
         </a>
     {% endif %}
 </div>
-<div style="clear: both"></div>

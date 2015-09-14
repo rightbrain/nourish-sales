@@ -113,12 +113,11 @@ class OrderController extends Controller
                 }
                 $order->setTotalAmount($order->getItemsTotalAmount());
 
-                $order->setOrderState('PROCESSING');
-                $order->setPaymentState('PENDING');
-                $order->setDeliveryState('PENDING');
+                $this->setStatus($order);
 
                 if($order->getRefSMS()){
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
+                    $order->getRefSMS()->setStatus('READ');
                 }
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
@@ -169,6 +168,44 @@ class OrderController extends Controller
     }
 
     /**
+     * @Route("/order-cancel/{id}", name="order_cancel", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function orderCancelAction(Order $order)
+    {
+        $order->setOrderState('CANCEL');
+
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Order Cancel Successfully!'
+        );
+
+        return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
+     * @Route("/order-hold/{id}", name="order_hold", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function orderHoldAction(Order $order)
+    {
+        $order->setOrderState('HOLD');
+
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Order Hold Successfully!'
+        );
+
+        return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
      * @Route("/order-summery-view/{id}", name="order_summery_view", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
@@ -185,5 +222,15 @@ class OrderController extends Controller
         return $this->render('RbsSalesBundle:Order:summeryView.html.twig', array(
             'order' => $order
         ));
+    }
+
+    /**
+     * @param Order $order
+     */
+    public function setStatus(Order $order)
+    {
+        $order->setOrderState('PROCESSING');
+        $order->setPaymentState('PENDING');
+        $order->setDeliveryState('PENDING');
     }
 }

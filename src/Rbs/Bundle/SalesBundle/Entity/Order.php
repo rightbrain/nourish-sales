@@ -47,7 +47,7 @@ class Order
     /**
      * @var array $type
      *
-     * @ORM\Column(name="delivery_state", type="string", length=255, columnDefinition="ENUM('PENDING', 'ON_HOLD', 'READY', 'PARTIALLY_SHIPPED', 'SHIPPED')", nullable=true)
+     * @ORM\Column(name="delivery_state", type="string", length=255, columnDefinition="ENUM('PENDING', 'HOLD', 'READY', 'PARTIALLY_SHIPPED', 'SHIPPED')", nullable=true)
      */
     private $deliveryState;
 
@@ -322,6 +322,26 @@ class Order
     {
         $state = false;
         if($this->orderState == 'PENDING'){
+            $state = true;
+        }
+
+        return $state;
+    }
+
+    public function isComplete()
+    {
+        $state = false;
+        if($this->orderState == 'COMPLETE'){
+            $state = true;
+        }
+
+        return $state;
+    }
+
+    public function isCancel()
+    {
+        $state = false;
+        if($this->orderState == 'CANCEL'){
             $state = true;
         }
 
