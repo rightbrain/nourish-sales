@@ -21,24 +21,22 @@ class OrderRepository extends EntityRepository
 
     public function create(Order $order)
     {
-        /** @var OrderItem $orderItems */
-        foreach ($order->getOrderItems() as $orderItems) {
-            $orderItems->setOrder($order);
-            $orderItems->calculateTotalAmount(true);
-        }
-        $order->setTotalAmount($order->getItemsTotalAmount());
-
-        $order->setOrderState('PROCESSING');
-        $order->setPaymentState('PENDING');
-        $order->setDeliveryState('PENDING');
-
-        if($order->getRefSMS()){
-            $order->getRefSMS()->setStatus('READ');
-            $order->getRefSMS()->setOrder($order);
-        }
+        $this->calculateOrderAmount($order);
+        $this->setStatus($order);
+        $this->setSms($order);
 
         $this->_em->persist($order);
         $this->_em->flush();
+    }
+
+    public function update(Order $order)
+    {
+        $this->calculateOrderAmount($order);
+        $this->setStatus($order);
+        $this->setSms($order);
+
+        $this->_em->flush();
+        return $this->_em;
     }
 
     public function delete($data)
@@ -47,13 +45,31 @@ class OrderRepository extends EntityRepository
         $this->_em->flush();
     }
 
-    public function update(Order $data)
+    protected function calculateOrderAmount(Order $order)
     {
-        $this->_em->persist($data);
-        if($data->getRefSMS()){
-            $data->getRefSMS()->setOrder($data);
+        /** @var OrderItem $orderItems */
+        foreach ($order->getOrderItems() as $orderItems) {
+            $orderItems->setOrder($order);
+            $orderItems->calculateTotalAmount(true);
         }
-        $this->_em->flush();
-        return $this->_em;
+        $order->setTotalAmount($order->getItemsTotalAmount());
+    }
+
+    /**
+     * @param Order $order
+     */
+    protected function setStatus(Order $order)
+    {
+        $order->setOrderState('PROCESSING');
+        $order->setPaymentState('PENDING');
+        $order->setDeliveryState('PENDING');
+    }
+
+    protected function setSms(Order $order)
+    {
+        if ($order->getRefSMS()) {
+            $order->getRefSMS()->setStatus('READ');
+            $order->getRefSMS()->setOrder($order);
+        }
     }
 }

@@ -106,21 +106,11 @@ class OrderController extends Controller
 
             if ($form->isValid()) {
 
-                /** @var OrderItem $orderItems */
-                foreach ($order->getOrderItems() as $orderItems) {
-                    $orderItems->setOrder($order);
-                    $orderItems->calculateTotalAmount(true);
-                }
-                $order->setTotalAmount($order->getItemsTotalAmount());
-
-                $this->setStatus($order);
-
-                if($order->getRefSMS()){
+                if ($sms) {
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
-                    $order->getRefSMS()->setStatus('READ');
                 }
 
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
@@ -222,15 +212,5 @@ class OrderController extends Controller
         return $this->render('RbsSalesBundle:Order:summeryView.html.twig', array(
             'order' => $order
         ));
-    }
-
-    /**
-     * @param Order $order
-     */
-    public function setStatus(Order $order)
-    {
-        $order->setOrderState('PROCESSING');
-        $order->setPaymentState('PENDING');
-        $order->setDeliveryState('PENDING');
     }
 }
