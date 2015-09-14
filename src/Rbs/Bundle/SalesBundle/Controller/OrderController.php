@@ -198,6 +198,25 @@ class OrderController extends Controller
     }
 
     /**
+     * @Route("/order-hold/{id}", name="order_hold", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function orderHoldAction(Order $order)
+    {
+        $order->setOrderState('HOLD');
+
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Order Hold Successfully!'
+        );
+
+        return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
      * @Route("/order-summery-view/{id}", name="order_summery_view", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
