@@ -196,6 +196,25 @@ class OrderController extends Controller
     }
 
     /**
+     * @Route("/order-recall/{id}", name="order_recall", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function orderRecallAction(Order $order)
+    {
+        $order->setOrderState('PROCESSING');
+
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Order Recall Successfully!'
+        );
+
+        return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
      * @Route("/order-summery-view/{id}", name="order_summery_view", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response

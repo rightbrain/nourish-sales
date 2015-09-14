@@ -59,6 +59,11 @@
                                 Order Hold
                             </a>
                         {% endif %}
+                        {% if order.orderState != 'COMPLETE' and order.orderState != 'CANCEL' and order.orderState == 'HOLD' %}
+                            <a class="btn blue delete-list-btn" href="{{ path('order_recall', {"id": order.id}) }}">
+                                Order Un-hold
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
