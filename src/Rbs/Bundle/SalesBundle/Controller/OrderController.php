@@ -132,6 +132,7 @@ class OrderController extends Controller
 
                 if($order->getRefSMS()){
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
+                    $order->getRefSMS()->setStatus('READ');
                 }
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->create($order);
