@@ -55,9 +55,6 @@
     </div>
 </div>
 <div class="modal-footer">
-    <a class="btn blue delete-list-btn" href="{{ path('order_hold', {"id": order.id}) }}">
-        Order Hold
-    </a>
     <a class="btn blue delete-list-btn red" href="{{ path('order_cancel', {"id": order.id}) }}">
         Order Cancel
     </a>
@@ -66,6 +63,10 @@
             Edit
         </a>
     {% else %}
+        <a class="btn blue delete-list-btn" href="{{ path('order_hold', {"id": order.id}) }}">
+            Order Hold
+        </a>
+
         <a class="btn green delete-list-btn" href="{{ path('order_approve', {"id": order.id}) }}">
             Order Approve
         </a>

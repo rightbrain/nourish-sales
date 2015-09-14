@@ -16,6 +16,23 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  */
 class Order
 {
+    const ORDER_STATE_PENDING = 'PENDING';
+    const ORDER_STATE_HOLD = 'PENDING';
+    const ORDER_STATE_COMPLETE = 'PENDING';
+    const ORDER_STATE_CANCEL = 'PENDING';
+    const ORDER_STATE_PROCESSING = 'PENDING';
+
+    const PAYMENT_STATE_PENDING = 'PENDING';
+    const PAYMENT_STATE_PARTIALLY_PAID = 'PARTIALLY_PAID';
+    const PAYMENT_STATE_PAID = 'PAID';
+    const PAYMENT_STATE_APPROVAL = 'APPROVAL';
+
+    const DELIVERY_STATE_PENDING = 'PENDING';
+    const DELIVERY_STATE_HOLD = 'HOLD';
+    const DELIVERY_STATE_READY = 'READY';
+    const DELIVERY_STATE_PARTIALLY_SHIPPED = 'PARTIALLY_SHIPPED';
+    const DELIVERY_STATE_SHIPPED = 'SHIPPED';
+
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
@@ -54,7 +71,7 @@ class Order
     /**
      * @var array $type
      *
-     * @ORM\Column(name="payment_state", type="string", length=255, columnDefinition="ENUM('PENDING', 'PARTIALLY_PAID', 'PAID')", nullable=true)
+     * @ORM\Column(name="payment_state", type="string", length=255, columnDefinition="ENUM('PENDING', 'PARTIALLY_PAID', 'PAID', 'APPROVAL')", nullable=true)
      */
     private $paymentState;
 

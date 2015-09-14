@@ -113,9 +113,11 @@ class OrderController extends Controller
                     $em->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
                 }
 
-                $em->getRepository('RbsSalesBundle:Order')->update($order, true);
-                $stockRepo->subtractFromOnHold($oldQty);
+                if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
+                    $stockRepo->subtractFromOnHold($oldQty);
+                }
                 $stockRepo->addStockToOnHold($order);
+                $em->getRepository('RbsSalesBundle:Order')->update($order, true);
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
@@ -151,7 +153,11 @@ class OrderController extends Controller
      */
     public function orderApproveAction(Order $order)
     {
-        $order->setOrderState('PROCESSING');
+        if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order);
+        }
+
+        $order->setOrderState(Order::ORDER_STATE_PROCESSING);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
         $this->get('session')->getFlashBag()->add(
@@ -169,7 +175,13 @@ class OrderController extends Controller
      */
     public function orderCancelAction(Order $order)
     {
-        $order->setOrderState('CANCEL');
+        if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
+            $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
+            $oldQty = $stockRepo->extractOrderItemQuantity($order);
+            $stockRepo->subtractFromOnHold($oldQty);
+        }
+
+        $order->setOrderState(Order::ORDER_STATE_CANCEL);
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
@@ -188,32 +200,16 @@ class OrderController extends Controller
      */
     public function orderHoldAction(Order $order)
     {
-        $order->setOrderState('HOLD');
+        if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order);
+        }
 
+        $order->setOrderState(Order::ORDER_STATE_HOLD);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
         $this->get('session')->getFlashBag()->add(
             'success',
             'Order Hold Successfully!'
-        );
-
-        return $this->redirect($this->generateUrl('orders_home'));
-    }
-
-    /**
-     * @Route("/order-recall/{id}", name="order_recall", options={"expose"=true})
-     * @param Order $order
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function orderRecallAction(Order $order)
-    {
-        $order->setOrderState('PROCESSING');
-
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
-
-        $this->get('session')->getFlashBag()->add(
-            'success',
-            'Order Recall Successfully!'
         );
 
         return $this->redirect($this->generateUrl('orders_home'));
