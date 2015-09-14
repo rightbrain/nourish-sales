@@ -112,7 +112,7 @@ class StockController extends Controller
     }
 
     /**
-     * @Route("/stock-create", name="stock_create", options={"expose"=true})
+     * @Route("/stock/create", name="stock_create", options={"expose"=true})
      * @Template("RbsSalesBundle:Stock:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -131,7 +131,7 @@ class StockController extends Controller
     }
 
     /**
-     * @Route("/stock-history", name="stock_history", options={"expose"=true})
+     * @Route("/stock/history", name="stock_history", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -149,7 +149,7 @@ class StockController extends Controller
     }
 
     /**
-     * @Route("/stock-available", name="stock_available", options={"expose"=true})
+     * @Route("/stock/available", name="stock_available", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */

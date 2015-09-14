@@ -58,7 +58,7 @@ class UserCustomerController extends Controller
     }
 
     /**
-     * @Route("/customer-create", name="customer_create")
+     * @Route("/customer/create", name="customer_create")
      * @Template("RbsSalesBundle:Customer:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -94,7 +94,7 @@ class UserCustomerController extends Controller
     }
 
     /**
-     * @Route("/customer-update/{id}", name="customer_update", options={"expose"=true})
+     * @Route("/customer/update/{id}", name="customer_update", options={"expose"=true})
      * @Template("RbsSalesBundle:Customer:update.html.twig")
      * @param Request $request
      * @param Customer $customer
@@ -126,7 +126,7 @@ class UserCustomerController extends Controller
     }
 
     /**
-     * @Route("/customer-update-password/{id}", name="customer_update_password", options={"expose"=true})
+     * @Route("/customer/update/password/{id}", name="customer_update_password", options={"expose"=true})
      * @Template("RbsSalesBundle:Customer:update.password.html.twig")
      * @param Request $request
      * @param Customer $customer
@@ -162,7 +162,7 @@ class UserCustomerController extends Controller
     }
 
     /**
-     * @Route("/customer-details/{id}", name="customer_details", options={"expose"=true})
+     * @Route("/customer/details/{id}", name="customer_details", options={"expose"=true})
      * @Template()
      * @param Customer $customer
      * @return \Symfony\Component\HttpFoundation\Response
@@ -175,7 +175,7 @@ class UserCustomerController extends Controller
     }
 
     /**
-     * @Route("/customer-delete/{id}", name="customer_delete", options={"expose"=true})
+     * @Route("/customer/delete/{id}", name="customer_delete", options={"expose"=true})
      * @param Customer $customer
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */

@@ -58,7 +58,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user-create", name="user_create")
+     * @Route("/user/create", name="user_create")
      * @Template("RbsUserBundle:User:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -93,7 +93,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user-update/{id}", name="user_update", options={"expose"=true})
+     * @Route("/user/update/{id}", name="user_update", options={"expose"=true})
      * @Template("RbsUserBundle:User:update.html.twig")
      * @param Request $request
      * @param User $user
@@ -125,7 +125,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user-update-password/{id}", name="user_update_password", options={"expose"=true})
+     * @Route("/user/update/password/{id}", name="user_update_password", options={"expose"=true})
      * @Template("RbsUserBundle:User:update.password.html.twig")
      * @param Request $request
      * @param User $user
@@ -161,7 +161,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user-enabled/{id}", name="user_enabled", options={"expose"=true})
+     * @Route("/user/enabled/{id}", name="user_enabled", options={"expose"=true})
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
@@ -197,7 +197,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user-details/{id}", name="user_details", options={"expose"=true})
+     * @Route("/user/details/{id}", name="user_details", options={"expose"=true})
      * @Template()
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\Response
@@ -210,7 +210,7 @@ class UserController extends Controller
     }
 
     /**
-     * @Route("/user-delete/{id}", name="user_delete", options={"expose"=true})
+     * @Route("/user/delete/{id}", name="user_delete", options={"expose"=true})
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */

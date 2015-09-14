@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 class StockHistoryController extends Controller
 {
     /**
-     * @Route("/stock-history-list/{stock}", name="stock_history_list", options={"expose"=true})
+     * @Route("/stock/history/list/{stock}", name="stock_history_list", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */

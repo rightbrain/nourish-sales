@@ -53,7 +53,7 @@ class GroupController extends Controller
     }
 
     /**
-     * @Route("/group-create", name="group_create")
+     * @Route("/group/create", name="group_create")
      * @Template()
      * @param Request $request
      * @return null|RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -98,7 +98,7 @@ class GroupController extends Controller
     }
 
     /**
-     * @Route("/group-update/{id}", name="group_update", options={"expose"=true})
+     * @Route("/group/update/{id}", name="group_update", options={"expose"=true})
      * @Template()
      * @param Request $request
      * @param Group $group
@@ -132,7 +132,7 @@ class GroupController extends Controller
     }
 
     /**
-     * @Route("/group-delete/{id}", name="group_delete", options={"expose"=true})
+     * @Route("/group/delete/{id}", name="group_delete", options={"expose"=true})
      * @Template()
      * @param Request $request
      * @param Group $group
@@ -153,7 +153,7 @@ class GroupController extends Controller
     }
 
     /**
-     * @Route("/group-details/{id}", name="group_details", options={"expose"=true})
+     * @Route("/group/details/{id}", name="group_details", options={"expose"=true})
      * @Template()
      * @param Request $request
      * @param Group $group

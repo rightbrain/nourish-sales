@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 class CustomerGroupController extends Controller
 {
     /**
-     * @Route("/customer-groups", name="customer_groups_home")
+     * @Route("/customer/groups", name="customer_groups_home")
      * @Method("GET")
      * @Template()
      */
@@ -56,7 +56,7 @@ class CustomerGroupController extends Controller
     }
 
     /**
-     * @Route("/customer-group-create", name="customer_group_create")
+     * @Route("/customer/group/create", name="customer_group_create")
      * @Template("RbsSalesBundle:CustomerGroup:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -89,7 +89,7 @@ class CustomerGroupController extends Controller
     }
 
     /**
-     * @Route("/customer-group-update/{id}", name="customer_group_update", options={"expose"=true})
+     * @Route("/customer/group/update/{id}", name="customer_group_update", options={"expose"=true})
      * @Template("RbsSalesBundle:CustomerGroup:new.html.twig")
      * @param Request $request
      * @param CustomerGroup $customerGroup
@@ -121,7 +121,7 @@ class CustomerGroupController extends Controller
     }
 
     /**
-     * @Route("/customer-group-delete/{id}", name="customer_group_delete", options={"expose"=true})
+     * @Route("/customer/group/delete/{id}", name="customer_group_delete", options={"expose"=true})
      * @param CustomerGroup $customerGroup
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
