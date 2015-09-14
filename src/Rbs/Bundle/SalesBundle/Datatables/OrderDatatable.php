@@ -16,6 +16,7 @@ class OrderDatatable extends BaseDatatable
         /** @var Order $order */
         $formatter = function($line){
             $order = $this->em->getRepository('RbsSalesBundle:Order')->find($line['id']);
+            $line["isComplete"] = !$order->isComplete();
             $line["enabled"] = $order->isPending();
             $line["disabled"] = !$order->isPending();
 
@@ -61,6 +62,7 @@ class OrderDatatable extends BaseDatatable
             ->add('orderState', 'column', array('title' => 'Order'))
             ->add('totalAmount', 'column', array('title' => 'Total Amount'))
             ->add('paidAmount', 'column', array('title' => 'Paid Amount'))
+            ->add('isComplete', 'virtual', array('visible' => false))
             ->add('enabled', 'virtual', array('visible' => false))
             ->add('disabled', 'virtual', array('visible' => false))
             ->add(null, 'action', array(
@@ -85,6 +87,7 @@ class OrderDatatable extends BaseDatatable
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_ADMIN',
+                        'render_if' => array('isComplete')
                     )
                 )
             ))
@@ -104,7 +107,7 @@ class OrderDatatable extends BaseDatatable
                         'attributes' => array(
                             'rel' => 'tooltip',
                             'title' => 'show-action',
-                            'class' => 'btn btn-primary btn-xs',
+                            'class' => 'btn btn-primary btn-xs green',
                             'role' => 'button',
                             'data-target' => "#ajaxSummeryView",
                             'data-toggle'=>"modal"

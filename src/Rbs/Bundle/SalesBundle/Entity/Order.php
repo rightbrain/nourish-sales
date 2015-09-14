@@ -327,4 +327,14 @@ class Order
 
         return $state;
     }
+
+    public function isComplete()
+    {
+        $state = false;
+        if($this->orderState == 'COMPLETE'){
+            $state = true;
+        }
+
+        return $state;
+    }
 }
