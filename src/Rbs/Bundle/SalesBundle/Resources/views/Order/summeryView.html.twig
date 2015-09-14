@@ -27,6 +27,7 @@
                             </tr>
                             </thead>
                             <tbody>
+                            {% set available = true %}
                             {% for index, orderItem in order.orderItems %}
                                 <tr>
                                     <td class="numeric">{{ index + 1 }}.</td>
@@ -37,6 +38,7 @@
                                             <i class="fa fa-check green"></i>
                                         {% else %}
                                             <i class="fa fa-times red"></i>
+                                            {% set available = false %}
                                         {% endif %}
                                     </td>
                                 </tr>
@@ -53,13 +55,13 @@
     </div>
 </div>
 <div class="modal-footer">
-    {% if order.orderState == 'PENDING' %}
+    {% if available == false %}
+        <a class="btn blue" href="{{ path('order_update', {"id": order.id}) }}" target="_blank">
+            Edit
+        </a>
+    {% else %}
         <a class="btn blue" href="{{ path('order_approve', {"id": order.id}) }}">
             Order Approve
         </a>
-        <a class="btn blue" href="{{ path('order_update', {"id": order.id}) }}" target="_blank">
-           Edit
-        </a>
     {% endif %}
 </div>
-<div style="clear: both"></div>
