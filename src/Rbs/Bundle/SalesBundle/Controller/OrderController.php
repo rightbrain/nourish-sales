@@ -56,7 +56,7 @@ class OrderController extends Controller
     }
 
     /**
-     * @Route("/order-create", name="order_create", options={"expose"=true})
+     * @Route("/order/create", name="order_create", options={"expose"=true})
      * @Template("RbsSalesBundle:Order:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -90,7 +90,7 @@ class OrderController extends Controller
     }
 
     /**
-     * @Route("/order-update/{id}", name="order_update", options={"expose"=true})
+     * @Route("/order/update/{id}", name="order_update", options={"expose"=true})
      * @Template("RbsSalesBundle:Order:edit.html.twig")
      * @param Request $request
      * @param Order $order
@@ -135,7 +135,7 @@ class OrderController extends Controller
     }
 
     /**
-     * @Route("/order-details/{id}", name="order_details", options={"expose"=true})
+     * @Route("/order/details/{id}", name="order_details", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -147,7 +147,7 @@ class OrderController extends Controller
     }
 
     /**
-     * @Route("/order-approve/{id}", name="order_approve", options={"expose"=true})
+     * @Route("/order/approve/{id}", name="order_approve", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -169,7 +169,7 @@ class OrderController extends Controller
     }
 
     /**
-     * @Route("/order-cancel/{id}", name="order_cancel", options={"expose"=true})
+     * @Route("/order/cancel/{id}", name="order_cancel", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -194,7 +194,7 @@ class OrderController extends Controller
     }
 
     /**
-     * @Route("/order-hold/{id}", name="order_hold", options={"expose"=true})
+     * @Route("/order/hold/{id}", name="order_hold", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -216,7 +216,7 @@ class OrderController extends Controller
     }
 
     /**
-     * @Route("/order-summery-view/{id}", name="order_summery_view", options={"expose"=true})
+     * @Route("/order/summery/view/{id}", name="order_summery_view", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
      */
