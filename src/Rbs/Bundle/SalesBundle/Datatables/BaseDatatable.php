@@ -16,6 +16,35 @@ use Twig_Environment;
  */
 class BaseDatatable extends AbstractDatatableView
 {
+    public function getStatusColor($status)
+    {
+        $color = 'info';
+        switch ($status) {
+            case 'PENDING':
+                $color = 'warning';
+                break;
+            case 'PROCESSING':
+            case 'PARTIALLY_PAID':
+            case 'READY':
+            case 'PARTIALLY_SHIPPED':
+                $color = 'info';
+                break;
+            case 'HOLD':
+            case 'APPROVAL':
+                $color = 'warning';
+                break;
+            case 'CANCEL':
+                $color = 'danger';
+                break;
+            case 'PAID':
+            case 'COMPLETE':
+            case 'SHIPPED':
+                $color = 'success';
+                break;
+        }
+
+        return $color;
+    }
     public function defaultFeatures()
     {
         return array(

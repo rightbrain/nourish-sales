@@ -17,10 +17,10 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 class Order
 {
     const ORDER_STATE_PENDING = 'PENDING';
-    const ORDER_STATE_HOLD = 'PENDING';
-    const ORDER_STATE_COMPLETE = 'PENDING';
-    const ORDER_STATE_CANCEL = 'PENDING';
-    const ORDER_STATE_PROCESSING = 'PENDING';
+    const ORDER_STATE_HOLD = 'HOLD';
+    const ORDER_STATE_COMPLETE = 'COMPLETE';
+    const ORDER_STATE_CANCEL = 'CANCEL';
+    const ORDER_STATE_PROCESSING = 'PROCESSING';
 
     const PAYMENT_STATE_PENDING = 'PENDING';
     const PAYMENT_STATE_PARTIALLY_PAID = 'PARTIALLY_PAID';

@@ -20,6 +20,9 @@ class OrderDatatable extends BaseDatatable
             $line["isComplete"] = !$order->isComplete();
             $line["enabled"] = $order->isPending();
             $line["disabled"] = !$order->isPending();
+            $line["orderState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getOrderState()).'"> '.$order->getOrderState().' </span>';
+            $line["paymentState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getPaymentState()).'"> '.$order->getPaymentState().' </span>';
+            $line["deliveryState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getDeliveryState()).'"> '.$order->getDeliveryState().' </span>';
 
             return $line;
         };
@@ -54,9 +57,9 @@ class OrderDatatable extends BaseDatatable
         $this->columnBuilder
             ->add('id', 'column', array('title' => 'OrderID'))
             ->add('customer.user.username', 'column', array('title' => 'Customer'))
-            ->add('orderState', 'column', array('title' => 'Order'))
-            ->add('paymentState', 'column', array('title' => 'Payment'))
-            ->add('deliveryState', 'column', array('title' => 'Delivery'))
+            ->add('orderState', 'virtual', array('title' => 'Order'))
+            ->add('paymentState', 'virtual', array('title' => 'Payment'))
+            ->add('deliveryState', 'virtual', array('title' => 'Delivery'))
             ->add('totalAmount', 'column', array('title' => 'Total Amount'))
             ->add('paidAmount', 'column', array('title' => 'Paid Amount'))
             ->add('isComplete', 'virtual', array('visible' => false))
