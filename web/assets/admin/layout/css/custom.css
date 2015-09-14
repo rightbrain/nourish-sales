@@ -90,3 +90,12 @@ Change Quick Sidebar Width
 .paging_full_numbers a.current{
     font-weight: bold;
 }
+
+/** Order List Page */
+.dataTables_scrollHead table thead tr:nth-child(2), .dataTables_wrapper.no-footer table tfoot tr{
+    display: none;
+}
+#external_filter_container > div{
+    display: inline-block;
+    margin-right: 5px;
+}

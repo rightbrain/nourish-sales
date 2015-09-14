@@ -43,22 +43,18 @@ class OrderDatatable extends BaseDatatable
 
         $this->callbacks->setCallbacks(array
             (
-                'draw_callback' => "function( settings ) {
-                        console.log('draw callback');
-                    }",
                 'pre_draw_callback' => "function( settings ) {
-                        preinitDatatable();
-                        console.log('pre draw');
-                    }"
+                        Order.filterInit();
+                }"
             )
         );
 
         $this->columnBuilder
             ->add('id', 'column', array('title' => 'OrderID'))
             ->add('customer.user.username', 'column', array('title' => 'Customer'))
-            ->add('deliveryState', 'column', array('title' => 'Delivery'))
-            ->add('paymentState', 'column', array('title' => 'Payment'))
             ->add('orderState', 'column', array('title' => 'Order'))
+            ->add('paymentState', 'column', array('title' => 'Payment'))
+            ->add('deliveryState', 'column', array('title' => 'Delivery'))
             ->add('totalAmount', 'column', array('title' => 'Total Amount'))
             ->add('paidAmount', 'column', array('title' => 'Paid Amount'))
             ->add('enabled', 'virtual', array('visible' => false))

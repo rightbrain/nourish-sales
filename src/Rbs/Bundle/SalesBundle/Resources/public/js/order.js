@@ -204,7 +204,57 @@ var Order = function()
         newOrder();
     }
 
+    function filterInit(){
+        if (!$('#external_filter_container').length) {
+            $('<div id="external_filter_container">' +
+                'Filter: <div id="order-status"></div>' +
+                '<div id="order-payment-status"></div>' +
+                '<div id="order-delivery-status"></div>' +
+                '</div>').appendTo('#order_datatable_filter');
+        }
+        $("#order_datatable").dataTable().yadcf([
+                {
+                    column_number: 2,
+                    data: ["PENDING", "PROCESSING", "COMPLETE", "CANCEL", "HOLD"],
+                    filter_container_id: "order-status",
+                    filter_reset_button_text: false,
+                    filter_default_label: "Order State"
+                },
+                {
+                    column_number: 3,
+                    data: ["PENDING", "PARTIALLY_PAID", "PAID"],
+                    filter_container_id: "order-payment-status",
+                    filter_reset_button_text: false,
+                    filter_default_label: "Payment State"
+                },
+                {
+                    column_number: 4,
+                    data: ["PENDING", "PARTIALLY_SHIPPED", "SHIPPED", "HOLD"],
+                    filter_container_id: "order-delivery-status",
+                    filter_reset_button_text: false,
+                    filter_default_label: "Delivery State"
+                }
+            ]
+        );
+        var orderFilterContainer = $('#order_datatable_filter');
+        // Add class to select to match with theme
+        orderFilterContainer.find('select').addClass("form-control");
+
+        // Remove global search box
+        orderFilterContainer.addClass('pull-right').find('label').remove();
+        // Remove Individual Filter Inputs
+        $('.dataTables_scrollHead').find('table thead tr').eq(1).remove();
+
+        // Humanize Filter Option's Text
+        setTimeout(function(){
+            orderFilterContainer.find('select option').each(function(){
+                $(this).text($(this).text().replace('_', ' '));
+            });
+        },500);
+    }
+
     return {
-        init: init
+        init: init,
+        filterInit: filterInit
     }
 }();
