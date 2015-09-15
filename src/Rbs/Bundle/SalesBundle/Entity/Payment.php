@@ -34,7 +34,7 @@ class Payment
 
     /**
      * @ORM\ManyToMany(targetEntity="Order", inversedBy="payments")
-     * @ORM\JoinTable(name="joint_order_payment",
+     * @ORM\JoinTable(name="join_payments_orders_",
      *      joinColumns={@ORM\JoinColumn(name="order_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="payment_id", referencedColumnName="id")}
      * )
