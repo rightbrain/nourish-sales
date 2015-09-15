@@ -153,6 +153,16 @@ class OrderController extends Controller
      */
     public function orderApproveAction(Order $order)
     {
+        if ($order->getOrderState() == Order::ORDER_STATE_CANCEL or $order->getOrderState() == Order::ORDER_STATE_COMPLETE) {
+
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                'Access Denied'
+            );
+
+            return $this->redirect($this->generateUrl('orders_home'));
+        }
+
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
             $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order);
         }
@@ -175,6 +185,16 @@ class OrderController extends Controller
      */
     public function orderCancelAction(Order $order)
     {
+        if ($order->getOrderState() == Order::ORDER_STATE_CANCEL or $order->getOrderState() == Order::ORDER_STATE_COMPLETE) {
+
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                'Access Denied'
+            );
+
+            return $this->redirect($this->generateUrl('orders_home'));
+        }
+
         if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
             $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
             $oldQty = $stockRepo->extractOrderItemQuantity($order);
@@ -200,6 +220,16 @@ class OrderController extends Controller
      */
     public function orderHoldAction(Order $order)
     {
+        if ($order->getOrderState() == Order::ORDER_STATE_CANCEL or $order->getOrderState() == Order::ORDER_STATE_COMPLETE) {
+
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                'Access Denied'
+            );
+
+            return $this->redirect($this->generateUrl('orders_home'));
+        }
+
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
             $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order);
         }
@@ -222,10 +252,14 @@ class OrderController extends Controller
      */
     public function orderCompleteAction(Order $order)
     {
-        $this->get('session')->getFlashBag()->add(
-            'error',
-            'Access Denied'
-        );
+        if ($order->getOrderState() == Order::ORDER_STATE_CANCEL or $order->getOrderState() == Order::ORDER_STATE_COMPLETE) {
+
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                'Access Denied'
+            );
+
+        }
 
         return $this->redirect($this->generateUrl('orders_home'));
     }
@@ -237,10 +271,14 @@ class OrderController extends Controller
      */
     public function orderPendingAction(Order $order)
     {
-        $this->get('session')->getFlashBag()->add(
-            'error',
-            'Access Denied'
-        );
+        if ($order->getOrderState() == Order::ORDER_STATE_CANCEL or $order->getOrderState() == Order::ORDER_STATE_COMPLETE) {
+
+            $this->get('session')->getFlashBag()->add(
+                'error',
+                'Access Denied'
+            );
+
+        }
 
         return $this->redirect($this->generateUrl('orders_home'));
     }
