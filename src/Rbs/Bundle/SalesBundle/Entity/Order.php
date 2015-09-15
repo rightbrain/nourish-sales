@@ -8,7 +8,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
- * Stock
+ * Order
  *
  * @ORM\Table(name="orders")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\OrderRepository")

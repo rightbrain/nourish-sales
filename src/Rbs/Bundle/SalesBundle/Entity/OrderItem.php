@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
 /**
- * Stock
+ * OrderItem
  *
  * @ORM\Table(name="order_items")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\OrderItemRepository")
