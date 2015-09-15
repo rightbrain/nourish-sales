@@ -51,6 +51,11 @@ class Customer
     private $customerGroup;
 
     /**
+     * @ORM\OneToMany(targetEntity="Customer", mappedBy="customer", cascade={"persist"})
+     */
+    private $payments;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="credit_limit", type="float", nullable=true)
@@ -259,6 +264,22 @@ class Customer
     public function setOpeningBalance($openingBalance)
     {
         $this->openingBalance = $openingBalance;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPayments()
+    {
+        return $this->payments;
+    }
+
+    /**
+     * @param mixed $payments
+     */
+    public function setPayments($payments)
+    {
+        $this->payments = $payments;
     }
 
     protected function getCurrentCreditLimit()

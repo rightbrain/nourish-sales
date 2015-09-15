@@ -47,6 +47,11 @@ class Order
     private $id;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Payment", mappedBy="orders")
+     **/
+    protected $payments;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\OrderItem", mappedBy="order", cascade={"persist", "remove"}, orphanRemoval=true))
