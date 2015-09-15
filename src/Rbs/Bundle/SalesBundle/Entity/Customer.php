@@ -60,9 +60,9 @@ class Customer
     /**
      * @var float
      *
-     * @ORM\Column(name="balance", type="float", nullable=true)
+     * @ORM\Column(name="opening_balance", type="float", nullable=true)
      */
-    private $balance;
+    private $openingBalance;
 
     /**
      * @var string
@@ -147,22 +147,6 @@ class Customer
     public function setCreditLimit($creditLimit)
     {
         $this->creditLimit = $creditLimit;
-    }
-
-    /**
-     * @return float
-     */
-    public function getBalance()
-    {
-        return $this->balance;
-    }
-
-    /**
-     * @param float $balance
-     */
-    public function setBalance($balance)
-    {
-        $this->balance = $balance;
     }
 
     /**
@@ -259,5 +243,33 @@ class Customer
     public function setVIP($VIP)
     {
         $this->VIP = $VIP;
+    }
+
+    /**
+     * @return float
+     */
+    public function getOpeningBalance()
+    {
+        return $this->openingBalance;
+    }
+
+    /**
+     * @param float $openingBalance
+     */
+    public function setOpeningBalance($openingBalance)
+    {
+        $this->openingBalance = $openingBalance;
+    }
+
+    protected function getCurrentCreditLimit()
+    {
+        // (order total amount - payment total) + credit limit + opening balance
+        return false;
+    }
+
+    protected function getCurrentBalance()
+    {
+        // order total amount - payment total
+        return false;
     }
 }
