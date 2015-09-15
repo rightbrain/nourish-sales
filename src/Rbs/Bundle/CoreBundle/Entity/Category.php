@@ -56,6 +56,7 @@ class Category
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
+     * @ORM\JoinTable(name="join_categories_bundles")
      **/
     private $bundles;
 

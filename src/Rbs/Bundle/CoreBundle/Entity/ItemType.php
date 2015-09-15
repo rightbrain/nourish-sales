@@ -59,6 +59,7 @@ class ItemType
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
+     * @ORM\JoinTable(name="join_item_types_bundles")
      **/
     private $bundles;
 

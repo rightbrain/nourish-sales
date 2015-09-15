@@ -34,7 +34,7 @@ class Item
      * @var Category
      *
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Category", inversedBy="item")
-     * @ORM\JoinTable(name="item_categories",
+     * @ORM\JoinTable(name="join_items_categories",
      *      joinColumns={@ORM\JoinColumn(name="item_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="categories_id", referencedColumnName="id")}
      * )
@@ -94,6 +94,7 @@ class Item
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
+     * @ORM\JoinTable(name="join_items_bundles")
      **/
     private $bundles;
 

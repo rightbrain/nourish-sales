@@ -131,6 +131,7 @@ class Vendor
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\ItemType", inversedBy="vendors", cascade={"persist"})
+     * @ORM\JoinTable(name="join_vendors_item_types")
      */
     protected $itemTypes;
 

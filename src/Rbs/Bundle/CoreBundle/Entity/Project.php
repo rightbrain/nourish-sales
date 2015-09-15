@@ -104,6 +104,7 @@ class Project
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
+     * @ORM\JoinTable(name="join_projects_bundles")
      **/
     private $bundles;
 
