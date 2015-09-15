@@ -216,6 +216,36 @@ class OrderController extends Controller
     }
 
     /**
+     * @Route("/order/complete/{id}", name="order_complete", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function orderCompleteAction(Order $order)
+    {
+        $this->get('session')->getFlashBag()->add(
+            'error',
+            'Access Denied'
+        );
+
+        return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
+     * @Route("/order/pending/{id}", name="order_pending", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function orderPendingAction(Order $order)
+    {
+        $this->get('session')->getFlashBag()->add(
+            'error',
+            'Access Denied'
+        );
+
+        return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
      * @Route("/order/summery/view/{id}", name="order_summery_view", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
