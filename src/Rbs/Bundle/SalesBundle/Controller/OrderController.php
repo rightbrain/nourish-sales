@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Controller\BaseController;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
@@ -16,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
  * User Controller.
  *
  */
-class OrderController extends Controller
+class OrderController extends BaseController
 {
     /**
      * @Route("/orders", name="orders_home")
@@ -75,10 +76,7 @@ class OrderController extends Controller
                 $em->getRepository('RbsSalesBundle:Order')->create($order);
                 $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order);
 
-                $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'Order Add Successfully!'
-                );
+                $this->flashMessage('success', 'Order Add Successfully!');
 
                 return $this->redirect($this->generateUrl('orders_home'));
             }
@@ -119,10 +117,7 @@ class OrderController extends Controller
                 $stockRepo->addStockToOnHold($order);
                 $em->getRepository('RbsSalesBundle:Order')->update($order, true);
 
-                $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'Order Update Successfully!'
-                );
+                $this->flashMessage('success', 'Order Update Successfully!');
 
                 return $this->redirect($this->generateUrl('orders_home'));
             }
@@ -153,14 +148,8 @@ class OrderController extends Controller
      */
     public function orderApproveAction(Order $order)
     {
-        if ($order->getOrderState() == Order::ORDER_STATE_CANCEL or $order->getOrderState() == Order::ORDER_STATE_COMPLETE) {
-
-            $this->get('session')->getFlashBag()->add(
-                'error',
-                'Access Denied'
-            );
-
-            return $this->redirect($this->generateUrl('orders_home'));
+        if (!$this->isOrderValidState($order)) {
+            return $this->redirectOnInvalidOrderState($order);
         }
 
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
@@ -170,10 +159,7 @@ class OrderController extends Controller
         $order->setOrderState(Order::ORDER_STATE_PROCESSING);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
-        $this->get('session')->getFlashBag()->add(
-            'success',
-            'Order Approve Successfully!'
-        );
+        $this->flashMessage('success', 'Order Approve Successfully!');
 
         return $this->redirect($this->generateUrl('orders_home'));
     }
@@ -185,14 +171,8 @@ class OrderController extends Controller
      */
     public function orderCancelAction(Order $order)
     {
-        if ($order->getOrderState() == Order::ORDER_STATE_CANCEL or $order->getOrderState() == Order::ORDER_STATE_COMPLETE) {
-
-            $this->get('session')->getFlashBag()->add(
-                'error',
-                'Access Denied'
-            );
-
-            return $this->redirect($this->generateUrl('orders_home'));
+        if ($this->isOrderValidState($order)) {
+            return $this->redirectOnInvalidOrderState($order);
         }
 
         if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
@@ -205,10 +185,7 @@ class OrderController extends Controller
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
-        $this->get('session')->getFlashBag()->add(
-            'success',
-            'Order Cancel Successfully!'
-        );
+        $this->flashMessage('success', 'Order Cancel Successfully!');
 
         return $this->redirect($this->generateUrl('orders_home'));
     }
@@ -220,14 +197,8 @@ class OrderController extends Controller
      */
     public function orderHoldAction(Order $order)
     {
-        if ($order->getOrderState() == Order::ORDER_STATE_CANCEL or $order->getOrderState() == Order::ORDER_STATE_COMPLETE) {
-
-            $this->get('session')->getFlashBag()->add(
-                'error',
-                'Access Denied'
-            );
-
-            return $this->redirect($this->generateUrl('orders_home'));
+        if ($this->isOrderValidState($order)) {
+            return $this->redirectOnInvalidOrderState($order);
         }
 
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
@@ -237,10 +208,7 @@ class OrderController extends Controller
         $order->setOrderState(Order::ORDER_STATE_HOLD);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
-        $this->get('session')->getFlashBag()->add(
-            'success',
-            'Order Hold Successfully!'
-        );
+        $this->flashMessage('success', 'Order Hold Successfully!');
 
         return $this->redirect($this->generateUrl('orders_home'));
     }
@@ -252,16 +220,9 @@ class OrderController extends Controller
      */
     public function orderCompleteAction(Order $order)
     {
-        if ($order->getOrderState() == Order::ORDER_STATE_CANCEL or $order->getOrderState() == Order::ORDER_STATE_COMPLETE) {
-
-            $this->get('session')->getFlashBag()->add(
-                'error',
-                'Access Denied'
-            );
-
+        if ($this->isOrderValidState($order)) {
+            return $this->redirectOnInvalidOrderState($order);
         }
-
-        return $this->redirect($this->generateUrl('orders_home'));
     }
 
     /**
@@ -271,16 +232,9 @@ class OrderController extends Controller
      */
     public function orderPendingAction(Order $order)
     {
-        if ($order->getOrderState() == Order::ORDER_STATE_CANCEL or $order->getOrderState() == Order::ORDER_STATE_COMPLETE) {
-
-            $this->get('session')->getFlashBag()->add(
-                'error',
-                'Access Denied'
-            );
-
+        if ($this->isOrderValidState($order)) {
+            return $this->redirectOnInvalidOrderState($order);
         }
-
-        return $this->redirect($this->generateUrl('orders_home'));
     }
 
     /**
@@ -300,5 +254,24 @@ class OrderController extends Controller
         return $this->render('RbsSalesBundle:Order:summeryView.html.twig', array(
             'order' => $order
         ));
+    }
+
+    protected function isOrderValidState(Order $order)
+    {
+        if (in_array($order->getOrderState(), array(
+            Order::ORDER_STATE_CANCEL,
+            Order::ORDER_STATE_COMPLETE
+        ))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function redirectOnInvalidOrderState(Order $order)
+    {
+        $this->flashMessage('error', 'Order ' . $order->getId() . ' state is '. $order->getOrderState());
+
+        return $this->redirect($this->generateUrl('orders_home'));
     }
 }
