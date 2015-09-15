@@ -52,7 +52,7 @@ class User extends BaseUser
 
     /**
      * @ORM\ManyToMany(targetEntity="Group", inversedBy="users")
-     * @ORM\JoinTable(name="joint_users_groups",
+     * @ORM\JoinTable(name="join_users_groups",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
      * )
