@@ -11,7 +11,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
- * Item
+ * Customer
  *
  * @ORM\Table(name="customers")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\CustomerRepository")
