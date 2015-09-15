@@ -11,29 +11,34 @@
                 <div class="portlet-body">
                     <div class="dataTables_wrapper no-footer">
 
-                        <p>Order Number : {{ order.id }}</p>
-                        <p>Customer Name : {{ order.customer.user.username }}</p>
-                        <p>Created By : {{ order.createdBy.username }}</p>
-                        <p>Order Amount : {{ order.totalAmount }}</p>
-                        <p>Remarks : {{ order.remark }}</p>
+                        <table class="table col-md-6">
+                            <tr><th class="col-md-8">Order Number</th><td class="col-md-4">{{ order.id }}</td></tr>
+                            <tr><th>Customer Name</th><td>{{ order.customer.user.profile.fullName }}</td></tr>
+                            {% if order.createdBy is not null %}
+                            <tr><th>Created By</th><td>{{ order.createdBy.username }}</td></tr>
+                            {% endif %}
+                            <tr><th>Order Amount</th><td>{{ order.totalAmount|number_format(2) }}</td></tr>
+                            <tr><th>Remarks</th><td>{{ order.remark }}</td></tr>
+                            <tr><th></th><td></td></tr>
+                        </table>
 
                         <table class="table-bordered table-striped table-condensed flip-content col-md-12">
-                            <thead class="flip-content">
+                            <thead>
                             <tr>
-                                <th class="numeric">Sl</th>
-                                <th class="numeric">Item</th>
-                                <th class="numeric">Quantity</th>
-                                <th class="numeric">Available</th>
+                                <th class="col-md-1">Sl</th>
+                                <th class="col-md-7">Item</th>
+                                <th class="text-center col-md-2">Quantity</th>
+                                <th class="text-center col-md-2">Available</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% set available = true %}
                             {% for index, orderItem in order.orderItems %}
                                 <tr>
-                                    <td class="numeric">{{ index + 1 }}.</td>
-                                    <td class="numeric">{{ orderItem.item.itemName | default('') }}</td>
-                                    <td class="numeric">{{ orderItem.quantity | default('') }}</td>
-                                    <td class="numeric">
+                                    <td>{{ index + 1 }}.</td>
+                                    <td>{{ orderItem.item.itemName | default('') }}</td>
+                                    <td class="text-center">{{ orderItem.quantity | default('') }}</td>
+                                    <td class="text-center">
                                         {% if orderItem.isAvailable == true %}
                                             <i class="fa fa-check green"></i>
                                         {% else %}
