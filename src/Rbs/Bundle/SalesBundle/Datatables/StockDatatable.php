@@ -5,7 +5,7 @@ namespace Rbs\Bundle\SalesBundle\Datatables;
 use Rbs\Bundle\SalesBundle\Entity\Stock;
 
 /**
- * Class CustomerDatatable
+ * Class StockDatatable
  *
  * @package Rbs\Bundle\SalesBundle\Datatables
  */

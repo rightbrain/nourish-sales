@@ -22,6 +22,12 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+
+    rbs_erp.sales.datatable.payment:
+        class: Rbs\Bundle\SalesBundle\Datatables\PaymentDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.sms:
         class: Rbs\Bundle\SalesBundle\Datatables\SmsDatatable
         tags:

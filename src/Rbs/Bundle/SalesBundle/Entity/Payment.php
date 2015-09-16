@@ -54,7 +54,7 @@ class Payment
      *
      * @ORM\Column(name="payment_method", type="string", length=255, columnDefinition="ENUM('CACHE', 'CHEQUE', 'BANK')", nullable=false)
      */
-    private $paymentMethod = 'CACHE';
+    private $paymentMethod = 'BANK';
 
     /**
      * @var string

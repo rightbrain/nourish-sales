@@ -11,9 +11,8 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Twig_Environment;
 
-
 /**
- * Class CustomerDatatable
+ * Class StockHistoryDatatable
  *
  * @package Rbs\Bundle\SalesBundle\Datatables
  */
