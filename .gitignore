@@ -12,7 +12,8 @@
 /web/bundles/
 /web/js
 /web/css
-
+/web/uploads
+vhost
 
 # Configuration files
 app/config/parameters.ini
