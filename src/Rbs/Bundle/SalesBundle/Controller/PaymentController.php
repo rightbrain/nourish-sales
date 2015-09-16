@@ -3,17 +3,19 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Controller\BaseController;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
+use Rbs\Bundle\SalesBundle\Form\Type\PaymentForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Payment Controller.
  *
  */
-class PaymentController extends Controller
+class PaymentController extends BaseController
 {
     /**
      * @Route("/payments", name="payments_home")
@@ -48,5 +50,35 @@ class PaymentController extends Controller
         };
         $query->addWhereAll($function);
         return $query->getResponse();
+    }
+
+    /**
+     * @Route("/payment/create", name="payment_create", options={"expose"=true})
+     * @Template("RbsSalesBundle:Payment:new.html.twig")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function createAction(Request $request)
+    {
+        $payment = new Payment();
+        $form = $this->createForm(new PaymentForm(), $payment);
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+
+                $em = $this->getDoctrine()->getManager();
+                $em->getRepository('RbsSalesBundle:Payment')->create($payment);
+
+                $this->flashMessage('success', 'Payment Add Successfully!');
+
+                return $this->redirect($this->generateUrl('payments_home'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
     }
 }
