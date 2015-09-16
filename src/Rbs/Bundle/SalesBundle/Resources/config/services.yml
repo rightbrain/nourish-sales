@@ -7,6 +7,11 @@ services:
         tags:
           - { name: kernel.event_listener, event: core_bundle.menu_user, method: onMenuConfigureMain, priority: 999 }
 
+    appbundle.subscriber.auditlogeventsubscriber:
+        class: Rbs\Bundle\SalesBundle\Subscriber\AuditLogEventSubscriber
+        tags:
+             - { name: easy_audit.event_subscriber }
+
     rbs_erp.sales.datatable.customer:
         class: Rbs\Bundle\SalesBundle\Datatables\CustomerDatatable
         tags:

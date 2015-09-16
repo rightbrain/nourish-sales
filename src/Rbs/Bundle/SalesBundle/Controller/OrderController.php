@@ -6,11 +6,11 @@ use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Controller\BaseController;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
+use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -98,6 +98,7 @@ class OrderController extends BaseController
     {
         $form = $this->createForm(new OrderForm(), $order);
         $em = $this->getDoctrine()->getManager();
+
         if ('POST' === $request->getMethod()) {
 
             $sms = $order->getRefSMS();
@@ -159,6 +160,8 @@ class OrderController extends BaseController
         $order->setOrderState(Order::ORDER_STATE_PROCESSING);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
+        $this->dispatch('order.approved', new OrderApproveEvent($order));
+
         $this->flashMessage('success', 'Order Approve Successfully!');
 
         return $this->redirect($this->generateUrl('orders_home'));
@@ -185,6 +188,8 @@ class OrderController extends BaseController
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
+        $this->dispatch('order.canceled', new OrderApproveEvent($order));
+
         $this->flashMessage('success', 'Order Cancel Successfully!');
 
         return $this->redirect($this->generateUrl('orders_home'));
@@ -207,6 +212,8 @@ class OrderController extends BaseController
 
         $order->setOrderState(Order::ORDER_STATE_HOLD);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+
+        $this->dispatch('order.hold', new OrderApproveEvent($order));
 
         $this->flashMessage('success', 'Order Hold Successfully!');
 
