@@ -51,7 +51,7 @@ class Customer
     private $customerGroup;
 
     /**
-     * @ORM\OneToMany(targetEntity="Customer", mappedBy="customer", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Payment", mappedBy="customer", cascade={"persist"})
      */
     private $payments;
 
