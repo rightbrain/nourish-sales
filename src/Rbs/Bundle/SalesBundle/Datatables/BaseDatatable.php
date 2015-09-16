@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig_Environment;
 
 /**
- * Class CategoryDatatable
+ * Class BaseDatatable
  *
  * @package Rbs\Bundle\CoreBundle\Datatables
  */
