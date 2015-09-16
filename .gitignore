@@ -13,6 +13,7 @@
 /web/js
 /web/css
 
+
 # Configuration files
 app/config/parameters.ini
 web/.htaccess
