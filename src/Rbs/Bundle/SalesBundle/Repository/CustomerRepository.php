@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\Customer;
 
 /**
  * CustomerRepository
@@ -44,5 +45,30 @@ class CustomerRepository extends EntityRepository
         $query->setParameter('Customer', 'Customer');
 
         return $query->getQuery()->getResult();
+    }
+
+    public function getCurrentBalance(Customer $customer)
+    {
+        try {
+            $totalOrderAmount = $this->_em
+                ->createQuery(
+                    "SELECT SUM(o.totalAmount) FROM Rbs\Bundle\SalesBundle\Entity\Order o WHERE o.customer = :customer GROUP BY o.customer"
+                )
+                ->setParameter('customer', $customer)
+                ->getSingleScalarResult();
+        } catch (\Exception $e) {
+            $totalOrderAmount = 0;
+        }
+
+        try {
+            $totalPaymentAmount = $this->_em
+                ->createQuery("SELECT SUM(p.amount) FROM Rbs\Bundle\SalesBundle\Entity\Payment p WHERE p.customer = :customer GROUP BY p.customer")
+                ->setParameter('customer', $customer)
+                ->getSingleScalarResult();
+        } catch (\Exception $e) {
+            $totalPaymentAmount = 0;
+        }
+
+        return $totalOrderAmount - $totalPaymentAmount;
     }
 }

@@ -45,7 +45,7 @@ class Payment
      * @var Customer
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Customer", inversedBy="payments", cascade={"persist"})
-     * @ORM\JoinColumn(name="customers", nullable=false)
+     * @ORM\JoinColumn(name="customer", nullable=false)
      */
     private $customer;
 
