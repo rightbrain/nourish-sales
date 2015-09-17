@@ -22,9 +22,9 @@
                 <!-- Demo image  -->
 
                 <div class="page-lock-info">
-                    <h1>{{ app.user.name }}</h1>
+                    <h1>{{ app.user.username }}</h1>
                     <div class="relogin">
-                        <a href="{{ path('homepage') }}">Go to home</a> | <a href="{{ path('fos_user_security_logout') }}">Not {{app.user.name}} ?</a>
+                        <a href="{{ path('homepage') }}">Go to home</a> | <a href="{{ path('fos_user_security_logout') }}">Not {{app.user.username}} ?</a>
                     </div>
                 </div>
             </div>
