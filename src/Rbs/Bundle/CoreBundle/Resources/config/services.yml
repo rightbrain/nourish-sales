@@ -13,6 +13,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.core.datatable.audit_log:
+        class: Rbs\Bundle\CoreBundle\Datatables\AuditLogDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.core.datatable.area:
         class: Rbs\Bundle\CoreBundle\Datatables\AreaDatatable
         tags:

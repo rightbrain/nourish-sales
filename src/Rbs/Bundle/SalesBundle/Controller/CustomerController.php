@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
  * User Controller.
  *
  */
-class UserCustomerController extends Controller
+class CustomerController extends Controller
 {
     /**
      * @Route("/customers", name="customers_home")
@@ -204,11 +204,12 @@ class UserCustomerController extends Controller
     {
         $customerId = $request->request->get('customer');
 
-        $customer = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->find($customerId);
+        $customerRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer');
+        $customer = $customerRepo->find($customerId);
 
         $response = new Response(json_encode(array(
             'creditLimit' => $customer->getCreditLimit(),
-            'balance' => $customer->getBalance()
+            'balance' => $customerRepo->getCurrentBalance($customer)
         )));
 
         $response->headers->set('Content-Type', 'application/json');

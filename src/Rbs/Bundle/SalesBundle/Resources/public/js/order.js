@@ -68,12 +68,12 @@ var Order = function()
         }
 
         // Check Duplicate Item Select
-        /*if (isItemExits(collectionHolder, item, index)) {
+        if (isItemExits(collectionHolder, item, index)) {
             var selectedItem = $('#order-item-'+index).find('select');
             toastr.error(selectedItem.find(":selected").text() + " Item Already Selected.");
             selectedItem.val("").trigger('change');
             return false;
-        }*/
+        }
 
         Metronic.blockUI({
             target: collectionHolder,
@@ -92,7 +92,7 @@ var Order = function()
                 var available = response.available;
                 var price = response.price;
                 var itemUnit = response.itemUnit;
-                console.log(index);
+
                 setOrderItemValue(index, onHand, onHold, available, price, itemUnit, false);
                 Metronic.unblockUI(collectionHolder);
             },
@@ -199,11 +199,6 @@ var Order = function()
         $('.order-item-list tbody').on("click keyup", ".quantity", (totalPriceCalculation));
     }
 
-    function init()
-    {
-        newOrder();
-    }
-
     function filterInit(){
         if (!$('#external_filter_container').length) {
             $('<div id="external_filter_container">' +
@@ -253,8 +248,53 @@ var Order = function()
         },500);
     }
 
+    function init()
+    {
+        newOrder();
+        formValidateInit();
+    }
+
+    function formValidateInit()
+    {
+        var isFormValid = true;
+        var form = $('form[name=order]');
+        if (!form.length) return;
+
+        form.submit(function(){
+
+            var orderItem = $('#orderItems');
+            orderItem.find('tr').each(function(index, e){
+                var elm = $(e);
+                var item = elm.find('td:eq(0)');
+                var qty = elm.find('td:eq(1)');
+                var stock = elm.find('td:eq(3)').text();
+
+                item.removeClass('has-error');
+                qty.removeClass('has-error');
+                if (item.find('select').val() == '') {
+                    item.addClass('has-error');
+                    isFormValid = false;
+                }
+
+                if (
+                    (qty.find('input').val() == '') ||
+                    (stock != 'Available On Demand' && (parseInt(qty.find('input').val()) > parseInt(stock)))
+                ) {
+                    qty.addClass('has-error');
+                    isFormValid = false;
+                }
+
+            });
+
+            if (!isFormValid) {
+                return false;
+            }
+        });
+    }
+
     return {
         init: init,
-        filterInit: filterInit
+        filterInit: filterInit,
+        formValidateInit: formValidateInit
     }
 }();
