@@ -24,6 +24,8 @@ class OrderDatatable extends BaseDatatable
             $line["paymentState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getPaymentState()).'"> '.$order->getPaymentState().' </span>';
             $line["deliveryState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getDeliveryState()).'"> '.$order->getDeliveryState().' </span>';
 
+            //$line["actionButtons"] = $this->generateActionList($order);
+
             return $line;
         };
 
@@ -66,6 +68,7 @@ class OrderDatatable extends BaseDatatable
             ->add('isCancel', 'virtual', array('visible' => false))
             ->add('enabled', 'virtual', array('visible' => false))
             ->add('disabled', 'virtual', array('visible' => false))
+            //->add('actionButtons', 'virtual')
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Action',
@@ -153,5 +156,79 @@ class OrderDatatable extends BaseDatatable
     public function getName()
     {
         return 'order_datatable';
+    }
+
+    public function generateActionList(Order $order)
+    {
+        $this->authorizationChecker->isGranted('ROLE_ADMIN');
+        $html = '<div class="actions">
+                <div class="btn-group">
+                    <a class="btn btn-sm btn-default" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false">
+                    Actions <i class="fa fa-angle-down"></i>
+                    </a>
+                    <ul class="dropdown-menu pull-right">
+                    ';
+
+        if (!in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
+            $html .= $this->generateMenuLink('Edit', 'order_update', array('id' => $order->getId()));
+        }
+
+        if ($order->isPending()) {
+            $html .= $this->generateMenuLink('Approve', 'order_approve', array('id' => $order->getId()));
+        }
+
+            /*$html .= '
+            <li>
+                        <a href="javascript:;">
+                            <i class="i"></i> All Project </a>
+                        </li>
+                        <li class="divider">
+                        </li>
+                        <li>
+                            <a href="javascript:;">
+                            AirAsia </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">
+                            Cruise </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">
+                            HSBC </a>
+                        </li>
+                        <li class="divider">
+                        </li>
+                        <li>
+                            <a href="javascript:;">
+                            Pending <span class="badge badge-danger">
+                            4 </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">
+                            Completed <span class="badge badge-success">
+                            12 </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:;">
+                            Overdue <span class="badge badge-warning">
+                            9 </span>
+                            </a>
+                        </li>
+            ';*/
+
+            $html .='</ul>
+                </div>
+            </div>';
+
+        return $html;
+    }
+
+    protected function generateMenuLink($label, $route = null, $param = array())
+    {
+        $link = !$route ? 'javascript:;' : $this->router->generate($route, $param);
+
+        return sprintf('<li><a href="%s"> <i class="i"></i> %s </a> </li>', $link, $label);
     }
 }
