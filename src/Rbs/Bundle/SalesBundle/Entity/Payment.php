@@ -1,6 +1,7 @@
 <?php
 namespace Rbs\Bundle\SalesBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -34,9 +35,9 @@ class Payment
 
     /**
      * @ORM\ManyToMany(targetEntity="Order", inversedBy="payments")
-     * @ORM\JoinTable(name="join_payments_orders_",
-     *      joinColumns={@ORM\JoinColumn(name="order_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="payment_id", referencedColumnName="id")}
+     * @ORM\JoinTable(name="join_payments_orders",
+     *      joinColumns={@ORM\JoinColumn(name="payment_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="order_id", referencedColumnName="id")}
      * )
      */
     protected $orders;
@@ -203,11 +204,26 @@ class Payment
         return $this->orders;
     }
 
-    /**
-     * @param mixed $orders
-     */
-    public function setOrders($orders)
+    public function __construct()
     {
-        $this->orders = $orders;
+        $this->orders = new ArrayCollection();
+    }
+
+    /**
+     * @param \Rbs\Bundle\SalesBundle\Entity\Order $order
+     */
+    public function addOrder($order)
+    {
+        if (!$this->getOrders()->contains($order)) {
+            $this->getOrders()->add($order);
+        }
+    }
+
+    /**
+     * @param \Rbs\Bundle\SalesBundle\Entity\Order $order
+     */
+    public function removeOrder($order)
+    {
+        $this->orders->removeElement($order);
     }
 }

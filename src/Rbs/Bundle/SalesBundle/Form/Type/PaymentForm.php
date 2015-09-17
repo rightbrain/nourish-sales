@@ -49,18 +49,8 @@ class PaymentForm extends AbstractType
             ))
             ->add('remark', 'textarea')
         ;
-        $builder
-            ->add('orders', 'collection', array(
-                'type'         => new PaymentOrderForm(),
-                'allow_add'    => true,
-                'allow_delete' => true,
-                'by_reference' => false,
-                'prototype'    => true,
-                'label_attr'   => array(
-                    'class' => 'hidden',
-                ),
-            ))
-        ;
+
+        $builder->add('orders');
         $builder
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')

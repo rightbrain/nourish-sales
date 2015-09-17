@@ -13,15 +13,15 @@
             <div class="portlet-body">
                 {{ include('_elements/_back_to_list_button.html.twig', {url: path('payments_home'), label: 'Back to List', 'icon': 'plus'}) }}
                 {{ form_start(form, {'method': 'POST'}) }}
-                {{ form_widget(form.customer) }}
 
-                    <ul class="tags" data-prototype="
-                    {% filter escape %}
-                    {{ include('RbsSalesBundle:Payment:paymentOrder.html.twig', { 'form': form.orders.vars.prototype }) }}
-                    {% endfilter %}">
-                    </ul>
+                    {{ form_row(form.customer) }}
+                    {{ form_row(form.amount) }}
+                    {{ form_row(form.bankName) }}
+                    {{ form_row(form.branchName) }}
+                    {{ form_row(form.paymentMethod) }}
+                    {{ form_row(form.remark) }}
+                    {{ form_row(form.orders) }}
 
-                {{ form_row(form.submit) }}
                 {{ form_end(form) }}
             </div>
         </div>
@@ -54,5 +54,4 @@
 {#<script>#}
 {% block documentReady %}
     {{ parent() }}
-    paymentOrder.init();
 {% endblock documentReady %}
