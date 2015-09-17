@@ -12,7 +12,8 @@
                 </div>
             </div>
             <div class="portlet-body">
-                <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('payment_create'), label: 'Add Payment', 'icon': 'plus'}) }}</div>
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('payment_create'), label: 'Add Payment', 'icon': 'plus'}) }}
+
                 <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}
                     <div style="clear: both"></div>
