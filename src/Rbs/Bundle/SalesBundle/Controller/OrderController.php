@@ -174,7 +174,7 @@ class OrderController extends BaseController
      */
     public function orderCancelAction(Order $order)
     {
-        if ($this->isOrderValidState($order)) {
+        if (!$this->isOrderValidState($order)) {
             return $this->redirectOnInvalidOrderState($order);
         }
 
@@ -202,7 +202,7 @@ class OrderController extends BaseController
      */
     public function orderHoldAction(Order $order)
     {
-        if ($this->isOrderValidState($order)) {
+        if (!$this->isOrderValidState($order)) {
             return $this->redirectOnInvalidOrderState($order);
         }
 
@@ -230,6 +230,8 @@ class OrderController extends BaseController
         if ($this->isOrderValidState($order)) {
             return $this->redirectOnInvalidOrderState($order);
         }
+
+        return $this->redirect($this->generateUrl('orders_home'));
     }
 
     /**
@@ -242,6 +244,8 @@ class OrderController extends BaseController
         if ($this->isOrderValidState($order)) {
             return $this->redirectOnInvalidOrderState($order);
         }
+
+        return $this->redirect($this->generateUrl('orders_home'));
     }
 
     /**

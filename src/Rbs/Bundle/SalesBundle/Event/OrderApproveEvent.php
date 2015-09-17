@@ -45,7 +45,7 @@ class OrderApproveEvent extends BaseEvent
      */
     protected function getEventShortName()
     {
-        return substr(strrchr($this->eventName, '.'), 1);
+        return substr($this->eventName, strpos($this->eventName, '.') + 1);
     }
 
     protected function getEventType()
@@ -55,11 +55,18 @@ class OrderApproveEvent extends BaseEvent
 
     protected function getDescriptionString()
     {
-        $descriptionTemplate = "Order #%s has been %s";
+        $descriptionTemplate = 'AAA';
+        if (strpos($this->eventName, 'order') === 0) {
+            $descriptionTemplate = "Order %s for Order #%s";
+        } else if(strpos($this->eventName, 'payment') === 0) {
+            $descriptionTemplate = "Payment %s for Order #%s";
+        } else if(strpos($this->eventName, 'payment') === 0) {
+            $descriptionTemplate = "Order %s for Order #%s";
+        }
 
         return sprintf($descriptionTemplate,
-            $this->order->getId(),
-            $this->getEventShortName()
+            ucfirst($this->getEventShortName()),
+            $this->order->getId()
         );
     }
 }

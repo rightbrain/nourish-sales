@@ -13,6 +13,12 @@ class AuditLogEventSubscriber implements EasyAuditEventSubscriberInterface
             "order.canceled",
             "order.hold",
             "order.completed",
+            "payment.approved",
+            "payment.over.credit.approved",
+            "delivery.hold",
+            "delivery.shipped.partially",
+            "delivery.shipped",
+            "payment.add",
         );
     }
 }
