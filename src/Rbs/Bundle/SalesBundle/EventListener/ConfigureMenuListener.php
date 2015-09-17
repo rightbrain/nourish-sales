@@ -33,6 +33,14 @@ class ConfigureMenuListener extends ContextAwareListener
         $menu['Order']->addChild('Order List', array('route' => 'orders_home'))
             ->setAttribute('icon', 'fa fa-th-list');
 
+        $menu->addChild('Payment', array('route' => ''))
+            ->setAttribute('dropdown', true)
+            ->setAttribute('icon', 'fa fa-suitcase')
+            ->setLinkAttribute('data-hover', 'dropdown');
+
+        $menu['Payment']->addChild('Payment List', array('route' => 'payments_home'))
+            ->setAttribute('icon', 'fa fa-th-list');
+
         $menu['User']->addChild('Customer List', array('route' => 'customers_home'))
             ->setAttribute('icon', 'fa fa-th-list');
         $menu['User']->addChild('Customer Create', array('route' => 'customer_create'))
