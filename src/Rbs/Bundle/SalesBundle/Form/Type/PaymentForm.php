@@ -2,7 +2,9 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Repository\CustomerRepository;
+use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -50,7 +52,23 @@ class PaymentForm extends AbstractType
             ->add('remark', 'textarea')
         ;
 
-        $builder->add('orders');
+        $builder
+                ->add('orders', 'entity', array(
+                    'class' => 'RbsSalesBundle:Order',
+                    'property' => 'id',
+                    'multiple' => true,
+                    'query_builder' => function (OrderRepository $repository)
+                    {
+                        return $repository->createQueryBuilder('o')
+                            ->where('o.deletedAt IS NULL')
+                            ->orderBy('o.id','DESC')
+                            ->andWhere('o.orderState != :complete or o.orderState != :cancel')
+                            ->andWhere('o.paymentState != :paid')
+                            ->setParameter('complete', Order::ORDER_STATE_COMPLETE)
+                            ->setParameter('cancel', Order::ORDER_STATE_CANCEL)
+                            ->setParameter('paid', Order::PAYMENT_STATE_PAID);
+                    }
+                ));
         $builder
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')
