@@ -75,9 +75,9 @@ class OrderRepository extends EntityRepository
         }
     }
 
-    function getCustomerWiseOrder($customer)
+    function getCustomerWiseOrder($customer, $returnQuery = false)
     {
-        return $this->createQueryBuilder('o')
+        $query = $this->createQueryBuilder('o')
             ->where('o.deletedAt IS NULL')
             ->orderBy('o.id', 'DESC')
             ->andWhere('o.orderState != :complete or o.orderState != :cancel')
@@ -86,7 +86,12 @@ class OrderRepository extends EntityRepository
             ->setParameter('customer', $customer)
             ->setParameter('complete', Order::ORDER_STATE_COMPLETE)
             ->setParameter('cancel', Order::ORDER_STATE_CANCEL)
-            ->setParameter('paid', Order::PAYMENT_STATE_PAID)
-            ->getQuery()->getResult();
+            ->setParameter('paid', Order::PAYMENT_STATE_PAID);
+
+        if ($returnQuery) {
+            return $query;
+        }
+
+        return $query->getQuery()->getResult();
     }
 }

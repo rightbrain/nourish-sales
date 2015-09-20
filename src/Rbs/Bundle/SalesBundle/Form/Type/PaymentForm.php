@@ -28,7 +28,8 @@ class PaymentForm extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $customer = $options['data']->getCustomer();
+        $customer = $this->request->request->get('payment[customer]', null, true);
+
         $builder
             ->add('amount', 'text', array(
                 'constraints' => array(
@@ -77,7 +78,7 @@ class PaymentForm extends AbstractType
                         return $repository->createQueryBuilder('o')
                             ->setMaxResults(0);
                     } else {
-                        return $repository->getCustomerWiseOrder($customer);
+                        return $repository->getCustomerWiseOrder($customer, true);
                     }
                 }
             ));
