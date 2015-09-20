@@ -72,12 +72,11 @@ class PaymentController extends BaseController
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-
                 $em = $this->getDoctrine()->getManager();
+                $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
                 $em->getRepository('RbsSalesBundle:Payment')->create($payment);
 
                 $this->flashMessage('success', 'Payment Add Successfully!');
-
                 return $this->redirect($this->generateUrl('payments_home'));
             }
         }

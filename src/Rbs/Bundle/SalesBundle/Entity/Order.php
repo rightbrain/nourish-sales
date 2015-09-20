@@ -390,4 +390,9 @@ class Order
     {
         return '#' . ' '. $this->getId() . ' Due amount :' . ($this->getTotalAmount() - $this->getPaidAmount());
     }
+
+    public function getDueAmount()
+    {
+        return ($this->getTotalAmount() - $this->getPaidAmount());
+    }
 }

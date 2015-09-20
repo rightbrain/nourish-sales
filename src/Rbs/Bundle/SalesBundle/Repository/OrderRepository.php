@@ -94,4 +94,25 @@ class OrderRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function orderAmountAdjust($payments)
+    {
+        $amount = $payments->getAmount();
+
+        foreach($payments->getOrders() as $order){
+            $dueAmount = $order->getDueAmount();
+            if($amount != 0 and $dueAmount != 0){
+                if ($amount >= $dueAmount) {
+                    $amount = $amount - $dueAmount;
+                    $order->setPaidAmount($order->getPaidAmount() + $dueAmount);
+                    $order->setPaymentState(Order::PAYMENT_STATE_PAID);
+                } else{
+                    $order->setPaidAmount($order->getPaidAmount() + $amount);
+                    $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
+                    $amount = 0;
+                }
+            }
+            $this->update($order);
+        }
+    }
 }
