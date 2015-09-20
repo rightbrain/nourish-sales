@@ -385,4 +385,9 @@ class Order
     {
         $this->payments = $payments;
     }
+
+    public function getOrderIdAndDueAmount()
+    {
+        return '#' . ' '. $this->getId() . ' Due amount :' . ($this->getTotalAmount() - $this->getPaidAmount());
+    }
 }
