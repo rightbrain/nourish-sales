@@ -7,20 +7,34 @@ use Rbs\Bundle\SalesBundle\Repository\CustomerRepository;
 use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PaymentForm extends AbstractType
 {
+    /** @var Request */
+    private $request;
+
+    public function __construct($request = null)
+    {
+        $this->request = $request;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $customer = $options['data']->getCustomer();
         $builder
-            ->add('amount', 'text')
+            ->add('amount', 'text', array(
+                'constraints' => array(
+                    new NotBlank()
+                )
+            ))
             ->add('bankName', 'text')
             ->add('branchName', 'text')
             ->add('paymentMethod', 'choice', array(
@@ -53,22 +67,21 @@ class PaymentForm extends AbstractType
         ;
 
         $builder
-                ->add('orders', 'entity', array(
-                    'class' => 'RbsSalesBundle:Order',
-                    'property' => 'id',
-                    'multiple' => true,
-                    'query_builder' => function (OrderRepository $repository)
-                    {
+            ->add('orders', 'entity', array(
+                'class' => 'RbsSalesBundle:Order',
+                'property' => 'orderIdAndDueAmount',
+                'multiple' => true,
+                'query_builder' => function (OrderRepository $repository) use ($customer)
+                {
+                    if (!$customer) {
                         return $repository->createQueryBuilder('o')
-                            ->where('o.deletedAt IS NULL')
-                            ->orderBy('o.id','DESC')
-                            ->andWhere('o.orderState != :complete or o.orderState != :cancel')
-                            ->andWhere('o.paymentState != :paid')
-                            ->setParameter('complete', Order::ORDER_STATE_COMPLETE)
-                            ->setParameter('cancel', Order::ORDER_STATE_CANCEL)
-                            ->setParameter('paid', Order::PAYMENT_STATE_PAID);
+                            ->setMaxResults(0);
+                    } else {
+                        return $repository->getCustomerWiseOrder($customer);
                     }
-                ));
+                }
+            ));
+
         $builder
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')

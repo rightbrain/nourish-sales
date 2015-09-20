@@ -1,29 +1,25 @@
-var paymentOrder = function()
-{
-    var $collectionHolder;
-    var $addTagLink = $('#add_order');
-    var $newLinkLi = $('<tr></tr>').append($addTagLink);
-
-    jQuery(document).ready(function() {
-        $collectionHolder = $('tbody.tags');
-        $collectionHolder.append($newLinkLi);
-        $collectionHolder.data('index', $collectionHolder.find(':input').length);
-
-        $addTagLink.on('click', function(e) {
-            e.preventDefault();
-            addTagForm($collectionHolder, $newLinkLi);
+handleCustomerChange = function (){
+    $("#payment_customer").change(function () {
+        var ordersElm = $('#payment_orders');
+        var customer = $(this).val();
+        if (customer == '') {
+            ordersElm.find('option').remove();
+            return fales;
+        }
+        $.ajax({
+            type: "post",
+            url: Routing.generate('partial_payment_orders', {id: customer}),
+            dataType: 'json',
+            success: function(data) {
+                ordersElm.find('option').remove();
+                for (var i=0; i < data.length; i++) {
+                    var arr = data[i];
+                    ordersElm.append('<option value="'+arr['id']+'">'+arr['text']+'</option>');
+                }
+            },
+            error: function(){
+                toastr.error('Server Error');
+            }
         });
     });
-
-    function addTagForm($collectionHolder, $newLinkLi) {
-        var prototype = $collectionHolder.data('prototype');
-        var index = $collectionHolder.data('index');
-        var newForm = prototype.replace(/__name__/g, index);
-
-        $collectionHolder.data('index', index + 1);
-
-        var $newFormLi = $('<tr></tr>').append(newForm);
-        $newLinkLi.after($newFormLi);
-    }
-
 }();

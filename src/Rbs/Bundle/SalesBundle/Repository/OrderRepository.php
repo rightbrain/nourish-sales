@@ -74,4 +74,19 @@ class OrderRepository extends EntityRepository
             $order->getRefSMS()->setOrder($order);
         }
     }
+
+    function getCustomerWiseOrder($customer)
+    {
+        return $this->createQueryBuilder('o')
+            ->where('o.deletedAt IS NULL')
+            ->orderBy('o.id', 'DESC')
+            ->andWhere('o.orderState != :complete or o.orderState != :cancel')
+            ->andWhere('o.paymentState != :paid')
+            ->andWhere('o.customer = :customer')
+            ->setParameter('customer', $customer)
+            ->setParameter('complete', Order::ORDER_STATE_COMPLETE)
+            ->setParameter('cancel', Order::ORDER_STATE_CANCEL)
+            ->setParameter('paid', Order::PAYMENT_STATE_PAID)
+            ->getQuery()->getResult();
+    }
 }
