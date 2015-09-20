@@ -90,16 +90,16 @@ class Order
     /**
      * @var float
      *
-     * @ORM\Column(name="total_amount", type="float", options={"default" = 0}, nullable=true)
+     * @ORM\Column(name="total_amount", type="float")
      */
-    private $totalAmount;
+    private $totalAmount = 0 ;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="paid_amount", type="float", options={"default" = 0}, nullable=true)
+     * @ORM\Column(name="paid_amount", type="float")
      */
-    private $paidAmount;
+    private $paidAmount = 0 ;
 
     /**
      * @var string
