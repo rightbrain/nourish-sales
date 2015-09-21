@@ -2,7 +2,6 @@
 
 namespace Rbs\Bundle\SalesBundle\Controller;
 
-use Rbs\Bundle\CoreBundle\Controller\BaseController;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
@@ -30,7 +29,7 @@ class OrderController extends BaseController
         $datatable->buildDatatable();
 
         return $this->render('RbsSalesBundle:Order:index.html.twig', array(
-            'datatable' => $datatable
+            'datatable' => $datatable,
         ));
     }
 
@@ -120,7 +119,7 @@ class OrderController extends BaseController
 
         return array(
             'form' => $form->createView(),
-            'order' => $order
+            'order' => $order,
         );
     }
 
@@ -132,7 +131,7 @@ class OrderController extends BaseController
     public function detailsAction(Order $order)
     {
         return $this->render('RbsSalesBundle:Order:details.html.twig', array(
-            'order' => $order
+            'order' => $order,
         ));
     }
 
@@ -183,8 +182,14 @@ class OrderController extends BaseController
         $order->setOrderState(Order::ORDER_STATE_CANCEL);
         $order->setPaymentState(Order::PAYMENT_STATE_PENDING);
         $order->setDeliveryState(Order::DELIVERY_STATE_PENDING);
+        $order->setPaidAmount(0);
+        /** @var OrderItem $item */
+        foreach ($order->getOrderItems() as $item) {
+            $item->setPaidAmount(0);
+            $this->orderItemRepository()->update($item);
+        }
 
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+        $this->orderRepository()->update($order);
 
         $this->dispatch('order.canceled', new OrderApproveEvent($order));
 
@@ -235,7 +240,7 @@ class OrderController extends BaseController
         }
 
         return $this->render('RbsSalesBundle:Order:summeryView.html.twig', array(
-            'order' => $order
+            'order' => $order,
         ));
     }
 
@@ -243,7 +248,7 @@ class OrderController extends BaseController
     {
         if (in_array($order->getOrderState(), array(
             Order::ORDER_STATE_CANCEL,
-            Order::ORDER_STATE_COMPLETE
+            Order::ORDER_STATE_COMPLETE,
         ))) {
             return false;
         }
@@ -273,7 +278,7 @@ class OrderController extends BaseController
         return $this->render('RbsSalesBundle:Order:paymentReview.html.twig', array(
             'order' => $order,
             'isOverCredit' => $isOverCredit,
-            'currentCreditLimit' => $currentCreditLimit
+            'currentCreditLimit' => $currentCreditLimit,
         ));
     }
 

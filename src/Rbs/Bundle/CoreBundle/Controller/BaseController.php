@@ -16,28 +16,4 @@ class BaseController extends Controller
     {
         $this->get('session')->getFlashBag()->add($key, $message);
     }
-
-    /**
-     * @return \Rbs\Bundle\SalesBundle\Repository\CustomerRepository
-     */
-    protected function customerRepository()
-    {
-        return $this->getDoctrine()->getRepository('RbsSalesBundle:Customer');
-    }
-
-    /**
-     * @return \Rbs\Bundle\SalesBundle\Repository\OrderRepository
-     */
-    protected function orderRepository()
-    {
-        return $this->getDoctrine()->getRepository('RbsSalesBundle:Order');
-    }
-
-    /**
-     * @return \Rbs\Bundle\SalesBundle\Repository\PaymentRepository
-     */
-    protected function paymentRepository()
-    {
-        return $this->getDoctrine()->getRepository('RbsSalesBundle:Payment');
-    }
 }
