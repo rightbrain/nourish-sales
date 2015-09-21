@@ -17,6 +17,7 @@ class PaymentDatatable extends BaseDatatable
         /** @var Profile $profile */
         $formatter = function($line){
             $line['bankInfo'] = 'Payment Method:'.$line['paymentMethod'].', Bank Name:'.$line['bankName'].', Branch Name:'.$line['branchName'];
+            $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
             $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $line['customer']['user']['id']));
             $line["fullName"] = $profile->getFullName();
 
@@ -44,7 +45,8 @@ class PaymentDatatable extends BaseDatatable
                 'title' => 'Date',
                 'date_format' => 'LL' ))
             ->add('customer.user.id', 'column', array('title' => 'Customer Name', 'render' => 'resolveCustomerName'))
-            ->add('amount', 'column', array('title' => 'Amount'))
+            ->add('amount', 'column', array('visible' => false))
+            ->add('totalAmount', 'virtual', array('title' => 'Amount'))
             ->add('paymentMethod', 'column', array('visible' => false))
             ->add('bankName', 'column', array('visible' => false))
             ->add('branchName', 'column', array('visible' => false))
