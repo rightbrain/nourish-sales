@@ -21,8 +21,8 @@ class OrderDatatable extends BaseDatatable
             $line["enabled"] = $order->isPending();
             $line["disabled"] = !$order->isPending();
             $line["orderState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getOrderState()).'"> '.$order->getOrderState().' </span>';
-            $line["paymentState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getPaymentState()).'"> '.$order->getPaymentState().' </span>';
-            $line["deliveryState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getDeliveryState()).'"> '.$order->getDeliveryState().' </span>';
+            $line["paymentState"] = $order->getOrderState() == Order::ORDER_STATE_CANCEL ? '' : '<span class="label label-sm label-'.$this->getStatusColor($order->getPaymentState()).'"> '.$order->getPaymentState().' </span>';
+            $line["deliveryState"] = $order->getOrderState() == Order::ORDER_STATE_CANCEL ? '' : '<span class="label label-sm label-'.$this->getStatusColor($order->getDeliveryState()).'"> '.$order->getDeliveryState().' </span>';
             $line["totalAmount"] = number_format($order->getTotalAmount(), 2);
             $line["paidAmount"] = number_format($order->getPaidAmount(), 2);
 

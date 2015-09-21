@@ -181,6 +181,8 @@ class OrderController extends BaseController
         }
 
         $order->setOrderState(Order::ORDER_STATE_CANCEL);
+        $order->setPaymentState(Order::PAYMENT_STATE_PENDING);
+        $order->setDeliveryState(Order::DELIVERY_STATE_PENDING);
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
