@@ -1,4 +1,4 @@
-handleCustomerChange = function (){
+handleCustomerChange = function (){ROLE_PAYMENT_VIEW
     $("#payment_customer").change(function () {
         var ordersElm = $('#payment_orders');
         var customer = $(this).val();
