@@ -14,7 +14,7 @@ class SecurityPermissionProvider implements ProviderInterface
             ),
 
             'PAYMENT' => array(
-            'ROLE_PAYMENT_APPROVE', 'ROLE_OVER_CREDIT_APPROVE', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_VIEW'
+            'ROLE_PAYMENT_APPROVE', 'ROLE_PAYMENT_OVER_CREDIT_APPROVE', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_VIEW'
             )
         );
     }
