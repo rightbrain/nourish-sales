@@ -42,30 +42,30 @@ class OrderItem
     /**
      * @var integer
      *
-     * @ORM\Column(name="quantity", type="integer", options={"default" = 0}, nullable=true)
+     * @ORM\Column(name="quantity", type="integer")
      */
-    private $quantity;
+    private $quantity = 0;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="price", type="float", options={"default" = 0}, nullable=true)
+     * @ORM\Column(name="price", type="float")
      */
-    private $price;
+    private $price = 0;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="total_amount", type="float", options={"default" = 0}, nullable=true)
+     * @ORM\Column(name="total_amount", type="float")
      */
-    private $totalAmount;
+    private $totalAmount = 0;
 
     /**
      * @var float
      *
-     * @ORM\Column(name="paid_amount", type="float", options={"default" = 0}, nullable=true)
+     * @ORM\Column(name="paid_amount", type="float")
      */
-    private $paidAmount;
+    private $paidAmount = 0;
 
     /**
      * Get id
@@ -186,5 +186,10 @@ class OrderItem
         }
 
         return $amount;
+    }
+
+    public function getDueAmount()
+    {
+        return ($this->getTotalAmount() - $this->getPaidAmount());
     }
 }
