@@ -106,10 +106,14 @@ class OrderRepository extends EntityRepository
                     $amount = $amount - $dueAmount;
                     $order->setPaidAmount($order->getPaidAmount() + $dueAmount);
                     $order->setPaymentState(Order::PAYMENT_STATE_PAID);
+
+                    $this->_em->getRepository('RbsSalesBundle:OrderItem')->orderAmountAdjust($order);
                 } else{
                     $order->setPaidAmount($order->getPaidAmount() + $amount);
                     $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
                     $amount = 0;
+
+                    $this->_em->getRepository('RbsSalesBundle:OrderItem')->orderAmountAdjust($order);
                 }
             }
             $this->update($order);

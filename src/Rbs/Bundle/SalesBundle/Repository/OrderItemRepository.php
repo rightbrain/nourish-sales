@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\Order;
 
 /**
  * OrderItemRepository
@@ -34,5 +35,27 @@ class OrderItemRepository extends EntityRepository
         $this->_em->persist($data);
         $this->_em->flush();
         return $this->_em;
+    }
+
+    public function orderAmountAdjust(Order $order)
+    {
+        $amount = $order->getPaidAmount();
+
+        foreach($order->getOrderItems() as $orderItem){
+            $dueAmount = $orderItem->getDueAmount();
+
+            if($amount != 0 and $dueAmount != 0){
+                if ($amount >= $dueAmount) {
+                    $amount = $amount - $dueAmount;
+                    $orderItem->setPaidAmount($dueAmount);
+                } else{
+                    $orderItem->setPaidAmount($amount);
+                    $amount = 0;
+                }
+            }else{
+                $orderItem->setPaidAmount(0);
+            }
+            $this->update($orderItem);
+        }
     }
 }
