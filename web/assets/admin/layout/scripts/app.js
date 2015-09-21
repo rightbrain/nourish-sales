@@ -94,3 +94,8 @@ var App = function() {
         init: init
     }
 }();
+
+function resolveCustomerName(data, type, row, meta)
+{
+    return row.fullName;
+}
