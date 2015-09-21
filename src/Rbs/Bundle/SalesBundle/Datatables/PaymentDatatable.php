@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
 use Rbs\Bundle\SalesBundle\Entity\Payment;
+use Rbs\Bundle\UserBundle\Entity\Profile;
 
 /**
  * Class PaymentDatatable
@@ -11,6 +12,20 @@ use Rbs\Bundle\SalesBundle\Entity\Payment;
  */
 class PaymentDatatable extends BaseDatatable
 {
+    public function getLineFormatter()
+    {
+        /** @var Profile $profile */
+        $formatter = function($line){
+            $line['bankInfo'] = 'Payment Method:'.$line['paymentMethod'].', Bank Name:'.$line['bankName'].', Branch Name:'.$line['branchName'];
+            $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $line['customer']['user']['id']));
+            $line["fullName"] = $profile->getFullName();
+
+            return $line;
+        };
+
+        return $formatter;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -27,11 +42,18 @@ class PaymentDatatable extends BaseDatatable
         $this->columnBuilder
             ->add('createdAt', 'datetime', array(
                 'title' => 'Date',
-                'date_format' => 'LLL' ))
-            ->add('customer.user.username', 'column', array('title' => 'Customer'))
-            ->add('paymentMethod', 'column', array('title' => 'Payment Method'))
+                'date_format' => 'LL' ))
+            ->add('customer.user.id', 'column', array('title' => 'Customer Name', 'render' => 'resolveCustomerName'))
             ->add('amount', 'column', array('title' => 'Amount'))
-//            ->add('order.id', 'column', array('title' => 'Order'))
+            ->add('paymentMethod', 'column', array('visible' => false))
+            ->add('bankName', 'column', array('visible' => false))
+            ->add('branchName', 'column', array('visible' => false))
+            ->add('bankInfo', 'virtual', array('title' => 'Bank Info'))
+            ->add('orders.id', 'array', array(
+                'title' => 'Orders',
+                'data' => 'orders[, ].id'
+            ))
+            ->add('remark', 'column', array('title' => 'Remarks'))
         ;
     }
 
