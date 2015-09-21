@@ -258,7 +258,7 @@ class OrderController extends BaseController
 
     /**
      * @JMS\Secure(roles="ROLE_PAYMENT_APPROVE")
-     * @Route("/order/{id}/payment-review", name="order_review_payment")
+     * @Route("/order/{id}/payment-review", name="review_payment")
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -277,11 +277,40 @@ class OrderController extends BaseController
 
     /**
      * @JMS\Secure(roles="ROLE_PAYMENT_APPROVE")
-     * @Route("/order/{id}/approve-payment", name="order_approve_payment")
+     * @Route("/order/{id}/approve-payment", name="approve_payment")
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function paymentApproveAction(Order $order)
+    {
+        $customer = $order->getCustomer();
+        $currentCreditLimit = $this->customerRepository()->getCurrentCreditLimit($customer);
+        $isOverCredit = $currentCreditLimit < $order->getTotalAmount();
+
+        if (!$customer->isVIP() && $isOverCredit) {
+            $order->setPaymentState(Order::PAYMENT_STATE_CREDIT_APPROVAL);
+        } else if ($order->getTotalAmount() === $order->getPaidAmount()) {
+            $order->setPaymentState(Order::PAYMENT_STATE_PAID);
+        } else {
+            $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
+        }
+
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+
+        $this->dispatch('payment.approve', new OrderApproveEvent($order));
+
+        $this->flashMessage('success', 'Payment Approved Successfully!');
+
+        return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
+     * @JMS\Secure(roles="ROLE_OVER_CREDIT_APPROVE")
+     * @Route("/order/{id}/approve-credit-payment", name="approve_credit_payment")
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function paymentOverCreditApproveAction(Order $order)
     {
         if ($order->getTotalAmount() === $order->getPaidAmount()) {
             $order->setPaymentState(Order::PAYMENT_STATE_PAID);

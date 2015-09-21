@@ -284,13 +284,13 @@ class Customer
 
     protected function getCurrentCreditLimit()
     {
-        // (order(processing+complete) total amount - payment total) - (credit limit + opening balance)
+        // (payment total + order(processing+complete) total amount) + (credit limit + opening balance)
         return false;
     }
 
     protected function getCurrentBalance()
     {
-        // order(processing+complete) total amount - payment total
+        // payment total - order(processing+complete) total amount
         return false;
     }
 }

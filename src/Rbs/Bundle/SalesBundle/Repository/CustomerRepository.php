@@ -78,6 +78,6 @@ class CustomerRepository extends EntityRepository
     {
         $customerCurrentBalance = $this->getCurrentBalance($customer);
 
-        return $customerCurrentBalance - ($customer->getCreditLimit() + $customer->getOpeningBalance());
+        return $customerCurrentBalance + ($customer->getCreditLimit() + $customer->getOpeningBalance());
     }
 }

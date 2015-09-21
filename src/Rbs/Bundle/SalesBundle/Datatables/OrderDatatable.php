@@ -39,7 +39,7 @@ class OrderDatatable extends BaseDatatable
      */
     public function buildDatatable()
     {
-        $this->features->setFeatures($this->defaultFeatures());
+        $this->features->setFeatures(array_merge($this->defaultFeatures(), array('state_save' => true)));
         $this->options->setOptions(array_merge($this->defaultOptions(), array(
             'individual_filtering' => true,
             'individual_filtering_position' => 'head'
@@ -198,7 +198,7 @@ class OrderDatatable extends BaseDatatable
         }
 
         if ($canApprovePayment && in_array($order->getOrderState(), array(Order::ORDER_STATE_PROCESSING)) && in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PENDING))) {
-            $html .= '<li><a href="'.$this->router->generate('order_review_payment', array('id'=>$order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Approve Payment</a></li>';
+            $html .= '<li><a href="'.$this->router->generate('review_payment', array('id'=>$order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Approve Payment</a></li>';
         }
 
         if ($canApproveOverCredit && in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_CREDIT_APPROVAL))) {

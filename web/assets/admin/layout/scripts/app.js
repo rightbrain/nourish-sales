@@ -47,7 +47,8 @@ var App = function() {
     {
         $('body').on('click', '.confirmation-btn', function(){
             var url = $(this).attr('href');
-            bootbox.confirm("Are you sure?", function(result) {
+            var msg = $(this).attr('data-title') != '' ? $(this).attr('data-title') : 'Are you sure?';
+            bootbox.confirm(msg, function(result) {
                 if (result) {
                     document.location.href = url;
                 }
