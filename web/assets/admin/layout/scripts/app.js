@@ -74,7 +74,6 @@ var App = function() {
         if (!modals.length) return false;
 
         $(modals).on('hidden.bs.modal', function () {
-            console.log('sdf');
             $(this).find('.modal-content').html('<div class="modal-body">'+
                 '<img src="/assets/global/img/loading-spinner-grey.gif" alt="" class="loading">' +
                 '<span> &nbsp;&nbsp;Loading... </span></div>');

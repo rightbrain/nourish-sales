@@ -38,7 +38,7 @@ class CustomerForm extends AbstractType
                 )
             ))
             ->add('creditLimit')
-            ->add('balance')
+            ->add('openingBalance')
             ->add('agent', 'entity', array(
                 'class' => 'RbsUserBundle:User',
                 'property' => 'username',

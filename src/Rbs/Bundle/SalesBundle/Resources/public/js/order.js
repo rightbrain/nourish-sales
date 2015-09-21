@@ -209,21 +209,21 @@ var Order = function()
         }
         $("#order_datatable").dataTable().yadcf([
                 {
-                    column_number: 2,
+                    column_number: 3,
                     data: ["PENDING", "PROCESSING", "COMPLETE", "CANCEL", "HOLD"],
                     filter_container_id: "order-status",
                     filter_reset_button_text: false,
                     filter_default_label: "Order State"
                 },
                 {
-                    column_number: 3,
+                    column_number: 4,
                     data: ["PENDING", "PARTIALLY_PAID", "PAID"],
                     filter_container_id: "order-payment-status",
                     filter_reset_button_text: false,
                     filter_default_label: "Payment State"
                 },
                 {
-                    column_number: 4,
+                    column_number: 5,
                     data: ["PENDING", "PARTIALLY_SHIPPED", "SHIPPED", "HOLD"],
                     filter_container_id: "order-delivery-status",
                     filter_reset_button_text: false,
@@ -231,6 +231,7 @@ var Order = function()
                 }
             ]
         );
+
         var orderFilterContainer = $('#order_datatable_filter');
         // Add class to select to match with theme
         orderFilterContainer.find('select').addClass("form-control");
@@ -292,9 +293,19 @@ var Order = function()
         });
     }
 
+    function OrderStateFormat(data, type, row, meta){
+        return data;
+    }
+
+    function OrderPaymentFormat(data, type, row, meta){
+        return data;
+    }
+
     return {
         init: init,
         filterInit: filterInit,
-        formValidateInit: formValidateInit
+        formValidateInit: formValidateInit,
+        OrderStateFormat: OrderStateFormat,
+        OrderPaymentFormat: OrderPaymentFormat
     }
 }();

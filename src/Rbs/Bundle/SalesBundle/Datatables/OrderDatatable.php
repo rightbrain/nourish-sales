@@ -23,8 +23,10 @@ class OrderDatatable extends BaseDatatable
             $line["orderState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getOrderState()).'"> '.$order->getOrderState().' </span>';
             $line["paymentState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getPaymentState()).'"> '.$order->getPaymentState().' </span>';
             $line["deliveryState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getDeliveryState()).'"> '.$order->getDeliveryState().' </span>';
+            $line["totalAmount"] = number_format($order->getTotalAmount(), 2);
+            $line["paidAmount"] = number_format($order->getPaidAmount(), 2);
 
-            //$line["actionButtons"] = $this->generateActionList($order);
+            $line["actionButtons"] = $this->generateActionList($order);
 
             return $line;
         };
@@ -56,20 +58,23 @@ class OrderDatatable extends BaseDatatable
             )
         );
 
+        $twigVars = $this->twig->getGlobals();
+        $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
         $this->columnBuilder
-            ->add('id', 'column', array('title' => 'OrderID'))
+            ->add('id', 'column', array('title' => 'Order ID'))
             ->add('customer.user.username', 'column', array('title' => 'Customer'))
-            ->add('orderState', 'virtual', array('title' => 'Order'))
-            ->add('paymentState', 'virtual', array('title' => 'Payment'))
-            ->add('deliveryState', 'virtual', array('title' => 'Delivery'))
-            ->add('totalAmount', 'column', array('title' => 'Total Amount'))
-            ->add('paidAmount', 'column', array('title' => 'Paid Amount'))
+            ->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
+            ->add('orderState', 'column', array('title' => 'Order State', 'render' => 'Order.OrderStateFormat'))
+            ->add('paymentState', 'column', array('title' => 'Payment State', 'render' => 'Order.OrderStateFormat'))
+            ->add('deliveryState', 'column', array('title' => 'Delivery State', 'render' => 'Order.OrderStateFormat'))
+            ->add('totalAmount', 'column', array('title' => 'Total Amount', 'render' => 'Order.OrderPaymentFormat'))
+            ->add('paidAmount', 'column', array('title' => 'Paid Amount', 'render' => 'Order.OrderPaymentFormat'))
             ->add('isComplete', 'virtual', array('visible' => false))
             ->add('isCancel', 'virtual', array('visible' => false))
             ->add('enabled', 'virtual', array('visible' => false))
             ->add('disabled', 'virtual', array('visible' => false))
-            //->add('actionButtons', 'virtual')
-            ->add(null, 'action', array(
+            ->add('actionButtons', 'virtual', array('title' => 'Action'))
+            /*->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Action',
                 'start_html' => '<div class="wrapper">',
@@ -138,7 +143,7 @@ class OrderDatatable extends BaseDatatable
                         'render_if' => array('disabled')
                     )
                 )
-            ))
+            ))*/
         ;
     }
 
@@ -160,7 +165,13 @@ class OrderDatatable extends BaseDatatable
 
     public function generateActionList(Order $order)
     {
-        $this->authorizationChecker->isGranted('ROLE_ADMIN');
+        $canEdit = $this->authorizationChecker->isGranted('ROLE_ORDER_EDIT');
+        $canView = $this->authorizationChecker->isGranted('ROLE_ORDER_VIEW');
+        $canCancel = $this->authorizationChecker->isGranted('ROLE_ORDER_CANCEL');
+        $canApproveOrder = $this->authorizationChecker->isGranted('ROLE_ORDER_APPROVE');
+        $canApprovePayment = $this->authorizationChecker->isGranted('ROLE_PAYMENT_APPROVE');
+        $canApproveOverCredit = $this->authorizationChecker->isGranted('ROLE_OVER_CREDIT_APPROVE');
+
         $html = '<div class="actions">
                 <div class="btn-group">
                     <a class="btn btn-sm btn-default" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false">
@@ -169,12 +180,29 @@ class OrderDatatable extends BaseDatatable
                     <ul class="dropdown-menu pull-right">
                     ';
 
-        if (!in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
+        if ($canEdit && !in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
             $html .= $this->generateMenuLink('Edit', 'order_update', array('id' => $order->getId()));
         }
 
-        if ($order->isPending()) {
-            $html .= $this->generateMenuLink('Approve', 'order_approve', array('id' => $order->getId()));
+        if ($canView) {
+            $html .= $this->generateMenuLink('View', 'order_details', array('id' => $order->getId()));
+        }
+
+        if ($canCancel && !in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
+            $html .= $this->generateMenuLink('Cancel', 'order_cancel', array('id' => $order->getId()));
+        }
+
+        if ($canApproveOrder && in_array($order->getOrderState(), array(Order::ORDER_STATE_PENDING))) {
+            //$html .= $this->generateMenuLink('Approve Order', 'order_approve', array('id' => $order->getId()));
+            $html .= '<li><a href="'.$this->router->generate('order_summery_view', array('id'=>$order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Approve Order</a></li>';
+        }
+
+        if ($canApprovePayment && in_array($order->getOrderState(), array(Order::ORDER_STATE_PROCESSING)) && in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PENDING))) {
+            $html .= '<li><a href="'.$this->router->generate('order_review_payment', array('id'=>$order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Approve Payment</a></li>';
+        }
+
+        if ($canApproveOverCredit && in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_CREDIT_APPROVAL))) {
+            $html .= $this->generateMenuLink('Approve Credit', 'order_approve', array('id' => $order->getId()));
         }
 
             /*$html .= '

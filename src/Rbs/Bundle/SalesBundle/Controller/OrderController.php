@@ -2,7 +2,6 @@
 
 namespace Rbs\Bundle\SalesBundle\Controller;
 
-use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Controller\BaseController;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
@@ -12,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * User Controller.
@@ -46,13 +46,7 @@ class OrderController extends BaseController
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
-        /** @var QueryBuilder $qb */
-        $function = function($qb)
-        {
-//            $qb->join("stocks.item", 'i');
-//            $qb->andWhere("stocks.deletedAt IS NULL");
-        };
-        $query->addWhereAll($function);
+
         return $query->getResponse();
     }
 
@@ -143,6 +137,7 @@ class OrderController extends BaseController
     }
 
     /**
+     * @JMS\Secure(roles="ROLE_ORDER_APPROVE")
      * @Route("/order/approve/{id}", name="order_approve", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
@@ -168,6 +163,7 @@ class OrderController extends BaseController
     }
 
     /**
+     * @JMS\Secure(roles="ROLE_ORDER_CANCEL")
      * @Route("/order/cancel/{id}", name="order_cancel", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
@@ -196,6 +192,7 @@ class OrderController extends BaseController
     }
 
     /**
+     * @JMS\Secure(roles="ROLE_ORDER_APPROVE")
      * @Route("/order/hold/{id}", name="order_hold", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
@@ -221,34 +218,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * @Route("/order/complete/{id}", name="order_complete", options={"expose"=true})
-     * @param Order $order
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function orderCompleteAction(Order $order)
-    {
-        if ($this->isOrderValidState($order)) {
-            return $this->redirectOnInvalidOrderState($order);
-        }
-
-        return $this->redirect($this->generateUrl('orders_home'));
-    }
-
-    /**
-     * @Route("/order/pending/{id}", name="order_pending", options={"expose"=true})
-     * @param Order $order
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function orderPendingAction(Order $order)
-    {
-        if ($this->isOrderValidState($order)) {
-            return $this->redirectOnInvalidOrderState($order);
-        }
-
-        return $this->redirect($this->generateUrl('orders_home'));
-    }
-
-    /**
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW")
      * @Route("/order/summery/view/{id}", name="order_summery_view", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
@@ -282,6 +252,47 @@ class OrderController extends BaseController
     protected function redirectOnInvalidOrderState(Order $order)
     {
         $this->flashMessage('error', 'Order ' . $order->getId() . ' state is '. $order->getOrderState());
+
+        return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
+     * @JMS\Secure(roles="ROLE_PAYMENT_APPROVE")
+     * @Route("/order/{id}/payment-review", name="order_review_payment")
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function paymentReviewAction(Order $order)
+    {
+        $customer = $order->getCustomer();
+        $currentCreditLimit = $this->customerRepository()->getCurrentCreditLimit($customer);
+        $isOverCredit = $currentCreditLimit < $order->getTotalAmount();
+
+        return $this->render('RbsSalesBundle:Order:paymentReview.html.twig', array(
+            'order' => $order,
+            'isOverCredit' => $isOverCredit,
+            'currentCreditLimit' => $currentCreditLimit
+        ));
+    }
+
+    /**
+     * @JMS\Secure(roles="ROLE_PAYMENT_APPROVE")
+     * @Route("/order/{id}/approve-payment", name="order_approve_payment")
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function paymentApproveAction(Order $order)
+    {
+        if ($order->getTotalAmount() === $order->getPaidAmount()) {
+            $order->setPaymentState(Order::PAYMENT_STATE_PAID);
+        } else {
+            $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
+        }
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+
+        $this->dispatch('payment.approve', new OrderApproveEvent($order));
+
+        $this->flashMessage('success', 'Payment Approved Successfully!');
 
         return $this->redirect($this->generateUrl('orders_home'));
     }

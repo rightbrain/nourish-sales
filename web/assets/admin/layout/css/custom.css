@@ -99,3 +99,17 @@ Change Quick Sidebar Width
     display: inline-block;
     margin-right: 5px;
 }
+
+.ms-container {
+    width: 100% !important;
+}
+
+#order_datatable tbody tr td:nth-child(4),
+#order_datatable tbody tr td:nth-child(5),
+#order_datatable tbody tr td:nth-child(6){
+    text-align: center;
+}
+
+#order_datatable tbody tr td:nth-child(7), #order_datatable tbody tr td:nth-child(8){
+    text-align: right;
+}

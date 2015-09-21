@@ -79,6 +79,13 @@ class Payment
     private $amount;
 
     /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="deposit_date", type="datetime", nullable=false)
+     */
+    private $depositDate;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", nullable=true)
@@ -207,6 +214,7 @@ class Payment
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+        $this->depositDate = new \DateTime();
     }
 
     /**
@@ -226,4 +234,25 @@ class Payment
     {
         $this->orders->removeElement($order);
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDepositDate()
+    {
+        return $this->depositDate;
+    }
+
+    /**
+     * @param \DateTime $depositDate
+     *
+     * @return Payment
+     */
+    public function setDepositDate($depositDate)
+    {
+        $this->depositDate = $depositDate;
+
+        return $this;
+    }
+
 }

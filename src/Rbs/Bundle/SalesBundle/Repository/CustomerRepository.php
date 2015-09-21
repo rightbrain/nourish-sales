@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\SalesBundle\Entity\Customer;
+use Rbs\Bundle\SalesBundle\Entity\Order;
 
 /**
  * CustomerRepository
@@ -52,9 +53,10 @@ class CustomerRepository extends EntityRepository
         try {
             $totalOrderAmount = $this->_em
                 ->createQuery(
-                    "SELECT SUM(o.totalAmount) FROM Rbs\Bundle\SalesBundle\Entity\Order o WHERE o.customer = :customer GROUP BY o.customer"
+                    "SELECT SUM(o.totalAmount) FROM Rbs\Bundle\SalesBundle\Entity\Order o WHERE o.customer = :customer AND o.paymentState IN (:paymentState) GROUP BY o.customer"
                 )
                 ->setParameter('customer', $customer)
+                ->setParameter('paymentState', array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))
                 ->getSingleScalarResult();
         } catch (\Exception $e) {
             $totalOrderAmount = 0;
@@ -69,6 +71,13 @@ class CustomerRepository extends EntityRepository
             $totalPaymentAmount = 0;
         }
 
-        return $totalOrderAmount - $totalPaymentAmount;
+        return $totalPaymentAmount - $totalOrderAmount;
+    }
+
+    public function getCurrentCreditLimit(Customer $customer)
+    {
+        $customerCurrentBalance = $this->getCurrentBalance($customer);
+
+        return $customerCurrentBalance - ($customer->getCreditLimit() + $customer->getOpeningBalance());
     }
 }

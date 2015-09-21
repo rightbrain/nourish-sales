@@ -60,19 +60,19 @@ class Customer
      *
      * @ORM\Column(name="credit_limit", type="float", nullable=true)
      */
-    private $creditLimit;
+    private $creditLimit = 0;
 
     /**
      * @var float
      *
      * @ORM\Column(name="opening_balance", type="float", nullable=true)
      */
-    private $openingBalance;
+    private $openingBalance = 0;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="customer_ID", type="string", length=255, nullable=true)
+     * @ORM\Column(name="customer_ID", type="string", length=255, nullable=false)
      */
     private $customerID;
 
@@ -284,13 +284,13 @@ class Customer
 
     protected function getCurrentCreditLimit()
     {
-        // (order total amount - payment total) + credit limit + opening balance
+        // (order(processing+complete) total amount - payment total) - (credit limit + opening balance)
         return false;
     }
 
     protected function getCurrentBalance()
     {
-        // order total amount - payment total
+        // order(processing+complete) total amount - payment total
         return false;
     }
 }

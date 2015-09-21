@@ -12,6 +12,11 @@ services:
         tags:
              - { name: easy_audit.event_subscriber }
 
+    rbs.sales.permission.security_provider:
+         class: Rbs\Bundle\SalesBundle\Permission\Provider\SecurityPermissionProvider
+         tags:
+             - { name: rbs.user.permission_provider, alias: sales }
+
     rbs_erp.sales.datatable.customer:
         class: Rbs\Bundle\SalesBundle\Datatables\CustomerDatatable
         tags:
