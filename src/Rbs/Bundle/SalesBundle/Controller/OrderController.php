@@ -159,7 +159,7 @@ class OrderController extends BaseController
         $order->setOrderState(Order::ORDER_STATE_PROCESSING);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
-        $this->dispatch('order.approved', new OrderApproveEvent($order));
+        $this->dispatchApproveProcessEvent('order.approved', $order);
 
         $this->flashMessage('success', 'Order Approve Successfully!');
 
@@ -196,7 +196,7 @@ class OrderController extends BaseController
 
         $this->orderRepository()->update($order);
 
-        $this->dispatch('order.canceled', new OrderApproveEvent($order));
+        $this->dispatchApproveProcessEvent('order.canceled', $order);
 
         $this->flashMessage('success', 'Order Cancel Successfully!');
 
@@ -222,7 +222,7 @@ class OrderController extends BaseController
         $order->setOrderState(Order::ORDER_STATE_HOLD);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
-        $this->dispatch('order.hold', new OrderApproveEvent($order));
+        $this->dispatchApproveProcessEvent('order.hold', $order);
 
         $this->flashMessage('success', 'Order Hold Successfully!');
 
@@ -295,14 +295,11 @@ class OrderController extends BaseController
      */
     public function orderReviewAction(Order $order)
     {
-        $customer = $order->getCustomer();
-        $currentCreditLimit = $this->customerRepository()->getCurrentCreditLimit($customer);
-        $isOverCredit = $currentCreditLimit < $order->getTotalAmount();
+        $auditLogs = $this->getDoctrine()->getRepository('RbsCoreBundle:AuditLog')->getByTypeOrObjectId(array('order.approved', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
 
         return $this->render('RbsSalesBundle:Order:paymentReview.html.twig', array(
             'order' => $order,
-            'isOverCredit' => $isOverCredit,
-            'currentCreditLimit' => $currentCreditLimit,
+            'auditLogs' => $auditLogs
         ));
     }
 
@@ -328,7 +325,7 @@ class OrderController extends BaseController
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
-        $this->dispatch('payment.approve', new OrderApproveEvent($order));
+        $this->dispatchApproveProcessEvent('payment.approved', $order);
 
         $this->flashMessage('success', 'Payment Approved Successfully!');
 
@@ -350,7 +347,7 @@ class OrderController extends BaseController
         }
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
-        $this->dispatch('payment.over.credit.approved', new OrderApproveEvent($order));
+        $this->dispatchApproveProcessEvent('payment.over.credit.approved', $order);
 
         $this->flashMessage('success', 'Payment Approved Successfully!');
 

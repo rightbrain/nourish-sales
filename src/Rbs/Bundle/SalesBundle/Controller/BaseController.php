@@ -3,6 +3,8 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Rbs\Bundle\CoreBundle\Controller\BaseController as CoreBaseController;
+use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 
 /**
  * Sms Controller.
@@ -40,5 +42,10 @@ class BaseController extends CoreBaseController
     protected function orderItemRepository()
     {
         return $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem');
+    }
+
+    protected function dispatchApproveProcessEvent($tag, Order $order)
+    {
+        $this->dispatch($tag, new OrderApproveEvent($order, $this->get('request')));
     }
 }

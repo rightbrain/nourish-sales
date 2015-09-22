@@ -3,6 +3,7 @@ namespace Rbs\Bundle\SalesBundle\Event;
 
 use Rbs\Bundle\CoreBundle\Event\BaseEvent;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Symfony\Component\HttpFoundation\Request;
 
 class OrderApproveEvent extends BaseEvent
 {
@@ -16,9 +17,15 @@ class OrderApproveEvent extends BaseEvent
      */
     protected $eventName;
 
-    public function __construct(Order $order)
+    /**
+     * @var Request
+     */
+    protected $request;
+
+    public function __construct(Order $order, Request $request)
     {
         $this->order = $order;
+        $this->request = $request;
     }
 
     /**
@@ -36,6 +43,8 @@ class OrderApproveEvent extends BaseEvent
         return array(
             'description' => $eventDescription,
             'type' => $eventType,
+            'objectId' => $this->order->getId(),
+            'reason' => $this->request->request->get('reason')
         );
     }
 
