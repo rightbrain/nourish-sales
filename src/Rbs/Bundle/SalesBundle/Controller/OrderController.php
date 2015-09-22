@@ -22,6 +22,7 @@ class OrderController extends BaseController
      * @Route("/orders", name="orders_home")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function indexAction(Request $request)
     {
@@ -38,6 +39,7 @@ class OrderController extends BaseController
      *
      * @Route("/orders_list_ajax", name="orders_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function listAjaxAction()
     {
@@ -54,6 +56,7 @@ class OrderController extends BaseController
      * @Template("RbsSalesBundle:Order:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE")
      */
     public function createAction(Request $request)
     {
@@ -86,6 +89,7 @@ class OrderController extends BaseController
      * @param Request $request
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function updateAction(Request $request, Order $order)
     {
@@ -127,6 +131,7 @@ class OrderController extends BaseController
      * @Route("/order/details/{id}", name="order_details", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function detailsAction(Order $order)
     {
@@ -162,7 +167,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL, ROLE_ORDER_EDIT")
      * @Route("/order/cancel/{id}", name="order_cancel", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
@@ -225,7 +230,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW")
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      * @Route("/order/summery/view/{id}", name="order_summery_view", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
@@ -331,7 +336,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_OVER_CREDIT_APPROVE")
+     * @JMS\Secure(roles="ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      * @Route("/order/{id}/approve-credit-payment", name="approve_credit_payment")
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response

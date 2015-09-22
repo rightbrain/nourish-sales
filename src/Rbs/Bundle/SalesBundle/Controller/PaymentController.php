@@ -10,6 +10,7 @@ use Rbs\Bundle\SalesBundle\Form\Type\PaymentForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,6 +23,7 @@ class PaymentController extends BaseController
     /**
      * @Route("/payments", name="payments_home")
      * @Template()
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function indexAction()
     {
@@ -38,6 +40,7 @@ class PaymentController extends BaseController
      *
      * @Route("/payment_list_ajax", name="payment_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_PAYMENT_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function listAjaxAction()
     {
@@ -59,6 +62,7 @@ class PaymentController extends BaseController
      * @Template("RbsSalesBundle:Payment:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function createAction(Request $request)
     {
@@ -90,6 +94,7 @@ class PaymentController extends BaseController
      * @Route("/payment/partial_payment_orders/{id}", name="partial_payment_orders", options={"expose"=true})
      * @param Customer $customer
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function getCustomerPartialOrder(Customer $customer)
     {
