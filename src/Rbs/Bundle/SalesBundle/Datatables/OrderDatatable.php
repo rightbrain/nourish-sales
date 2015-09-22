@@ -170,7 +170,8 @@ class OrderDatatable extends BaseDatatable
         $canCancel = $this->authorizationChecker->isGranted('ROLE_ORDER_CANCEL');
         $canApproveOrder = $this->authorizationChecker->isGranted('ROLE_ORDER_APPROVE');
         $canApprovePayment = $this->authorizationChecker->isGranted('ROLE_PAYMENT_APPROVE');
-        $canApproveOverCredit = $this->authorizationChecker->isGranted('ROLE_OVER_CREDIT_APPROVE');
+        $canApproveOverCredit = $this->authorizationChecker->isGranted('ROLE_PAYMENT_OVER_CREDIT_APPROVE');
+        $canOrderVerify = $this->authorizationChecker->isGranted('ROLE_ORDER_VERIFY');
 
         $html = '<div class="actions">
                 <div class="btn-group">
@@ -203,6 +204,11 @@ class OrderDatatable extends BaseDatatable
 
         if ($canApproveOverCredit && in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_CREDIT_APPROVAL))) {
             $html .= $this->generateMenuLink('Approve Credit', 'order_approve', array('id' => $order->getId()));
+        }
+
+        if ($canOrderVerify && $order->getOrderState() == Order::ORDER_STATE_PROCESSING
+            && in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))) {
+            $html .= '<li><a href="'.$this->router->generate('review_payment', array('id'=>$order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Verify Order</a></li>';
         }
 
             /*$html .= '

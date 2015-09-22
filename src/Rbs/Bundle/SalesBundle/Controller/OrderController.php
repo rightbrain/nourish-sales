@@ -283,6 +283,25 @@ class OrderController extends BaseController
     }
 
     /**
+     * @JMS\Secure(roles="ROLE_ORDER_VERIFY")
+     * @Route("/order/{id}/order-review", name="order_review")
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function orderReviewAction(Order $order)
+    {
+        $customer = $order->getCustomer();
+        $currentCreditLimit = $this->customerRepository()->getCurrentCreditLimit($customer);
+        $isOverCredit = $currentCreditLimit < $order->getTotalAmount();
+
+        return $this->render('RbsSalesBundle:Order:paymentReview.html.twig', array(
+            'order' => $order,
+            'isOverCredit' => $isOverCredit,
+            'currentCreditLimit' => $currentCreditLimit,
+        ));
+    }
+
+    /**
      * @JMS\Secure(roles="ROLE_PAYMENT_APPROVE")
      * @Route("/order/{id}/approve-payment", name="approve_payment")
      * @param Order $order
@@ -326,7 +345,7 @@ class OrderController extends BaseController
         }
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
-        $this->dispatch('payment.approve', new OrderApproveEvent($order));
+        $this->dispatch('payment.over.credit.approved', new OrderApproveEvent($order));
 
         $this->flashMessage('success', 'Payment Approved Successfully!');
 
