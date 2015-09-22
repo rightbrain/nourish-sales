@@ -297,7 +297,7 @@ class OrderController extends BaseController
     {
         $auditLogs = $this->getDoctrine()->getRepository('RbsCoreBundle:AuditLog')->getByTypeOrObjectId(array('order.approved', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
 
-        return $this->render('RbsSalesBundle:Order:paymentReview.html.twig', array(
+        return $this->render('RbsSalesBundle:Order:orderVerify.html.twig', array(
             'order' => $order,
             'auditLogs' => $auditLogs
         ));
@@ -350,6 +350,28 @@ class OrderController extends BaseController
         $this->dispatchApproveProcessEvent('payment.over.credit.approved', $order);
 
         $this->flashMessage('success', 'Payment Approved Successfully!');
+
+        return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
+     * @JMS\Secure(roles="ROLE_PAYMENT_APPROVE")
+     * @Route("/order/{id}/verify", name="order_verify")
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function orderVerifyAction(Order $order)
+    {
+        if ($order->getOrderState() == Order::ORDER_STATE_PROCESSING &&
+            in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))
+        ) {
+            $order->setDeliveryState(Order::DELIVERY_STATE_READY);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+
+            $this->dispatchApproveProcessEvent('order.verified', $order);
+
+            $this->flashMessage('success', 'Order Verified Successfully and Ready for Delivery');
+        }
 
         return $this->redirect($this->generateUrl('orders_home'));
     }

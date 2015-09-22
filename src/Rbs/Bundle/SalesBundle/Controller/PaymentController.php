@@ -3,7 +3,6 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
-use Rbs\Bundle\CoreBundle\Controller\BaseController;
 use Rbs\Bundle\SalesBundle\Entity\Customer;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\PaymentForm;

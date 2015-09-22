@@ -74,11 +74,16 @@ var App = function() {
 
         if (!modals.length) return false;
 
-        $(modals).on('hidden.bs.modal', function () {
+        $(modals).on('hidden.bs.modal', function (e) {
+            if ($(e.target).attr('role') == 'dialog') {
+                return false;
+            }
             $(this).find('.modal-content').html('<div class="modal-body">'+
                 '<img src="/assets/global/img/loading-spinner-grey.gif" alt="" class="loading">' +
                 '<span> &nbsp;&nbsp;Loading... </span></div>');
-            $.xhrPool.abortAll();
+            try{
+                $.xhrPool.abortAll();
+            } catch(e){}
         });
     }
 
@@ -88,6 +93,19 @@ var App = function() {
         initConfirmationButton();
         handleMultiSelect();
         handleAjaxModal();
+
+        $('body').on('click', '.order-cancel-modal-action', function(){
+            $('.main-content').slideUp();
+            $('.action-content-cancel').slideDown();
+        }).on('click', '.order-hold-modal-action', function(){
+            $('.main-content').slideUp();
+            $('.action-content-hold').slideDown();
+        }).on('click', '.cancel-submit', function(){
+            $('[class^=action-content]').slideUp();
+            $('.main-content').slideDown();
+        }).on('submit', '.action-content-form', function(){
+            $(this).find('input[type=submit], button[type=submit]').attr('disabled', true);
+        });
     }
 
     return {
