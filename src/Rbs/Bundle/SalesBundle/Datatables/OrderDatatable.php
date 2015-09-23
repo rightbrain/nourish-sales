@@ -207,7 +207,9 @@ class OrderDatatable extends BaseDatatable
         }
 
         if ($canOrderVerify && $order->getOrderState() == Order::ORDER_STATE_PROCESSING
-            && in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))) {
+            && in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))
+            && in_array($order->getDeliveryState(), array(Order::DELIVERY_STATE_PENDING))
+        ) {
             $html .= '<li><a href="'.$this->router->generate('order_review', array('id'=>$order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Verify Order</a></li>';
         }
 
