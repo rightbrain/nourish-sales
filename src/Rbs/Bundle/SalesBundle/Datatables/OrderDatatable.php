@@ -26,6 +26,8 @@ class OrderDatatable extends BaseDatatable
             $line["totalAmount"] = number_format($order->getTotalAmount(), 2);
             $line["paidAmount"] = number_format($order->getPaidAmount(), 2);
 
+            $line["fullName"] = $order->getCustomer()->getUser()->getProfile()->getFullName();
+
             $line["actionButtons"] = $this->generateActionList($order);
 
             return $line;
@@ -62,7 +64,7 @@ class OrderDatatable extends BaseDatatable
         $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
         $this->columnBuilder
             ->add('id', 'column', array('title' => 'Order ID'))
-            ->add('customer.user.username', 'column', array('title' => 'Customer'))
+            ->add('customer.user.id', 'column', array('title' => 'Customer Name', 'render' => 'resolveCustomerName'))
             ->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
             ->add('orderState', 'column', array('title' => 'Order State', 'render' => 'Order.OrderStateFormat'))
             ->add('paymentState', 'column', array('title' => 'Payment State', 'render' => 'Order.OrderStateFormat'))

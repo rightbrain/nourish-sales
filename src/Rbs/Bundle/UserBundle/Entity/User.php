@@ -72,7 +72,7 @@ class User extends BaseUser
     }
 
     /**
-     * @return mixed
+     * @return Profile
      */
     public function getProfile()
     {

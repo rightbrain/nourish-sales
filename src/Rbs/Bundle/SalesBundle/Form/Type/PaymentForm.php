@@ -57,11 +57,12 @@ class PaymentForm extends AbstractType
                 {
                     return $repository->createQueryBuilder('c')
                         ->join('c.user', 'u')
+                        ->join('u.profile', 'p')
                         ->where('u.deletedAt IS NULL')
                         ->andWhere('u.enabled = 1')
                         ->andWhere('u.userType = :CUSTOMER')
                         ->setParameter('CUSTOMER', 'CUSTOMER')
-                        ->orderBy('u.username','ASC');
+                        ->orderBy('p.fullName','ASC');
                 }
             ))
             ->add('remark', 'textarea')

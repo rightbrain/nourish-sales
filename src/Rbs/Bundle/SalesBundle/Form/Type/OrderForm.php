@@ -26,7 +26,7 @@ class OrderForm extends AbstractType
             $builder
                 ->add('customer', 'entity', array(
                     'class' => 'RbsSalesBundle:Customer',
-                    'property' => 'user.username',
+                    'property' => 'user.profile.fullName',
                     'required' => false,
                     'empty_value' => 'Select Customer',
                     'empty_data' => null,
@@ -34,11 +34,12 @@ class OrderForm extends AbstractType
                     {
                         return $repository->createQueryBuilder('c')
                             ->join('c.user', 'u')
+                            ->join('u.profile', 'p')
                             ->where('u.deletedAt IS NULL')
                             ->andWhere('u.enabled = 1')
                             ->andWhere('u.userType = :CUSTOMER')
                             ->setParameter('CUSTOMER', 'CUSTOMER')
-                            ->orderBy('u.username','ASC');
+                            ->orderBy('p.fullName','ASC');
                     }
                 ));
         }
