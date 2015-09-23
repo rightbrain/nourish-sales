@@ -50,14 +50,12 @@
                             </thead>
                             <tbody>
                             {% for auditLog in auditLogs %}
-                                {% for audit in auditLog %}
-                                    <tr>
-                                        <td>{{ audit.type }}</td>
-                                        <td>{{ audit.user }}</td>
-                                        <td>{{ audit.eventTime|date(php_date_format ~ ' h:i A') }}</td>
-                                        <td>{{ audit.reason }}</td>
-                                    </tr>
-                                {% endfor %}
+                                <tr>
+                                    <td>{{ auditLog.type }}</td>
+                                    <td>{{ auditLog.user }}</td>
+                                    <td>{{ auditLog.eventTime|date(php_date_format ~ ' h:i A') }}</td>
+                                    <td>{{ auditLog.reason }}</td>
+                                </tr>
                             {% endfor %}
                             </tbody>
                         </table>

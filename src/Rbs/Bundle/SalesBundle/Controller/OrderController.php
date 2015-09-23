@@ -295,7 +295,7 @@ class OrderController extends BaseController
      */
     public function orderReviewAction(Order $order)
     {
-        $auditLogs = $this->getDoctrine()->getRepository('RbsCoreBundle:AuditLog')->getByTypeOrObjectId(array('order.approved', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
+        $auditLogs = $this->getDoctrine()->getRepository('RbsCoreBundle:AuditLog')->getByTypeOrObjectId(array('order.approved', 'order.hold', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
 
         return $this->render('RbsSalesBundle:Order:orderVerify.html.twig', array(
             'order' => $order,

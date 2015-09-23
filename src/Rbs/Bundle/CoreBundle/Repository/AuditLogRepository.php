@@ -10,22 +10,24 @@ class AuditLogRepository extends EntityRepository
     public function getByTypeOrObjectId($types = array(), $objectId = null)
     {
         $qb = $this->createQueryBuilder('a');
-        $qb->where('a.typeId IN (:types)')->setParameter('types', $types);
+        if (!empty($types)) {
+            $qb->where('a.typeId IN (:types)')->setParameter('types', $types);
+        }
         if ($objectId) {
             $qb->andWhere('a.objectId = :objectId')->setParameter('objectId', $objectId);
         }
-        $qb->orderBy('a.eventTime', 'desc');
+        $qb->orderBy('a.eventTime', 'ASC');
 
-        $data = array();
+        /*$data = array();
         foreach ($types as $type) {
             $data[$type] = array();
-        }
+        }*/
 
         /** @var AuditLog $auditLog */
-        foreach ($qb->getQuery()->getResult() as $auditLog) {
+        /*foreach ($qb->getQuery()->getResult() as $auditLog) {
             $data[$auditLog->getTypeId()][] = $auditLog;
-        }
+        }*/
 
-        return $data;
+        return $qb->getQuery()->getResult();
     }
 }
