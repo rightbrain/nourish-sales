@@ -47,7 +47,7 @@ services:
         class: Rbs\Bundle\SalesBundle\Datatables\StockHistoryDatatable
         tags:
             - { name: sg.datatable.view }
-        arguments: [@security.context, @security.token_storage, @twig, @translator.data_collector, @router, @doctrine.orm.entity_manager, @service_container]
+        arguments: [@security.authorization_checker, @security.token_storage, @twig, @translator, @router, @doctrine.orm.entity_manager, @service_container]
 
     rbs_erp.sales.datatable.customer.group:
         class: Rbs\Bundle\SalesBundle\Datatables\CustomerGroupDatatable
