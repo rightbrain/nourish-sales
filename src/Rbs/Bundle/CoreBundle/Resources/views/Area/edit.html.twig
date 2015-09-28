@@ -19,8 +19,7 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-    'bundles/rbscore/js/area.js'
-    output='js/compiled/all.js' %}
+    'bundles/rbscore/js/area.js' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock %}

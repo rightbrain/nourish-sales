@@ -31,7 +31,7 @@
         'assets/admin/layout/css/layout.css'
         'assets/admin/layout/css/themes/darkblue.css'
         'assets/admin/layout/css/custom.css'
-        filter='cssrewrite' output='css/compiled/all.css' %}
+        filter='cssrewrite' %}
         <link rel="stylesheet" href="{{ asset_url }}" />
         {% endstylesheets %}
     {% endblock %}
@@ -108,8 +108,7 @@
     'assets/global/scripts/metronic.js'
     'assets/admin/layout/scripts/layout.js'
     'assets/admin/layout/scripts/demo.js'
-    'assets/admin/pages/scripts/login.js'
-    output='js/compiled/all.js' %}
+    'assets/admin/pages/scripts/login.js' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
