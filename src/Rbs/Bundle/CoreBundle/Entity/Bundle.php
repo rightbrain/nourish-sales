@@ -17,7 +17,6 @@ class Bundle
      *
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
      */
     private $id;
 
@@ -65,5 +64,17 @@ class Bundle
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return Bundle
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
     }
 }

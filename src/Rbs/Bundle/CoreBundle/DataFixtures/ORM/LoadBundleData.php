@@ -11,13 +11,14 @@ class LoadBundleData implements FixtureInterface
 
     public function load(ObjectManager $manager)
     {
-        $modules = array('Purchase Module', 'Salas Module');
-        foreach ($modules as $module) {
+        $modules = array(1 => 'Salas Module', 2 => 'Purchase Module');
+        foreach ($modules as $id => $module) {
             $bundle = new Bundle();
+            $bundle->setId($id);
             $bundle->setName($module);
             $manager->persist($bundle);
         }
 
-        //$manager->flush();
+        $manager->flush();
     }
 }
