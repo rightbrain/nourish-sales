@@ -54,8 +54,11 @@ class OrderDatatable extends BaseDatatable
 
         $this->callbacks->setCallbacks(array
             (
-                'init_complete' => "function( settings ) {
+                'init_complete' => "function(settings) {
                         Order.filterInit();
+                }",
+                'pre_draw_callback' => "function(settings) {
+                    $('.dataTables_scrollHead').find('table thead tr').eq(1).remove();
                 }"
             )
         );

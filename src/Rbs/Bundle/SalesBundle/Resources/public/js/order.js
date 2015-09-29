@@ -239,7 +239,7 @@ var Order = function()
         // Remove global search box
         orderFilterContainer.addClass('pull-right').find('label').remove();
         // Remove Individual Filter Inputs
-        $('.dataTables_scrollHead').find('table thead tr').eq(1).remove();
+        //$('.dataTables_scrollHead').find('table thead tr').eq(1).remove();
 
         // Humanize Filter Option's Text
         setTimeout(function(){
