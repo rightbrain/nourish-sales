@@ -47,9 +47,16 @@ class Sms
     /**
      * @var string
      *
-     * @ORM\Column(name="cell_number", type="string", length=255)
+     * @ORM\Column(name="sl", type="string", length=20)
      */
-    private $cellNumber;
+    private $sl;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="mobile_no", type="string", length=255)
+     */
+    private $mobileNo;
 
     /**
      * @var \DateTime
@@ -61,14 +68,14 @@ class Sms
     /**
      * @var string
      *
-     * @ORM\Column(name="texts", type="text")
+     * @ORM\Column(name="msg", type="string", length=160)
      */
-    private $text;
+    private $msg;
 
     /**
      * @var array $type
      *
-     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('READ', 'UNREAD')", nullable=true)
+     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('NEW', 'READ', 'UNREAD')", nullable=true)
      */
     private $status;
 
@@ -120,22 +127,6 @@ class Sms
     }
 
     /**
-     * @return string
-     */
-    public function getCellNumber()
-    {
-        return $this->cellNumber;
-    }
-
-    /**
-     * @param string $cellNumber
-     */
-    public function setCellNumber($cellNumber)
-    {
-        $this->cellNumber = $cellNumber;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getDate()
@@ -170,16 +161,60 @@ class Sms
     /**
      * @return string
      */
-    public function getText()
+    public function getSl()
     {
-        return $this->text;
+        return $this->sl;
     }
 
     /**
-     * @param string $text
+     * @param string $sl
+     *
+     * @return Sms
      */
-    public function setText($text)
+    public function setSl($sl)
     {
-        $this->text = $text;
+        $this->sl = $sl;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMobileNo()
+    {
+        return $this->mobileNo;
+    }
+
+    /**
+     * @param string $mobileNo
+     *
+     * @return Sms
+     */
+    public function setMobileNo($mobileNo)
+    {
+        $this->mobileNo = $mobileNo;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMsg()
+    {
+        return $this->msg;
+    }
+
+    /**
+     * @param string $msg
+     *
+     * @return Sms
+     */
+    public function setMsg($msg)
+    {
+        $this->msg = $msg;
+
+        return $this;
     }
 }
