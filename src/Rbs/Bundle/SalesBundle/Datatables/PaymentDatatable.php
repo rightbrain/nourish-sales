@@ -33,17 +33,29 @@ class PaymentDatatable extends BaseDatatable
     public function buildDatatable()
     {
         $this->features->setFeatures($this->defaultFeatures());
-        $this->options->setOptions($this->defaultOptions());
+        $this->options->setOptions(array_merge($this->defaultOptions(), array(
+            'individual_filtering' => true,
+            'individual_filtering_position' => 'head'
+        )));
+
+        $this->callbacks->setCallbacks(array
+            (
+                'init_complete' => "function( settings ) {
+                        Payment.filterInit();
+                }"
+            )
+        );
 
         $this->ajax->setOptions(array(
             'url' => $this->router->generate('payment_list_ajax'),
             'type' => 'GET'
         ));
 
+        $twigVars = $this->twig->getGlobals();
+        $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
+
         $this->columnBuilder
-            ->add('createdAt', 'datetime', array(
-                'title' => 'Date',
-                'date_format' => 'LL' ))
+            ->add('createdAt', 'datetime', array( 'title' => 'Date', 'date_format' => $dateFormat ))
             ->add('customer.user.id', 'column', array('title' => 'Customer Name', 'render' => 'resolveCustomerName'))
             ->add('amount', 'column', array('visible' => false))
             ->add('totalAmount', 'virtual', array('title' => 'Amount'))

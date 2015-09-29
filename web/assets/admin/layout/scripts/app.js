@@ -106,6 +106,15 @@ var App = function() {
         }).on('submit', '.action-content-form', function(){
             $(this).find('input[type=submit], button[type=submit]').attr('disabled', true);
         });
+
+        if (jQuery().datepicker) {
+            $('.date-picker, .input-daterange').datepicker({
+                rtl: Metronic.isRTL(),
+                //orientation: "left",
+                autoclose: true
+            });
+            //$('body').removeClass("modal-open"); // fix bug when inline picker is used in modal
+        }
     }
 
     return {

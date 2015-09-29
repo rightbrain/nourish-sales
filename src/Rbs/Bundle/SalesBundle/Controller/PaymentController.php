@@ -30,7 +30,7 @@ class PaymentController extends BaseController
         $datatable->buildDatatable();
 
         return $this->render('RbsSalesBundle:Payment:index.html.twig', array(
-            'datatable' => $datatable
+            'datatable' => $datatable,
         ));
     }
 
@@ -41,18 +41,38 @@ class PaymentController extends BaseController
      * @Method("GET")
      * @JMS\Secure(roles="ROLE_PAYMENT_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
-    public function listAjaxAction()
+    public function listAjaxAction(Request $request)
     {
         $datatable = $this->get('rbs_erp.sales.datatable.payment');
         $datatable->buildDatatable();
 
+        $dateFilter = $request->query->get('columns[0][search][value]', null, true);
+
+        // Reset Date Column search's value to Skip DataTable native search functionality for Date Column
+        $columns = $request->query->get('columns');
+        $columns[0]['search']['value'] = '';
+        $request->query->set('columns', $columns);
+
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
-        $function = function($qb)
+        $function = function($qb) use ($dateFilter)
         {
+            if ($dateFilter) {
+                list($fromDate, $toDate) = explode('--', $dateFilter);
 
+                if (!empty($fromDate) && !empty($toDate)) {
+                    $qb->andWhere('payments.createdAt BETWEEN :fromDate AND :toDate')
+                        ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($fromDate)))
+                        ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($toDate)));
+                } else if (!empty($fromDate) && empty($toDate)) {
+                    $qb->andWhere('payments.createdAt BETWEEN :fromDate AND :toDate')
+                        ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($fromDate)))
+                        ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($fromDate)));
+                }
+            }
         };
         $query->addWhereAll($function);
+
         return $query->getResponse();
     }
 
@@ -106,4 +126,5 @@ class PaymentController extends BaseController
 
         return new JsonResponse($orderArr);
     }
+
 }

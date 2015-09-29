@@ -54,7 +54,7 @@ class OrderDatatable extends BaseDatatable
 
         $this->callbacks->setCallbacks(array
             (
-                'pre_draw_callback' => "function( settings ) {
+                'init_complete' => "function( settings ) {
                         Order.filterInit();
                 }"
             )

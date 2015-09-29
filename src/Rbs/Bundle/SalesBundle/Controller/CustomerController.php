@@ -9,7 +9,7 @@ use Rbs\Bundle\UserBundle\Form\Type\UserUpdatePasswordForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
  * User Controller.
  *
  */
-class CustomerController extends Controller
+class CustomerController extends BaseController
 {
     /**
      * @Route("/customers", name="customers_home")
@@ -215,5 +215,24 @@ class CustomerController extends Controller
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
+    }
+
+    /**
+     * @Route("/payment/customer-search", name="customer_search", options={"expose"=true})
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function getCustomers(Request $request)
+    {
+        $qb = $this->customerRepository()->createQueryBuilder('c');
+        $qb->join('c.user', 'u');
+        $qb->join('u.profile', 'p');
+        $qb->select('u.id, p.fullName AS text');
+        $qb->setMaxResults(100);
+
+        if ($customerName = $request->query->get('q')) {
+            $qb->where("p.fullName LIKE '%{$customerName}%'");
+        }
+
+        return new JsonResponse($qb->getQuery()->getResult());
     }
 }
