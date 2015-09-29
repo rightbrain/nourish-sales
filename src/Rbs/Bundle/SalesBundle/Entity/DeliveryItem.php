@@ -32,7 +32,7 @@ class DeliveryItem
     private $delivery;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item", inversedBy="deliveryItems")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item", inversedBy="deliveryItems")
      * @ORM\JoinColumn(name="item_id", nullable=false)
      */
     private $item;

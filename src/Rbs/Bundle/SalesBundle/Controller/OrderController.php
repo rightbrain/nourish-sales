@@ -368,6 +368,8 @@ class OrderController extends BaseController
             $order->setDeliveryState(Order::DELIVERY_STATE_READY);
             $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
+            $this->deliveryRepository()->prepareDeliveryOnVerifyOrder($order);
+
             $this->dispatchApproveProcessEvent('order.verified', $order);
 
             $this->flashMessage('success', 'Order Verified Successfully and Ready for Delivery');

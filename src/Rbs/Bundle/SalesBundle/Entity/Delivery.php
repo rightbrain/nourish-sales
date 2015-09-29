@@ -32,49 +32,49 @@ class Delivery
     /**
      * @var string
      *
-     * @ORM\Column(name="contactName", type="string", length=255)
+     * @ORM\Column(name="contactName", type="string", length=255, nullable=true)
      */
     private $contactName;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="contactNo", type="string", length=255)
+     * @ORM\Column(name="contactNo", type="string", length=255, nullable=true)
      */
     private $contactNo;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="otherInfo", type="text")
+     * @ORM\Column(name="otherInfo", type="text", nullable=true)
      */
     private $otherInfo;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="vehicleIn", type="datetime")
+     * @ORM\Column(name="vehicleIn", type="datetime", nullable=true)
      */
     private $vehicleIn;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="vehicleOut", type="datetime")
+     * @ORM\Column(name="vehicleOut", type="datetime", nullable=true)
      */
     private $vehicleOut;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="startLoad", type="datetime")
+     * @ORM\Column(name="startLoad", type="datetime", nullable=true)
      */
     private $startLoad;
 
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="finishLoad", type="datetime")
+     * @ORM\Column(name="finishLoad", type="datetime", nullable=true)
      */
     private $finishLoad;
 

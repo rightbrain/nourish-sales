@@ -44,6 +44,14 @@ class BaseController extends CoreBaseController
         return $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem');
     }
 
+    /**
+     * @return \Rbs\Bundle\SalesBundle\Repository\DeliveryRepository
+     */
+    protected function deliveryRepository()
+    {
+        return $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery');
+    }
+
     protected function dispatchApproveProcessEvent($tag, Order $order)
     {
         $this->dispatch($tag, new OrderApproveEvent($order, $this->get('request')));
