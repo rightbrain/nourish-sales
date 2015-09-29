@@ -63,7 +63,7 @@ class Order
      * @var Customer
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Customer")
-     * @ORM\JoinColumn(name="customer", nullable=false)
+     * @ORM\JoinColumn(name="customer_id", nullable=false)
      */
     private $customer;
 
