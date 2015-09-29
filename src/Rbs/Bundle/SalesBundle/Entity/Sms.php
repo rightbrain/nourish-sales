@@ -80,6 +80,13 @@ class Sms
     private $status;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="remarks", type="text")
+     */
+    private $remark;
+
+    /**
      * Get id
      *
      * @return integer
@@ -217,4 +224,25 @@ class Sms
 
         return $this;
     }
+
+    /**
+     * @return string
+     */
+    public function getRemark()
+    {
+        return $this->remark;
+    }
+
+    /**
+     * @param string $remark
+     *
+     * @return Sms
+     */
+    public function setRemark($remark)
+    {
+        $this->remark = $remark;
+
+        return $this;
+    }
+
 }
