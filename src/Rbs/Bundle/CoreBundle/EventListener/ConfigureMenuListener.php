@@ -38,10 +38,12 @@ class ConfigureMenuListener extends ContextAwareListener
                 $menu['Manage System']->getChild('Categories')->setCurrent(true);
             }
 
-            $menu['Manage System']->addChild('Sub Categories', array('route' => 'subcategory'))
-                ->setAttribute('icon', 'fa fa-th-list');
-            if ($this->isMatch('subcategory')) {
-                $menu['Manage System']->getChild('Sub Categories')->setCurrent(true);
+            if (class_exists('Rbs\Bundle\SalesBundle\RbsPurchaseBundle')) {
+                $menu['Manage System']->addChild('Sub Categories', array('route' => 'subcategory'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('subcategory')) {
+                    $menu['Manage System']->getChild('Sub Categories')->setCurrent(true);
+                }
             }
 
             $menu['Manage System']->addChild('Areas', array('route' => 'area'))
@@ -68,18 +70,21 @@ class ConfigureMenuListener extends ContextAwareListener
                 $menu['Manage System']->getChild('Warehouses')->setCurrent(true);
             }
 
-            $menu['Manage System']->addChild('Cost Header', array('route' => 'cost_header'))
-                ->setAttribute('icon', 'fa fa-th-list');
-            if ($this->isMatch('cost_header')) {
-                $menu['Manage System']->getChild('Cost Header')->setCurrent(true);
-            }
+            if (class_exists('Rbs\Bundle\SalesBundle\RbsPurchaseBundle')) {
+                $menu['Manage System']->addChild('Cost Header', array('route' => 'cost_header'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('cost_header')) {
+                    $menu['Manage System']->getChild('Cost Header')->setCurrent(true);
+                }
 
-            $menu['Manage System']->addChild('Vendors', array('route' => 'vendor'))
-                ->setAttribute('icon', 'fa fa-th-list');
-            if ($this->isMatch('vendor')) {
-                $menu['Manage System']->getChild('Vendors')->setCurrent(true);
+                $menu['Manage System']->addChild('Vendors', array('route' => 'vendor'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('vendor')) {
+                    $menu['Manage System']->getChild('Vendors')->setCurrent(true);
+                }
             }
         }
+
         return $menu;
     }
 }

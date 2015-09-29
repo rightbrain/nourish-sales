@@ -49,7 +49,7 @@ class OrderForm extends AbstractType
             ))
             ->add('refSMS', 'entity', array(
                 'class'         => 'RbsSalesBundle:Sms',
-                'property'      => 'cellNumber',
+                'property'      => 'mobileNo',
                 'required'      => false,
                 'empty_value'   => 'Select SMS',
                 'empty_data'    => null,
