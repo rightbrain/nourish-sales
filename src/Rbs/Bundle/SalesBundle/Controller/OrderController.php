@@ -6,6 +6,7 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
+use Rbs\Bundle\SalesBundle\Form\Type\OrderFromSmsForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -61,7 +62,12 @@ class OrderController extends BaseController
     public function createAction(Request $request)
     {
         $order = new Order();
-        $form = $this->createForm(new OrderForm(), $order);
+
+        if($request->query->get('mobileNo')){
+            $refSms = $request->query->get('mobileNo');
+        }else{ $refSms = 0; }
+
+        $form = $this->createForm(new OrderForm($refSms), $order);
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
@@ -93,7 +99,11 @@ class OrderController extends BaseController
      */
     public function updateAction(Request $request, Order $order)
     {
-        $form = $this->createForm(new OrderForm(), $order);
+        if($request->query->get('mobileNo')){
+            $refSms = $request->query->get('mobileNo');
+        }else{ $refSms = 0; }
+
+        $form = $this->createForm(new OrderForm($refSms), $order);
         $em = $this->getDoctrine()->getManager();
 
         if ('POST' === $request->getMethod()) {

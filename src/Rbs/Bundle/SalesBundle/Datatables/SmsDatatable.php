@@ -28,57 +28,35 @@ class SmsDatatable extends BaseDatatable
             ->add('date', 'datetime', array(
                     'title' => 'Date',
                     'date_format' => 'LLL' ))
-            ->add('cellNumber', 'column', array('title' => 'Mobile'))
+            ->add('mobileNo', 'column', array('title' => 'Mobile'))
             ->add('order', 'column', array('title' => 'Order Number'))
-            ->add('text', 'column', array('title' => 'SMS Text'))
+            ->add('remark', 'column', array('title' => 'SMS Text'))
             ->add('status', 'column', array('title' => 'Status'))
-
-//            ->add(null, 'action', array(
-//                'width' => '200px',
-//                'title' => 'Action',
-//                'start_html' => '<div class="wrapper">',
-//                'end_html' => '</div>',
-//                'actions' => array(
-//                    array(
-//                        'route' => 'stock_create',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'Add Stock',
-//                        'icon' => 'glyphicon glyphicon-edit',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'edit-action',
-//                            'class' => 'btn btn-primary btn-xs',
-//                            'role' => 'button',
-//                            'data-target' => "#ajax",
-//                            'data-toggle'=>"modal"
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?',
-//                        'role' => 'ROLE_ADMIN',
-//                    ),
-//                    array(
-//                        'route' => 'stock_history',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'History',
-//                        'icon' => 'glyphicon',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'show-action',
-//                            'class' => 'btn btn-primary btn-xs',
-//                            'role' => 'button',
-//                            'data-target' => "#ajaxHistory",
-//                            'data-toggle'=>"modal"
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?',
-//                        'role' => 'ROLE_ADMIN',
-//                    )
-//                )
-//            ))
+            ->add(null, 'action', array(
+                'width' => '200px',
+                'title' => 'Action',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'order_create',
+                        'route_parameters' => array(
+                            'mobileNo' => 'mobileNo'
+                        ),
+                        'label' => 'Add Order',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'add-action',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button',
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_ADMIN',
+                    )
+                )
+            ))
         ;
     }
 

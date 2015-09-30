@@ -13,6 +13,13 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OrderForm extends AbstractType
 {
+    private $refSms;
+
+    public function __construct($refSms)
+    {
+        $this->refSms = $refSms;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -44,31 +51,56 @@ class OrderForm extends AbstractType
                 ));
         }
 
-        $builder->add('totalAmount', 'text', array(
+        $builder
+            ->add('totalAmount', 'text', array(
                 'read_only' => true
-            ))
-            ->add('refSMS', 'entity', array(
-                'class'         => 'RbsSalesBundle:Sms',
-                'property'      => 'mobileNo',
-                'required'      => false,
-                'empty_value'   => 'Select SMS',
-                'empty_data'    => null,
-                'query_builder' => function (SmsRepository $repository) use ($refSMS)
-                {
-                    $query = $repository->createQueryBuilder('sms')
-                        ->where('sms.deletedAt IS NULL')
-                        ->andWhere('sms.status = :UNREAD')
-                        ->andWhere('sms.order IS NULL')
-                        ->setParameter('UNREAD', 'UNREAD')
-                        ->orderBy('sms.id','DESC');
-                    if ($refSMS) {
-                        $query->orWhere("sms.id = :smsId")->setParameter("smsId", $refSMS->getId());
+            ));
+
+        if ($this->refSms) {
+            $builder
+                ->add('refSMS', 'entity', array(
+                    'class' => 'RbsSalesBundle:Sms',
+                    'property' => 'mobileNo',
+                    'query_builder' => function (SmsRepository $repository) use ($refSMS) {
+                        $query = $repository->createQueryBuilder('sms')
+                            ->where('sms.deletedAt IS NULL')
+                            ->andWhere('sms.status = :UNREAD')
+                            ->andWhere('sms.order IS NULL')
+                            ->andWhere('sms.mobileNo = :refSms')
+                            ->setParameter('refSms', $this->refSms)
+                            ->setParameter('UNREAD', 'UNREAD')
+                            ->orderBy('sms.id', 'DESC');
+                        if ($refSMS) {
+                            $query->orWhere("sms.id = :smsId")->setParameter("smsId", $refSMS->getId());
+                        }
+                        return $query;
                     }
-                    return $query;
-                }
-            ))
-            ->add('remark')
-        ;
+                ));
+        }else{
+            $builder
+                ->add('refSMS', 'entity', array(
+                    'class' => 'RbsSalesBundle:Sms',
+                    'property' => 'mobileNo',
+                    'required' => false,
+                    'empty_value' => 'Select SMS',
+                    'empty_data' => null,
+                    'query_builder' => function (SmsRepository $repository) use ($refSMS) {
+                        $query = $repository->createQueryBuilder('sms')
+                            ->where('sms.deletedAt IS NULL')
+                            ->andWhere('sms.status = :UNREAD')
+                            ->andWhere('sms.order IS NULL')
+                            ->setParameter('UNREAD', 'UNREAD')
+                            ->orderBy('sms.id', 'DESC');
+                        if ($refSMS) {
+                            $query->orWhere("sms.id = :smsId")->setParameter("smsId", $refSMS->getId());
+                        }
+                        return $query;
+                    }
+                ));
+        }
+
+        $builder
+            ->add('remark');
         $builder
             ->add('orderItems', 'collection', array(
                 'type'         => new OrderItemForm(),

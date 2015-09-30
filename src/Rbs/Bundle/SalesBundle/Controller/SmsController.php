@@ -44,7 +44,7 @@ class SmsController extends Controller
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-
+            $qb->andWhere("sms.status = 'UNREAD'");
         };
         $query->addWhereAll($function);
         return $query->getResponse();
