@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
- * User Controller.
+ * Order Controller.
  *
  */
 class OrderController extends BaseController

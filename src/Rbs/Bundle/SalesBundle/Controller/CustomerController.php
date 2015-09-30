@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * User Controller.
+ * Customer Controller.
  *
  */
 class CustomerController extends BaseController

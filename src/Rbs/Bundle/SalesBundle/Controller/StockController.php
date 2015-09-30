@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * User Controller.
+ * Stock Controller.
  *
  */
 class StockController extends Controller
