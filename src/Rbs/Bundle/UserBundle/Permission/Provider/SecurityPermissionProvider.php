@@ -7,7 +7,13 @@ class SecurityPermissionProvider implements ProviderInterface
     public function getPermissions()
     {
         return array(
-            'ROLE_ADMIN_USER' => array('ROLE_VIEW', 'ROLE_ADD', 'ROLE_UPDATE', 'ROLE_DELETE', 'ROLE_RESTORE'),
+            'USER' => array(
+                'ROLE_USER_VIEW', 'ROLE_USER_CREATE'
+            ),
+
+            'GROUP' => array(
+                'ROLE_GROUP_VIEW', 'ROLE_GROUP_CREATE'
+            )
         );
     }
 }

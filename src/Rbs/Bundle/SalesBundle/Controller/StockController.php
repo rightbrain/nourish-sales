@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * Stock Controller.
@@ -26,6 +27,7 @@ class StockController extends Controller
      * @Template()
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
      */
     public function indexAction(Request $request)
     {
@@ -52,6 +54,7 @@ class StockController extends Controller
      *
      * @Route("/stocks_list_ajax", name="stocks_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
      */
     public function listAjaxAction()
     {
@@ -77,6 +80,7 @@ class StockController extends Controller
      * @Route("find_stock_item_ajax", name="find_stock_item_ajax", options={"expose"=true})
      * @param Request $request
      * @return Response
+     * @JMS\Secure(roles="ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
      */
     public function findItemAction(Request $request)
     {
@@ -116,6 +120,7 @@ class StockController extends Controller
      * @Template("RbsSalesBundle:Stock:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_STOCK_CREATE")
      */
     public function createAction(Request $request)
     {
@@ -134,6 +139,7 @@ class StockController extends Controller
      * @Route("/stock/history", name="stock_history", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
      */
     public function stockHistoryAction(Request $request)
     {
@@ -152,6 +158,7 @@ class StockController extends Controller
      * @Route("/stock/available", name="stock_available", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
      */
     public function stockAvailableAction(Request $request)
     {
@@ -189,6 +196,7 @@ class StockController extends Controller
      * @param $form
      * @param $stockHistory
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_STOCK_CREATE")
      */
     protected function save(Request $request, $form, $stockHistory)
     {
