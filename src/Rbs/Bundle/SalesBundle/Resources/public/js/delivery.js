@@ -50,63 +50,77 @@ var Delivery = function()
         $('.dataTables_scrollHead').find('table thead tr').eq(1).remove();
     }
 
-    function init()
-    {
-        newOrder();
-        formValidateInit();
-    }
-
     function formValidateInit()
     {
         var isFormValid = true;
-        var form = $('form[name=order]');
-        if (!form.length) return;
 
-        form.submit(function(){
+        $('#orderItems').find('tr').each(function(index, e){
+            var elm = $(e);
+            var qty = elm.find('td:eq(2)').text();
+            var deliver = elm.find('td:eq(3)');
 
-            var orderItem = $('#orderItems');
-            orderItem.find('tr').each(function(index, e){
-                var elm = $(e);
-                var item = elm.find('td:eq(0)');
-                var qty = elm.find('td:eq(1)');
-                var stock = elm.find('td:eq(3)').text();
-
-                item.removeClass('has-error');
-                qty.removeClass('has-error');
-                if (item.find('select').val() == '') {
-                    item.addClass('has-error');
-                    isFormValid = false;
-                }
-
-                if (
-                    (qty.find('input').val() == '') ||
-                    (stock != 'Available On Demand' && (parseInt(qty.find('input').val()) > parseInt(stock)))
-                ) {
-                    qty.addClass('has-error');
-                    isFormValid = false;
-                }
-
-            });
-
-            if (!isFormValid) {
-                return false;
+            deliver.removeClass('has-error');
+            if (deliver.find('input').val() == '') {
+                deliver.addClass('has-error');
+                isFormValid = false;
             }
+
+            var deliveryQtq = parseInt(deliver.find('input').val());
+            if (!deliveryQtq || deliveryQtq > parseInt(qty)) {
+                deliver.addClass('has-error');
+                isFormValid = false;
+            }
+
+        });
+
+        return isFormValid;
+    }
+
+    function orderItemRemainingHandle()
+    {
+        $('#orderItems').find('.deliver-qty').blur(function(){
+            var elm = $(this).parents('tr');
+
+            var qty = parseInt(elm.find('td:eq(2)').text());
+            var deliveryQtq = parseInt(elm.find('td:eq(3) input').val());
+            var remain = elm.find('td:eq(4)');
+
+            if (deliveryQtq !== 0 && (!deliveryQtq || (qty - deliveryQtq) < 0)) { // Invalid value
+                remain.text(qty);
+                $(this).val(0);
+                toastr.error('Invalid value OR delivered quantity is greater then Order quantity');
+            } else {
+                remain.text(qty - deliveryQtq);
+            }
+
+        }).blur();
+    }
+
+    function orderProcessHandle()
+    {
+
+    }
+
+    function saveDelivery()
+    {
+        $('#deliveryView').on('shown.bs.modal', function (){
+            orderItemRemainingHandle();
+        });
+
+        $('body').on('click', '#save-delivery', function(){
+            console.log(formValidateInit());
         });
     }
 
-    function OrderStateFormat(data, type, row, meta){
-        return data;
-    }
-
-    function OrderPaymentFormat(data, type, row, meta){
-        return data;
+    function init()
+    {
+        orderProcessHandle();
+        saveDelivery();
     }
 
     return {
         init: init,
         filterInit: filterInit,
-        formValidateInit: formValidateInit,
-        OrderStateFormat: OrderStateFormat,
-        OrderPaymentFormat: OrderPaymentFormat
+        formValidateInit: formValidateInit
     }
 }();

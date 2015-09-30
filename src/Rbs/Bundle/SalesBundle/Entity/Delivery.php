@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Rbs\Bundle\CoreBundle\Entity\Warehouse;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
@@ -87,7 +88,7 @@ class Delivery
     private $orderRef;
 
     /**
-     * @var Order
+     * @var Warehouse
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Warehouse")
      * @ORM\JoinColumn(name="warehouse_id", nullable=false)
@@ -293,7 +294,7 @@ class Delivery
     /**
      * Get warehouse
      *
-     * @return string 
+     * @return Warehouse
      */
     public function getWarehouse()
     {

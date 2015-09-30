@@ -4,8 +4,8 @@
 
 {% block body %}
 
-    <div class="modal fade" id="ajaxSummeryView" role="basic" aria-hidden="true">
-        <div class="modal-dialog">
+    <div class="modal fade bs-modal-lg" id="deliveryView" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
                     <img src="{{ asset('assets/global/img/loading-spinner-grey.gif') }}" alt="" class="loading">
@@ -38,6 +38,7 @@
     {{ parent() }}
     {% stylesheets
     'assets/global/plugins/datatables/examples/resources/bootstrap/3/dataTables.bootstrap.css'
+    'assets/global/plugins/bootstrap-toastr/toastr.min.css'
     "bundles/rbssales/css/style.css"
     filter='cssrewrite' output='css/compiled/datatable.css' %}
     <link rel="stylesheet" href="{{ asset_url }}" />
@@ -50,10 +51,16 @@
     'assets/global/plugins/datatables/all.min.js'
     'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js'
     'assets/global/plugins/moment.min.js'
+    'assets/global/plugins/bootstrap-toastr/toastr.min.js'
     'bundles/rbssales/js/delivery.js'
     output='js/compiled/datatable.js' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
     {{ datatable_render_js(datatable) }}
+{% endblock %}
+
+{% block documentReady %}
+    {{ parent() }}
+    Delivery.init();
 {% endblock %}

@@ -59,6 +59,31 @@ class DeliveryDatatable extends BaseDatatable
             ->add('contactName', 'column', array('title' => 'Contact Name'))
             ->add('contactNo', 'column', array('title' => 'Contact No.'))
             ->add('warehouse.name', 'column', array('title' => 'Warehouse'))
+            ->add(null, 'action', array(
+                'width' => '200px',
+                'title' => 'Action',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'delivery_view',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'View',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'edit-action',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button',
+                            'data-target' => "#deliveryView",
+                            'data-toggle'=>"modal"
+                        ),
+                        'role' => 'ROLE_USER',
+                    )
+                )
+            ))
         ;
     }
 

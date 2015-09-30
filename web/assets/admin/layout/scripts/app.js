@@ -75,6 +75,7 @@ var App = function() {
         if (!modals.length) return false;
 
         $(modals).on('hidden.bs.modal', function (e) {
+            $(this).removeData('bs.modal');
             if ($(e.target).attr('role') == 'dialog') {
                 return false;
             }

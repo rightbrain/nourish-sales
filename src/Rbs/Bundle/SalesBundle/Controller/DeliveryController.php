@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\DBAL\Query\QueryBuilder;
 use JMS\SecurityExtraBundle\Annotation as JMS;
+use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -91,5 +92,20 @@ class DeliveryController extends BaseController
         }
 
         return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
+     * @JMS\Secure(roles="ROLE_USER")
+     * @Route("/delivery/{id}", name="delivery_view", options={"expose"=true})
+     * @param Delivery $delivery
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function view(Delivery $delivery)
+    {
+        return $this->render('RbsSalesBundle:Delivery:view.html.twig', array(
+            'delivery'  => $delivery,
+            'order'     => $delivery->getOrderRef(),
+            'customer'  => $delivery->getOrderRef()->getCustomer()
+        ));
     }
 }

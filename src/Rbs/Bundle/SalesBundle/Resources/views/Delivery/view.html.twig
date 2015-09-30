@@ -1,0 +1,99 @@
+<div class="action-content-cancel">
+    <div class="modal-header portlet-title blue">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Order Summary</h4>
+    </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="portlet">
+
+                        <div class="portlet-body">
+
+                            <table class="table">
+                                <tr>
+                                    <th>Order No</th>
+                                    <td>{{ order.id }}</td>
+                                    <th>Order Date</th>
+                                    <td>{{ order.createdAt|date(php_date_format) }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Customer Name</th>
+                                    <td>{{ customer.user.profile.fullName }}</td>
+                                    <th>Delivery From (Warehouse)</th>
+                                    <td>{{ delivery.warehouse.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Delivery Contact Name</th>
+                                    <td>{{ delivery.contactName }}</td>
+                                    <th>Delivery Contact No</th>
+                                    <td>{{ delivery.contactNo }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Other Info</th>
+                                    <td colspan="4">{{ delivery.otherInfo }}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-gift"></i>Delivery Process
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <table class="table">
+                                <tr>
+                                    <th>Vehicle In At</th>
+                                    <th>Start Loading At</th>
+                                    <th>Finish Loading At</th>
+                                    <th>Vehicle Out At</th>
+                                </tr>
+                                <tr>
+                                    <td>12:00 PM</td>
+                                    <td><button class="btn green">Start</button></td>
+                                    <td><button class="btn green">Finish</button></td>
+                                    <td><button class="btn green">Out</button></td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="portlet-title">
+                            <div class="caption">
+                                <i class="fa fa-gift"></i>Order Items
+                            </div>
+                        </div>
+                        <div class="portlet-body">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Order Id</th>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Delivered</th>
+                                    <th>Remain</th>
+                                </tr>
+                                </thead>
+                                <tbody id="orderItems">
+                                {% for item in order.orderItems %}
+                                <tr>
+                                    <td>{{ order.id }}</td>
+                                    <td>{{ item.item.name }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td><input class="form-control input-xsmall deliver-qty" value="0"></td>
+                                    <td></td>
+                                </tr>
+                                {% endfor %}
+                                <tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn blue red" id="save-delivery"> Save </button>
+            <a class="btn blue blue cancel-submit"> Back </a>
+        </div>
+</div>
