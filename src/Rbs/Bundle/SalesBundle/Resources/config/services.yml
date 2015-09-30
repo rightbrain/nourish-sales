@@ -54,6 +54,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.delivery:
+        class: Rbs\Bundle\SalesBundle\Datatables\DeliveryDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.registration.form.type:
         class: Rbs\Bundle\SalesBundle\Form\Type\CustomerForm
         tags:

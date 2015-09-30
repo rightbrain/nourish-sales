@@ -84,7 +84,7 @@ class Delivery
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order")
      * @ORM\JoinColumn(name="order_id", nullable=false)
      */
-    private $order;
+    private $orderRef;
 
     /**
      * @var Order
@@ -303,9 +303,9 @@ class Delivery
     /**
      * @return Order
      */
-    public function getOrder()
+    public function getOrderRef()
     {
-        return $this->order;
+        return $this->orderRef;
     }
 
     /**
@@ -313,9 +313,9 @@ class Delivery
      *
      * @return Delivery
      */
-    public function setOrder($order)
+    public function setOrderRef($order)
     {
-        $this->order = $order;
+        $this->orderRef = $order;
 
         return $this;
     }
