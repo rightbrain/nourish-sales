@@ -77,7 +77,7 @@ class Order
     /**
      * @var array $type
      *
-     * @ORM\Column(name="payment_state", type="string", length=255, columnDefinition="ENUM('PENDING', 'PARTIALLY_PAID', 'PAID', 'APPROVAL')", nullable=true)
+     * @ORM\Column(name="payment_state", type="string", length=255, columnDefinition="ENUM('PENDING', 'PARTIALLY_PAID', 'PAID', 'CREDIT_APPROVAL')", nullable=true)
      */
     private $paymentState;
 
