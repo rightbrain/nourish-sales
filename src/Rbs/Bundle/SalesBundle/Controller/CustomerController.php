@@ -12,9 +12,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
- * User Controller.
+ * Customer Controller.
  *
  */
 class CustomerController extends BaseController
@@ -23,6 +24,7 @@ class CustomerController extends BaseController
      * @Route("/customers", name="customers_home")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
      */
     public function indexAction()
     {
@@ -41,6 +43,7 @@ class CustomerController extends BaseController
      *
      * @Route("/customers_list_ajax", name="customers_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
      */
     public function listAjaxAction()
     {
@@ -62,6 +65,7 @@ class CustomerController extends BaseController
      * @Template("RbsSalesBundle:Customer:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE")
      */
     public function createAction(Request $request)
     {
@@ -99,6 +103,7 @@ class CustomerController extends BaseController
      * @param Request $request
      * @param Customer $customer
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE")
      */
     public function updateAction(Request $request, Customer $customer)
     {
@@ -131,6 +136,7 @@ class CustomerController extends BaseController
      * @param Request $request
      * @param Customer $customer
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE")
      */
     public function updatePasswordAction(Request $request, Customer $customer)
     {
@@ -166,6 +172,7 @@ class CustomerController extends BaseController
      * @Template()
      * @param Customer $customer
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
      */
     public function detailsAction(Customer $customer)
     {
@@ -178,6 +185,7 @@ class CustomerController extends BaseController
      * @Route("/customer/delete/{id}", name="customer_delete", options={"expose"=true})
      * @param Customer $customer
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE")
      */
     public function deleteAction(Customer $customer)
     {
@@ -199,6 +207,7 @@ class CustomerController extends BaseController
      * @Route("find_customer_ajax", name="find_customer_ajax", options={"expose"=true})
      * @param Request $request
      * @return Response
+     * @JMS\Secure(roles="ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
      */
     public function findCustomerAction(Request $request)
     {
@@ -219,7 +228,9 @@ class CustomerController extends BaseController
 
     /**
      * @Route("/payment/customer-search", name="customer_search", options={"expose"=true})
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\JsonResponse
+     * @param Request $request
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
      */
     public function getCustomers(Request $request)
     {

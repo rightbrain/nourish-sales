@@ -7,7 +7,7 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 
 /**
- * Sms Controller.
+ * Base Controller.
  *
  */
 class BaseController extends CoreBaseController

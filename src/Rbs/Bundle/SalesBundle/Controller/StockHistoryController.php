@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * Stock History Controller.
@@ -21,6 +22,7 @@ class StockHistoryController extends Controller
      * @Route("/stock/history/list/{stock}", name="stock_history_list", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
      */
     public function stockHistoryAllAction(Request $request)
     {
@@ -45,6 +47,7 @@ class StockHistoryController extends Controller
      * @Method("GET")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
      */
     public function listAjaxAction(Request $request)
     {

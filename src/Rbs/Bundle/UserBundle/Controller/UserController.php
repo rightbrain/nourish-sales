@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * User Controller.
@@ -21,6 +22,7 @@ class UserController extends Controller
      * @Route("/users", name="users_home")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_USER_VIEW, ROLE_USER_CREATE")
      */
     public function indexAction()
     {
@@ -39,6 +41,7 @@ class UserController extends Controller
      *
      * @Route("/users_list_ajax", name="users_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_USER_VIEW, ROLE_USER_CREATE")
      */
     public function listAjaxAction()
     {
@@ -62,6 +65,7 @@ class UserController extends Controller
      * @Template("RbsUserBundle:User:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_USER_CREATE")
      */
     public function createAction(Request $request)
     {
@@ -98,6 +102,7 @@ class UserController extends Controller
      * @param Request $request
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_USER_CREATE")
      */
     public function updateAction(Request $request, User $user)
     {
@@ -130,6 +135,7 @@ class UserController extends Controller
      * @param Request $request
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_USER_CREATE")
      */
     public function updatePasswordAction(Request $request, User $user)
     {
@@ -164,6 +170,7 @@ class UserController extends Controller
      * @Route("/user/enabled/{id}", name="user_enabled", options={"expose"=true})
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_USER_CREATE")
      */
     public function userEnabledAction(User $user)
     {
@@ -201,6 +208,7 @@ class UserController extends Controller
      * @Template()
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_USER_VIEW, ROLE_USER_CREATE")
      */
     public function detailsAction(User $user)
     {
@@ -213,6 +221,7 @@ class UserController extends Controller
      * @Route("/user/delete/{id}", name="user_delete", options={"expose"=true})
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_USER_CREATE")
      */
     public function deleteAction(User $user)
     {
