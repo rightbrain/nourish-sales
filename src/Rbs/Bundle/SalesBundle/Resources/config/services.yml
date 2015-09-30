@@ -5,7 +5,7 @@ services:
         class: Rbs\Bundle\SalesBundle\EventListener\ConfigureMenuListener
         arguments: [@service_container]
         tags:
-          - { name: kernel.event_listener, event: core_bundle.menu_user, method: onMenuConfigureMain, priority: 999 }
+          - { name: kernel.event_listener, event: core_bundle.menu_sales, method: onMenuConfigureMain, priority: 999 }
 
     appbundle.subscriber.auditlogeventsubscriber:
         class: Rbs\Bundle\SalesBundle\Subscriber\AuditLogEventSubscriber

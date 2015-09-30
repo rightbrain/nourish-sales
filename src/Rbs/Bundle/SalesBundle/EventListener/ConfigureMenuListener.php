@@ -42,10 +42,11 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-        $menu['User']->addChild('Customer List', array('route' => 'customers_home'))
+        $menu['Sales']->addChild('Customers', array('route' => 'customers_home'))
             ->setAttribute('icon', 'fa fa-th-list');
-        $menu['User']->addChild('Customer Create', array('route' => 'customer_create'))
-            ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('customer')) {
+                $menu['Sales']->getChild('Customers')->setCurrent(true);
+            }
 
         return $menu;
     }

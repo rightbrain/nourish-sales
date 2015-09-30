@@ -19,14 +19,14 @@ class MenuBuilder extends ContainerAware
                 'data-slide-speed' => '200',
 
             ));
-        $menu->addChild('Home', array('route' => 'homepage'))->setAttribute('icon', 'fa fa-home');
+        $menu->addChild('Dashboard', array('route' => 'homepage'))->setAttribute('icon', 'fa fa-home');
 
-        $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_MAIN_MENU, new ConfigureMenuEvent($factory, $menu));
-        $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_PURCHASE_MENU, new ConfigureMenuEvent($factory, $menu));
         $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_SALES_MENU, new ConfigureMenuEvent($factory, $menu));
+        $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_PURCHASE_MENU, new ConfigureMenuEvent($factory, $menu));
         $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_INVENTORY_MENU, new ConfigureMenuEvent($factory, $menu));
-        $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_SETTING_MENU, new ConfigureMenuEvent($factory, $menu));
         $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_USER_MENU, new ConfigureMenuEvent($factory, $menu));
+        $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_SETTING_MENU, new ConfigureMenuEvent($factory, $menu));
+        $this->container->get('event_dispatcher')->dispatch(ConfigureMenuEvent::CONFIGURE_MAIN_MENU, new ConfigureMenuEvent($factory, $menu));
 
         return $menu;
     }
