@@ -18,7 +18,7 @@ var Payment = function()
         $('.input-daterange').datepicker({
             autoclose: true,
             todayBtn: "linked",
-            format: 'dd/mm/yyyy'
+            format: 'dd-mm-yyyy'
         });/*.on('changeDate', function(e){
             var fromDate = moment(e.date).format('DD-MM-YYYY');
             var toDate = moment(e.date).format('DD-MM-YYYY');
