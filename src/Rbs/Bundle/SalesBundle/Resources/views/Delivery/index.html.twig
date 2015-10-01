@@ -4,7 +4,18 @@
 
 {% block body %}
 
-    <div class="modal fade bs-modal-lg" id="deliveryView" role="dialog" aria-hidden="true">
+    <div class="modal fade bs-modal-lg" id="deliveryView" role="document" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="{{ asset('assets/global/img/loading-spinner-grey.gif') }}" alt="" class="loading">
+                    <span> &nbsp;&nbsp;Loading... </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade bs-modal-lg" id="pendingItems" role="document" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">

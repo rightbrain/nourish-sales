@@ -1,9 +1,12 @@
 <div class="action-content-cancel">
     <div class="modal-header portlet-title blue">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title">Order Summary</h4>
+        <h4 class="modal-title">Order No <span class="badge badge-primary">{{ order.id }}</span></h4>
     </div>
-        <div class="modal-body">
+    <div class="modal-body">
+
+        <form id="delivery-item-form">
+
             <div class="row">
                 <div class="col-md-12">
                     <div class="portlet">
@@ -12,16 +15,10 @@
 
                             <table class="table">
                                 <tr>
-                                    <th>Order No</th>
-                                    <td>{{ order.id }}</td>
-                                    <th>Order Date</th>
-                                    <td>{{ order.createdAt|date(php_date_format) }}</td>
-                                </tr>
-                                <tr>
                                     <th>Customer Name</th>
                                     <td>{{ customer.user.profile.fullName }}</td>
-                                    <th>Delivery From (Warehouse)</th>
-                                    <td>{{ delivery.warehouse.name }}</td>
+                                    <th>Order Date</th>
+                                    <td>{{ order.createdAt|date(php_date_format) }}</td>
                                 </tr>
                                 <tr>
                                     <th>Delivery Contact Name</th>
@@ -31,37 +28,58 @@
                                 </tr>
                                 <tr>
                                     <th>Other Info</th>
-                                    <td colspan="4">{{ delivery.otherInfo }}</td>
+                                    <td>{{ delivery.otherInfo }}</td>
+                                    <th>Delivery From (Warehouse)</th>
+                                    <td>{{ delivery.warehouse.name }}</td>
                                 </tr>
                             </table>
                         </div>
 
                         <div class="portlet-title">
-                            <div class="caption">
-                                <i class="fa fa-gift"></i>Delivery Process
-                            </div>
+                            <div class="caption"> Delivery Progress </div>
                         </div>
                         <div class="portlet-body">
                             <table class="table">
                                 <tr>
-                                    <th>Vehicle In At</th>
-                                    <th>Start Loading At</th>
-                                    <th>Finish Loading At</th>
-                                    <th>Vehicle Out At</th>
+                                    <th class="text-center col-md-3">Vehicle In</th>
+                                    <th class="text-center col-md-3">Start Loading</th>
+                                    <th class="text-center col-md-3">Finish Loading</th>
+                                    <th class="text-center col-md-3">Vehicle Out</th>
                                 </tr>
-                                <tr>
-                                    <td>12:00 PM</td>
-                                    <td><button class="btn green">Start</button></td>
-                                    <td><button class="btn green">Finish</button></td>
-                                    <td><button class="btn green">Out</button></td>
+                                <tr id="process-actions">
+                                    <td class="text-center">
+                                        {%- if delivery.vehicleIn is not null %}
+                                            {{ delivery.vehicleIn|date("H:i a") }}
+                                        {%- else %}
+                                            <button class="btn green" data-route="{{ path('delivery_vehicle_in', {id: delivery.id}) }}">In</button>
+                                        {%- endif %}
+                                    </td>
+
+                                    <td class="text-center">
+                                        {%- if delivery.startLoad is not null %}
+                                            {{ delivery.startLoad|date("H:i a") }}
+                                        {%- else %}
+                                            <button class="btn green" data-route="{{ path('delivery_start_loading', {id: delivery.id}) }}" {%- if delivery.vehicleIn is null %} disabled="disabled" {% endif %}>Start</button>
+                                        {%- endif %}
+                                    </td>
+
+                                    <td class="text-center">
+                                        {%- if delivery.finishLoad is not null %}
+                                            {{ delivery.finishLoad|date("H:i a") }}
+                                        {%- else %}
+                                            <button data-route="{{ path('delivery_finish_loading', {id: delivery.id}) }}" class="btn green" {%- if delivery.startLoad is null %} disabled="disabled" {% endif %}>Finish</button>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="text-center">
+                                        <button data-route="{{ path('delivery_vehicle_out', {id: delivery.id}) }}" class="btn green" disabled="disabled">Out</button>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
 
                         <div class="portlet-title">
-                            <div class="caption">
-                                <i class="fa fa-gift"></i>Order Items
-                            </div>
+                            <div class="caption"> Order Items </div>
                         </div>
                         <div class="portlet-body">
                             <table class="table">
@@ -74,15 +92,46 @@
                                     <th>Remain</th>
                                 </tr>
                                 </thead>
-                                <tbody id="orderItems">
-                                {% for item in order.orderItems %}
+                                <tbody class="orderItems">
+                                {% for index, item in order.orderItems %}
+                                    <tr>
+                                        <td>{{ order.id }}</td>
+                                        <td>{{ item.item.name }}</td>
+                                        <td class="item-qty">{{ item.quantity }}</td>
+                                        <td><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
+                                        <td class="remain"></td>
+                                    </tr>
+                                {% endfor %}
+                                <tbody>
+                            </table>
+                        </div>
+                        <input type="hidden" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">
+
+                        <div class="portlet-title partial-delivered-items">
+                            <div class="caption"> Partial Delivered Items </div>
+                        </div>
+                        <div class="portlet-body partial-delivered-items">
+                            <table class="table">
+                                <thead>
                                 <tr>
-                                    <td>{{ order.id }}</td>
-                                    <td>{{ item.item.name }}</td>
-                                    <td>{{ item.quantity }}</td>
-                                    <td><input class="form-control input-xsmall deliver-qty" value="0"></td>
-                                    <td></td>
+                                    <th></th>
+                                    <th>Order Id</th>
+                                    <th>Item</th>
+                                    <th>Quantity</th>
+                                    <th>Delivered</th>
+                                    <th>Remain</th>
                                 </tr>
+                                </thead>
+                                <tbody class="orderItems">
+                                {% for index, item in partialItems %}
+                                    <tr>
+                                        <td><input name="checked-items[{{ item.orderId }}][{{ item.id }}]" type="checkbox"></td>
+                                        <td>{{ item.orderId }}</td>
+                                        <td>{{ item.itemName }}</td>
+                                        <td class="item-qty">{{ item.quantity - item.delivered }}</td>
+                                        <td class="deliver"><input name="previous-items[{{ item.orderId }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
+                                        <td class="remain"></td>
+                                    </tr>
                                 {% endfor %}
                                 <tbody>
                             </table>
@@ -91,9 +140,11 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn blue red" id="save-delivery"> Save </button>
-            <a class="btn blue blue cancel-submit"> Back </a>
-        </div>
+        </form>
+
+    </div>
+    <div class="modal-footer">
+        <button class="btn blue green" id="save-delivery"> Complete Delivery </button>
+        <a class="btn default" data-dismiss="modal"> Close </a>
+    </div>
 </div>

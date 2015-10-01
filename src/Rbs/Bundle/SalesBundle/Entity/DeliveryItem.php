@@ -32,10 +32,10 @@ class DeliveryItem
     private $delivery;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item", inversedBy="deliveryItems")
-     * @ORM\JoinColumn(name="item_id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\OrderItem")
+     * @ORM\JoinColumn(name="order_item_id", nullable=false)
      */
-    private $item;
+    private $orderItem;
 
     /**
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order")
@@ -78,9 +78,9 @@ class DeliveryItem
     /**
      * @return mixed
      */
-    public function getItem()
+    public function getOrderItem()
     {
-        return $this->item;
+        return $this->orderItem;
     }
 
     /**
@@ -88,9 +88,9 @@ class DeliveryItem
      *
      * @return DeliveryItem
      */
-    public function setItem($item)
+    public function setOrderItem($item)
     {
-        $this->item = $item;
+        $this->orderItem = $item;
 
         return $this;
     }

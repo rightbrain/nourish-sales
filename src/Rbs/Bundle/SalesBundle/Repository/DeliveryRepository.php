@@ -2,8 +2,10 @@
 
 namespace Rbs\Bundle\SalesBundle\Repository;
 
+use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
+use Rbs\Bundle\SalesBundle\Entity\DeliveryItem;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 
 /**
@@ -25,4 +27,26 @@ class DeliveryRepository extends EntityRepository
             $this->_em->flush();
         }
     }
+
+    public function save($delivery, $data)
+    {
+        foreach ($data['qty'] as $orderId => $deliveryItems) {
+            foreach ($deliveryItems as $itemId => $qty) {
+                $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
+                $item = $this->_em->getRepository('RbsSalesBundle:OrderItem')->find($itemId);
+
+                $deliveryItem = new DeliveryItem();
+                $deliveryItem->setOrder($order);
+                $deliveryItem->setDelivery($delivery);
+                $deliveryItem->setOrderItem($item);
+                $deliveryItem->setQty($qty);
+
+                $this->_em->persist($deliveryItem);
+            }
+        }
+
+        $this->_em->flush();
+    }
+
+
 }

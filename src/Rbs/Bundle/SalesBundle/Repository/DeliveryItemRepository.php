@@ -3,6 +3,8 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\Delivery;
+use Rbs\Bundle\SalesBundle\Entity\Order;
 
 /**
  * DeliveryRepository
@@ -12,4 +14,27 @@ use Doctrine\ORM\EntityRepository;
  */
 class DeliveryItemRepository extends EntityRepository
 {
+    public function getPartialDeliveredItems(Delivery $delivery)
+    {
+        $customers = $delivery->getOrderRef()->getCustomer();
+        $orders = $this->_em->getRepository('RbsSalesBundle:Order')->findBy(array('customer' => $customers, 'deliveryState' => Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
+
+        $data = array();
+        foreach ($orders as $order) {
+            $query = $this->createQueryBuilder('deliveryItem');
+            $query->join('deliveryItem.orderItem', 'orderItem');
+            $query->join('orderItem.item', 'item');
+            $query->select('SUM(deliveryItem.qty) AS delivered, orderItem.quantity, item.name AS itemName, orderItem.id');
+            $query->groupBy('deliveryItem.orderItem');
+            $query->having('orderItem.quantity > delivered');
+            $query->where("deliveryItem.order = :order")->setParameter('order', $order);
+            $result = $query->getQuery()->getResult();
+            foreach ($result as $row) {
+                $row['orderId'] = $order->getId();
+                $data[] = $row;
+            }
+        }
+
+        return $data;
+    }
 }

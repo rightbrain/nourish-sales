@@ -54,12 +54,18 @@ var Delivery = function()
     {
         var isFormValid = true;
 
-        $('#orderItems').find('tr').each(function(index, e){
+        $('.orderItems').find('tr').each(function(index, e){
             var elm = $(e);
-            var qty = elm.find('td:eq(2)').text();
-            var deliver = elm.find('td:eq(3)');
+            var qty = elm.find('.item-qty').text();
+            var deliver = elm.find('.deliver');
+            var check = elm.find('[type=checkbox]');
 
             deliver.removeClass('has-error');
+
+            if (check.length == 1 && check.is(':checked')) {
+                return;
+            }
+
             if (deliver.find('input').val() == '') {
                 deliver.addClass('has-error');
                 isFormValid = false;
@@ -78,12 +84,17 @@ var Delivery = function()
 
     function orderItemRemainingHandle()
     {
-        $('#orderItems').find('.deliver-qty').blur(function(){
+        $('.orderItems').find('.deliver-qty').blur(function(){
             var elm = $(this).parents('tr');
 
-            var qty = parseInt(elm.find('td:eq(2)').text());
-            var deliveryQtq = parseInt(elm.find('td:eq(3) input').val());
-            var remain = elm.find('td:eq(4)');
+            var qty = parseInt(elm.find('.item-qty').text());
+            var deliveryQtq = parseInt($(this).val());
+            var remain = elm.find('.remain');
+            var check = elm.find('[type=checkbox]');
+
+            if (check.length && !check.is(':checked')) {
+                return;
+            }
 
             if (deliveryQtq !== 0 && (!deliveryQtq || (qty - deliveryQtq) < 0)) { // Invalid value
                 remain.text(qty);
@@ -98,17 +109,62 @@ var Delivery = function()
 
     function orderProcessHandle()
     {
+        var container = $('#process-actions');
+        /*var inBtn = container.find('td:eq(0) button');
+        var startBtn = container.find('td:eq(1) button');
+        var finishBtn = container.find('td:eq(2) button');
+        var outBtn = container.find('td:eq(3) button');*/
+        var loadingDiv = $('.modal-body').find('.portlet');
 
+        container.find('button').on('click', function(){
+            var that = $(this);
+            bootbox.confirm('Are you sure?', function(result) {
+                if (result) {
+
+                    Metronic.blockUI({
+                        target: loadingDiv,
+                        animate: true,
+                        overlayColor: 'black'
+                    });
+
+                    $.get(that.attr('data-route'), function(){
+
+                        that.closest('td').text(moment().format('h:mm a'));
+                        var nextBtn = container.find('td button:eq(0)');
+                        if (nextBtn) {
+                            nextBtn.attr('disabled', false);
+                        } else {
+                            $('#save-delivery').attr('disabled', false);
+                        }
+
+                        Metronic.unblockUI(loadingDiv);
+
+                    }, 'json').fail(function() {
+                        Metronic.unblockUI(loadingDiv);
+                        toastr.error('Server error');
+                    });
+                }
+            });
+        });
     }
 
     function saveDelivery()
     {
         $('#deliveryView').on('shown.bs.modal', function (){
             orderItemRemainingHandle();
+            orderProcessHandle();
         });
 
         $('body').on('click', '#save-delivery', function(){
-            console.log(formValidateInit());
+            if (formValidateInit()) {
+                $.post('/delivery/2/save', $('#delivery-item-form').serialize())
+                    .done(function(){
+
+                    })
+                    .fail(function(){
+
+                    });
+            }
         });
     }
 
