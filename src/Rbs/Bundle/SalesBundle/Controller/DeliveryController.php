@@ -9,6 +9,7 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -25,6 +26,24 @@ class DeliveryController extends BaseController
      */
     public function indexAction(Request $request)
     {
+        $client = new \GuzzleHttp\Client();
+        try {
+            $res = $client->request('GET', 'http://192.168.1.10/rest-server/data.xml', [
+                'auth' => ['rest', 'client']
+            ]);
+
+            $html = $res->getBody()->getContents();
+
+            $xml = simplexml_load_string($html);
+            foreach ($xml->SMS as $sms) {
+
+            }
+
+        } catch(\GuzzleHttp\Exception\ClientException $e) {
+            var_dump($e->getCode());
+        }
+
+        exit;
         $datatable = $this->get('rbs_erp.sales.datatable.delivery');
         $datatable->buildDatatable();
 

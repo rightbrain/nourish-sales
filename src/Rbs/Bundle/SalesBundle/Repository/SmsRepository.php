@@ -20,4 +20,18 @@ class SmsRepository extends EntityRepository
         $this->_em->persist($sms);
         $this->_em->flush();
     }
+
+    public function prepareXmlToObject($xml)
+    {
+        $sms = new Sms();
+        $sms
+            ->setSl($xml['SL'])
+            ->setMobileNo($xml['MOBILENO'])
+            ->setDate(new \DateTime($xml['INTIME']))
+            ->setMsg($xml['MSG'])
+            ->setStatus('NEW')
+        ;
+
+        $this->_em->persist($sms);
+    }
 }

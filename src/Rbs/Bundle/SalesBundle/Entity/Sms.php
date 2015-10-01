@@ -82,7 +82,7 @@ class Sms
     /**
      * @var string
      *
-     * @ORM\Column(name="remarks", type="text")
+     * @ORM\Column(name="remarks", type="text", nullable=true)
      */
     private $remark;
 
@@ -147,6 +147,8 @@ class Sms
     public function setDate($date)
     {
         $this->date = $date;
+
+        return $this;
     }
 
     /**
