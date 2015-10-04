@@ -6,7 +6,6 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
-use Rbs\Bundle\SalesBundle\Form\Type\OrderFromSmsForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -75,8 +74,9 @@ class OrderController extends BaseController
             if ($form->isValid()) {
 
                 $em = $this->getDoctrine()->getManager();
-                $em->getRepository('RbsSalesBundle:Order')->create($order);
+                $this->orderRepository()->create($order);
                 $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order);
+                $this->deliveryRepository()->createDelivery($order);
 
                 $this->flashMessage('success', 'Order Add Successfully!');
 
@@ -377,8 +377,6 @@ class OrderController extends BaseController
         ) {
             $order->setDeliveryState(Order::DELIVERY_STATE_READY);
             $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
-
-            $this->deliveryRepository()->prepareDeliveryOnVerifyOrder($order);
 
             $this->dispatchApproveProcessEvent('order.verified', $order);
 

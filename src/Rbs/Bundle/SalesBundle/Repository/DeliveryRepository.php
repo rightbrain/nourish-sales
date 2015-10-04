@@ -16,12 +16,12 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
  */
 class DeliveryRepository extends EntityRepository
 {
-    public function prepareDeliveryOnVerifyOrder(Order $order)
+    public function createDelivery(Order $order)
     {
         $delivery = $this->findOneBy(array('order' => $order));
         if (!$delivery) {
             $delivery = new Delivery();
-            $delivery->setOrder($order);
+            $delivery->setOrderRef($order);
             $delivery->setWarehouse($order->getCustomer()->getWarehouse());
             $this->_em->persist($delivery);
             $this->_em->flush();
