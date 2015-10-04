@@ -86,8 +86,6 @@ class DeliveryController extends BaseController
             $order->setDeliveryState(Order::DELIVERY_STATE_READY);
             $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
-            $this->deliveryRepository()->prepareDeliveryOnVerifyOrder($order);
-
             $this->dispatchApproveProcessEvent('order.verified', $order);
 
             $this->flashMessage('success', 'Order Verified Successfully and Ready for Delivery');
@@ -195,6 +193,7 @@ class DeliveryController extends BaseController
         $data = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->save($delivery, $this->get('request')->request->all());
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStockFromOnHold($delivery);
 
         $this->flashMessage('success', 'Order #' . $delivery->getOrderRef()->getId() . ' ' . $delivery->getOrderRef()->getDeliveryState() . ' Successfully');
 

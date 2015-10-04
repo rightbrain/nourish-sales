@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\CoreBundle\Entity\Item;
+use Rbs\Bundle\CoreBundle\Entity\Warehouse;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
@@ -33,10 +34,18 @@ class Stock
     /**
      * @var Item
      *
-     * @ORM\OneToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item")
-     * @ORM\JoinColumn(name="item", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item")
+     * @ORM\JoinColumn(name="item_id", nullable=false)
      */
     private $item;
+
+    /**
+     * @var Warehouse
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Warehouse")
+     * @ORM\JoinColumn(name="warehouse_id", nullable=false)
+     */
+    private $warehouse;
 
     /**
      * @var ArrayCollection
@@ -163,6 +172,26 @@ class Stock
     public function getStockHistories()
     {
         return $this->stockHistories;
+    }
+
+    /**
+     * @return Warehouse
+     */
+    public function getWarehouse()
+    {
+        return $this->warehouse;
+    }
+
+    /**
+     * @param Warehouse $warehouse
+     *
+     * @return Stock
+     */
+    public function setWarehouse($warehouse)
+    {
+        $this->warehouse = $warehouse;
+
+        return $this;
     }
 
     /**

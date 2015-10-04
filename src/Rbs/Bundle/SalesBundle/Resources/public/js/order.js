@@ -84,7 +84,7 @@ var Order = function()
         $.ajax({
             type: "post",
             url: Routing.generate('find_stock_item_ajax'),
-            data: "item=" + item,
+            data: "item=" + item + "&customer=" + $('#order_customer').val(),
             dataType: 'json',
             success: function (response) {
                 var onHand = response.onHand;
@@ -126,7 +126,7 @@ var Order = function()
 
     function setOrderItemValue(index, onHand, onHold, availableOnDemand, price, itemUnit, itemQty){
         var row = $('#order-item-'+index);
-        console.log(row);
+
         var stockAvailableInfo = 'Available On Demand';
 
         if (!availableOnDemand) {

@@ -130,7 +130,7 @@ class OrderRepository extends EntityRepository
 
         /** @var Order $order */
         foreach ($orders as $order) {
-            var_dump((int)$deliveryItemRepo->getTotalDeliveryItemByOrder($order), (int)$orderItemRepo->getTotalOrderItemByOrder($order));
+
             if ((int)$deliveryItemRepo->getTotalDeliveryItemByOrder($order) < (int)$orderItemRepo->getTotalOrderItemByOrder($order)) {
                 $order->setDeliveryState(Order::DELIVERY_STATE_PARTIALLY_SHIPPED);
             } else {

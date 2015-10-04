@@ -98,7 +98,7 @@ class Delivery
     /**
      * @var DeliveryItem
      *
-     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\DeliveryItem", mappedBy="delivery")
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\DeliveryItem", mappedBy="delivery")
      **/
     private $deliveryItems;
 
@@ -321,4 +321,23 @@ class Delivery
         return $this;
     }
 
+    /**
+     * @return DeliveryItem
+     */
+    public function getDeliveryItems()
+    {
+        return $this->deliveryItems;
+    }
+
+    /**
+     * @param DeliveryItem $deliveryItems
+     *
+     * @return Delivery
+     */
+    public function setDeliveryItems($deliveryItems)
+    {
+        $this->deliveryItems = $deliveryItems;
+
+        return $this;
+    }
 }

@@ -40,7 +40,15 @@ class StockController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                return $this->save($request, $form, $stockHistory);
+
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')
+                    ->save($request, $form, $stockHistory);
+
+                $this->get('session')->getFlashBag()->add(
+                    'success', 'Stock Item Quantity Add Successfully!'
+                );
+
+                return $this->redirect($this->generateUrl('stocks_home'));
             }
         }
 
@@ -85,9 +93,11 @@ class StockController extends Controller
     public function findItemAction(Request $request)
     {
         $item = $request->request->get('item');
+        $customer = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->find($request->request->get('customer'));
 
         $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(array(
-            'item' => $item
+            'item' => $item,
+            'warehouse' => $customer->getWarehouse()->getId()
         ));
 
         $response = array(
@@ -189,32 +199,5 @@ class StockController extends Controller
             $available = 1;
             return $available;
         }
-    }
-
-    /**
-     * @param Request $request
-     * @param $form
-     * @param $stockHistory
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_STOCK_CREATE")
-     */
-    protected function save(Request $request, $form, $stockHistory)
-    {
-        $stockID = (int)$request->request->all()['stock']['stockID'];
-        $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->find($stockID);
-        $quantity = $form->getData()->getQuantity();
-        $quantity = $stock->getOnHand() + $quantity;
-        $stock->setOnHand($quantity);
-        $stockHistory->setStock($stock);
-
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
-        $this->getDoctrine()->getRepository('RbsSalesBundle:StockHistory')->create($stockHistory);
-        $this->checkAvailableOnDemand($stock);
-
-        $this->get('session')->getFlashBag()->add(
-            'success', 'Stock Item Quantity Add Successfully!'
-        );
-        return $this->redirect($this->generateUrl('stocks_home'));
-        // if not user redirect url it take value again and again
     }
 }

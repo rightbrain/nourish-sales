@@ -68,5 +68,11 @@ services:
     rbs_erp.sales.stock_create.listener:
         class: Rbs\Bundle\SalesBundle\EventListener\StockCreateListener
         tags:
-            - { name: kernel.event_listener, event: core.item.created, method: onCreated }
+            - { name: kernel.event_listener, event: core.item.created, method: onItemCreated }
+        arguments: [@doctrine.orm.entity_manager]
+
+    rbs_erp.sales.warehouse_create.listener:
+        class: Rbs\Bundle\SalesBundle\EventListener\StockCreateListener
+        tags:
+            - { name: kernel.event_listener, event: core.warehouse.created, method: onWarehouseCreated }
         arguments: [@doctrine.orm.entity_manager]

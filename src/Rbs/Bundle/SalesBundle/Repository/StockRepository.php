@@ -3,9 +3,15 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\CoreBundle\Entity\Warehouse;
+use Rbs\Bundle\SalesBundle\Entity\Delivery;
+use Rbs\Bundle\SalesBundle\Entity\DeliveryItem;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Stock;
+use Rbs\Bundle\SalesBundle\Entity\StockHistory;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Form\Form;
 
 /**
  * StockRepository
@@ -39,13 +45,36 @@ class StockRepository extends EntityRepository
         return $this->_em;
     }
 
-    public function addStockToOnHold(Order $order)
+    public function addStockToOnHold(Order $order, Warehouse $warehouse)
     {
         /** @var OrderItem $orderItem */
         foreach ($order->getOrderItems() as $orderItem) {
             /** @var Stock $stock */
-            $stock = $this->findOneBy(array('item' => $orderItem->getItem()->getId()));
+            $stock = $this->findOneBy(
+                array(
+                    'item' => $orderItem->getItem()->getId(),
+                    'warehouse' => $warehouse->getId(),
+                )
+            );
             $stock->setOnHold($stock->getOnHold() + $orderItem->getQuantity());
+            $this->_em->persist($stock);
+            $this->_em->flush();
+        }
+    }
+
+    public function removeStockFromOnHold(Delivery $delivery)
+    {
+        /** @var DeliveryItem $deliveryItem */
+        foreach ($delivery->getDeliveryItems() as $deliveryItem) {
+            /** @var Stock $stock */
+            $stock = $this->findOneBy(
+                array(
+                    'item' => $deliveryItem->getOrderItem()->getItem()->getId(),
+                    'warehouse' => $delivery->getWarehouse()->getId(),
+                )
+            );
+            $stockQty = $stock->getOnHold() - $deliveryItem->getQty();
+            $stock->setOnHold($stockQty); // $stockQty > 0 ? $stockQty : 0
             $this->_em->persist($stock);
             $this->_em->flush();
         }
@@ -71,4 +100,21 @@ class StockRepository extends EntityRepository
 
         return $data;
     }
+
+    public function save(Request $request,Form $form, StockHistory $stockHistory)
+    {
+        $stockRepo = $this->_em->getRepository('RbsSalesBundle:Stock');
+        $stockID = (int)$request->request->all()['stock']['stockID'];
+        $stock = $stockRepo->find($stockID);
+
+        $quantity = $form->getData()->getQuantity();
+        $quantity = $stock->getOnHand() + $quantity;
+
+        $stock->setOnHand($quantity);
+        $stockHistory->setStock($stock);
+
+        $stockRepo->update($stock);
+        $this->create($stockHistory);
+    }
+
 }

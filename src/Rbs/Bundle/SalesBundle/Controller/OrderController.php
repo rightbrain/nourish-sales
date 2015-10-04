@@ -75,8 +75,9 @@ class OrderController extends BaseController
 
                 $em = $this->getDoctrine()->getManager();
                 $this->orderRepository()->create($order);
-                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order);
-                $this->deliveryRepository()->createDelivery($order);
+                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getWarehouse());
+
+                $this->deliveryRepository()->createDelivery($order, $order->getCustomer()->getWarehouse());
 
                 $this->flashMessage('success', 'Order Add Successfully!');
 

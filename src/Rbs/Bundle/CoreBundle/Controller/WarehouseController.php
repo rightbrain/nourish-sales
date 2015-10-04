@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\CoreBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Event\WarehouseEvent;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -75,7 +76,11 @@ class WarehouseController extends BaseController
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
+
+            $this->dispatch('core.warehouse.created', new WarehouseEvent($entity));
+
             $this->flashMessage('success', 'Warehouse Created Successfully');
+
             return $this->redirect($this->generateUrl('warehouse'));
         }
 

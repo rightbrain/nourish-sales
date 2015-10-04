@@ -76,7 +76,7 @@ class DeliveryItem
     }
 
     /**
-     * @return mixed
+     * @return OrderItem
      */
     public function getOrderItem()
     {
