@@ -137,6 +137,7 @@ class OrderRepository extends EntityRepository
                 $order->setDeliveryState(Order::DELIVERY_STATE_SHIPPED);
             }
 
+            $order->setOrderState(Order::ORDER_STATE_COMPLETE);
             $this->_em->persist($order);
         }
 
