@@ -5,6 +5,7 @@ namespace Rbs\Bundle\SalesBundle\Repository;
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
+use Rbs\Bundle\SalesBundle\Entity\Payment;
 
 /**
  * OrderRepository
@@ -97,8 +98,10 @@ class OrderRepository extends EntityRepository
 
     public function orderAmountAdjust($payments)
     {
+        /** @var Payment $payments */
         $amount = $payments->getAmount();
 
+        /** @var Order $order */
         foreach($payments->getOrders() as $order){
             $dueAmount = $order->getDueAmount();
             if($amount != 0 and $dueAmount != 0){
@@ -120,5 +123,23 @@ class OrderRepository extends EntityRepository
         }
     }
 
+    public function updateDeliveryState($orders)
+    {
+        $orderItemRepo = $this->_em->getRepository('RbsSalesBundle:OrderItem');
+        $deliveryItemRepo = $this->_em->getRepository('RbsSalesBundle:DeliveryItem');
 
+        /** @var Order $order */
+        foreach ($orders as $order) {
+            var_dump((int)$deliveryItemRepo->getTotalDeliveryItemByOrder($order), (int)$orderItemRepo->getTotalOrderItemByOrder($order));
+            if ((int)$deliveryItemRepo->getTotalDeliveryItemByOrder($order) < (int)$orderItemRepo->getTotalOrderItemByOrder($order)) {
+                $order->setDeliveryState(Order::DELIVERY_STATE_PARTIALLY_SHIPPED);
+            } else {
+                $order->setDeliveryState(Order::DELIVERY_STATE_SHIPPED);
+            }
+
+            $this->_em->persist($order);
+        }
+
+        $this->_em->flush();
+    }
 }

@@ -60,7 +60,7 @@ class DeliveryController extends BaseController
         $function = function($qb) use ($dateFilter)
         {
             $qb->andWhere('orderRef.deliveryState IN (:deliveryState)')
-                ->setParameter('deliveryState', array(Order::DELIVERY_STATE_READY, Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
+                ->setParameter('deliveryState', array(Order::DELIVERY_STATE_READY));
             if ($dateFilter) {
                 $qb->andWhere('orderRef.createdAt BETWEEN :fromDate AND :toDate')
                     ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($dateFilter)))
@@ -190,7 +190,13 @@ class DeliveryController extends BaseController
      */
     public function saveAction(Delivery $delivery)
     {
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->save($delivery, $this->get('request')->request->all());
+        /** TODO: Service Side Stock Check */
+
+        $data = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->save($delivery, $this->get('request')->request->all());
+
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
+
+        $this->flashMessage('success', 'Order #' . $delivery->getOrderRef()->getId() . ' ' . $delivery->getOrderRef()->getDeliveryState() . ' Successfully');
 
         return new Response();
     }

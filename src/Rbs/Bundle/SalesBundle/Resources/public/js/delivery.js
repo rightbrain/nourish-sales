@@ -62,7 +62,7 @@ var Delivery = function()
 
             deliver.removeClass('has-error');
 
-            if (check.length == 1 && check.is(':checked')) {
+            if (check.length && !check.is(':checked')) {
                 return;
             }
 
@@ -107,13 +107,9 @@ var Delivery = function()
         }).blur();
     }
 
-    function orderProcessHandle()
+    function orderProgressHandle()
     {
         var container = $('#process-actions');
-        /*var inBtn = container.find('td:eq(0) button');
-        var startBtn = container.find('td:eq(1) button');
-        var finishBtn = container.find('td:eq(2) button');
-        var outBtn = container.find('td:eq(3) button');*/
         var loadingDiv = $('.modal-body').find('.portlet');
 
         container.find('button').on('click', function(){
@@ -133,7 +129,9 @@ var Delivery = function()
                         var nextBtn = container.find('td button:eq(0)');
                         if (nextBtn) {
                             nextBtn.attr('disabled', false);
-                        } else {
+                        }
+
+                        if (that.attr('data-action') == 'finish-loading') {
                             $('#save-delivery').attr('disabled', false);
                         }
 
@@ -152,17 +150,25 @@ var Delivery = function()
     {
         $('#deliveryView').on('shown.bs.modal', function (){
             orderItemRemainingHandle();
-            orderProcessHandle();
+            orderProgressHandle();
         });
 
         $('body').on('click', '#save-delivery', function(){
+            var loadingDiv = $('.modal-body').find('.portlet');
             if (formValidateInit()) {
-                $.post('/delivery/2/save', $('#delivery-item-form').serialize())
+                Metronic.blockUI({
+                    target: loadingDiv,
+                    animate: true,
+                    overlayColor: 'black'
+                });
+                $.post(Routing.generate('delivery_save', {id:$('#delivery-id').val()}), $('#delivery-item-form').serialize())
                     .done(function(){
-
+                        toastr.success('Order Delivery Saved Successfully. Please wait while page reload.');
+                        location.reload();
                     })
                     .fail(function(){
-
+                        toastr.error('Server error. Contact with System Admin');
+                        Metronic.unblockUI(loadingDiv);
                     });
             }
         });
@@ -170,7 +176,6 @@ var Delivery = function()
 
     function init()
     {
-        orderProcessHandle();
         saveDelivery();
     }
 

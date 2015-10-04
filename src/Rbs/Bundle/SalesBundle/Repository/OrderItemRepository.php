@@ -58,4 +58,15 @@ class OrderItemRepository extends EntityRepository
             $this->update($orderItem);
         }
     }
+
+    public function getTotalOrderItemByOrder(Order $order)
+    {
+        $query = $this->createQueryBuilder('o');
+        $query
+            ->select('SUM(o.quantity) AS totalQuantity')
+            ->where('o.order = :order')
+            ->setParameter('order', $order);
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
 }

@@ -30,6 +30,7 @@ class DeliveryRepository extends EntityRepository
 
     public function save($delivery, $data)
     {
+        $output = array('orders' => array());
         foreach ($data['qty'] as $orderId => $deliveryItems) {
             foreach ($deliveryItems as $itemId => $qty) {
                 $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
@@ -42,11 +43,38 @@ class DeliveryRepository extends EntityRepository
                 $deliveryItem->setQty($qty);
 
                 $this->_em->persist($deliveryItem);
+
+                $output['orders'][$order->getId()] = $order;
+            }
+        }
+
+        if (!empty($data['checked-items'])) {
+            $previousItems = $data['previous-items'];
+            foreach ($data['checked-items'] as $orderId => $deliveryItems) {
+                foreach ($deliveryItems as $itemId => $qty) {
+
+                    if (!array_key_exists($itemId, $previousItems[$orderId])) {
+                        continue;
+                    }
+
+                    $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
+                    $item = $this->_em->getRepository('RbsSalesBundle:OrderItem')->find($itemId);
+
+                    $deliveryItem = new DeliveryItem();
+                    $deliveryItem->setOrder($order);
+                    $deliveryItem->setDelivery($delivery);
+                    $deliveryItem->setOrderItem($item);
+                    $deliveryItem->setQty($previousItems[$orderId][$itemId]);
+
+                    $this->_em->persist($deliveryItem);
+
+                    $output['orders'][$order->getId()] = $order;
+                }
             }
         }
 
         $this->_em->flush();
+
+        return $output;
     }
-
-
 }
