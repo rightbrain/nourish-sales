@@ -27,7 +27,7 @@ class CustomerUpdateForm extends AbstractType
             ))
             ->add('customerID')
             ->add('creditLimit')
-            ->add('balance')
+            ->add('openingBalance')
             ->add('agent', 'entity', array(
                 'class' => 'RbsUserBundle:User',
                 'property' => 'username',

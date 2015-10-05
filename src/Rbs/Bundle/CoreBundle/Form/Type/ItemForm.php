@@ -19,7 +19,7 @@ class ItemForm extends AbstractType
                 'choices' => array('Disable', 'Enable'),
             ))
             ->add('name')
-            ->add('SKU')
+            ->add('sku')
             ->add('itemUnit')
             ->add('price')
             ->add('itemType', null, array(

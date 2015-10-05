@@ -2,6 +2,8 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
+use Rbs\Bundle\SalesBundle\Entity\Sms;
+use Rbs\Bundle\SalesBundle\Helper\SmsParse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
