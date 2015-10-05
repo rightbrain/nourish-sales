@@ -15,7 +15,6 @@
                     <th class="numeric">Date</th>
                     <th class="numeric">Added By</th>
                     <th class="numeric">Factory Name</th>
-                    <th class="numeric">Warehouse</th>
                     <th class="numeric">Quantity</th>
                     <th class="numeric">Description</th>
                 </tr>
@@ -27,7 +26,6 @@
                         <td class="numeric">{{ stockHistory.createdAt | date('d-m-Y') }}</td>
                         <td class="numeric">{{ stockHistory.createdBy }}</td>
                         <td class="numeric">{{ stockHistory.fromFactory.projectName }}</td>
-                        <td class="numeric">{{ stockHistory.toWarehouse.name }}</td>
                         <td class="numeric">{{ stockHistory.quantity }}</td>
                         <td class="numeric">{{ stockHistory.description | default('') }}</td>
                     </tr>
