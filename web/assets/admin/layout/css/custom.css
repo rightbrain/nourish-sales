@@ -114,6 +114,10 @@ Change Quick Sidebar Width
     text-align: right;
 }
 
+.dataTables_scrollBody{
+    overflow: visible !important;
+}
+
 .dataTables_scrollBody .error{
     color: red;
 }
