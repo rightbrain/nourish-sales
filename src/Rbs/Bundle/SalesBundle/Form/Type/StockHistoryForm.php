@@ -55,7 +55,7 @@ class StockHistoryForm extends AbstractType
                     return $repository->createQueryBuilder('w')
                         ->where('w.deletedAt IS NULL')
                         ->orderBy('w.name','ASC');
-                }
+                },
             ))
             ->add('description')
             ->add('submit', 'submit', array(

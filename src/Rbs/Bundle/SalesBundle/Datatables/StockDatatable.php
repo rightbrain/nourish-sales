@@ -53,7 +53,8 @@ class StockDatatable extends BaseDatatable
                     array(
                         'route' => 'stock_create',
                         'route_parameters' => array(
-                            'id' => 'id'
+                            'id' => 'id',
+                            'warehouseId' => 'warehouse.id'
                         ),
                         'label' => 'Add Stock',
                         'icon' => 'glyphicon glyphicon-edit',
