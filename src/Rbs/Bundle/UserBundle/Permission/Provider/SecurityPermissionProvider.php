@@ -8,7 +8,7 @@ class SecurityPermissionProvider implements ProviderInterface
     {
         return array(
             'USER' => array(
-                'ROLE_USER_VIEW', 'ROLE_USER_CREATE'
+                'ROLE_USER_VIEW', 'ROLE_USER_CREATE', 'ROLE_ADMIN'
             ),
 
             'GROUP' => array(
