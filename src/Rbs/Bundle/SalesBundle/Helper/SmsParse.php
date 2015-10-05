@@ -112,6 +112,7 @@ class SmsParse
             $this->order->setPayments($payments);
             $this->payment->addOrder($this->order);
             $this->payment->setCustomer($this->customer);
+            $this->em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($this->payment);
         }
 
         $delivery = new Delivery();
