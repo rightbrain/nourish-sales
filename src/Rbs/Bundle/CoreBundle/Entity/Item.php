@@ -90,7 +90,7 @@ class Item
      *
      * @ORM\Column(name="SKU", type="string", length=255)
      */
-    private $SKU;
+    private $sku;
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
@@ -314,17 +314,17 @@ class Item
     /**
      * @return string
      */
-    public function getSKU()
+    public function getSku()
     {
-        return $this->SKU;
+        return $this->sku;
     }
 
     /**
      * @param string $SKU
      */
-    public function setSKU($SKU)
+    public function setSku($SKU)
     {
-        $this->SKU = $SKU;
+        $this->sku = $SKU;
     }
 
     /**

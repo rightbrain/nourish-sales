@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
+use Rbs\Bundle\SalesBundle\Entity\Sms;
 
 /**
  * OrderRepository
@@ -142,5 +143,11 @@ class OrderRepository extends EntityRepository
         }
 
         $this->_em->flush();
+    }
+
+    public function newOrderBySms(Sms $sms)
+    {
+
+
     }
 }
