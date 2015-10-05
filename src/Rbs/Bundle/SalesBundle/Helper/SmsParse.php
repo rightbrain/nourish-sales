@@ -61,8 +61,13 @@ class SmsParse
     protected function validate()
     {
         $msg = $this->sms->getMsg();
+        $splitMsg = array_filter(explode(',', $msg));
 
-        list($customerId, $orderInfo, $bankName, $bankBranch, $amount) = array_filter(explode(',', $msg));
+        $customerId = isset($splitMsg[0]) ? trim($splitMsg[0]) : 0;
+        $orderInfo = isset($splitMsg[1]) ? trim($splitMsg[1]) : '';
+        $bankName = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
+        $bankBranch = isset($splitMsg[3]) ? trim($splitMsg[3]) : '';
+        $amount = isset($splitMsg[4]) ? trim($splitMsg[4]) : '';
 
         $this->setCustomer($customerId);
         $this->setOrderItems($orderInfo);
@@ -74,6 +79,7 @@ class SmsParse
         if ($this->hasError()) {
 
             $this->sms->setStatus('UNREAD');
+            $this->sms->setRemark($this->error);
             $this->em->persist($this->sms);
             $this->em->flush();
 
@@ -116,6 +122,7 @@ class SmsParse
         $this->em->persist($this->order);
         $this->em->persist($delivery);
         $this->em->flush();
+        $this->em->clear();
 
         return array(
             'orderId' => $this->order->getId()
@@ -129,7 +136,6 @@ class SmsParse
 
     protected function setCustomer($customerId)
     {
-        var_dump($customerId);
         $this->customer = $this->em->getRepository('RbsSalesBundle:Customer')->findOneBy(array('customerID' => $customerId));
 
         if (!$this->customer) {
@@ -187,7 +193,7 @@ class SmsParse
             }
 
         } catch (\Exception $e) {
-            $this->setError("Invalid format: ".$e->getMessage());
+            $this->setError("Invalid product:qty format");
         }
     }
 
@@ -197,23 +203,22 @@ class SmsParse
             return;
         }
 
-        $amt = true;
-        if (!preg_match('/^\d+$/', trim($amount))) {
+        if (!empty($amount) && !preg_match('/^\d+$/', trim($amount))) {
             $this->setError('Invalid amount');
             $this->markError($amount);
-            $amt = false;
+            return;
         }
 
-        if ($amt && (empty(trim($bankName)) || empty(trim($bankBranch)))) {
+        if (!empty($amount) && (empty(trim($bankName)) || empty(trim($bankBranch)))) {
             $this->setError('Invalid bank or branch name');
-        } else {
-
-            $this->payment = new Payment();
-            $this->payment->setAmount($amount);
-            $this->payment->setBankName($bankName);
-            $this->payment->setBranchName($bankBranch);
-            $this->payment->setDepositDate(new \DateTime());
+            return;
         }
+
+        $this->payment = new Payment();
+        $this->payment->setAmount($amount);
+        $this->payment->setBankName($bankName);
+        $this->payment->setBranchName($bankBranch);
+        $this->payment->setDepositDate(new \DateTime());
 
     }
 
