@@ -253,7 +253,9 @@ class OrderController extends BaseController
         $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
         /** @var OrderItem $item */
         foreach ($order->getOrderItems() as $item) {
-            $stockItem = $stockRepo->findOneBy(array('item' => $item->getItem()->getId()));
+            $stockItem = $stockRepo->findOneBy(
+                array('item' => $item->getItem()->getId(), 'warehouse' => $order->getCustomer()->getWarehouse()->getId())
+            );
             $item->isAvailable = $stockItem->isStockAvailable($item->getQuantity());
         }
 
