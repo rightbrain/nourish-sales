@@ -123,7 +123,7 @@ class OrderController extends BaseController
                 if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
                     $stockRepo->subtractFromOnHold($oldQty);
                 }
-                $stockRepo->addStockToOnHold($order);
+                $stockRepo->addStockToOnHold($order, $order->getCustomer()->getWarehouse());
                 $em->getRepository('RbsSalesBundle:Order')->update($order, true);
 
                 $this->flashMessage('success', 'Order Update Successfully!');

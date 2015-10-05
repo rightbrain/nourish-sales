@@ -5,6 +5,7 @@ namespace Rbs\Bundle\SalesBundle\Helper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Rbs\Bundle\SalesBundle\Entity\Customer;
+use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
@@ -107,8 +108,13 @@ class SmsParse
             $this->payment->setCustomer($this->customer);
         }
 
+        $delivery = new Delivery();
+        $delivery->setOrderRef($this->order);
+        $delivery->setWarehouse($this->customer->getWarehouse());
+
         $this->em->persist($this->payment);
         $this->em->persist($this->order);
+        $this->em->persist($delivery);
         $this->em->flush();
 
         return array(
