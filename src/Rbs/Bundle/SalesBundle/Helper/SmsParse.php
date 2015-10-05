@@ -214,12 +214,13 @@ class SmsParse
             return;
         }
 
-        $this->payment = new Payment();
-        $this->payment->setAmount($amount);
-        $this->payment->setBankName($bankName);
-        $this->payment->setBranchName($bankBranch);
-        $this->payment->setDepositDate(new \DateTime());
-
+        if (!empty($amount)) {
+            $this->payment = new Payment();
+            $this->payment->setAmount($amount);
+            $this->payment->setBankName($bankName);
+            $this->payment->setBranchName($bankBranch);
+            $this->payment->setDepositDate(new \DateTime());
+        }
     }
 
     function startsWith($haystack, $needle) {
