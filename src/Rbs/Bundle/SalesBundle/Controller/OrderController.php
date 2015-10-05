@@ -146,8 +146,13 @@ class OrderController extends BaseController
      */
     public function detailsAction(Order $order)
     {
+        $deliveryItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->findBy(array(
+            'order' => $order->getId()
+        ));
+
         return $this->render('RbsSalesBundle:Order:details.html.twig', array(
             'order' => $order,
+            'deliveryItems' => $deliveryItems,
         ));
     }
 
