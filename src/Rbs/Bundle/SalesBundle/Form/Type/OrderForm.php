@@ -57,16 +57,17 @@ class OrderForm extends AbstractType
             ));
 
         if ($this->refSms) {
+
             $builder
                 ->add('refSMS', 'entity', array(
                     'class' => 'RbsSalesBundle:Sms',
-                    'property' => 'mobileNo',
+                    'property' => 'mobileNoAndMsg',
                     'query_builder' => function (SmsRepository $repository) use ($refSMS) {
                         $query = $repository->createQueryBuilder('sms')
                             ->where('sms.deletedAt IS NULL')
                             ->andWhere('sms.status = :UNREAD')
                             ->andWhere('sms.order IS NULL')
-                            ->andWhere('sms.mobileNo = :refSms')
+                            ->andWhere('sms.id = :refSms')
                             ->setParameter('refSms', $this->refSms)
                             ->setParameter('UNREAD', 'UNREAD')
                             ->orderBy('sms.id', 'DESC');
@@ -80,7 +81,7 @@ class OrderForm extends AbstractType
             $builder
                 ->add('refSMS', 'entity', array(
                     'class' => 'RbsSalesBundle:Sms',
-                    'property' => 'mobileNo',
+                    'property' => 'mobileNoAndMsg',
                     'required' => false,
                     'empty_value' => 'Select SMS',
                     'empty_data' => null,

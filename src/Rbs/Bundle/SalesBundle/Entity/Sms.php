@@ -247,4 +247,9 @@ class Sms
         return $this;
     }
 
+    public function getMobileNoAndMsg()
+    {
+        return $this->mobileNo . ": " . strip_tags($this->msg);
+    }
+
 }

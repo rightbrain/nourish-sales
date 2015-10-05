@@ -113,3 +113,7 @@ Change Quick Sidebar Width
 #order_datatable tbody tr td:nth-child(7), #order_datatable tbody tr td:nth-child(8){
     text-align: right;
 }
+
+.dataTables_scrollBody .error{
+    color: red;
+}

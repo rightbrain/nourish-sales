@@ -62,9 +62,11 @@ class OrderController extends BaseController
     {
         $order = new Order();
 
-        if($request->query->get('mobileNo')){
-            $refSms = $request->query->get('mobileNo');
-        }else{ $refSms = 0; }
+        if ($request->query->get('sms')) {
+            $refSms = $request->query->get('sms');
+        } else {
+            $refSms = 0;
+        }
 
         $form = $this->createForm(new OrderForm($refSms), $order);
 
@@ -164,7 +166,7 @@ class OrderController extends BaseController
         }
 
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getWarehouse());
         }
 
         $order->setOrderState(Order::ORDER_STATE_PROCESSING);
@@ -227,7 +229,7 @@ class OrderController extends BaseController
         }
 
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getWarehouse());
         }
 
         $order->setOrderState(Order::ORDER_STATE_HOLD);
