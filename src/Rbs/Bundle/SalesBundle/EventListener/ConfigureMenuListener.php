@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\EventListener;
 use Knp\Menu\MenuItem;
 use Rbs\Bundle\CoreBundle\Event\ConfigureMenuEvent;
 use Rbs\Bundle\CoreBundle\EventListener\ContextAwareListener;
+use Rbs\Bundle\UserBundle\Entity\User;
 
 class ConfigureMenuListener extends ContextAwareListener
 {
@@ -20,7 +21,10 @@ class ConfigureMenuListener extends ContextAwareListener
             ->setAttribute('icon', 'fa fa-bar-chart-o')
             ->setLinkAttribute('data-hover', 'dropdown');
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))
+            || $this->user->getUserType() == User::CUSTOMER
+            || $this->user->getUserType() == User::AGENT
+        ) {
             $menu['Sales']->addChild('Orders', array('route' => 'orders_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('order')) {
@@ -42,7 +46,9 @@ class ConfigureMenuListener extends ContextAwareListener
                 $menu['Sales']->getChild('Stocks')->setCurrent(true);
             }
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_APPROVE', 'ROLE_PAYMENT_OVER_CREDIT_APPROVE'))) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_APPROVE', 'ROLE_PAYMENT_OVER_CREDIT_APPROVE'))
+            || $this->user->getUserType() == User::CUSTOMER
+        ) {
             $menu['Sales']->addChild('Payments', array('route' => 'payments_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('payment')) {

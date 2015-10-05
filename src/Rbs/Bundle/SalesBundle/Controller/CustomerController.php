@@ -81,6 +81,8 @@ class CustomerController extends BaseController
             if ($form->isValid()) {
 
                 $customer->getUser()->setEnabled(1);
+                $customer->getUser()->addRole('ROLE_PAYMENT_VIEW');
+                $customer->getUser()->addRole('ROLE_ORDER_VIEW');
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->create($customer);
 
                 $this->get('session')->getFlashBag()->add(

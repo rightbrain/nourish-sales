@@ -102,8 +102,8 @@ class OrderController extends BaseController
      */
     public function updateAction(Request $request, Order $order)
     {
-        if($request->query->get('mobileNo')){
-            $refSms = $request->query->get('mobileNo');
+        if($request->query->get('sms')){
+            $refSms = $request->query->get('sms');
         }else{ $refSms = 0; }
 
         $form = $this->createForm(new OrderForm($refSms), $order);
