@@ -14,9 +14,6 @@ class ConfigureMenuListener extends ContextAwareListener
      */
     public function onMenuConfigureMain(ConfigureMenuEvent $event)
     {
-        $isCustomer = $this->user->getUserType() == User::CUSTOMER;
-        $isAgent = $this->user->getUserType() == User::AGENT;
-
         /** @var MenuItem $menu */
         $menu = $event->getMenu();
         $menu->addChild('Sales', array('route' => ''))
@@ -24,10 +21,7 @@ class ConfigureMenuListener extends ContextAwareListener
             ->setAttribute('icon', 'fa fa-bar-chart-o')
             ->setLinkAttribute('data-hover', 'dropdown');
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))
-            || $isCustomer
-            || $isAgent
-        ) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_CUSTOMER', 'ROLE_AGENT', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
             $menu['Sales']->addChild('Orders', array('route' => 'orders_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('order')) {
@@ -43,15 +37,15 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
+        if ($this->authorizationChecker->isGranted(array('ROLE_STOCK_VIEW', 'ROLE_STOCK_CREATE'))) {
             $menu['Sales']->addChild('Stocks', array('route' => 'stocks_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('stock')) {
                 $menu['Sales']->getChild('Stocks')->setCurrent(true);
             }
+        }
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_APPROVE', 'ROLE_PAYMENT_OVER_CREDIT_APPROVE'))
-            || $isCustomer
-        ) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_CUSTOMER', 'ROLE_ORDER_VIEW', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_APPROVE', 'ROLE_PAYMENT_OVER_CREDIT_APPROVE'))) {
             $menu['Sales']->addChild('Payments', array('route' => 'payments_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('payment')) {
@@ -59,11 +53,13 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-        $menu['Sales']->addChild('Customers', array('route' => 'customers_home'))
-            ->setAttribute('icon', 'fa fa-th-list');
+        if ($this->authorizationChecker->isGranted(array('ROLE_AGENT', 'ROLE_CUSTOMER_VIEW', 'ROLE_CUSTOMER_CREATE'))) {
+            $menu['Sales']->addChild('Customers', array('route' => 'customers_home'))
+                ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('customer')) {
                 $menu['Sales']->getChild('Customers')->setCurrent(true);
             }
+        }
 
         return $menu;
     }

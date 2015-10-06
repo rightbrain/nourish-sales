@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\SecurityExtraBundle\Annotation as JMS;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Customer Controller.
@@ -24,7 +25,7 @@ class CustomerController extends BaseController
      * @Route("/customers", name="customers_home")
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
      */
     public function indexAction()
     {
@@ -43,7 +44,7 @@ class CustomerController extends BaseController
      *
      * @Route("/customers_list_ajax", name="customers_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
      */
     public function listAjaxAction()
     {
@@ -57,6 +58,11 @@ class CustomerController extends BaseController
             $qb->andWhere("customers.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
+
+        if ($this->isGranted('ROLE_AGENT')) {
+            $query->getQuery()->andWhere('customers.agent = :agent')->setParameter('agent', $this->getUser());
+        }
+
         return $query->getResponse();
     }
 
@@ -81,8 +87,7 @@ class CustomerController extends BaseController
             if ($form->isValid()) {
 
                 $customer->getUser()->setEnabled(1);
-                $customer->getUser()->addRole('ROLE_PAYMENT_VIEW');
-                $customer->getUser()->addRole('ROLE_ORDER_VIEW');
+                $customer->getUser()->addRole('ROLE_CUSTOMER');
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->create($customer);
 
                 $this->get('session')->getFlashBag()->add(
@@ -174,13 +179,25 @@ class CustomerController extends BaseController
      * @Template()
      * @param Customer $customer
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
      */
     public function detailsAction(Customer $customer)
     {
+        $this->checkViewDetailAccess($customer);
+
         return $this->render('RbsSalesBundle:Customer:details.html.twig', array(
             'customer' => $customer
         ));
+    }
+
+    protected function checkViewDetailAccess(Customer $customer)
+    {
+        if ($this->isGranted('ROLE_AGENT')) {
+
+            if ($customer->getAgent() != $this->getUser()) {
+                throw new AccessDeniedException('Access Denied');
+            }
+        }
     }
 
     /**

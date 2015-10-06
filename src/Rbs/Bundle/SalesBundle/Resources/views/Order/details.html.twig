@@ -17,7 +17,7 @@
 
                     <p>Order Number : {{ order.id }}</p>
                     <p>Customer Name : {{ order.customer.user.username }}</p>
-                    <p>Created By : {{ order.createdBy.username }}</p>
+                    <p>Created By : {{ order.createdBy.username|default('') }}</p>
                     <p>Order Amount : {{ order.totalAmount }}</p>
                     <p>Remarks : {{ order.remark }}</p>
 

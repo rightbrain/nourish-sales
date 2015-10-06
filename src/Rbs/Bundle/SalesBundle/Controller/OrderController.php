@@ -13,6 +13,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation as JMS;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Order Controller.
@@ -24,7 +25,7 @@ class OrderController extends BaseController
      * @Route("/orders", name="orders_home")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_CUSTOMER, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function indexAction(Request $request)
     {
@@ -41,7 +42,7 @@ class OrderController extends BaseController
      *
      * @Route("/orders_list_ajax", name="orders_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_CUSTOMER, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function listAjaxAction()
     {
@@ -162,13 +163,32 @@ class OrderController extends BaseController
      * @Route("/order/details/{id}", name="order_details", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_CUSTOMER, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function detailsAction(Order $order)
     {
+        $this->checkViewOrderAccess($order);
+
         return $this->render('RbsSalesBundle:Order:details.html.twig', array(
             'order' => $order,
         ));
+    }
+
+    protected function checkViewOrderAccess(Order $order)
+    {
+        if ($this->isGranted('ROLE_CUSTOMER') && $order->getCustomer()->getUser()->getId() != $this->getUser()->getId()) {
+            throw new AccessDeniedException('Access Denied');
+        }
+
+        if ($this->isGranted('ROLE_AGENT')) {
+            $isOwnCustomer = $this->customerRepository()->findOneBy(array(
+                'agent' => $this->getUser(),
+                'id' => $order->getCustomer()->getId()
+            ));
+            if (!$isOwnCustomer) {
+                throw new AccessDeniedException('Access Denied');
+            }
+        }
     }
 
     /**
