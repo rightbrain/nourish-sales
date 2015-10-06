@@ -48,4 +48,21 @@ class DeliveryItemRepository extends EntityRepository
 
         return $query->getQuery()->getSingleScalarResult();
     }
+
+    public function getDeliveredItems(Order $order)
+    {
+        $query = $this->createQueryBuilder('di');
+        $query->join('di.delivery', 'd');
+        $query->join('di.orderItem', 'oi');
+        $query->join('oi.item', 'i');
+        $query->select('i.id');
+        $query->addSelect('i.name');
+        $query->addSelect('SUM(di.qty) AS totalDeliveredQuantity');
+        $query->where('di.order = :order');
+        $query->setParameter('order', $order->getId());
+        $query->groupBy('di.orderItem');
+        $query->orderBy('di.orderItem', 'ASC');
+
+        return $query->getQuery()->getResult();
+    }
 }

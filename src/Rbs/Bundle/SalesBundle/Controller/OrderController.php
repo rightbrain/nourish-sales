@@ -150,9 +150,12 @@ class OrderController extends BaseController
             'order' => $order->getId()
         ));
 
+        $deliveredItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItems($order);
+
         return $this->render('RbsSalesBundle:Order:details.html.twig', array(
             'order' => $order,
             'deliveryItems' => $deliveryItems,
+            'deliveredItems' => $deliveredItems,
         ));
     }
 

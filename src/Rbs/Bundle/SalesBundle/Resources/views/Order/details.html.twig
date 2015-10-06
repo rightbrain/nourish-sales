@@ -59,9 +59,9 @@
                                 <div class="portlet-body">
                                     <table class="table">
                                         <tr>
-                                            <th class="text-center col-md-4">orderState</th>
-                                            <th class="text-center col-md-4">paymentState</th>
-                                            <th class="text-center col-md-4">deliveryState</th>
+                                            <th class="text-center col-md-4">Order State</th>
+                                            <th class="text-center col-md-4">Payment State</th>
+                                            <th class="text-center col-md-4">Delivery State</th>
                                         </tr>
                                         <tr id="process-actions">
                                             <td class="text-center">
@@ -124,6 +124,7 @@
                                             <th>Sl</th>
                                             <th>Item</th>
                                             <th>Quantity</th>
+                                            <th>Delivered Qty</th>
                                             <th>Price</th>
                                             <th>Total Amount</th>
                                             <th>Paid Amount</th>
@@ -135,6 +136,7 @@
                                                 <td>{{ index + 1 }}.</td>
                                                 <td>{{ orderItem.item.name | default('') }}</td>
                                                 <td>{{ orderItem.quantity | default('') }}</td>
+                                                <td>{{ deliveredItems[index]['totalDeliveredQuantity'] | default('') }}</td>
                                                 <td>{{ orderItem.price | default('') }}</td>
                                                 <td>{{ orderItem.totalAmount | default('') }}</td>
                                                 <td>{{ orderItem.paidAmount | default('') }}</td>
@@ -169,7 +171,7 @@
                                             {% for index, payment in order.payments %}
                                                 <tr>
                                                     <td>{{ index + 1 }}.</td>
-                                                    <td>{{ payment.depositDate | date('d-F-Y') }}</td>
+                                                    <td>{{ payment.depositDate | date(php_date_format) }}</td>
                                                     <td>{{ payment.id | default('') }}</td>
                                                     <td>{{ payment.paymentMethod | default('') }}</td>
                                                     <td>{{ payment.bankName | default('') }}</td>
@@ -199,6 +201,7 @@
                                                 <th>Delivery ID</th>
                                                 <th>Item Name</th>
                                                 <th>Quantity</th>
+                                                <th>Date</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -208,6 +211,7 @@
                                                     <td>{{ deliveryItem.delivery.id }}</td>
                                                     <td>{{ deliveryItem.orderItem.item.name }}</td>
                                                     <td>{{ deliveryItem.qty }}</td>
+                                                    <td>{{ deliveryItem.delivery.finishLoad | date(php_date_format) }}</td>
                                                 </tr>
                                             {% endfor %}
                                             </tbody>
