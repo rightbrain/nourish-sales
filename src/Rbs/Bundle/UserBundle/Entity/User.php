@@ -31,6 +31,9 @@ class User extends BaseUser
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
 
+    const CUSTOMER = 'CUSTOMER';
+    const AGENT = 'AGENT';
+
     /**
      * @ORM\Id
      * @ORM\Column(type="integer")

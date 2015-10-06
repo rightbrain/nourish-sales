@@ -1,6 +1,7 @@
 var Payment = function()
 {
-    function filterInit(){
+    function filterInit(allowCustomerSearch){
+
         if (!$('#external_filter_container').length) {
             $('<div id="external_filter_container">' +
                 '<div id="date-filter"><div class="input-group input-daterange">' +
@@ -19,43 +20,43 @@ var Payment = function()
             autoclose: true,
             todayBtn: "linked",
             format: 'dd-mm-yyyy'
-        });/*.on('changeDate', function(e){
-            var fromDate = moment(e.date).format('DD-MM-YYYY');
-            var toDate = moment(e.date).format('DD-MM-YYYY');
-            //table.columns(0).search(fromDate+'--'+toDate).draw();
-        });*/
+        });
 
-        $("#customer-filter").select2({
-            placeholder: "Customers",
-            allowClear: true,
-            minimumInputLength: 3,
-            ajax: {
-                url: Routing.generate('customer_search'),
-                dataType: 'json',
-                quietMillis: 250,
-                data: function (term, page) {
-                    return {
-                        q: term
-                    };
-                },
-                results: function (data) {
-                    return {results: data};
-                },
-                cache: true
-            }
-        }).on('change', function(){
-            //table.columns(1).search($(this).val()).draw();
-        }).prev().addClass('form-control input-medium').css('vertical-align', 'initial');
+        if (allowCustomerSearch) {
+            $("#customer-filter").select2({
+                placeholder: "Customers",
+                allowClear: true,
+                minimumInputLength: 3,
+                ajax: {
+                    url: Routing.generate('customer_search'),
+                    dataType: 'json',
+                    quietMillis: 250,
+                    data: function (term, page) {
+                        return {
+                            q: term
+                        };
+                    },
+                    results: function (data) {
+                        return {results: data};
+                    },
+                    cache: true
+                }
+            }).on('change', function(){
+                //table.columns(1).search($(this).val()).draw();
+            }).prev().addClass('form-control input-medium').css('vertical-align', 'initial');
+
+        }
 
         // Filter Button Action - Filter Payment
         $('.payment-filter-btn').on('click', function(){
             var fromDate = moment($('#date-filter input:eq(0)').datepicker("getDate")).format('DD-MM-YYYY');
             var toDate = moment($('#date-filter input:eq(1)').datepicker("getDate")).format('DD-MM-YYYY');
 
-            table
-                .columns(0).search(fromDate+'--'+toDate)
-                .columns(1).search($("#customer-filter").val())
-                .draw();
+            table.columns(0).search(fromDate+'--'+toDate);
+            if (allowCustomerSearch) {
+                table.columns(1).search($("#customer-filter").val());
+            }
+            table.draw();
         });
 
         var orderFilterContainer = $('#payment_datatable_filter');

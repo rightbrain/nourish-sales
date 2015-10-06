@@ -15,6 +15,8 @@ abstract class ContextAwareListener
 
     private $route;
 
+    protected $user;
+
     /**
      * @param AuthorizationChecker $context
      */
@@ -24,6 +26,7 @@ abstract class ContextAwareListener
         $this->authorizationChecker = $container->get('security.authorization_checker');
         $this->request = $container->get('request');
         $this->route = $this->request->get('_route');
+        $this->user = $this->container->get('security.token_storage')->getToken()->getUser();
     }
 
     protected function isMatch($pattern)

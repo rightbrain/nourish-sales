@@ -53,7 +53,8 @@ class StockDatatable extends BaseDatatable
                     array(
                         'route' => 'stock_create',
                         'route_parameters' => array(
-                            'id' => 'id'
+                            'id' => 'id',
+                            'warehouseId' => 'warehouse.id'
                         ),
                         'label' => 'Add Stock',
                         'icon' => 'glyphicon glyphicon-edit',
@@ -87,50 +88,6 @@ class StockDatatable extends BaseDatatable
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_ADMIN',
-                    )
-                )
-            ))
-            ->add(null, 'action', array(
-                'width' => '200px',
-                'title' => 'Available On Demand',
-                'start_html' => '<div class="wrapper">',
-                'end_html' => '</div>',
-                'actions' => array(
-                    array(
-                        'route' => 'stock_available',
-                        'route_parameters' => array(
-                            'id' => 'id'
-                        ),
-                        'label' => 'Enable',
-                        'icon' => 'glyphicon',
-                        'attributes' => array(
-                            'rel' => 'tooltip',
-                            'title' => 'available-action',
-                            'class' => 'btn btn-primary btn-xs green delete-list-btn',
-                            'role' => 'button',
-                        ),
-                        'confirm' => false,
-                        'confirm_message' => 'Are you sure?',
-                        'role' => 'ROLE_ADMIN',
-                        'render_if' => array('notAvailable')
-                    ),
-                    array(
-                        'route' => 'stock_available',
-                        'route_parameters' => array(
-                            'id' => 'id'
-                        ),
-                        'label' => 'Disable',
-                        'icon' => 'glyphicon',
-                        'attributes' => array(
-                            'rel' => 'tooltip',
-                            'title' => 'not-available-action',
-                            'class' => 'btn btn-primary btn-xs red delete-list-btn',
-                            'role' => 'button',
-                        ),
-                        'confirm' => false,
-                        'confirm_message' => 'Are you sure?',
-                        'role' => 'ROLE_ADMIN',
-                        'render_if' => array('available')
                     )
                 )
             ))

@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Datatables;
 
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\UserBundle\Entity\Profile;
+use Rbs\Bundle\UserBundle\Entity\User;
 
 /**
  * Class PaymentDatatable
@@ -12,14 +13,19 @@ use Rbs\Bundle\UserBundle\Entity\Profile;
  */
 class PaymentDatatable extends BaseDatatable
 {
+    private $user;
+    protected $allowCustomerSearch;
+
     public function getLineFormatter()
     {
         /** @var Profile $profile */
         $formatter = function($line){
             $line['bankInfo'] = 'Payment Method:'.$line['paymentMethod'].', Bank Name:'.$line['bankName'].', Branch Name:'.$line['branchName'];
             $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
-            $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $line['customer']['user']['id']));
-            $line["fullName"] = $profile->getFullName();
+            if ($this->allowCustomerSearch) {
+                $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $line['customer']['user']['id']));
+                $line["fullName"] = $profile->getFullName();
+            }
 
             return $line;
         };
@@ -32,6 +38,10 @@ class PaymentDatatable extends BaseDatatable
      */
     public function buildDatatable()
     {
+        /** @var User $user */
+        $this->user = $this->securityToken->getToken()->getUser();
+        $this->allowCustomerSearch = $this->user->getUserType() != User::CUSTOMER;
+
         $this->features->setFeatures($this->defaultFeatures());
         $this->options->setOptions(array_merge($this->defaultOptions(), array(
             'individual_filtering' => true,
@@ -41,7 +51,7 @@ class PaymentDatatable extends BaseDatatable
         $this->callbacks->setCallbacks(array
             (
                 'init_complete' => "function( settings ) {
-                        Payment.filterInit();
+                        Payment.filterInit({$this->allowCustomerSearch});
                 }"
             )
         );
@@ -54,10 +64,12 @@ class PaymentDatatable extends BaseDatatable
         $twigVars = $this->twig->getGlobals();
         $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
 
-        $this->columnBuilder
-            ->add('createdAt', 'datetime', array( 'title' => 'Date', 'date_format' => $dateFormat ))
-            ->add('customer.user.id', 'column', array('title' => 'Customer Name', 'render' => 'resolveCustomerName'))
-            ->add('amount', 'column', array('visible' => false))
+        $this->columnBuilder->add('createdAt', 'datetime', array( 'title' => 'Date', 'date_format' => $dateFormat ));
+        if ($this->allowCustomerSearch) {
+            $this->columnBuilder->add('customer.user.id', 'column', array('title' => 'Customer Name', 'render' => 'resolveCustomerName'));
+        }
+
+        $this->columnBuilder->add('amount', 'column', array('visible' => false))
             ->add('totalAmount', 'virtual', array('title' => 'Amount'))
             ->add('paymentMethod', 'column', array('visible' => false))
             ->add('bankName', 'column', array('visible' => false))

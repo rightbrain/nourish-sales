@@ -2,10 +2,12 @@
 
 namespace Rbs\Bundle\SalesBundle\Controller;
 
+use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -43,10 +45,26 @@ class OrderController extends BaseController
      */
     public function listAjaxAction()
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        $customerRepository = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer');
         $datatable = $this->get('rbs_erp.sales.datatable.order');
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+
+        /** @var QueryBuilder $qb */
+        $function = function($qb) use ($user, $customerRepository)
+        {
+            if ($user->getUserType() == User::CUSTOMER) {
+                $customer = $customerRepository->findOneBy(array('user' => $user->getId()));
+                $qb->andWhere('orders.customer = :customer')->setParameter('customer', array($customer));
+            } else if ($user->getUserType() == User::AGENT) {
+                $customers = $customerRepository->findBy(array('agent' => $user->getId()));
+                $qb->andWhere('orders.customer IN(:customers)')->setParameter('customers', $customers);
+            }
+        };
+        $query->addWhereAll($function);
 
         return $query->getResponse();
     }
@@ -62,9 +80,11 @@ class OrderController extends BaseController
     {
         $order = new Order();
 
-        if($request->query->get('mobileNo')){
-            $refSms = $request->query->get('mobileNo');
-        }else{ $refSms = 0; }
+        if ($request->query->get('sms')) {
+            $refSms = $request->query->get('sms');
+        } else {
+            $refSms = 0;
+        }
 
         $form = $this->createForm(new OrderForm($refSms), $order);
 
@@ -100,8 +120,8 @@ class OrderController extends BaseController
      */
     public function updateAction(Request $request, Order $order)
     {
-        if($request->query->get('mobileNo')){
-            $refSms = $request->query->get('mobileNo');
+        if($request->query->get('sms')){
+            $refSms = $request->query->get('sms');
         }else{ $refSms = 0; }
 
         $form = $this->createForm(new OrderForm($refSms), $order);
@@ -172,7 +192,7 @@ class OrderController extends BaseController
         }
 
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getWarehouse());
         }
 
         $order->setOrderState(Order::ORDER_STATE_PROCESSING);
@@ -235,7 +255,7 @@ class OrderController extends BaseController
         }
 
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getWarehouse());
         }
 
         $order->setOrderState(Order::ORDER_STATE_HOLD);
@@ -259,7 +279,9 @@ class OrderController extends BaseController
         $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
         /** @var OrderItem $item */
         foreach ($order->getOrderItems() as $item) {
-            $stockItem = $stockRepo->findOneBy(array('item' => $item->getItem()->getId()));
+            $stockItem = $stockRepo->findOneBy(
+                array('item' => $item->getItem()->getId(), 'warehouse' => $order->getCustomer()->getWarehouse()->getId())
+            );
             $item->isAvailable = $stockItem->isStockAvailable($item->getQuantity());
         }
 

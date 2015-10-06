@@ -6,6 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Customer;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\PaymentForm;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -22,7 +23,7 @@ class PaymentController extends BaseController
     /**
      * @Route("/payments", name="payments_home")
      * @Template()
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
+     * @JMS\Secure(roles="ROLE_PAYMENT_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function indexAction()
     {
@@ -43,6 +44,9 @@ class PaymentController extends BaseController
      */
     public function listAjaxAction(Request $request)
     {
+        /** @var User $user */
+        $user = $this->getUser();
+        $customerRepository = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer');
         $datatable = $this->get('rbs_erp.sales.datatable.payment');
         $datatable->buildDatatable();
 
@@ -55,7 +59,7 @@ class PaymentController extends BaseController
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
-        $function = function($qb) use ($dateFilter)
+        $function = function($qb) use ($dateFilter, $user, $customerRepository)
         {
             if ($dateFilter) {
                 list($fromDate, $toDate) = explode('--', $dateFilter);
@@ -69,6 +73,14 @@ class PaymentController extends BaseController
                         ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($fromDate)))
                         ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($fromDate)));
                 }
+            }
+
+            if ($user->getUserType() == User::CUSTOMER) {
+                $customer = $customerRepository->findOneBy(array('user' => $user->getId()));
+                $qb->andWhere('payments.customer = :customer')->setParameter('customer', array($customer));
+            } else if ($user->getUserType() == User::AGENT) {
+                $customers = $customerRepository->findBy(array('agent' => $user->getId()));
+                $qb->andWhere('payments.customer IN(:customers)')->setParameter('customers', $customers);
             }
         };
         $query->addWhereAll($function);

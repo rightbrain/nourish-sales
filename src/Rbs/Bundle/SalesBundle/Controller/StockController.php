@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\Warehouse;
 use Rbs\Bundle\SalesBundle\Entity\Stock;
 use Rbs\Bundle\SalesBundle\Entity\StockHistory;
 use Rbs\Bundle\SalesBundle\Form\Type\StockHistoryForm;
@@ -126,18 +127,18 @@ class StockController extends Controller
     }
 
     /**
-     * @Route("/stock/create", name="stock_create", options={"expose"=true})
+     * @Route("/stock/{id}/create/warehouse/{warehouseId}", name="stock_create", options={"expose"=true})
      * @Template("RbsSalesBundle:Stock:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_STOCK_CREATE")
      */
-    public function createAction(Request $request)
+    public function createAction(Stock $stock, $warehouseId)
     {
         $stockHistory = new StockHistory();
+        $warehouse = $this->getDoctrine()->getRepository('RbsCoreBundle:Warehouse')->find($warehouseId);
+        $stockHistory->setToWarehouse($warehouse);
         $form = $this->createForm(new StockHistoryForm(), $stockHistory);
-        $stockID = $request->query->all()['id'];
-        $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->find($stockID);
 
         return array(
             'form' => $form->createView(),

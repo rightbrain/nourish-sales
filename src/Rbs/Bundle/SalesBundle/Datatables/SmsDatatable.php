@@ -17,7 +17,7 @@ class SmsDatatable extends BaseDatatable
     public function buildDatatable()
     {
         $this->features->setFeatures($this->defaultFeatures());
-        $this->options->setOptions($this->defaultOptions());
+        $this->options->setOptions(array_merge($this->defaultOptions(), array('order' => [[0, 'desc']])));
 
         $this->ajax->setOptions(array(
             'url' => $this->router->generate('sms_list_ajax'),
@@ -29,11 +29,10 @@ class SmsDatatable extends BaseDatatable
                     'title' => 'Date',
                     'date_format' => 'LLL' ))
             ->add('mobileNo', 'column', array('title' => 'Mobile'))
-            ->add('order', 'column', array('title' => 'Order Number'))
-            ->add('remark', 'column', array('title' => 'SMS Text'))
-            ->add('status', 'column', array('title' => 'Status'))
+            ->add('msg', 'column', array('title' => 'SMS Text'))
+            ->add('remark', 'column', array('title' => 'Remark'))
             ->add(null, 'action', array(
-                'width' => '200px',
+                'width' => '120px',
                 'title' => 'Action',
                 'start_html' => '<div class="wrapper">',
                 'end_html' => '</div>',
@@ -41,7 +40,7 @@ class SmsDatatable extends BaseDatatable
                     array(
                         'route' => 'order_create',
                         'route_parameters' => array(
-                            'mobileNo' => 'mobileNo'
+                            'sms' => 'id'
                         ),
                         'label' => 'Add Order',
                         'icon' => 'glyphicon glyphicon-edit',

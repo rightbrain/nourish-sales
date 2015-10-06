@@ -6,6 +6,7 @@ use Doctrine\DBAL\Query\QueryBuilder;
 use JMS\SecurityExtraBundle\Annotation as JMS;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Event\DeliveryEvent;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -73,28 +74,6 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_PAYMENT_APPROVE")
-     * @Route("/order/{id}/verify", name="order_verify")
-     * @param Order $order
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function orderVerifyAction(Order $order)
-    {
-        if ($order->getOrderState() == Order::ORDER_STATE_PROCESSING &&
-            in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))
-        ) {
-            $order->setDeliveryState(Order::DELIVERY_STATE_READY);
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
-
-            $this->dispatchApproveProcessEvent('order.verified', $order);
-
-            $this->flashMessage('success', 'Order Verified Successfully and Ready for Delivery');
-        }
-
-        return $this->redirect($this->generateUrl('orders_home'));
-    }
-
-    /**
      * @JMS\Secure(roles="ROLE_USER")
      * @Route("/delivery/{id}", name="delivery_view", options={"expose"=true})
      * @param Delivery $delivery
@@ -123,7 +102,9 @@ class DeliveryController extends BaseController
         if (!$delivery->getVehicleIn()) {
             $delivery->setVehicleIn(new \DateTime());
             $this->getDoctrine()->getManager()->persist($delivery);
-            $this->getDoctrine()->getManager()->flush();
+            //$this->getDoctrine()->getManager()->flush();
+
+            $this->dispatch('delivery.vehicle_in', new DeliveryEvent($delivery));
         }
 
         return new JsonResponse();
@@ -141,6 +122,8 @@ class DeliveryController extends BaseController
             $delivery->setStartLoad(new \DateTime());
             $this->getDoctrine()->getManager()->persist($delivery);
             $this->getDoctrine()->getManager()->flush();
+
+            $this->dispatch('delivery.start_loading', new DeliveryEvent($delivery));
         }
 
         return new JsonResponse();
@@ -158,6 +141,8 @@ class DeliveryController extends BaseController
             $delivery->setFinishLoad(new \DateTime());
             $this->getDoctrine()->getManager()->persist($delivery);
             $this->getDoctrine()->getManager()->flush();
+
+            $this->dispatch('delivery.finish_loading', new DeliveryEvent($delivery));
         }
 
         return new JsonResponse();
@@ -175,6 +160,8 @@ class DeliveryController extends BaseController
             $delivery->setVehicleOut(new \DateTime());
             $this->getDoctrine()->getManager()->persist($delivery);
             $this->getDoctrine()->getManager()->flush();
+
+            $this->dispatch('delivery.vehicle_out', new DeliveryEvent($delivery));
         }
 
         return new JsonResponse();
@@ -194,6 +181,8 @@ class DeliveryController extends BaseController
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStockFromOnHold($delivery);
+
+        $this->dispatch('delivery.delivered', new DeliveryEvent($delivery));
 
         $this->flashMessage('success', 'Order #' . $delivery->getOrderRef()->getId() . ' ' . $delivery->getOrderRef()->getDeliveryState() . ' Successfully');
 
