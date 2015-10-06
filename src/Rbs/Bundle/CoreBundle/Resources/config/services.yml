@@ -7,6 +7,11 @@ services:
         tags:
           - { name: kernel.event_listener, event: core_bundle.menu_main, method: onMenuConfigureMain, priority: 999 }
 
+    rbs.core.permission.security_provider:
+         class: Rbs\Bundle\CoreBundle\Permission\Provider\SecurityPermissionProvider
+         arguments: [@service_container]
+         tags:
+             - { name: rbs.user.permission_provider, alias: core_module }
 
     rbs_erp.core.datatable.category:
         class: Rbs\Bundle\CoreBundle\Datatables\CategoryDatatable

@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Rbs\Bundle\CoreBundle\Entity\Item;
 use Rbs\Bundle\CoreBundle\Form\Type\ItemForm;
 use Symfony\Component\HttpFoundation\Response;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * Item controller.
@@ -26,6 +27,7 @@ class ItemController extends BaseController
      * @Route("", name="item")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function indexAction()
     {
@@ -43,6 +45,7 @@ class ItemController extends BaseController
      *
      * @Route("/item_list_ajax", name="item_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -66,6 +69,7 @@ class ItemController extends BaseController
      * @Route("/", name="item_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:Item:new.html.twig")
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -115,6 +119,7 @@ class ItemController extends BaseController
      * @Route("/new", name="item_new")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function newAction()
     {
@@ -133,6 +138,7 @@ class ItemController extends BaseController
      * @Route("/{id}", name="item_show")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function showAction($id)
     {
@@ -158,6 +164,7 @@ class ItemController extends BaseController
      * @Route("/{id}/edit", name="item_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function editAction($id)
     {
@@ -203,6 +210,7 @@ class ItemController extends BaseController
      * @Route("/{id}", name="item_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:Item:edit.html.twig")
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function updateAction(Request $request, $id)
     {
@@ -236,6 +244,7 @@ class ItemController extends BaseController
      *
      * @Route("/{id}", name="item_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function deleteAction(Request $request, $id)
     {
@@ -278,6 +287,7 @@ class ItemController extends BaseController
      *
      * @Route("/status-change/{id}", name="item_statue_change", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function statusChangeAction(Item $item)
     {
@@ -300,6 +310,7 @@ class ItemController extends BaseController
      * @Route("find_item_ajax", name="find_item_ajax", options={"expose"=true})
      * @param Request $request
      * @return Response
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function findItemAction(Request $request)
     {

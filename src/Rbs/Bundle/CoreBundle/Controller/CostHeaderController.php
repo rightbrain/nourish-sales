@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Rbs\Bundle\CoreBundle\Entity\CostHeader;
 use Rbs\Bundle\CoreBundle\Form\Type\CostHeaderForm;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * CostHeader controller.
@@ -24,6 +25,7 @@ class CostHeaderController extends BaseController
      * @Route("", name="cost_header")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_COST_HEADER_MANAGE")
      */
     public function indexAction()
     {
@@ -41,6 +43,7 @@ class CostHeaderController extends BaseController
      *
      * @Route("/cost_header_list_ajax", name="cost_header_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_COST_HEADER_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -64,6 +67,7 @@ class CostHeaderController extends BaseController
      * @Route("/", name="cost_header_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:CostHeader:new.html.twig")
+     * @JMS\Secure(roles="ROLE_COST_HEADER_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -110,6 +114,7 @@ class CostHeaderController extends BaseController
      * @Route("/new", name="cost_header_new")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_COST_HEADER_MANAGE")
      */
     public function newAction()
     {
@@ -128,6 +133,7 @@ class CostHeaderController extends BaseController
      * @Route("/{id}", name="cost_header_show")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_COST_HEADER_MANAGE")
      */
     public function showAction($id)
     {
@@ -153,6 +159,7 @@ class CostHeaderController extends BaseController
      * @Route("/{id}/edit", name="cost_header_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_COST_HEADER_MANAGE")
      */
     public function editAction($id)
     {
@@ -199,6 +206,7 @@ class CostHeaderController extends BaseController
      * @Route("/{id}", name="cost_header_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:CostHeader:edit.html.twig")
+     * @JMS\Secure(roles="ROLE_COST_HEADER_MANAGE")
      */
     public function updateAction(Request $request, $id)
     {
@@ -232,6 +240,7 @@ class CostHeaderController extends BaseController
      *
      * @Route("/{id}", name="cost_header_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @JMS\Secure(roles="ROLE_COST_HEADER_MANAGE")
      */
     public function deleteAction(Request $request, $id)
     {

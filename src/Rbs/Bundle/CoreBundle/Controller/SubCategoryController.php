@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Rbs\Bundle\CoreBundle\Entity\SubCategory;
 use Rbs\Bundle\CoreBundle\Form\Type\SubCategoryForm;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * SubCategory controller.

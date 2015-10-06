@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\CoreBundle\Form\Type\ItemTypeForm;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * ItemType controller.
@@ -24,6 +25,7 @@ class ItemTypeController extends BaseController
      * @Route("", name="itemtype")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function indexAction()
     {
@@ -41,6 +43,7 @@ class ItemTypeController extends BaseController
      *
      * @Route("/item_type_list_ajax", name="item_type_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -64,6 +67,7 @@ class ItemTypeController extends BaseController
      * @Route("/", name="itemtype_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:ItemType:new.html.twig")
+     * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -110,6 +114,7 @@ class ItemTypeController extends BaseController
      * @Route("/new", name="itemtype_new")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function newAction()
     {
@@ -128,6 +133,7 @@ class ItemTypeController extends BaseController
      * @Route("/{id}", name="itemtype_show")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function showAction($id)
     {
@@ -153,6 +159,7 @@ class ItemTypeController extends BaseController
      * @Route("/{id}/edit", name="itemtype_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function editAction($id)
     {
@@ -199,6 +206,7 @@ class ItemTypeController extends BaseController
      * @Route("/{id}", name="itemtype_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:ItemType:edit.html.twig")
+     * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function updateAction(Request $request, $id)
     {
@@ -232,6 +240,7 @@ class ItemTypeController extends BaseController
      *
      * @Route("/{id}", name="itemtype_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function deleteAction(Request $request, $id)
     {

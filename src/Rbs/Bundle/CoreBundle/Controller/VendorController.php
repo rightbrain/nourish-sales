@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Rbs\Bundle\CoreBundle\Entity\Vendor;
 use Rbs\Bundle\CoreBundle\Form\Type\VendorForm;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * Vendor controller.

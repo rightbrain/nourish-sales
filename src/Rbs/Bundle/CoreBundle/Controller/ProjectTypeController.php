@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Rbs\Bundle\CoreBundle\Entity\ProjectType;
 use Rbs\Bundle\CoreBundle\Form\Type\ProjectTypeForm;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * ProjectType controller.
@@ -24,6 +25,7 @@ class ProjectTypeController extends BaseController
      * @Route("", name="projecttype")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_FACTORY_TYPE_MANAGE, ROLE_PROJECT_TYPE_MANAGE")
      */
     public function indexAction()
     {
@@ -41,6 +43,7 @@ class ProjectTypeController extends BaseController
      *
      * @Route("/project_type_list_ajax", name="project_type_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_FACTORY_TYPE_MANAGE, ROLE_PROJECT_TYPE_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -64,6 +67,7 @@ class ProjectTypeController extends BaseController
      * @Route("/", name="projecttype_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:ProjectType:new.html.twig")
+     * @JMS\Secure(roles="ROLE_FACTORY_TYPE_MANAGE, ROLE_PROJECT_TYPE_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -110,6 +114,7 @@ class ProjectTypeController extends BaseController
      * @Route("/new", name="projecttype_new")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_FACTORY_TYPE_MANAGE, ROLE_PROJECT_TYPE_MANAGE")
      */
     public function newAction()
     {
@@ -128,6 +133,7 @@ class ProjectTypeController extends BaseController
      * @Route("/{id}", name="projecttype_show")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_FACTORY_TYPE_MANAGE, ROLE_PROJECT_TYPE_MANAGE")
      */
     public function showAction($id)
     {
@@ -153,6 +159,7 @@ class ProjectTypeController extends BaseController
      * @Route("/{id}/edit", name="projecttype_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_FACTORY_TYPE_MANAGE, ROLE_PROJECT_TYPE_MANAGE")
      */
     public function editAction($id)
     {
@@ -199,6 +206,7 @@ class ProjectTypeController extends BaseController
      * @Route("/{id}", name="projecttype_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:ProjectType:edit.html.twig")
+     * @JMS\Secure(roles="ROLE_FACTORY_TYPE_MANAGE, ROLE_PROJECT_TYPE_MANAGE")
      */
     public function updateAction(Request $request, $id)
     {
@@ -232,6 +240,7 @@ class ProjectTypeController extends BaseController
      *
      * @Route("/{id}", name="projecttype_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @JMS\Secure(roles="ROLE_FACTORY_TYPE_MANAGE, ROLE_PROJECT_TYPE_MANAGE")
      */
     public function deleteAction(Request $request, $id)
     {

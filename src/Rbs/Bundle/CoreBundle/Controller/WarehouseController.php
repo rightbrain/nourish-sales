@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Rbs\Bundle\CoreBundle\Entity\Warehouse;
 use Rbs\Bundle\CoreBundle\Form\Type\WarehouseForm;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * Warehouse controller.
@@ -25,6 +26,7 @@ class WarehouseController extends BaseController
      * @Route("", name="warehouse")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_WAREHOUSE_MANAGE")
      */
     public function indexAction()
     {
@@ -42,6 +44,7 @@ class WarehouseController extends BaseController
      *
      * @Route("/warehouse_list_ajax", name="warehouse_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_WAREHOUSE_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -65,6 +68,7 @@ class WarehouseController extends BaseController
      * @Route("/", name="warehouse_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:Warehouse:new.html.twig")
+     * @JMS\Secure(roles="ROLE_WAREHOUSE_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -115,6 +119,7 @@ class WarehouseController extends BaseController
      * @Route("/new", name="warehouse_new")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_WAREHOUSE_MANAGE")
      */
     public function newAction()
     {
@@ -133,6 +138,7 @@ class WarehouseController extends BaseController
      * @Route("/{id}", name="warehouse_show")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_WAREHOUSE_MANAGE")
      */
     public function showAction($id)
     {
@@ -158,6 +164,7 @@ class WarehouseController extends BaseController
      * @Route("/{id}/edit", name="warehouse_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_WAREHOUSE_MANAGE")
      */
     public function editAction($id)
     {
@@ -204,6 +211,7 @@ class WarehouseController extends BaseController
      * @Route("/{id}", name="warehouse_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:Warehouse:edit.html.twig")
+     * @JMS\Secure(roles="ROLE_WAREHOUSE_MANAGE")
      */
     public function updateAction(Request $request, $id)
     {
@@ -237,6 +245,7 @@ class WarehouseController extends BaseController
      *
      * @Route("/{id}", name="warehouse_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @JMS\Secure(roles="ROLE_WAREHOUSE_MANAGE")
      */
     public function deleteAction(Request $request, $id)
     {

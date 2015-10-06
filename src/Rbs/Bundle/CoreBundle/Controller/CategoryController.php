@@ -9,6 +9,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Rbs\Bundle\CoreBundle\Entity\Category;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * Category controller.
@@ -24,6 +25,7 @@ class CategoryController extends BaseController
      * @Route("", name="category")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function indexAction()
     {
@@ -41,6 +43,7 @@ class CategoryController extends BaseController
      *
      * @Route("/category_list_ajax", name="category_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -66,6 +69,7 @@ class CategoryController extends BaseController
      * @Route("/", name="category_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:Category:new.html.twig")
+     * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -113,6 +117,7 @@ class CategoryController extends BaseController
      * @Route("/new", name="category_new")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function newAction()
     {
@@ -131,6 +136,7 @@ class CategoryController extends BaseController
      * @Route("/{id}", name="category_show")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function showAction($id)
     {
@@ -156,6 +162,7 @@ class CategoryController extends BaseController
      * @Route("/{id}/edit", name="category_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function editAction($id)
     {
@@ -201,6 +208,7 @@ class CategoryController extends BaseController
      * @Route("/{id}", name="category_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:Category:edit.html.twig")
+     * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function updateAction(Request $request, $id)
     {
@@ -233,6 +241,7 @@ class CategoryController extends BaseController
      *
      * @Route("/{id}", name="category_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function deleteAction(Request $request, $id)
     {

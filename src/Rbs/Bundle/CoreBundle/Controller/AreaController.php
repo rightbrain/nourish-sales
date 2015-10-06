@@ -2,7 +2,6 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Entity\Address;
 use Rbs\Bundle\CoreBundle\Form\Type\AreaForm;
@@ -12,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Rbs\Bundle\CoreBundle\Entity\Area;
 use Symfony\Component\HttpFoundation\Response;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * Area controller.
@@ -27,6 +27,7 @@ class AreaController extends BaseController
      * @Route("", name="area")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_AREA_MANAGE")
      */
     public function indexAction()
     {
@@ -85,6 +86,7 @@ class AreaController extends BaseController
      *
      * @Route("/area_list_ajax", name="area_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_AREA_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -108,6 +110,7 @@ class AreaController extends BaseController
      * @Route("/", name="area_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:Area:new.html.twig")
+     * @JMS\Secure(roles="ROLE_AREA_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -155,6 +158,7 @@ class AreaController extends BaseController
      * @Route("/new", name="area_new")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_AREA_MANAGE")
      */
     public function newAction()
     {
@@ -173,6 +177,7 @@ class AreaController extends BaseController
      * @Route("/{id}", name="area_show")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_AREA_MANAGE")
      */
     public function showAction($id)
     {
@@ -198,6 +203,7 @@ class AreaController extends BaseController
      * @Route("/{id}/edit", name="area_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_AREA_MANAGE")
      */
     public function editAction($id)
     {
@@ -244,6 +250,7 @@ class AreaController extends BaseController
      * @Route("/{id}", name="area_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:Area:edit.html.twig")
+     * @JMS\Secure(roles="ROLE_AREA_MANAGE")
      */
     public function updateAction(Request $request, $id)
     {
@@ -278,6 +285,7 @@ class AreaController extends BaseController
      *
      * @Route("/{id}", name="area_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @JMS\Secure(roles="ROLE_AREA_MANAGE")
      */
     public function deleteAction(Request $request, $id)
     {
@@ -318,6 +326,7 @@ class AreaController extends BaseController
     /**
      *
      * @Route("/filter-area/", name="area_filter", options={"expose"=true})
+     * @JMS\Secure(roles="ROLE_AREA_MANAGE")
      */
     public function areaFilterAction(Request $request)
     {
