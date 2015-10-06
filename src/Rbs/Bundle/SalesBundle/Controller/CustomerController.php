@@ -178,8 +178,11 @@ class CustomerController extends BaseController
      */
     public function detailsAction(Customer $customer)
     {
+        $customerCurrentBalance = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->getCurrentBalance($customer);
+
         return $this->render('RbsSalesBundle:Customer:details.html.twig', array(
-            'customer' => $customer
+            'customer' => $customer,
+            'customerCurrentBalance' => $customerCurrentBalance
         ));
     }
 

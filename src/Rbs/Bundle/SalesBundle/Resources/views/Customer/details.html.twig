@@ -1,16 +1,126 @@
-{% extends 'base.html.twig' %}
+{% extends '::base.html.twig' %}
 
-{% block title %}{{ parent() }} : User Details {% endblock %}
+{% block title %}{{ parent() }} : Customer Details {% endblock %}
 
 {% block body %}
 
-<div class="modal-body">
-    <div class="row">
-        <div class="col-md-12">
-            <p>Customer Name : {{ customer.user.username }}</p>
-            <p>FullName : {{ customer.user.profile.fullname }}</p>
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    Customer Details
+                </div>
+            </div>
+
+            <div class="portlet-body">
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customers_home'), label: 'Back to List', 'icon': 'plus'}) }}
+                <div class="dataTables_wrapper no-footer">
+
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            {#<div class="col-md-3">#}
+                                {#<div class="portlet">#}
+                                    {#<div class="portlet-body">#}
+                                        {#<table class="table">#}
+                                            {#<tr><th><h4>Customer Photo</h4></th></tr>#}
+                                            {#<tr>#}
+                                               {#<td>#}
+                                                   {#<div class="profile-userpic">#}
+                                                       {#<img src="{{ asset('../uploads/user/'~customer.user.profile.path) }}" class="img-responsive" alt="{{ customer.user.profile.fullname }}">#}
+                                                   {#</div>#}
+                                               {#</td>#}
+                                            {#</tr>#}
+                                        {#</table>#}
+                                    {#</div>#}
+                                {#</div>#}
+                            {#</div>#}
+
+                            <div class="portlet">
+                                <div class="portlet-body">
+                                    <table class="table">
+                                        <tr>
+                                            <th colspan="4"><h4>Customer Profile Information</h4></th>
+                                        </tr>
+                                        <tr>
+                                            <th colspan="4"><h4 class="modal-title">Customer ID <span class="badge badge-primary">{{ customer.customerID }}</span></h4></th>
+                                        </tr>
+                                        <tr>
+                                            <th>Customer Name</th>
+                                            <td>{{ customer.user.profile.fullname }}</td>
+                                            <th>Cellphone</th>
+                                            <td>{{ customer.user.profile.cellphone }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Created By</th>
+                                            <td>{{ customer.createdBy }}</td>
+                                            <th>Created Date</th>
+                                            <td>{{ customer.createdAt | date(php_date_format) }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Current Balance</th>
+                                            <td>{{ customerCurrentBalance }}</td>
+                                            <th>VIP</th>
+                                            <td>{% if customer.vIP %} Yes {% else %} Not {% endif %}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Credit limit</th>
+                                            <td>{{ customer.creditLimit }}</td>
+                                            <th>Agent</th>
+                                            <td>{{ customer.agent.profile.fullname }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Opening balance</th>
+                                            <td>{{ customer.openingBalance }}</td>
+                                            <th>Area</th>
+                                            <td>{{ customer.area.areaName }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Warehouse</th>
+                                            <td>{{ customer.warehouse.name }}</td>
+                                            <th>Group</th>
+                                            <td>{{ customer.customerGroup.label }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Address</th>
+                                            <td>{{ customer.user.profile.address }}</td>
+                                            <th></th>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="portlet">
+                                <div class="portlet-body">
+                                    <table class="table">
+                                        <tr>
+                                            <th colspan="2">
+                                                <h4>Customer Login Information</h4>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th>Customer Username</th>
+                                            <td>{{ customer.user.username }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Email</th>
+                                            <td>{{ customer.user.email }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+
+            </div>
+
         </div>
     </div>
-</div>
 
 {% endblock %}
