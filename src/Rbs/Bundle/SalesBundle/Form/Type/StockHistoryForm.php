@@ -44,19 +44,6 @@ class StockHistoryForm extends AbstractType
                         ->andWhere('bundles.id = :salesBundleId')->setParameter('salesBundleId', RbsSalesBundle::ID);
                 }
             ))
-            ->add('toWarehouse', 'entity', array(
-                'class' => 'RbsCoreBundle:Warehouse',
-                'property' => 'name',
-                'required' => false,
-                'empty_value' => 'Select Warehouse',
-                'empty_data' => null,
-                'query_builder' => function (WarehouseRepository $repository)
-                {
-                    return $repository->createQueryBuilder('w')
-                        ->where('w.deletedAt IS NULL')
-                        ->orderBy('w.name','ASC');
-                },
-            ))
             ->add('description')
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')

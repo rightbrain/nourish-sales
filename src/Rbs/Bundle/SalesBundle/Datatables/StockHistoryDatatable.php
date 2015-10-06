@@ -61,7 +61,7 @@ class StockHistoryDatatable extends BaseDatatable
             ))
             ->add('createdBy.username', 'column', array('title' => 'CreatedBy'))
             ->add('fromFactory.projectName', 'column', array('title' => 'Factory Name'))
-            ->add('toWarehouse.name', 'column', array('title' => 'Warehouse'))
+            ->add('stock.warehouse.name', 'column', array('title' => 'Warehouse'))
             ->add('quantity', 'column', array('title' => 'Quantity'))
             ->add('description', 'column', array('title' => 'Description'))
         ;

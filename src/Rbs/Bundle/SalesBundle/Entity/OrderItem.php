@@ -192,4 +192,9 @@ class OrderItem
     {
         return ($this->getTotalAmount() - $this->getPaidAmount());
     }
+
+    public function getDeliveredQuantity()
+    {
+        return ($this->getQuantity() - $this->getPaidAmount());
+    }
 }

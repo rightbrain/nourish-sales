@@ -25,7 +25,7 @@ class GroupController extends Controller
     /**
      * @Route("/groups", name="groups_home")
      * @Template()
-     * @JMS\Secure(roles="ROLE_GROUP_VIEW, ROLE_GROUP_CREATE")
+     * @JMS\Secure(roles="ROLE_GROUP_VIEW, ROLE_GROUP_CREATE, ROLE_ADMIN")
      */
     public function indexAction()
     {
@@ -42,7 +42,7 @@ class GroupController extends Controller
     /**
      * @Route("/groups_list_ajax", name="groups_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_GROUP_VIEW, ROLE_GROUP_CREATE")
+     * @JMS\Secure(roles="ROLE_GROUP_VIEW, ROLE_GROUP_CREATE, ROLE_ADMIN")
      */
     public function listAjaxAction()
     {
@@ -59,7 +59,7 @@ class GroupController extends Controller
      * @Template()
      * @param Request $request
      * @return null|RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_GROUP_CREATE")
+     * @JMS\Secure(roles="ROLE_GROUP_CREATE, ROLE_ADMIN")
      */
     public function newAction(Request $request)
     {
@@ -106,7 +106,7 @@ class GroupController extends Controller
      * @param Request $request
      * @param Group $group
      * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_GROUP_CREATE")
+     * @JMS\Secure(roles="ROLE_GROUP_CREATE, ROLE_ADMIN")
      */
     public function groupUpdateAction(Request $request, Group $group)
     {
@@ -141,7 +141,7 @@ class GroupController extends Controller
      * @param Request $request
      * @param Group $group
      * @return RedirectResponse
-     * @JMS\Secure(roles="ROLE_GROUP_CREATE")
+     * @JMS\Secure(roles="ROLE_GROUP_CREATE, ROLE_ADMIN")
      */
     public function groupDeleteAction(Request $request, Group $group)
     {
@@ -163,7 +163,7 @@ class GroupController extends Controller
      * @param Request $request
      * @param Group $group
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_GROUP_VIEW, ROLE_GROUP_CREATE")
+     * @JMS\Secure(roles="ROLE_GROUP_VIEW, ROLE_GROUP_CREATE, ROLE_ADMIN")
      */
     public function detailsAction(Request $request, Group $group)
     {

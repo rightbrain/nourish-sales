@@ -54,14 +54,6 @@ class StockHistory
     private $fromFactory;
 
     /**
-     * @var Warehouse
-     *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Warehouse")
-     * @ORM\JoinColumn(name="to_warehouse", nullable=false)
-     */
-    private $toWarehouse;
-
-    /**
      * @var text
      *
      * @ORM\Column(name="description", type="text", nullable=true)
@@ -113,22 +105,6 @@ class StockHistory
     public function setFromFactory($fromFactory)
     {
         $this->fromFactory = $fromFactory;
-    }
-
-    /**
-     * @return Warehouse
-     */
-    public function getToWarehouse()
-    {
-        return $this->toWarehouse;
-    }
-
-    /**
-     * @param Warehouse $toWarehouse
-     */
-    public function setToWarehouse($toWarehouse)
-    {
-        $this->toWarehouse = $toWarehouse;
     }
 
     /**
