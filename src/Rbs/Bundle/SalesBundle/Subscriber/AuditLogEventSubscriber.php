@@ -20,6 +20,11 @@ class AuditLogEventSubscriber implements EasyAuditEventSubscriberInterface
             "delivery.shipped.partially",
             "delivery.shipped",
             "payment.add",
+            "delivery.delivered",
+            "delivery.vehicle_in",
+            "delivery.vehicle_out",
+            "delivery.start_loading",
+            "delivery.finish_loading",
         );
     }
 }
