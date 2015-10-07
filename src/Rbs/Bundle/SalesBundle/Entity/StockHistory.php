@@ -54,7 +54,7 @@ class StockHistory
     private $fromFactory;
 
     /**
-     * @var text
+     * @var string
      *
      * @ORM\Column(name="description", type="text", nullable=true)
      */

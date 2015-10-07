@@ -127,17 +127,15 @@ class StockController extends Controller
     }
 
     /**
-     * @Route("/stock/{id}/create/warehouse/{warehouseId}", name="stock_create", options={"expose"=true})
+     * @Route("/stock/{id}/create", name="stock_create", options={"expose"=true})
      * @Template("RbsSalesBundle:Stock:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_STOCK_CREATE")
      */
-    public function createAction(Stock $stock, $warehouseId)
+    public function createAction(Stock $stock)
     {
         $stockHistory = new StockHistory();
-        $warehouse = $this->getDoctrine()->getRepository('RbsCoreBundle:Warehouse')->find($warehouseId);
-        $stockHistory->setToWarehouse($warehouse);
         $form = $this->createForm(new StockHistoryForm(), $stockHistory);
 
         return array(

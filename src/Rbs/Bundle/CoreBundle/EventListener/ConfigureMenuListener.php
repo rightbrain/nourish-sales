@@ -18,13 +18,10 @@ class ConfigureMenuListener extends ContextAwareListener
             return $menu;
         }
 
-        if ($this->authorizationChecker->isGranted('ROLE_USER')) {
-
-            $menu->addChild('Manage System', array())
-                ->setAttribute('dropdown', true)
-                ->setAttribute('icon', 'fa fa-cog')
-                ->setLinkAttribute('data-hover', 'dropdown');
-        }
+        $menu->addChild('Manage System', array())
+            ->setAttribute('dropdown', true)
+            ->setAttribute('icon', 'fa fa-cog')
+            ->setLinkAttribute('data-hover', 'dropdown');
 
         if ($this->authorizationChecker->isGranted('ROLE_ITEM_MANAGE')) {
             $menu['Manage System']->addChild('Items', array('route' => 'item'))
@@ -105,6 +102,10 @@ class ConfigureMenuListener extends ContextAwareListener
             if ($this->isMatch('vendor')) {
                 $menu['Manage System']->getChild('Vendors')->setCurrent(true);
             }
+        }
+
+        if (empty($menu->getChild('Manage System')->getChildren())) {
+            $menu->removeChild($menu['Manage System']);
         }
 
         return $menu;

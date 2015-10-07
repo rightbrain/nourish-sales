@@ -68,7 +68,7 @@ class StockDatatable extends BaseDatatable
                         ),
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
-                        'role' => 'ROLE_ADMIN',
+                        'role' => 'ROLE_STOCK_CREATE',
                     ),
                     array(
                         'route' => 'stock_history',
@@ -87,7 +87,7 @@ class StockDatatable extends BaseDatatable
                         ),
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
-                        'role' => 'ROLE_ADMIN',
+                        'role' => 'ROLE_STOCK_VIEW',
                     )
                 )
             ))
