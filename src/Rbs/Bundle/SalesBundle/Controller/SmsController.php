@@ -3,11 +3,11 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
-use Rbs\Bundle\SalesBundle\Entity\Sms;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use JMS\SecurityExtraBundle\Annotation as JMS;
 
 /**
  * Sms Controller.
@@ -18,6 +18,7 @@ class SmsController extends Controller
     /**
      * @Route("/sms", name="sms_home")
      * @Template()
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW")
      */
     public function indexAction()
     {
@@ -34,6 +35,7 @@ class SmsController extends Controller
      *
      * @Route("/sms_list_ajax", name="sms_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW")
      */
     public function listAjaxAction()
     {

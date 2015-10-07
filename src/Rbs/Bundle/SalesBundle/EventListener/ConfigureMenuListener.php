@@ -61,6 +61,14 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
+        if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW'))) {
+            $menu['Sales']->addChild('Unread SMS', array('route' => 'sms_home'))
+                ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('sms')) {
+                $menu['Sales']->getChild('Unread SMS')->setCurrent(true);
+            }
+        }
+
         return $menu;
     }
 }
