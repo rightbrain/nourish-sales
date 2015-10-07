@@ -47,13 +47,15 @@ class Payment
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Customer", inversedBy="payments", cascade={"persist"})
      * @ORM\JoinColumn(name="customer_id", nullable=false)
+     *
+     * @Assert\NotBlank()
      */
     private $customer;
 
     /**
      * @var array $type
      *
-     * @ORM\Column(name="payment_method", type="string", length=255, columnDefinition="ENUM('CACHE', 'CHEQUE', 'BANK')", nullable=false)
+     * @ORM\Column(name="payment_method", type="string", length=255, columnDefinition="ENUM('CASH', 'CHEQUE', 'BANK')", nullable=false)
      */
     private $paymentMethod = 'BANK';
 
@@ -61,6 +63,7 @@ class Payment
      * @var string
      *
      * @ORM\Column(name="bank_name", type="string", length=250, nullable=true)
+     * @Assert\NotBlank()
      */
     private $bankName;
 
@@ -68,6 +71,7 @@ class Payment
      * @var string
      *
      * @ORM\Column(name="branch_name", type="string", length=250, nullable=true)
+     * @Assert\NotBlank()
      */
     private $branchName;
 
@@ -75,6 +79,7 @@ class Payment
      * @var float
      *
      * @ORM\Column(name="amounts", type="float", nullable=false)
+     * @Assert\NotBlank()
      */
     private $amount;
 

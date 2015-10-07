@@ -101,6 +101,7 @@ class PaymentController extends BaseController
         $form = $this->createForm(new PaymentForm($this->get('request')), $payment, array(
             'action' => $this->generateUrl('payment_create'),
             'method' => 'POST',
+            'attr' => array('novalidate' => 'novalidate')
         ));
 
         if ('POST' === $request->getMethod()) {

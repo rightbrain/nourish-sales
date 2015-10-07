@@ -31,11 +31,7 @@ class PaymentForm extends AbstractType
         $customer = $this->request->request->get('payment[customer]', null, true);
 
         $builder
-            ->add('amount', 'text', array(
-                'constraints' => array(
-                    new NotBlank()
-                )
-            ))
+            ->add('amount')
             ->add('bankName', 'text')
             ->add('branchName', 'text')
             ->add('paymentMethod', 'choice', array(
@@ -43,14 +39,13 @@ class PaymentForm extends AbstractType
                 'choices'  => array(
                     'BANK' => 'BANK',
                     'CHEQUE' => 'CHEQUE',
-                    'CACHE' => 'CACHE'
+                    'CASH' => 'CASH'
                 ),
                 'required' => false,
             ))
             ->add('customer', 'entity', array(
                 'class' => 'RbsSalesBundle:Customer',
                 'property' => 'user.username',
-                'required' => false,
                 'empty_value' => 'Select Customer',
                 'empty_data' => null,
                 'query_builder' => function (CustomerRepository $repository)
@@ -65,7 +60,9 @@ class PaymentForm extends AbstractType
                         ->orderBy('p.fullName','ASC');
                 }
             ))
-            ->add('remark', 'textarea')
+            ->add('remark', 'textarea', array(
+                'required' => false,
+            ))
         ;
 
         $builder
@@ -73,6 +70,7 @@ class PaymentForm extends AbstractType
                 'class' => 'RbsSalesBundle:Order',
                 'property' => 'orderIdAndDueAmount',
                 'multiple' => true,
+                'required' => false,
                 'query_builder' => function (OrderRepository $repository) use ($customer)
                 {
                     if (!$customer) {
