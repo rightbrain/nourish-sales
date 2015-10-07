@@ -68,7 +68,7 @@ class DeliveryController extends BaseController
                     ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($dateFilter)));
             }
         };
-        //$query->addWhereAll($function);
+        $query->addWhereAll($function);
 
         return $query->getResponse();
     }
@@ -168,7 +168,7 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_ORDER_VERIFY")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      * @Route("/delivery/{id}/save", name="delivery_save", options={"expose"=true})
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
