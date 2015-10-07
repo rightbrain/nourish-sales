@@ -80,6 +80,7 @@ class UserController extends Controller
 
             if ($form->isValid()) {
 
+                $user->setEnabled(true);
                 $this->getDoctrine()->getRepository('RbsUserBundle:User')->create($user);
 
                 $this->get('session')->getFlashBag()->add(
