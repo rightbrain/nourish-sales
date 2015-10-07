@@ -149,8 +149,11 @@ var Delivery = function()
     function saveDelivery()
     {
         $('#deliveryView').on('shown.bs.modal', function (){
-            orderItemRemainingHandle();
-            orderProgressHandle();
+            setTimeout(function(){
+                orderItemRemainingHandle();
+                orderProgressHandle();
+                $('#process-actions span').tooltip();
+            }, 500);
         });
 
         $('body').on('click', '#save-delivery', function(){

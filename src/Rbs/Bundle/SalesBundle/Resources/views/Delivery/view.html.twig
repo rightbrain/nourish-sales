@@ -50,7 +50,7 @@
                                 <tr id="process-actions">
                                     <td class="text-center">
                                         {%- if delivery.vehicleIn is not null %}
-                                            {{ delivery.vehicleIn|date("H:i a") }}
+                                            <span data-original-title="{{ delivery.vehicleIn|date(php_date_format) }}">{{ delivery.vehicleIn|date("h:i a") }}</span>
                                         {%- else %}
                                             <button type="button" class="btn green" data-route="{{ path('delivery_vehicle_in', {id: delivery.id}) }}">In</button>
                                         {%- endif %}
@@ -58,7 +58,7 @@
 
                                     <td class="text-center">
                                         {%- if delivery.startLoad is not null %}
-                                            {{ delivery.startLoad|date("H:i a") }}
+                                            <span data-original-title="{{ delivery.vehicleIn|date(php_date_format) }}">{{ delivery.startLoad|date("h:i a") }}</span>
                                         {%- else %}
                                             <button type="button" class="btn green" data-route="{{ path('delivery_start_loading', {id: delivery.id}) }}" {%- if delivery.vehicleIn is null %} disabled="disabled" {% endif %}>Start</button>
                                         {%- endif %}
@@ -66,14 +66,18 @@
 
                                     <td class="text-center">
                                         {%- if delivery.finishLoad is not null %}
-                                            {{ delivery.finishLoad|date("H:i a") }}
+                                            <span data-original-title="{{ delivery.vehicleIn|date(php_date_format) }}">{{ delivery.finishLoad|date("h:i a") }}</span>
                                         {%- else %}
                                             <button type="button" data-action="finish-loading" data-route="{{ path('delivery_finish_loading', {id: delivery.id}) }}" class="btn green" {%- if delivery.startLoad is null %} disabled="disabled" {% endif %}>Finish</button>
                                         {% endif %}
                                     </td>
 
                                     <td class="text-center">
-                                        <button type="button" data-route="{{ path('delivery_vehicle_out', {id: delivery.id}) }}" class="btn green" disabled="disabled">Out</button>
+                                        {%- if delivery.vehicleOut is not null %}
+                                            <span data-original-title="{{ delivery.vehicleIn|date(php_date_format) }}">{{ delivery.vehicleOut|date("h:i a") }}</span>
+                                        {%- else %}
+                                            <button type="button" data-route="{{ path('delivery_vehicle_out', {id: delivery.id}) }}" class="btn green"  {%- if delivery.finishLoad is null %} disabled="disabled" {% endif %}>Out</button>
+                                        {%- endif %}
                                     </td>
                                 </tr>
                             </table>

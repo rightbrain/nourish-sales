@@ -102,7 +102,7 @@ class DeliveryController extends BaseController
         if (!$delivery->getVehicleIn()) {
             $delivery->setVehicleIn(new \DateTime());
             $this->getDoctrine()->getManager()->persist($delivery);
-            //$this->getDoctrine()->getManager()->flush();
+            $this->getDoctrine()->getManager()->flush();
 
             $this->dispatch('delivery.vehicle_in', new DeliveryEvent($delivery));
         }
