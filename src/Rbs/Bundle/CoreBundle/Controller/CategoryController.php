@@ -104,6 +104,9 @@ class CategoryController extends BaseController
         $form = $this->createForm(new CategoryForm(), $entity, array(
             'action' => $this->generateUrl('category_create'),
             'method' => 'POST',
+            'attr' => array(
+                'novalidate' => 'novalidate'
+            )
         ));
 
         $form->add('submit', 'submit', array('label' => 'Create'));
@@ -196,6 +199,9 @@ class CategoryController extends BaseController
         $form = $this->createForm(new CategoryForm(), $entity, array(
             'action' => $this->generateUrl('category_update', array('id' => $entity->getId())),
             'method' => 'PUT',
+            'attr' => array(
+                'novalidate' => 'novalidate'
+            )
         ));
 
         $form->add('submit', 'submit', array('label' => 'Update'));

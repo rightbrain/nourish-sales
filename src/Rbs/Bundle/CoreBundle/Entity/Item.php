@@ -4,6 +4,7 @@ namespace Rbs\Bundle\CoreBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
@@ -13,6 +14,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  *
  * @ORM\Table(name="items")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\ItemRepository")
+ * @UniqueEntity("name")
  * @ORMSubscribedEvents()
  */
 class Item
@@ -54,6 +56,7 @@ class Item
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $name;
 
@@ -61,6 +64,7 @@ class Item
      * @var string
      *
      * @ORM\Column(name="item_unit", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $itemUnit;
 
@@ -75,6 +79,7 @@ class Item
      * @var float
      *
      * @ORM\Column(name="prices", type="float")
+     * @Assert\NotBlank()
      */
     private $price;
 
@@ -89,12 +94,15 @@ class Item
      * @var string
      *
      * @ORM\Column(name="SKU", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $sku;
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
      * @ORM\JoinTable(name="join_items_bundles")
+     * @Assert\NotBlank()
+     * @Assert\Count(min = 1, minMessage = "Please select at least {{ limit }} module")
      **/
     private $bundles;
 

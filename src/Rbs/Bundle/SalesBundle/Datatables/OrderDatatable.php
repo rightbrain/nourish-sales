@@ -53,7 +53,8 @@ class OrderDatatable extends BaseDatatable
         $this->features->setFeatures(array_merge($this->defaultFeatures(), array('state_save' => true)));
         $this->options->setOptions(array_merge($this->defaultOptions(), array(
             'individual_filtering' => true,
-            'individual_filtering_position' => 'head'
+            'individual_filtering_position' => 'head',
+            'order' => [[0, 'desc']],
         )));
 
         $this->ajax->setOptions(array(
@@ -218,7 +219,7 @@ class OrderDatatable extends BaseDatatable
         }
 
         if ($canApproveOverCredit && in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_CREDIT_APPROVAL))) {
-            $html .= $this->generateMenuLink('Approve Credit', 'order_approve', array('id' => $order->getId()));
+            $html .= '<li><a href="'.$this->router->generate('review_payment', array('id'=> $order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Approve Credit</a></li>';
         }
 
         if ($canOrderVerify && $order->getOrderState() == Order::ORDER_STATE_PROCESSING

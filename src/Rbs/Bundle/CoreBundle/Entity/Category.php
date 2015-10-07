@@ -4,13 +4,16 @@ namespace Rbs\Bundle\CoreBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Category
  *
  * @ORM\Table(name="categories")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\CategoryRepository")
+ * @UniqueEntity("name")
  * @ORMSubscribedEvents()
  */
 class Category
@@ -37,6 +40,7 @@ class Category
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $name;
 
@@ -57,6 +61,8 @@ class Category
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
      * @ORM\JoinTable(name="join_categories_bundles")
+     * @Assert\NotBlank()
+     * @Assert\Count(min = 1, minMessage = "Please select at least {{ limit }} module")
      **/
     private $bundles;
 

@@ -17,9 +17,14 @@ class ItemForm extends AbstractType
         $builder
             ->add('status', 'choice', array(
                 'choices' => array('Disable', 'Enable'),
+                'attr' => array(
+                    'class' => 'input-small'
+                )
             ))
             ->add('name')
-            ->add('sku')
+            ->add('sku', null, array(
+                'label' => 'Item Code'
+            ))
             ->add('itemUnit')
             ->add('price')
             ->add('itemType', null, array(

@@ -101,6 +101,9 @@ class ItemTypeController extends BaseController
         $form = $this->createForm(new ItemTypeForm(), $entity, array(
             'action' => $this->generateUrl('itemtype_create'),
             'method' => 'POST',
+            'attr' => array(
+                'novalidate' => 'novalidate'
+            )
         ));
 
         $form->add('submit', 'submit', array('label' => 'Create'));
@@ -193,6 +196,9 @@ class ItemTypeController extends BaseController
         $form = $this->createForm(new ItemTypeForm(), $entity, array(
             'action' => $this->generateUrl('itemtype_update', array('id' => $entity->getId())),
             'method' => 'PUT',
+            'attr' => array(
+                'novalidate' => 'novalidate'
+            )
         ));
 
         $form->add('submit', 'submit', array('label' => 'Update'));

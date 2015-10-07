@@ -68,7 +68,7 @@ class DeliveryController extends BaseController
                     ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($dateFilter)));
             }
         };
-        $query->addWhereAll($function);
+        //$query->addWhereAll($function);
 
         return $query->getResponse();
     }

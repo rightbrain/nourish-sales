@@ -66,7 +66,7 @@ class ItemController extends BaseController
     /**
      * Creates a new Item entity.
      *
-     * @Route("/", name="item_create")
+     * @Route("/new", name="item_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:Item:new.html.twig")
      * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
@@ -106,6 +106,9 @@ class ItemController extends BaseController
         $form = $this->createForm(new ItemForm(), $entity, array(
             'action' => $this->generateUrl('item_create'),
             'method' => 'POST',
+            'attr' => array(
+                'novalidate' => 'novalidate'
+            )
         ));
 
         $form->add('submit', 'submit', array('label' => 'Create'));
@@ -198,6 +201,9 @@ class ItemController extends BaseController
         $form = $this->createForm(new ItemForm(), $entity, array(
             'action' => $this->generateUrl('item_update', array('id' => $entity->getId())),
             'method' => 'PUT',
+            'attr' => array(
+                'novalidate' => 'novalidate'
+            )
         ));
 
         $form->add('submit', 'submit', array('label' => 'Update'));
@@ -207,7 +213,7 @@ class ItemController extends BaseController
     /**
      * Edits an existing Item entity.
      *
-     * @Route("/{id}", name="item_update")
+     * @Route("/{id}/edit", name="item_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:Item:edit.html.twig")
      * @JMS\Secure(roles="ROLE_ITEM_MANAGE")

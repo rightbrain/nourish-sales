@@ -121,3 +121,7 @@ Change Quick Sidebar Width
 .dataTables_scrollBody .error{
     color: red;
 }
+
+.control-label.required:after{
+    content: ' *';
+}

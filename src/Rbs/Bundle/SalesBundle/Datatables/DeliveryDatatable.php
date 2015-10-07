@@ -32,7 +32,8 @@ class DeliveryDatatable extends BaseDatatable
         $this->features->setFeatures(array_merge($this->defaultFeatures(), array('state_save' => true)));
         $this->options->setOptions(array_merge($this->defaultOptions(), array(
             'individual_filtering' => true,
-            'individual_filtering_position' => 'head'
+            'individual_filtering_position' => 'head',
+            'order' => [[0, 'desc']],
         )));
 
         $this->ajax->setOptions(array(

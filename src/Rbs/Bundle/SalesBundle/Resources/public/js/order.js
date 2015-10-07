@@ -257,13 +257,13 @@ var Order = function()
 
     function formValidateInit()
     {
-        var isFormValid = true;
         var form = $('form[name=order]');
         if (!form.length) return;
 
         form.submit(function(){
-
+            var isFormValid = true;
             var orderItem = $('#orderItems');
+
             orderItem.find('tr').each(function(index, e){
                 var elm = $(e);
                 var item = elm.find('td:eq(0)');

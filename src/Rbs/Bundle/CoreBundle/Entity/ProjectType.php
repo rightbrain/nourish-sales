@@ -3,7 +3,9 @@ namespace Rbs\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
+use Symfony\Component\Validator\Constraints AS Assert;
 
 /**
  * Project
@@ -11,6 +13,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  * @ORM\Table(name="project_types")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\ProjectTypeRepository")
  * @ORMSubscribedEvents()
+ * @UniqueEntity("name")
  */
 class ProjectType
 {
@@ -31,6 +34,7 @@ class ProjectType
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $name;
 

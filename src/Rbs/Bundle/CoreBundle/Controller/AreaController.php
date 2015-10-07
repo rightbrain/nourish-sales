@@ -145,6 +145,9 @@ class AreaController extends BaseController
         $form = $this->createForm(new AreaForm($this->get('request')), $entity, array(
             'action' => $this->generateUrl('area_create'),
             'method' => 'POST',
+            'attr' => array(
+                'novalidate' => 'novalidate'
+            )
         ));
 
         $form->add('submit', 'submit', array('label' => 'Create'));
@@ -237,6 +240,9 @@ class AreaController extends BaseController
         $form = $this->createForm(new AreaForm($this->get('request')), $entity, array(
             'action' => $this->generateUrl('area_update', array('id' => $entity->getId())),
             'method' => 'PUT',
+            'attr' => array(
+                'novalidate' => 'novalidate'
+            )
         ));
 
         $form->add('submit', 'submit', array('label' => 'Update'));

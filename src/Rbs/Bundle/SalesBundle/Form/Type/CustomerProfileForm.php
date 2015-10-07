@@ -5,6 +5,7 @@ namespace Rbs\Bundle\SalesBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CustomerProfileForm extends AbstractType
 {
@@ -15,9 +16,21 @@ class CustomerProfileForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('fullName')
-            ->add('cellphone')
-            ->add('address')
+            ->add('fullName', null, array(
+                'constraints' => array(
+                    new NotBlank()
+                )
+            ))
+            ->add('cellphone', null, array(
+                'constraints' => array(
+                    new NotBlank()
+                )
+            ))
+            ->add('address', null, array(
+                'constraints' => array(
+                    new NotBlank()
+                )
+            ))
             ->add('file')
         ;
     }

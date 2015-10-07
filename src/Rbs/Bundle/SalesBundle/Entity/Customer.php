@@ -4,8 +4,8 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 use Rbs\Bundle\CoreBundle\Entity\Area;
 use Rbs\Bundle\CoreBundle\Entity\Warehouse;
 use Rbs\Bundle\UserBundle\Entity\User;
-
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
@@ -16,6 +16,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  * @ORM\Table(name="customers")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\CustomerRepository")
  * @ORMSubscribedEvents()
+ * @UniqueEntity("customerID")
  */
 class Customer
 {
@@ -88,6 +89,7 @@ class Customer
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="agent", nullable=true)
+     * @Assert\NotBlank()
      */
     private $agent;
 
@@ -96,6 +98,7 @@ class Customer
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Warehouse")
      * @ORM\JoinColumn(name="warehouse", nullable=true)
+     * @Assert\NotBlank()
      */
     private $warehouse;
 

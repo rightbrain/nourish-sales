@@ -79,7 +79,7 @@
                                             <th>Warehouse</th>
                                             <td>{{ customer.warehouse.name }}</td>
                                             <th>Group</th>
-                                            <td>{{ customer.customerGroup.label }}</td>
+                                            <td>{{ customer.customerGroup.label|default('') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Address</th>

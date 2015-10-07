@@ -6,7 +6,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity
@@ -37,6 +36,7 @@ class Profile
      * @var string
      *
      * @ORM\Column(name="full_name", type="string", length=200 , nullable=true)
+     * @Assert\NotBlank()
      */
     protected $fullName;
 
@@ -44,6 +44,7 @@ class Profile
      * @var string
      *
      * @ORM\Column(name="cellphone", type="string", length=15, nullable=true, unique=true)
+     * @Assert\NotBlank()
      */
     private $cellphone;
 
@@ -55,9 +56,10 @@ class Profile
     private $designation;
 
     /**
-     * @var text
+     * @var string
      *
      * @ORM\Column(name="address", type="text", nullable=true)
+     * @Assert\NotBlank()
      */
     private $address;
 

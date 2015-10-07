@@ -45,7 +45,8 @@ class PaymentDatatable extends BaseDatatable
         $this->features->setFeatures($this->defaultFeatures());
         $this->options->setOptions(array_merge($this->defaultOptions(), array(
             'individual_filtering' => true,
-            'individual_filtering_position' => 'head'
+            'individual_filtering_position' => 'head',
+            'order' => [[0, 'desc']],
         )));
 
         $this->callbacks->setCallbacks(array

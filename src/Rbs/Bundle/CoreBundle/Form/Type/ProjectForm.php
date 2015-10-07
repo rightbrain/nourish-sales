@@ -15,25 +15,29 @@ class ProjectForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('isHeadOffice', null, array(
+            /*->add('isHeadOffice', null, array(
                 'required' => false
+            ))*/
+            ->add('projectName', null, array(
+                'label' => 'Name'
             ))
-            ->add('projectName')
             ->add('address')
-            ->add('costCenterNumber')
+            /*->add('costCenterNumber')
             ->add('projectHead', null, array(
                 'attr' => array('class' => 'select2me')
             ))
             ->add('projectContactPerson', null, array(
                 'attr' => array('class' => 'select2me')
-            ))
+            ))*/
             ->add('projectArea', null, array(
-                'attr' => array('class' => 'select2me')
+                'attr' => array('class' => 'select2me'),
+                'label' => 'Area'
             ))
             ->add('projectCategory', null, array(
-                'attr' => array('class' => 'select2me')
+                'attr' => array('class' => 'select2me'),
+                'label' => 'Factory Type'
             ))
-            ->add('users')
+            //->add('users')
             ->add('bundles', null, array('label' => 'Modules'))
         ;
     }

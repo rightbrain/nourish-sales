@@ -40,6 +40,7 @@ class AreaForm extends AbstractType
                 'attr' => array(
                     'class' => 'zilla-selector select2me'
                 ),
+                'required' => false
             ))
             ->add('level2', 'entity', array(
                 'label' => 'Thana/UpoZilla',
@@ -60,6 +61,7 @@ class AreaForm extends AbstractType
                     'class' => 'thana-selector select2me'
                 ),
                 'placeholder' => 'Choose an option',
+                'required' => false
             ))
             ->add('level3', 'entity', array(
                 'label' => 'Union',

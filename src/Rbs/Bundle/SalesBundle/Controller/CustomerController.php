@@ -79,7 +79,9 @@ class CustomerController extends BaseController
 
         $service = $this->get('rbs_erp.sales.registration.form.type');
 
-        $form = $this->createForm($service, $customer);
+        $form = $this->createForm($service, $customer, array(
+            'attr' => array('novalidate' => 'novalidate')
+        ));
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
@@ -114,7 +116,9 @@ class CustomerController extends BaseController
      */
     public function updateAction(Request $request, Customer $customer)
     {
-        $form = $this->createForm(new CustomerUpdateForm(), $customer);
+        $form = $this->createForm(new CustomerUpdateForm(), $customer, array(
+            'attr' => array('novalidate' => 'novalidate')
+        ));
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);

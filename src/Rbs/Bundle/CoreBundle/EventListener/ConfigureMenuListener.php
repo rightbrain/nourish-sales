@@ -67,18 +67,18 @@ class ConfigureMenuListener extends ContextAwareListener
         }
 
         if ($this->authorizationChecker->isGranted(array('ROLE_FACTORY_MANAGE', 'ROLE_PROJECT_MANAGE'))) {
-            $menu['Manage System']->addChild('Projects', array('route' => 'project'))
+            $menu['Manage System']->addChild('Factories', array('route' => 'project'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('project') && !$this->isMatch('projecttype')) {
-                $menu['Manage System']->getChild('Projects')->setCurrent(true);
+                $menu['Manage System']->getChild('Factories')->setCurrent(true);
             }
         }
 
         if ($this->authorizationChecker->isGranted(array('ROLE_PROJECT_TYPE_MANAGE', 'ROLE_FACTORY_TYPE_MANAGE'))) {
-            $menu['Manage System']->addChild('Project Types', array('route' => 'projecttype'))
+            $menu['Manage System']->addChild('Factory Types', array('route' => 'projecttype'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('projecttype')) {
-                $menu['Manage System']->getChild('Project Types')->setCurrent(true);
+                $menu['Manage System']->getChild('Factory Types')->setCurrent(true);
             }
         }
 

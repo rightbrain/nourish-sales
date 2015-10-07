@@ -48,6 +48,9 @@ class StockHistoryDatatable extends BaseDatatable
         $stockId = $this->request->get('stock');
         $this->features->setFeatures($this->defaultFeatures());
         $this->options->setOptions($this->defaultOptions());
+        $this->options->setOptions(array_merge($this->defaultOptions(), array(
+            'order' => [[0, 'desc']],
+        )));
 
         $this->ajax->setOptions(array(
             'url' => $this->router->generate('stock_history_list_ajax', array('stock' => $stockId)),

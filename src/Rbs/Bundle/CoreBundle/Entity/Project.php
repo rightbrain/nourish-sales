@@ -6,7 +6,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
+use Symfony\Component\Validator\Constraints AS Assert;
 
 /**
  * Project
@@ -14,6 +16,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  * @ORM\Table(name="projects")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\ProjectRepository")
  * @ORMSubscribedEvents()
+ * @UniqueEntity("projectName")
  */
 class Project
 {
@@ -34,6 +37,7 @@ class Project
      * @var string
      *
      * @ORM\Column(name="projects_name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $projectName;
 
@@ -41,6 +45,7 @@ class Project
      * @var string
      *
      * @ORM\Column(name="address", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $address;
 
@@ -79,6 +84,7 @@ class Project
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Area")
      * @ORM\JoinColumn(name="projects_area", nullable=true)
+     * @Assert\NotBlank()
      */
     private $projectArea;
 
@@ -105,6 +111,8 @@ class Project
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
      * @ORM\JoinTable(name="join_projects_bundles")
+     * @Assert\NotBlank()
+     * @Assert\Count(min = 1, minMessage = "Please select at least {{ limit }} module")
      **/
     private $bundles;
 

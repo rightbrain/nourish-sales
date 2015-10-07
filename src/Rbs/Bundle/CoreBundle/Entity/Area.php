@@ -5,6 +5,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Area
@@ -31,6 +32,7 @@ class Area
      * @var string
      *
      * @ORM\Column(name="areas_name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $areaName;
 

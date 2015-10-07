@@ -6,6 +6,7 @@ use Rbs\Bundle\CoreBundle\Repository\AreaRepository;
 use Rbs\Bundle\CoreBundle\Repository\WarehouseRepository;
 use Rbs\Bundle\SalesBundle\Repository\CustomerGroupRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -27,14 +28,9 @@ class CustomerForm extends AbstractType
                     '1' => 'Yes'
                 )
             ))
-            ->add('customerID', 'text', array(
+            ->add('customerID', null, array(
                 'constraints' => array(
-                    new NotBlank(array(
-                        'message'=>'Customer ID should not be blank'
-                    )),
-                    new Length(array(
-                        'min' => 4
-                    )),
+                    new NotBlank()
                 )
             ))
             ->add('creditLimit')

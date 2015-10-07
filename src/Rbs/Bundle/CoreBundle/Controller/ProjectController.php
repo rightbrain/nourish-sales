@@ -14,7 +14,7 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
 /**
  * Project controller.
  *
- * @Route("/project")
+ * @Route("/factory")
  */
 class ProjectController extends BaseController
 {
@@ -79,7 +79,7 @@ class ProjectController extends BaseController
             $em = $this->getDoctrine()->getManager();
             $em->persist($entity);
             $em->flush();
-            $this->flashMessage('success', 'Project Created Successfully');
+            $this->flashMessage('success', 'Factory Created Successfully');
             return $this->redirect($this->generateUrl('project'));
         }
 
@@ -101,6 +101,7 @@ class ProjectController extends BaseController
         $form = $this->createForm(new ProjectForm(), $entity, array(
             'action' => $this->generateUrl('project_create'),
             'method' => 'POST',
+            'attr' => array('novalidate' => 'novalidate')
         ));
 
         $form->add('submit', 'submit', array('label' => 'Create'));
@@ -142,7 +143,7 @@ class ProjectController extends BaseController
         $entity = $em->getRepository('RbsCoreBundle:Project')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
+            throw $this->createNotFoundException('Unable to find Factory entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -168,7 +169,7 @@ class ProjectController extends BaseController
         $entity = $em->getRepository('RbsCoreBundle:Project')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
+            throw $this->createNotFoundException('Unable to find Factory entity.');
         }
 
         $editForm = $this->createEditForm($entity);
@@ -193,6 +194,7 @@ class ProjectController extends BaseController
         $form = $this->createForm(new ProjectForm(), $entity, array(
             'action' => $this->generateUrl('project_update', array('id' => $entity->getId())),
             'method' => 'PUT',
+            'attr' => array('novalidate' => 'novalidate')
         ));
 
         $form->add('submit', 'submit', array('label' => 'Update'));
@@ -215,7 +217,7 @@ class ProjectController extends BaseController
         $entity = $em->getRepository('RbsCoreBundle:Project')->find($id);
 
         if (!$entity) {
-            throw $this->createNotFoundException('Unable to find Project entity.');
+            throw $this->createNotFoundException('Unable to find Factory entity.');
         }
 
         $deleteForm = $this->createDeleteForm($id);
@@ -224,7 +226,7 @@ class ProjectController extends BaseController
 
         if ($editForm->isValid()) {
             $em->flush();
-            $this->flashMessage('success', 'Project Updated Successfully');
+            $this->flashMessage('success', 'Factory Updated Successfully');
             return $this->redirect($this->generateUrl('project'));
         }
 
@@ -252,9 +254,9 @@ class ProjectController extends BaseController
             $entity = $em->getRepository('RbsCoreBundle:Project')->find($id);
 
             if (!$entity) {
-                throw $this->createNotFoundException('Unable to find Project entity.');
+                throw $this->createNotFoundException('Unable to find Factory entity.');
             }
-            $this->flashMessage('success', 'Project Deleted Successfully');
+            $this->flashMessage('success', 'Factory Deleted Successfully');
             $em->remove($entity);
             $em->flush();
         }

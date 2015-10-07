@@ -4,7 +4,9 @@ namespace Rbs\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
+use Symfony\Component\Validator\Constraints AS Assert;
 
 /**
  * Warehouse
@@ -12,6 +14,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  * @ORM\Table(name="warehouses")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\WarehouseRepository")
  * @ORMSubscribedEvents()
+ * @UniqueEntity("name")
  */
 class Warehouse
 {
@@ -32,6 +35,7 @@ class Warehouse
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank()
      */
     private $name;
 
@@ -39,6 +43,7 @@ class Warehouse
      * @var string
      *
      * @ORM\Column(name="description", type="text")
+     * @Assert\NotBlank()
      */
     private $description;
 
