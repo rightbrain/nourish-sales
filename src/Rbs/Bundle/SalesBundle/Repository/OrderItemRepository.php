@@ -69,4 +69,23 @@ class OrderItemRepository extends EntityRepository
 
         return $query->getQuery()->getSingleScalarResult();
     }
+
+    public function orderItemReport($data)
+    {
+        $query = $this->createQueryBuilder('oi');
+        $query->join('oi.order', 'o');
+        $query->join('oi.item', 'i');
+
+        $this->handleSearchByItem($data['search']['item'], $query);
+
+        return $query->getQuery()->getResult();
+    }
+
+    protected function handleSearchByItem($item, $query)
+    {
+        if (!empty($item)) {
+            $query->where('i.id = :item');
+            $query->setParameter('item', $item);
+        }
+    }
 }
