@@ -27,7 +27,7 @@ class Group extends BaseGroup
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     protected $description;
 
