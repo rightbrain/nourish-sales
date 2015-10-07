@@ -24,7 +24,12 @@ class SecurityPermissionProvider implements ProviderInterface
 
             'STOCK' => array(
                 'ROLE_STOCK_VIEW', 'ROLE_STOCK_CREATE'
+            ),
+
+            'DELIVERY' => array(
+                'ROLE_DELIVERY_MANAGE'
             )
+
         );
     }
 }

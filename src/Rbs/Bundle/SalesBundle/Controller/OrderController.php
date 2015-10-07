@@ -416,7 +416,7 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_PAYMENT_APPROVE")
+     * @JMS\Secure(roles="ROLE_ORDER_VERIFY")
      * @Route("/order/{id}/verify", name="order_verify")
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response

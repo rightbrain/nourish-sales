@@ -24,7 +24,7 @@ class DeliveryController extends BaseController
      * @Route("/deliveries", name="deliveries_home")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      */
     public function indexAction(Request $request)
     {
@@ -41,7 +41,7 @@ class DeliveryController extends BaseController
      *
      * @Route("/delivery_list_ajax", name="delivery_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      */
     public function listAjaxAction(Request $request)
     {
@@ -74,7 +74,7 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_USER")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      * @Route("/delivery/{id}", name="delivery_view", options={"expose"=true})
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
@@ -92,7 +92,7 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_USER")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      * @Route("/delivery/{id}/vehicle-in", name="delivery_vehicle_in")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
@@ -111,7 +111,7 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_USER")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      * @Route("/delivery/{id}/start-loading", name="delivery_start_loading")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
@@ -130,7 +130,7 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_USER")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      * @Route("/delivery/{id}/finish-loading", name="delivery_finish_loading")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
@@ -149,7 +149,7 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_USER")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      * @Route("/delivery/{id}/vehicle-out", name="delivery_vehicle_out")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
@@ -168,7 +168,7 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_USER")
+     * @JMS\Secure(roles="ROLE_ORDER_VERIFY")
      * @Route("/delivery/{id}/save", name="delivery_save", options={"expose"=true})
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response

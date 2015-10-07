@@ -29,7 +29,7 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_DELIVERY_MANAGE'))) {
             $menu['Sales']->addChild('Deliveries', array('route' => 'deliveries_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('deliver')) {
@@ -45,7 +45,7 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_CUSTOMER', 'ROLE_ORDER_VIEW', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_APPROVE', 'ROLE_PAYMENT_OVER_CREDIT_APPROVE'))) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_CUSTOMER', 'ROLE_PAYMENT_VIEW', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_APPROVE', 'ROLE_PAYMENT_OVER_CREDIT_APPROVE'))) {
             $menu['Sales']->addChild('Payments', array('route' => 'payments_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('payment')) {

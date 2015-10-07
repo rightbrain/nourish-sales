@@ -233,7 +233,7 @@ class CustomerController extends BaseController
      * @Route("find_customer_ajax", name="find_customer_ajax", options={"expose"=true})
      * @param Request $request
      * @return Response
-     * @JMS\Secure(roles="ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
      */
     public function findCustomerAction(Request $request)
     {
