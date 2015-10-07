@@ -15,7 +15,7 @@
                                 <tr><th class="col-md-8">Order Number</th><td class="col-md-4">{{ order.id }}</td></tr>
                                 <tr><th>Customer Name</th><td>{{ order.customer.user.profile.fullName }}</td></tr>
                                 {% if order.createdBy is not null %}
-                                    <tr><th>Created By</th><td>{{ order.createdBy.username }}</td></tr>
+                                    <tr><th>Created By</th><td>{{ order.createdBy.username|default('') }}</td></tr>
                                 {% endif %}
                                 <tr><th>Order Amount</th><td>{{ order.totalAmount|number_format(2) }}</td></tr>
                                 <tr><th>Paid Amount</th><td>{{ order.paidAmount|number_format(2) }}</td></tr>

@@ -33,7 +33,7 @@
                                         </tr>
                                         <tr>
                                             <th>Created By</th>
-                                            <td>{{ order.createdBy.username }}</td>
+                                            <td>{{ order.createdBy.username|default('') }}</td>
                                             <th>SMS ref.</th>
                                             <td>{{ order.refSMS.msg | default('N/A') }}</td>
                                         </tr>
