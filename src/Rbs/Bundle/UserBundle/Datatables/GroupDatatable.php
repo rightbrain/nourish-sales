@@ -23,13 +23,11 @@ class GroupDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-                ->add('name', 'column', array('title' => 'Name',))
+                ->add('name', 'column', array('title' => 'Name','width' => '20px'))
                 ->add('description', 'column', array('title' => 'Description',))
                 ->add(null, 'action', array(
-                    'width' => '180px',
-                    'title' => 'Update',
-                    'start_html' => '<div class="wrapper">',
-                    'end_html' => '</div>',
+                    'width' => '170px',
+                    'title' => 'Action',
                     'actions' => array(
                         array(
                             'route' => 'group_update',
@@ -47,15 +45,7 @@ class GroupDatatable extends BaseDatatable
                             'confirm' => false,
                             'confirm_message' => 'Are you sure?',
                             'role' => 'ROLE_ADMIN',
-                        )
-                    )
-                ))
-                ->add(null, 'action', array(
-                    'width' => '180px',
-                    'title' => 'Action',
-                    'start_html' => '<div class="wrapper">',
-                    'end_html' => '</div>',
-                    'actions' => array(
+                        ),
                         array(
                             'route' => 'group_delete',
                             'route_parameters' => array(

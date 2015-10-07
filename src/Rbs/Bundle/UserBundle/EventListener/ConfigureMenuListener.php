@@ -22,17 +22,21 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setLinkAttribute('data-hover', 'dropdown');
 
             if ($this->authorizationChecker->isGranted(array('ROLE_USER_VIEW', 'ROLE_USER_CREATE'))) {
-                $menu['User']->addChild('User List', array('route' => 'users_home'))
+                $menu['User']->addChild('Users', array('route' => 'users_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 $menu['User']->addChild('User Create', array('route' => 'user_create'))
                     ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('user_update')) {
+                    $menu['User']->getChild('Users')->setCurrent(true);
+                }
             }
 
             if ($this->authorizationChecker->isGranted(array('ROLE_GROUP_VIEW', 'ROLE_GROUP_CREATE'))) {
-                $menu['User']->addChild('Group List', array('route' => 'groups_home'))
+                $menu['User']->addChild('User Groups', array('route' => 'groups_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
-                $menu['User']->addChild('Group Create', array('route' => 'group_create'))
-                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('group')) {
+                    $menu['User']->getChild('User Groups')->setCurrent(true);
+                }
             }
         }
 
