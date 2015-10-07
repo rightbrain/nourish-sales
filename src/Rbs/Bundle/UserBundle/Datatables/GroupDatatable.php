@@ -23,7 +23,7 @@ class GroupDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-                ->add('name', 'column', array('title' => 'Name','width' => '20px'))
+                ->add('name', 'column', array('title' => 'Name','width' => '200px'))
                 ->add('description', 'column', array('title' => 'Description',))
                 ->add(null, 'action', array(
                     'width' => '170px',
