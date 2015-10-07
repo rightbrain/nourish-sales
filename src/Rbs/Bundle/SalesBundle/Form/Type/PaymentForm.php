@@ -45,7 +45,7 @@ class PaymentForm extends AbstractType
             ))
             ->add('customer', 'entity', array(
                 'class' => 'RbsSalesBundle:Customer',
-                'property' => 'user.username',
+                'property' => 'user.profile.fullName',
                 'empty_value' => 'Select Customer',
                 'empty_data' => null,
                 'query_builder' => function (CustomerRepository $repository)

@@ -243,7 +243,7 @@ class CustomerController extends BaseController
         $customer = $customerRepo->find($customerId);
 
         $response = new Response(json_encode(array(
-            'creditLimit' => $customer->getCreditLimit(),
+            'creditLimit' => $customerRepo->getCurrentCreditLimit($customer),
             'balance' => $customerRepo->getCurrentBalance($customer)
         )));
 

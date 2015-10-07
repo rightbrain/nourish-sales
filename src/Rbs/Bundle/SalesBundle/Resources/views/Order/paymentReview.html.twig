@@ -52,7 +52,7 @@
                                     <tr><td colspan="4">
                                             <div class="alert alert-danger" style="margin-bottom: 0; padding: 2px;">
                                                 <strong>Notice!</strong> This order amount is over credit.
-                                                {% if is_granted('ROLE_OVER_CREDIT_APPROVE') == false %}
+                                                {% if is_granted('ROLE_PAYMENT_OVER_CREDIT_APPROVE') == false %}
                                                     Need another approval by management.
                                                 {% endif %}
                                             </div>
@@ -74,9 +74,9 @@
         <a class="btn red order-cancel-modal-action">
             Order Cancel
         </a>
-        {% if is_granted('ROLE_OVER_CREDIT_APPROVE') %}
+        {% if is_granted('ROLE_PAYMENT_OVER_CREDIT_APPROVE') %}
             <a class="btn green confirmation-btn" href="{{ path('approve_credit_payment', {"id": order.id}) }}" data-title="Do you want to approve payment this order?">
-                Payment Approve
+                Credit Payment Approve
             </a>
         {% elseif is_granted('ROLE_PAYMENT_APPROVE') %}
             <a class="btn green confirmation-btn" href="{{ path('approve_payment', {"id": order.id}) }}">
