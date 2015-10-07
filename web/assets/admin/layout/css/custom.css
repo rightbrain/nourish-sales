@@ -125,3 +125,6 @@ Change Quick Sidebar Width
 .control-label.required:after{
     content: ' *';
 }
+div.dataTables_scroll{
+    clear: both;
+}
