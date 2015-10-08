@@ -49,10 +49,15 @@ var Payment = function()
 
         // Filter Button Action - Filter Payment
         $('.payment-filter-btn').on('click', function(){
+            var startDate = $('#date-filter input:eq(0)').datepicker("getDate");
+            var endDate = $('#date-filter input:eq(1)').datepicker("getDate");
+
             var fromDate = moment($('#date-filter input:eq(0)').datepicker("getDate")).format('DD-MM-YYYY');
             var toDate = moment($('#date-filter input:eq(1)').datepicker("getDate")).format('DD-MM-YYYY');
 
-            table.columns(0).search(fromDate+'--'+toDate);
+            if (startDate && endDate) {
+                table.columns(0).search(fromDate+'--'+toDate);
+            }
             if (allowCustomerSearch) {
                 table.columns(1).search($("#customer-filter").val());
             }
