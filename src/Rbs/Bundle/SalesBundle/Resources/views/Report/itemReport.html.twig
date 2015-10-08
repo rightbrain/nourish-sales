@@ -36,7 +36,7 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         <div class="input-icon">
-                                            <input type="submit" name="submit" value="Search" class="btn blue" style="margin-left: 50px;">
+                                            <input type="submit" name="submit" value="Report Generate" class="btn blue" style="margin-left: 50px;">
                                         </div>
                                     </div>
                                 </div>
@@ -50,24 +50,18 @@
                         <thead>
                         <tr>
                             <th>Sl</th>
-                            <th>Order ID</th>
                             <th>Item</th>
                             <th>Quantity</th>
-                            <th>Price</th>
                             <th>Total Amount</th>
-                            <th>Paid Amount</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for index, orderItem in orderItems %}
                             <tr>
                                 <td>{{ index + 1 }}.</td>
-                                <td>{{ orderItem.order.id | default('') }}</td>
-                                <td>{{ orderItem.item.name | default('') }}</td>
-                                <td>{{ orderItem.quantity | default('') }}</td>
-                                <td>{{ orderItem.price | default('') }}</td>
-                                <td>{{ orderItem.totalAmount | default('') }}</td>
-                                <td>{{ orderItem.paidAmount | default('') }}</td>
+                                <td>{{ orderItem['itemName'] | default('') }}</td>
+                                <td>{{ orderItem['quantity'] | default('') }}</td>
+                                <td>{{ orderItem['totalAmount'] | default('') }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>

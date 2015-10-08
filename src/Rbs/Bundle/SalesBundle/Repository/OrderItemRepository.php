@@ -75,17 +75,45 @@ class OrderItemRepository extends EntityRepository
         $query = $this->createQueryBuilder('oi');
         $query->join('oi.order', 'o');
         $query->join('oi.item', 'i');
+        $query->select('i.name as itemName');
+        $query->addSelect('i.id as id');
+        $query->addSelect('SUM(oi.quantity) as quantity');
+        $query->addSelect('SUM(oi.totalAmount) as totalAmount');
 
-        $this->handleSearchByItem($data['search']['item'], $query);
+        $this->handleSearchByItem($data, $query);
+        $this->handleSearchByTwoDate($data, $query);
 
-        return $query->getQuery()->getResult();
+        $query->andWhere('o.orderState = :COMPLETE');
+        $query->setParameter('COMPLETE', Order::ORDER_STATE_COMPLETE);
+
+        $query->groupBy('i.id');
+        $query->orderBy('i.name');
+
+        $result = $query->getQuery()->getResult();
+
+        $data = array();
+        foreach($result as $row) {
+            $data[$row['id']] = $row;
+        }
+
+        return $data;
     }
 
-    protected function handleSearchByItem($item, $query)
+    protected function handleSearchByItem($data, $query)
     {
-        if (!empty($item)) {
+        if (!empty($data['search']['item'])) {
             $query->where('i.id = :item');
-            $query->setParameter('item', $item);
+            $query->setParameter('item', $data['search']['item']);
+        }
+    }
+
+    protected function handleSearchByTwoDate($data, $query)
+    {
+        if (!empty($data['start_date']) && !empty($data['end_date'])) {
+            $query->andWhere('o.createdAt >= :start_date');
+            $query->andWhere('o.createdAt <= :end_date');
+            $query->setParameter('start_date', $data['start_date'].' 00:00:01');
+            $query->setParameter('end_date', $data['end_date'].' 23:59:59');
         }
     }
 }
