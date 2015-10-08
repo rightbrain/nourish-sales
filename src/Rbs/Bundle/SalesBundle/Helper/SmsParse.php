@@ -221,6 +221,7 @@ class SmsParse
             $this->payment->setBankName($bankName);
             $this->payment->setBranchName($bankBranch);
             $this->payment->setDepositDate(new \DateTime());
+            $this->payment->setPaymentVia('SMS');
         }
     }
 

@@ -122,6 +122,13 @@ class Order
     private $remark;
 
     /**
+     * @var Delivery
+     *
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\Delivery", mappedBy="orderRef")
+     */
+    private $deliveries;
+
+    /**
      * Get id
      *
      * @return integer
@@ -139,6 +146,7 @@ class Order
     public function __construct()
     {
         $this->orderItems = new ArrayCollection();
+        $this->deliveries = new ArrayCollection();
     }
 
     /**
@@ -396,4 +404,13 @@ class Order
     {
         return ($this->getTotalAmount() - $this->getPaidAmount());
     }
+
+    /**
+     * @return Delivery
+     */
+    public function getDeliveries()
+    {
+        return $this->deliveries;
+    }
+
 }

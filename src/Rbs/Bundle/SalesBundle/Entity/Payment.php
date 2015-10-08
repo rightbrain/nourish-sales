@@ -98,6 +98,13 @@ class Payment
     private $remark;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="payment_via", type="string", length=6, nullable=true)
+     */
+    private $paymentVia = 'SYSTEM';
+
+    /**
      * Get id
      *
      * @return integer
@@ -256,6 +263,26 @@ class Payment
     public function setDepositDate($depositDate)
     {
         $this->depositDate = $depositDate;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentVia()
+    {
+        return $this->paymentVia;
+    }
+
+    /**
+     * @param string $paymentVia
+     *
+     * @return Payment
+     */
+    public function setPaymentVia($paymentVia)
+    {
+        $this->paymentVia = $paymentVia;
 
         return $this;
     }

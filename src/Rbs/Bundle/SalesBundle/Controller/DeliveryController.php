@@ -8,8 +8,10 @@ use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Event\DeliveryEvent;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
+use Rbs\Bundle\SalesBundle\Form\Type\DeliveryForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -187,5 +189,44 @@ class DeliveryController extends BaseController
         $this->flashMessage('success', 'Order #' . $delivery->getOrderRef()->getId() . ' ' . $delivery->getOrderRef()->getDeliveryState() . ' Successfully');
 
         return new Response();
+    }
+
+    /**
+     * @Route("/update-delivery/{id}", name="update_delivery", options={"expose"=true})
+     * @Template("RbsSalesBundle:Delivery:_edit.html.twig")
+     * @param Request $request
+     * @param Delivery $delivery
+     * @JMS\Secure(roles="ROLE_ORDER_EDIT")
+     */
+    public function updateDeliveryAction(Request $request, Delivery $delivery)
+    {
+        $form = $this->createForm(
+            new DeliveryForm(), $delivery, array(
+                'action' => $this->generateUrl('update_delivery', array('id' => $delivery->getId())),
+                'attr'   => array(
+                    'novalidate' => 'novalidate',
+                ),
+            )
+        );
+
+        if ('POST' === $request->getMethod()) {
+
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $em = $this->getDoctrine()->getManager();
+
+                $em->persist($delivery);
+                $em->flush();
+
+                $this->flashMessage('success', 'Delivery Information Update Successfully!');
+
+                return $this->redirect($this->generateUrl('order_details', array('id' => $delivery->getOrderRef()->getId())));
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
     }
 }
