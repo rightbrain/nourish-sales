@@ -105,22 +105,22 @@ class SmsParse
         $this->order->setDeliveryState(Order::DELIVERY_STATE_PENDING);
         $this->order->setOrderVia('SMS');
         $this->order->setRefSMS($this->sms);
+        $this->em->persist($this->order);
 
         if ($this->payment) {
-            $payments = new ArrayCollection();
-            $payments->add($this->payment);
-            $this->order->setPayments($payments);
             $this->payment->addOrder($this->order);
             $this->payment->setCustomer($this->customer);
-            $this->em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($this->payment);
+            $this->em->persist($this->payment);
+
+            $payments = new ArrayCollection();
+            $this->order->setPayments($payments);
+            $payments->add($this->payment);
         }
 
         $delivery = new Delivery();
         $delivery->setOrderRef($this->order);
         $delivery->setWarehouse($this->customer->getWarehouse());
 
-        $this->em->persist($this->payment);
-        $this->em->persist($this->order);
         $this->em->persist($delivery);
         $this->em->flush();
         $this->em->clear();
@@ -221,6 +221,7 @@ class SmsParse
             $this->payment->setBankName($bankName);
             $this->payment->setBranchName($bankBranch);
             $this->payment->setDepositDate(new \DateTime());
+            $this->payment->setPaymentVia('SMS');
         }
     }
 

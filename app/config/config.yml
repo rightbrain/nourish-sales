@@ -41,7 +41,7 @@ twig:
     form:
         resources: ['bootstrap_3_horizontal_layout.html.twig']
     globals:
-        php_date_format: "d-m-y"
+        php_date_format: "d-m-Y"
         js_moment_date_format: "DD-MM-YYYY"
 
 # Assetic Configuration
