@@ -73,7 +73,8 @@ class Customer
     /**
      * @var string
      *
-     * @ORM\Column(name="customer_ID", type="string", length=255, nullable=false)
+     * @ORM\Column(name="customer_ID", type="string", length=255, nullable=false, unique=true)
+     * @Assert\NotBlank()
      */
     private $customerID;
 

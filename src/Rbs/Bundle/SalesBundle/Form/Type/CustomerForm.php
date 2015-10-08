@@ -28,9 +28,8 @@ class CustomerForm extends AbstractType
                     '1' => 'Yes'
                 )
             ))
-            ->add('customerID', null, array(
+            ->add('customerID', 'text', array(
                 'constraints' => array(
-                    new NotBlank()
                 )
             ))
             ->add('creditLimit')
