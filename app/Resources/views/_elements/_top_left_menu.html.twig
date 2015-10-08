@@ -8,10 +8,18 @@
                 <i class="fa fa-angle-down"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-default">
-                <li>
-                    <a href="{{ path('fos_user_profile_show') }}">
-                        <i class="icon-user"></i> My Profile </a>
-                </li>
+                {% if not is_granted('ROLE_CUSTOMER') %}
+                    <li>
+                        <a href="{{ path('fos_user_profile_show') }}">
+                            <i class="icon-user"></i> My Profile </a>
+                    </li>
+                {% endif %}
+                {% if is_granted('ROLE_CUSTOMER') %}
+                    <li>
+                        <a href="{{ path('customer_update_password', {'id': app.user.id} ) }}">
+                            <i class="icon-user"></i> Password Change </a>
+                    </li>
+                {% endif %}
                 <li>
                     <a href="{{ path('fos_user_security_logout') }}">
                         <i class="icon-key"></i> Log Out </a>

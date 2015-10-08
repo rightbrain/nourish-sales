@@ -5,6 +5,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Customer;
 use Rbs\Bundle\SalesBundle\Form\Type\CustomerUpdateForm;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdatePasswordForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -145,13 +146,13 @@ class CustomerController extends BaseController
      * @Route("/customer/update/password/{id}", name="customer_update_password", options={"expose"=true})
      * @Template("RbsSalesBundle:Customer:update.password.html.twig")
      * @param Request $request
-     * @param Customer $customer
+     * @param User $user
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_CUSTOMER")
      */
-    public function updatePasswordAction(Request $request, Customer $customer)
+    public function updatePasswordAction(Request $request, User $user)
     {
-        $form = $this->createForm(new UserUpdatePasswordForm(), $customer->getUser());
+        $form = $this->createForm(new UserUpdatePasswordForm(), $user);
 
         if ($request->getMethod() == 'POST') {
 
@@ -159,17 +160,17 @@ class CustomerController extends BaseController
 
             if ($form->isValid()) {
 
-                $customer->getUser()->setPassword($form->get('plainPassword')->getData());
-                $customer->getUser()->setPlainPassword($form->get('plainPassword')->getData());
+                $user->setPassword($form->get('plainPassword')->getData());
+                $user->setPlainPassword($form->get('plainPassword')->getData());
 
-                $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($customer);
+                $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
 
                 $this->get('session')->getFlashBag()->add(
                     'notice',
                     'Password Successfully Change'
                 );
 
-                return $this->redirect($this->generateUrl('customers_home'));
+                return $this->redirect($this->generateUrl('homepage'));
             }
         }
 
