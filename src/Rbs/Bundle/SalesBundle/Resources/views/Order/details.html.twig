@@ -44,10 +44,16 @@
                                             <td>{{ order.paidAmount }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Remarks</th>
-                                            <td>{{ order.remark }}</td>
+                                            <th>Area</th>
+                                            <td>{{ order.area.areaName | default('') }}</td>
                                             <th>orderVia</th>
                                             <td>{{ order.orderVia }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Remarks</th>
+                                            <td>{{ order.remark }}</td>
+                                            <th></th>
+                                            <td></td>
                                         </tr>
                                     </table>
                                 </div>
