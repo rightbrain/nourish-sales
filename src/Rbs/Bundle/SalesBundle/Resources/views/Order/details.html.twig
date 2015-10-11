@@ -46,7 +46,7 @@
                                         <tr>
                                             <th>Area</th>
                                             <td>{{ order.area.areaName | default('') }}</td>
-                                            <th>order via</th>
+                                            <th>Order Via</th>
                                             <td>{{ order.orderVia }}</td>
                                         </tr>
                                         <tr>
@@ -218,8 +218,6 @@
                                             {% for index, delivery in order.deliveries %}
                                                 <tr>
                                                     <td>{{ index + 1 }}.</td>
-                                                    <td>{{ delivery.contactName | default('---') }}</td>
-                                                    <td>{{ delivery.contactNo | default('---') }}</td>
                                                     <td>{{ delivery.warehouse.name }}</td>
                                                     <td>{{ delivery.contactName }}</td>
                                                     <td>{{ delivery.contactNo }}</td>
