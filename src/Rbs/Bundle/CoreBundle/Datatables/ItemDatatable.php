@@ -36,7 +36,7 @@ class ItemDatatable extends BaseDatatable
 
         $this->columnBuilder
             ->add('name', 'column', array('title' => 'Name',))
-            ->add('sku', 'column', array('title' => 'SKU',))
+            ->add('sku', 'column', array('title' => 'Item Code',))
             ->add('itemUnit', 'column', array('title' => 'Item Unit',))
             ->add('price', 'column', array('title' => 'Price',))
             ->add('itemType.itemType', 'column', array('title' => 'Item Type',))

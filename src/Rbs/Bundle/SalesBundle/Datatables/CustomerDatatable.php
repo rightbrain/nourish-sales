@@ -28,6 +28,7 @@ class CustomerDatatable extends BaseDatatable
             ->add('customerID', 'column', array('title' => 'Customer ID'))
             ->add('user.profile.fullName', 'column', array('title' => 'Customer name'))
             ->add('user.profile.cellphone', 'column', array('title' => 'Cell Phone'))
+            ->add('customerGroup.label', 'column', array('title' => 'Group'))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Update',
