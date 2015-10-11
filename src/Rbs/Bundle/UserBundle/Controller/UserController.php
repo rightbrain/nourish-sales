@@ -226,7 +226,10 @@ class UserController extends Controller
      */
     public function deleteAction(User $user)
     {
-        $user->getProfile()->removeFile($user->getProfile()->getPath());
+        if($user->getProfile()->getPath()){
+            $user->getProfile()->removeFile($user->getProfile()->getPath());
+        }
+
         $this->getDoctrine()->getRepository('RbsUserBundle:User')->delete($user);
 
         $this->get('session')->getFlashBag()->add(
