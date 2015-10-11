@@ -3,6 +3,7 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Rbs\Bundle\CoreBundle\Entity\Area;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
@@ -66,6 +67,14 @@ class Order
      * @ORM\JoinColumn(name="customer_id", nullable=false)
      */
     private $customer;
+
+    /**
+     * @var Area
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Area")
+     * @ORM\JoinColumn(name="area_id", nullable=true)
+     */
+    private $area;
 
     /**
      * @var array $type
@@ -411,6 +420,22 @@ class Order
     public function getDeliveries()
     {
         return $this->deliveries;
+    }
+
+    /**
+     * @return Area
+     */
+    public function getArea()
+    {
+        return $this->area;
+    }
+
+    /**
+     * @param Area $area
+     */
+    public function setArea($area)
+    {
+        $this->area = $area;
     }
 
 }
