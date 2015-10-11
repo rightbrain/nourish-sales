@@ -97,6 +97,16 @@ class OrderRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function adjustPaymentViaSms($payments)
+    {
+        /** @var Payment $payment */
+        foreach ($payments as $payment) {
+            if ($payment->getPaymentVia() == 'SMS') {
+                $this->orderAmountAdjust($payment);
+            }
+        }
+    }
+
     public function orderAmountAdjust($payments)
     {
         /** @var Payment $payments */
@@ -149,5 +159,36 @@ class OrderRepository extends EntityRepository
     {
 
 
+    }
+
+    public function cancelOrder(Order $order)
+    {
+        if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
+            $stockRepo = $this->_em->getRepository('RbsSalesBundle:Stock');
+            $oldQty = $stockRepo->extractOrderItemQuantity($order);
+            $stockRepo->subtractFromOnHold($oldQty);
+        }
+
+        $order->setOrderState(Order::ORDER_STATE_CANCEL);
+        $order->setPaymentState(Order::PAYMENT_STATE_PENDING);
+        $order->setDeliveryState(Order::DELIVERY_STATE_PENDING);
+        $order->setPaidAmount(0);
+
+        /** @var OrderItem $item */
+        foreach ($order->getOrderItems() as $item) {
+            $item->setPaidAmount(0);
+            $this->_em->persist($item);
+        }
+
+        /** @var Payment $payment */
+        foreach ($order->getPayments() as $payment) {
+            if ($payment->getPaymentVia() == 'SMS') {
+                $this->_em->remove($payment);
+            }
+        }
+
+        $this->_em->flush();
+
+        $this->update($order);
     }
 }
