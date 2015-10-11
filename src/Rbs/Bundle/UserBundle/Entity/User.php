@@ -33,6 +33,7 @@ class User extends BaseUser
 
     const CUSTOMER = 'CUSTOMER';
     const AGENT = 'AGENT';
+    const USER = 'USER';
 
     /**
      * @ORM\Id
