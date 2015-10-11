@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\SalesBundle\Form\Type\CustomerProfileForm;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -30,9 +31,9 @@ class UserCustomerForm extends AbstractType
             ))
             ->add('userType', 'choice', array(
                 'choices'  => array(
-                    'CUSTOMER' => 'CUSTOMER'
+                    'CUSTOMER' => User::CUSTOMER
                 ),
-                'data' => 'CUSTOMER'
+                'data' => User::CUSTOMER
             ))
             ->add('plainPassword', 'repeated', array(
                 'type' => 'password',
