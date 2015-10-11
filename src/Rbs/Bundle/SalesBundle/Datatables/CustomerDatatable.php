@@ -55,7 +55,7 @@ class CustomerDatatable extends BaseDatatable
                     array(
                         'route' => 'customer_update_password',
                         'route_parameters' => array(
-                            'id' => 'id'
+                            'id' => 'user.id'
                         ),
                         'label' => 'Edit pass',
                         'icon' => 'glyphicon glyphicon-edit',
