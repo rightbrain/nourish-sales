@@ -111,30 +111,6 @@ class CustomerDatatable extends BaseDatatable
                     )
                 )
             ))
-//            ->add(null, 'action', array(
-//                'width' => '180px',
-//                'title' => 'Show',
-//                'start_html' => '<div class="wrapper">',
-//                'end_html' => '</div>',
-//                'actions' => array(
-//                    array(
-//                        'route' => 'customer_details',
-//                        'route_parameters' => array(
-//                            'id' => 'id'
-//                        ),
-//                        'label' => 'Show',
-//                        'icon' => 'glyphicon',
-//                        'attributes' => array(
-//                            'rel' => 'tooltip',
-//                            'title' => 'show-action',
-//                            'class' => 'btn btn-default btn-xs',
-//                            'role' => 'button'
-//                        ),
-//                        'confirm' => false,
-//                        'confirm_message' => 'Are you sure?'
-//                    )
-//                )
-//            ))
         ;
     }
 
