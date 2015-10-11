@@ -72,7 +72,7 @@ class CustomerController extends BaseController
      * @Template("RbsSalesBundle:Customer:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE, ROLE_AGENT, ROLE_ADMIN")
      */
     public function createAction(Request $request)
     {
@@ -113,7 +113,7 @@ class CustomerController extends BaseController
      * @param Request $request
      * @param Customer $customer
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE, ROLE_AGENT, ROLE_ADMIN")
      */
     public function updateAction(Request $request, Customer $customer)
     {
@@ -148,7 +148,7 @@ class CustomerController extends BaseController
      * @param Request $request
      * @param User $user
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_CUSTOMER")
+     * @JMS\Secure(roles="ROLE_CUSTOMER, ROLE_ADMIN")
      */
     public function updatePasswordAction(Request $request, User $user)
     {
@@ -184,7 +184,7 @@ class CustomerController extends BaseController
      * @Template()
      * @param Customer $customer
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE, ROLE_ADMIN")
      */
     public function detailsAction(Customer $customer)
     {
@@ -212,7 +212,7 @@ class CustomerController extends BaseController
      * @Route("/customer/delete/{id}", name="customer_delete", options={"expose"=true})
      * @param Customer $customer
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE, ROLE_ADMIN")
      */
     public function deleteAction(Customer $customer)
     {
