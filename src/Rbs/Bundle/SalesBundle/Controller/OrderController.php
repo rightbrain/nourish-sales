@@ -241,23 +241,7 @@ class OrderController extends BaseController
             return $this->redirectOnInvalidOrderState($order);
         }
 
-        if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
-            $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
-            $oldQty = $stockRepo->extractOrderItemQuantity($order);
-            $stockRepo->subtractFromOnHold($oldQty);
-        }
-
-        $order->setOrderState(Order::ORDER_STATE_CANCEL);
-        $order->setPaymentState(Order::PAYMENT_STATE_PENDING);
-        $order->setDeliveryState(Order::DELIVERY_STATE_PENDING);
-        $order->setPaidAmount(0);
-        /** @var OrderItem $item */
-        foreach ($order->getOrderItems() as $item) {
-            $item->setPaidAmount(0);
-            $this->orderItemRepository()->update($item);
-        }
-
-        $this->orderRepository()->update($order);
+        $this->orderRepository()->cancelOrder($order);
 
         $this->dispatchApproveProcessEvent('order.canceled', $order);
 
@@ -384,8 +368,10 @@ class OrderController extends BaseController
             $order->setPaymentState(Order::PAYMENT_STATE_CREDIT_APPROVAL);
         } else if ($order->getTotalAmount() === $order->getPaidAmount()) {
             $order->setPaymentState(Order::PAYMENT_STATE_PAID);
+            $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
         } else {
             $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
+            $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
         }
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
@@ -405,6 +391,9 @@ class OrderController extends BaseController
      */
     public function paymentOverCreditApproveAction(Order $order)
     {
+        /** TODO: Refactor adjustment method. Multiple Update Query Executed */
+        $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
+
         if ($order->getTotalAmount() === $order->getPaidAmount()) {
             $order->setPaymentState(Order::PAYMENT_STATE_PAID);
         } else {

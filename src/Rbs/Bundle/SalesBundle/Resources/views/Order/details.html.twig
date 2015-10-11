@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('orders_home'), label: 'Back to List', 'icon': 'plus'}) }}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('orders_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}
                 <div class="dataTables_wrapper no-footer">
 
                     <div class="row">
@@ -60,7 +60,7 @@
                             </div>
                             <div class="portlet">
                                 <div class="portlet-title">
-                                    <div class="caption"> Order Progress </div>
+                                    <div class="caption"> Order Status </div>
                                 </div>
                                 <div class="portlet-body">
                                     <table class="table">
@@ -204,6 +204,7 @@
                                             <thead>
                                             <tr>
                                                 <th>Sl</th>
+                                                <th>Warehouse</th>
                                                 <th>Contact Name</th>
                                                 <th>Contact No</th>
                                                 <th>Vehicle In</th>
@@ -219,6 +220,9 @@
                                                     <td>{{ index + 1 }}.</td>
                                                     <td>{{ delivery.contactName | default('---') }}</td>
                                                     <td>{{ delivery.contactNo | default('---') }}</td>
+                                                    <td>{{ delivery.warehouse.name }}</td>
+                                                    <td>{{ delivery.contactName }}</td>
+                                                    <td>{{ delivery.contactNo }}</td>
                                                     <td>{% if delivery.vehicleIn is not null %} {{ delivery.vehicleIn|date(php_date_format ~ " h:i a") }} {% endif %}</td>
                                                     <td>{% if delivery.vehicleOut is not null %} {{ delivery.vehicleOut|date(php_date_format ~ " h:i a") }} {% endif %}</td>
                                                     {% if is_granted('ROLE_ORDER_EDIT') and order.orderState != 'COMPLETE' %}
