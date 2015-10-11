@@ -33,7 +33,7 @@
                                         </tr>
                                         <tr>
                                             <th>Created By</th>
-                                            <td>{{ order.createdBy.username|default('') }}</td>
+                                            <td>{{ order.createdBy.username | default('SMS') }}</td>
                                             <th>SMS ref.</th>
                                             <td>{{ order.refSMS.msg | default('N/A') }}</td>
                                         </tr>
@@ -46,7 +46,7 @@
                                         <tr>
                                             <th>Area</th>
                                             <td>{{ order.area.areaName | default('') }}</td>
-                                            <th>orderVia</th>
+                                            <th>order via</th>
                                             <td>{{ order.orderVia }}</td>
                                         </tr>
                                         <tr>
@@ -217,8 +217,8 @@
                                             {% for index, delivery in order.deliveries %}
                                                 <tr>
                                                     <td>{{ index + 1 }}.</td>
-                                                    <td>{{ delivery.contactName }}</td>
-                                                    <td>{{ delivery.contactNo }}</td>
+                                                    <td>{{ delivery.contactName | default('---') }}</td>
+                                                    <td>{{ delivery.contactNo | default('---') }}</td>
                                                     <td>{% if delivery.vehicleIn is not null %} {{ delivery.vehicleIn|date(php_date_format ~ " h:i a") }} {% endif %}</td>
                                                     <td>{% if delivery.vehicleOut is not null %} {{ delivery.vehicleOut|date(php_date_format ~ " h:i a") }} {% endif %}</td>
                                                     {% if is_granted('ROLE_ORDER_EDIT') and order.orderState != 'COMPLETE' %}
@@ -258,6 +258,38 @@
                                                     <td>{{ deliveryItem.orderItem.item.name }}</td>
                                                     <td>{{ deliveryItem.qty }}</td>
                                                     <td>{{ deliveryItem.delivery.finishLoad | date(php_date_format) }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            {% endif %}
+
+                            {% if auditLogs is not empty %}
+                                <div class="portlet">
+                                    <div class="portlet-title partial-delivered-items">
+                                        <div class="caption"> Action History </div>
+                                    </div>
+                                    <div class="portlet-body partial-delivered-items">
+
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Action</th>
+                                                    <th>By</th>
+                                                    <th>At</th>
+                                                    <th>Remarks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for auditLog in auditLogs %}
+                                                <tr>
+                                                    <td>{{ auditLog.type }}</td>
+                                                    <td>{{ auditLog.user }}</td>
+                                                    <td>{{ auditLog.eventTime|date(php_date_format ~ ' h:i A') }}</td>
+                                                    <td>{{ auditLog.reason }}</td>
                                                 </tr>
                                             {% endfor %}
                                             </tbody>

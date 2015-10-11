@@ -175,10 +175,14 @@ class OrderController extends BaseController
 
         $deliveredItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItems($order);
 
+        $auditLogs = $this->getDoctrine()->getRepository('RbsCoreBundle:AuditLog')->getByTypeOrObjectId(array(
+            'order.verified', 'order.hold', 'order.canceled', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
+
         return $this->render('RbsSalesBundle:Order:details.html.twig', array(
             'order' => $order,
             'deliveryItems' => $deliveryItems,
             'deliveredItems' => $deliveredItems,
+            'auditLogs' => $auditLogs,
         ));
     }
 
