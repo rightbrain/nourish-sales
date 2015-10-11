@@ -216,7 +216,9 @@ class CustomerController extends BaseController
      */
     public function deleteAction(Customer $customer)
     {
-        $customer->getUser()->getProfile()->removeFile($customer->getUser()->getProfile()->getPath());
+        if($customer->getUser()->getProfile()->getPath()) {
+            $customer->getUser()->getProfile()->removeFile($customer->getUser()->getProfile()->getPath());
+        }
 
         $this->getDoctrine()->getManager()->remove($customer);
         $this->getDoctrine()->getManager()->flush();
