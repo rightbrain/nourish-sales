@@ -223,6 +223,7 @@ class ItemController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('RbsCoreBundle:Item')->find($id);
+        $previousPrice = $entity->getPrice();
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Item entity.');
@@ -233,8 +234,14 @@ class ItemController extends BaseController
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            $currentPrice = floatval($request->request->get('rbs_bundle_corebundle_item')['price']);
             $em->flush();
             $this->flashMessage('success', 'Item Update Successfully');
+
+            if($currentPrice != $previousPrice){
+                $em->getRepository('RbsCoreBundle:ItemPriceLog')->itemPriceLog($this->getUser(), $id, $currentPrice, $previousPrice);
+            }
+
             return $this->redirect($this->generateUrl('item'));
         }
 
