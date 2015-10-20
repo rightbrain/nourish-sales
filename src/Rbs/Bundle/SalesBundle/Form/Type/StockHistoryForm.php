@@ -7,6 +7,7 @@ use Rbs\Bundle\CoreBundle\Repository\WarehouseRepository;
 use Rbs\Bundle\SalesBundle\RbsSalesBundle;
 use Rbs\Bundle\SalesBundle\Repository\StockRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
@@ -29,6 +30,13 @@ class StockHistoryForm extends AbstractType
             ->add('stockID', 'hidden', array(
                 'mapped' => false
             ))
+            ->add($builder->create('created_at', 'text', array(
+                'attr' => array(
+                    'class' => 'date-picker'
+                ),
+                'empty_data' => new \DateTime(),
+                'read_only' => true
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
             ->add('fromFactory', 'entity', array(
                 'class' => 'RbsCoreBundle:Project',
                 'property' => 'projectName',

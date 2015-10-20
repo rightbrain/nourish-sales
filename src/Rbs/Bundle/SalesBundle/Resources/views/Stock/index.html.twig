@@ -65,3 +65,20 @@
 
     {{ datatable_render_js(datatable) }}
 {% endblock %}
+
+{% block documentReady %}
+    {{ parent() }}
+
+    $('#ajax').on('shown.bs.modal', function (e) {
+        $('.date-picker, .input-daterange').datepicker({
+            format: "d-m-yyyy",
+            rtl: Metronic.isRTL(),
+            autoclose: true
+        });
+    });
+
+    $('#ajax').on('shown.bs.modal', function (e) {
+        $('.date-picker, .input-daterange').datepicker('setDate', new Date());
+    });
+
+{% endblock %}
