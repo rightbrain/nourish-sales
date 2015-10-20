@@ -51,12 +51,19 @@ class ItemDatatable extends BaseDatatable
             ->add('bundles.name', 'array', array('title' => 'Modules', 'data' => 'bundles[, ].name'))
             ->add(null, 'action', array(
                 'width' => '230px',
+                'title' => 'Log',
+                'actions' => array(
+                    $this->makeActionButton('ItemPriceLogs_home', array('item' => 'id'), 'ROLE_ADMIN', 'Price Log', 'Price Log', 'fa fa-pencil-square-o'),
+                    $this->makeActionButton('item_statue_change', array('id' => 'id'), 'ROLE_ADMIN', 'Enable', 'Enable', 'fa fa-check-circle-o', 'btn btn-default btn-xs confirmation-btn', array('render_if' => arraY('disabled'))),
+                    $this->makeActionButton('item_statue_change', array('id' => 'id'), 'ROLE_ADMIN', 'Disable', 'Disable', 'fa fa-ban', 'btn btn-default btn-xs confirmation-btn', array('render_if' => array('enabled'))),
+                )
+            ))
+            ->add(null, 'action', array(
+                'width' => '230px',
                 'title' => 'Action',
                 'actions' => array(
                     $this->makeActionButton('item_edit', array('id' => 'id'), 'ROLE_ADMIN', 'Edit', 'Edit', 'fa fa-pencil-square-o'),
                     $this->makeActionButton('item_delete', array('id' => 'id'), 'ROLE_ADMIN', 'Delete', 'Delete', 'fa fa-trash-o', 'btn btn-default btn-xs delete-list-btn'),
-                    $this->makeActionButton('item_statue_change', array('id' => 'id'), 'ROLE_ADMIN', 'Enable', 'Enable', 'fa fa-check-circle-o', 'btn btn-default btn-xs confirmation-btn', array('render_if' => arraY('disabled'))),
-                    $this->makeActionButton('item_statue_change', array('id' => 'id'), 'ROLE_ADMIN', 'Disable', 'Disable', 'fa fa-ban', 'btn btn-default btn-xs confirmation-btn', array('render_if' => array('enabled'))),
                 )
             ));
     }

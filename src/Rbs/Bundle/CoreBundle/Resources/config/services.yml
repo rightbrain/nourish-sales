@@ -22,6 +22,7 @@ services:
         class: Rbs\Bundle\CoreBundle\Datatables\ItemPriceLogDatatable
         tags:
             - { name: sg.datatable.view }
+        arguments: [@security.authorization_checker, @security.token_storage, @twig, @translator, @router, @doctrine.orm.entity_manager, @service_container]
 
     rbs_erp.core.datatable.audit_log:
         class: Rbs\Bundle\CoreBundle\Datatables\AuditLogDatatable
