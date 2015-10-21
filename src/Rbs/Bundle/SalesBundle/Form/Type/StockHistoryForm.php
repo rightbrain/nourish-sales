@@ -31,11 +31,13 @@ class StockHistoryForm extends AbstractType
                 'mapped' => false
             ))
             ->add($builder->create('created_at', 'text', array(
+                'label' => 'Date',
                 'attr' => array(
                     'class' => 'date-picker'
                 ),
                 'empty_data' => new \DateTime(),
-                'read_only' => true
+                'read_only' => true,
+                'required' => false
             ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
             ->add('fromFactory', 'entity', array(
                 'class' => 'RbsCoreBundle:Project',

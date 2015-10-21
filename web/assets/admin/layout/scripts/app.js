@@ -86,6 +86,16 @@ var App = function() {
                 $.xhrPool.abortAll();
             } catch(e){}
         });
+
+        // Datepicker Init on Modal
+        $(modals).on('shown.bs.modal', function (e) {
+            setTimeout(function(){
+                $('.date-picker').datepicker({
+                    format: "d-m-yyyy",
+                    autoclose: true
+                }).datepicker('setDate', new Date());
+            }, 200);
+        });
     }
 
     function init()
