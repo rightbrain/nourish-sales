@@ -3,7 +3,7 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\CoreBundle\Entity\Project;
-use Rbs\Bundle\CoreBundle\Entity\Warehouse;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;

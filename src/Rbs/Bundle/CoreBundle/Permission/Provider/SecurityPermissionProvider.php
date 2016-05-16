@@ -27,7 +27,7 @@ class SecurityPermissionProvider implements ProviderInterface
                 'ROLE_AREA_MANAGE', 'ROLE_AUDIT_LOG_VIEW', 'ROLE_CATEGORY_MANAGE',
                 'ROLE_ITEM_MANAGE', 'ROLE_ITEM_TYPE_MANAGE',
                 'ROLE_FACTORY_MANAGE', 'ROLE_FACTORY_TYPE_MANAGE',
-                'ROLE_WAREHOUSE_MANAGE'
+                'ROLE_DEPO_MANAGE'
             ));
         }
 

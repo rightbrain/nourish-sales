@@ -4,7 +4,7 @@ namespace Rbs\Bundle\SalesBundle\EventListener;
 
 use Doctrine\ORM\EntityManager;
 use Rbs\Bundle\CoreBundle\Event\ItemEvent;
-use Rbs\Bundle\CoreBundle\Event\WarehouseEvent;
+use Rbs\Bundle\CoreBundle\Event\DepoEvent;
 use Rbs\Bundle\SalesBundle\Entity\Stock;
 
 class StockCreateListener
@@ -21,25 +21,25 @@ class StockCreateListener
 
     public function onItemCreated(ItemEvent $itemEvent)
     {
-        foreach ($this->em->getRepository('RbsCoreBundle:Warehouse')->findAll() as $warehouse) {
+        foreach ($this->em->getRepository('RbsCoreBundle:Depo')->findAll() as $depo) {
             $item = $itemEvent->getItem();
 
             $stock = new Stock();
             $stock->setItem($item);
-            $stock->setWarehouse($warehouse);
+            $stock->setDepo($depo);
             $this->em->persist($stock);
             $this->em->flush($stock);
         }
     }
 
-    public function onWarehouseCreated(WarehouseEvent $warehouseEvent)
+    public function onDepoCreated(DepoEvent $depoEvent)
     {
         foreach ($this->em->getRepository('RbsCoreBundle:Item')->findAll() as $item) {
-            $warehouse = $warehouseEvent->getWarehouse();
+            $depo = $depoEvent->getDepo();
 
             $stock = new Stock();
             $stock->setItem($item);
-            $stock->setWarehouse($warehouse);
+            $stock->setDepo($depo);
             $this->em->persist($stock);
             $this->em->flush($stock);
         }

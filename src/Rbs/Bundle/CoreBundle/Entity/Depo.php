@@ -9,14 +9,14 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 use Symfony\Component\Validator\Constraints AS Assert;
 
 /**
- * Warehouse
+ * Depo
  *
- * @ORM\Table(name="warehouses")
- * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\WarehouseRepository")
+ * @ORM\Table(name="depos")
+ * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\DepoRepository")
  * @ORMSubscribedEvents()
  * @UniqueEntity("name")
  */
-class Warehouse
+class Depo
 {
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
@@ -66,7 +66,7 @@ class Warehouse
      * Set name
      *
      * @param string $name
-     * @return Warehouse
+     * @return Depo
      */
     public function setName($name)
     {
@@ -89,7 +89,7 @@ class Warehouse
      * Set description
      *
      * @param string $description
-     * @return Warehouse
+     * @return Depo
      */
     public function setDescription($description)
     {
@@ -112,7 +112,7 @@ class Warehouse
      * Set area
      *
      * @param Area $area
-     * @return Warehouse
+     * @return Depo
      */
     public function setArea($area)
     {

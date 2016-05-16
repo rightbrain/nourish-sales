@@ -79,11 +79,11 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-        if ($this->authorizationChecker->isGranted('ROLE_WAREHOUSE_MANAGE')) {
-            $menu['Manage System']->addChild('Warehouses', array('route' => 'warehouse'))
+        if ($this->authorizationChecker->isGranted('ROLE_DEPO_MANAGE')) {
+            $menu['Manage System']->addChild('Depos', array('route' => 'depo'))
                 ->setAttribute('icon', 'fa fa-th-list');
-            if ($this->isMatch('warehouse')) {
-                $menu['Manage System']->getChild('Warehouses')->setCurrent(true);
+            if ($this->isMatch('depo')) {
+                $menu['Manage System']->getChild('Depos')->setCurrent(true);
             }
 
         }

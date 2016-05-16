@@ -2,7 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
-use Rbs\Bundle\CoreBundle\Repository\WarehouseRepository;
+use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\SalesBundle\Repository\CustomerRepository;
 use Rbs\Bundle\SalesBundle\Repository\SmsRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
@@ -24,13 +24,13 @@ class DeliveryForm extends AbstractType
             ->add('contactName')
             ->add('contactNo')
             ->add('otherInfo')
-            ->add('warehouse', 'entity', array(
-                'class' => 'Rbs\Bundle\CoreBundle\Entity\Warehouse',
+            ->add('depo', 'entity', array(
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\Depo',
                 'property' => 'name',
                 'required' => false,
-                'empty_value' => 'Select Warehouse',
+                'empty_value' => 'Select Depo',
                 'empty_data' => null,
-                'query_builder' => function (WarehouseRepository $repository)
+                'query_builder' => function (DepoRepository $repository)
                 {
                     return $repository->createQueryBuilder('p')
                         ->andWhere('p.deletedAt IS NULL')

@@ -4,7 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\CoreBundle\Entity\Item;
-use Rbs\Bundle\CoreBundle\Entity\Warehouse;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
@@ -40,12 +40,12 @@ class Stock
     private $item;
 
     /**
-     * @var Warehouse
+     * @var Depo
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Warehouse")
-     * @ORM\JoinColumn(name="warehouse_id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Depo")
+     * @ORM\JoinColumn(name="depo_id", nullable=false)
      */
-    private $warehouse;
+    private $depo;
 
     /**
      * @var ArrayCollection
@@ -175,21 +175,21 @@ class Stock
     }
 
     /**
-     * @return Warehouse
+     * @return Depo
      */
-    public function getWarehouse()
+    public function getDepo()
     {
-        return $this->warehouse;
+        return $this->depo;
     }
 
     /**
-     * @param Warehouse $warehouse
+     * @param Depo $depo
      *
      * @return Stock
      */
-    public function setWarehouse($warehouse)
+    public function setDepo($depo)
     {
-        $this->warehouse = $warehouse;
+        $this->depo = $depo;
 
         return $this;
     }

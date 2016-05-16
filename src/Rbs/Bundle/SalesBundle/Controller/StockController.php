@@ -3,7 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
-use Rbs\Bundle\CoreBundle\Entity\Warehouse;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\SalesBundle\Entity\Stock;
 use Rbs\Bundle\SalesBundle\Entity\StockHistory;
 use Rbs\Bundle\SalesBundle\Form\Type\StockHistoryForm;
@@ -98,7 +98,7 @@ class StockController extends Controller
 
         $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(array(
             'item' => $item,
-            'warehouse' => $customer->getWarehouse()->getId()
+            'depo' => $customer->getDepo()->getId()
         ));
 
         $response = array(

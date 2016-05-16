@@ -3,11 +3,11 @@
 namespace Rbs\Bundle\CoreBundle\Datatables;
 
 /**
- * Class WarehouseDatatable
+ * Class DepoDatatable
  *
  * @package Rbs\Bundle\CoreBundle\Datatables
  */
-class WarehouseDatatable extends BaseDatatable
+class DepoDatatable extends BaseDatatable
 {
     /**
      * {@inheritdoc}
@@ -18,7 +18,7 @@ class WarehouseDatatable extends BaseDatatable
         $this->options->setOptions($this->defaultOptions());
 
         $this->ajax->setOptions(array(
-            'url' => $this->router->generate('warehouse_list_ajax'),
+            'url' => $this->router->generate('depo_list_ajax'),
             'type' => 'GET'
         ));
 
@@ -30,8 +30,8 @@ class WarehouseDatatable extends BaseDatatable
                 'width' => '180px',
                 'title' => 'Action',
                 'actions' => array(
-                    $this->makeActionButton('warehouse_edit', array('id' => 'id'), 'ROLE_ADMIN', 'Edit', 'Edit', 'fa fa-pencil-square-o'),
-                    $this->makeActionButton('warehouse_delete', array('id' => 'id'), 'ROLE_ADMIN', 'Delete', 'Delete', 'fa fa-trash-o', 'btn btn-default btn-xs delete-list-btn'),
+                    $this->makeActionButton('depo_edit', array('id' => 'id'), 'ROLE_ADMIN', 'Edit', 'Edit', 'fa fa-pencil-square-o'),
+                    $this->makeActionButton('depo_delete', array('id' => 'id'), 'ROLE_ADMIN', 'Delete', 'Delete', 'fa fa-trash-o', 'btn btn-default btn-xs delete-list-btn'),
                 )
             ));
     }
@@ -41,7 +41,7 @@ class WarehouseDatatable extends BaseDatatable
      */
     public function getEntity()
     {
-        return 'Rbs\Bundle\CoreBundle\Entity\Warehouse';
+        return 'Rbs\Bundle\CoreBundle\Entity\Depo';
     }
 
     /**
@@ -49,6 +49,6 @@ class WarehouseDatatable extends BaseDatatable
      */
     public function getName()
     {
-        return 'warehouse_datatable';
+        return 'depo_datatable';
     }
 }

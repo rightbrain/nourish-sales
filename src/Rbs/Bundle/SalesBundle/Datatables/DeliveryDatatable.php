@@ -59,7 +59,7 @@ class DeliveryDatatable extends BaseDatatable
             ->add('orderRef.createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
             ->add('contactName', 'column', array('title' => 'Contact Name'))
             ->add('contactNo', 'column', array('title' => 'Contact No.'))
-            ->add('warehouse.name', 'column', array('title' => 'Warehouse'))
+            ->add('depo.name', 'column', array('title' => 'Depo'))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Action',

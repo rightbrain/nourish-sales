@@ -3,7 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Rbs\Bundle\CoreBundle\Entity\Warehouse;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\DeliveryItem;
 use Rbs\Bundle\SalesBundle\Entity\Order;
@@ -45,7 +45,7 @@ class StockRepository extends EntityRepository
         return $this->_em;
     }
 
-    public function addStockToOnHold(Order $order, Warehouse $warehouse)
+    public function addStockToOnHold(Order $order, Depo $depo)
     {
         /** @var OrderItem $orderItem */
         foreach ($order->getOrderItems() as $orderItem) {
@@ -53,7 +53,7 @@ class StockRepository extends EntityRepository
             $stock = $this->findOneBy(
                 array(
                     'item' => $orderItem->getItem()->getId(),
-                    'warehouse' => $warehouse->getId(),
+                    'depo' => $depo->getId(),
                 )
             );
             $stock->setOnHold($stock->getOnHold() + $orderItem->getQuantity());
@@ -70,7 +70,7 @@ class StockRepository extends EntityRepository
             $stock = $this->findOneBy(
                 array(
                     'item' => $deliveryItem->getOrderItem()->getItem()->getId(),
-                    'warehouse' => $delivery->getWarehouse()->getId(),
+                    'depo' => $delivery->getDepo()->getId(),
                 )
             );
             $stockQty = $stock->getOnHold() - $deliveryItem->getQty();

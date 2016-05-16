@@ -41,7 +41,7 @@ class StockDatatable extends BaseDatatable
             ->add('item.name', 'column', array('title' => 'Item name'))
             ->add('onHand', 'column', array('title' => 'On Hand'))
             ->add('onHold', 'column', array('title' => 'On Hold'))
-            ->add('warehouse.name', 'column', array('title' => 'Warehouse'))
+            ->add('depo.name', 'column', array('title' => 'Depo'))
             ->add('available', 'virtual', array('visible' => false))
             ->add('notAvailable', 'virtual', array('visible' => false))
             ->add(null, 'action', array(
@@ -54,7 +54,7 @@ class StockDatatable extends BaseDatatable
                         'route' => 'stock_create',
                         'route_parameters' => array(
                             'id' => 'id',
-                            'warehouseId' => 'warehouse.id'
+                            'depoId' => 'depo.id'
                         ),
                         'label' => 'Add Stock',
                         'icon' => 'glyphicon glyphicon-edit',

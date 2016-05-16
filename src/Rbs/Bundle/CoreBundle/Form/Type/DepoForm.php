@@ -6,7 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class WarehouseForm extends AbstractType
+class DepoForm extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -29,7 +29,7 @@ class WarehouseForm extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Rbs\Bundle\CoreBundle\Entity\Warehouse'
+            'data_class' => 'Rbs\Bundle\CoreBundle\Entity\Depo'
         ));
     }
 
@@ -38,6 +38,6 @@ class WarehouseForm extends AbstractType
      */
     public function getName()
     {
-        return 'rbs_bundle_corebundle_warehouse';
+        return 'rbs_bundle_corebundle_depo';
     }
 }

@@ -4,7 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityRepository;
-use Rbs\Bundle\CoreBundle\Entity\Warehouse;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\DeliveryItem;
 use Rbs\Bundle\SalesBundle\Entity\Order;
@@ -17,13 +17,13 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
  */
 class DeliveryRepository extends EntityRepository
 {
-    public function createDelivery(Order $order, Warehouse $warehouse)
+    public function createDelivery(Order $order, Depo $depo)
     {
         $delivery = $this->findOneBy(array('orderRef' => $order));
         if (!$delivery) {
             $delivery = new Delivery();
             $delivery->setOrderRef($order);
-            $delivery->setWarehouse($warehouse);
+            $delivery->setDepo($depo);
             $this->_em->persist($delivery);
             $this->_em->flush();
         }

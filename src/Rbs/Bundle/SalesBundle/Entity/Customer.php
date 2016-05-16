@@ -2,7 +2,7 @@
 namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Rbs\Bundle\CoreBundle\Entity\Area;
-use Rbs\Bundle\CoreBundle\Entity\Warehouse;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -95,13 +95,13 @@ class Customer
     private $agent;
 
     /**
-     * @var Warehouse
+     * @var Depo
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Warehouse")
-     * @ORM\JoinColumn(name="warehouse", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Depo")
+     * @ORM\JoinColumn(name="depo", nullable=true)
      * @Assert\NotBlank()
      */
-    private $warehouse;
+    private $depo;
 
     /**
      * @var Area
@@ -191,19 +191,19 @@ class Customer
     }
 
     /**
-     * @return Warehouse
+     * @return Depo
      */
-    public function getWarehouse()
+    public function getDepo()
     {
-        return $this->warehouse;
+        return $this->depo;
     }
 
     /**
-     * @param Warehouse $warehouse
+     * @param Depo $depo
      */
-    public function setWarehouse($warehouse)
+    public function setDepo($depo)
     {
-        $this->warehouse = $warehouse;
+        $this->depo = $depo;
     }
 
     /**

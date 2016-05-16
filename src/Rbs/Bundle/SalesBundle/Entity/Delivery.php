@@ -4,7 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Rbs\Bundle\CoreBundle\Entity\Warehouse;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
@@ -88,12 +88,12 @@ class Delivery
     private $orderRef;
 
     /**
-     * @var Warehouse
+     * @var Depo
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Warehouse")
-     * @ORM\JoinColumn(name="warehouse_id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Depo")
+     * @ORM\JoinColumn(name="depo_id", nullable=false)
      */
-    private $warehouse;
+    private $depo;
 
     /**
      * @var DeliveryItem
@@ -279,26 +279,26 @@ class Delivery
     }
 
     /**
-     * Set warehouse
+     * Set depo
      *
-     * @param string $warehouse
+     * @param string $depo
      * @return Delivery
      */
-    public function setWarehouse($warehouse)
+    public function setDepo($depo)
     {
-        $this->warehouse = $warehouse;
+        $this->depo = $depo;
 
         return $this;
     }
 
     /**
-     * Get warehouse
+     * Get depo
      *
-     * @return Warehouse
+     * @return Depo
      */
-    public function getWarehouse()
+    public function getDepo()
     {
-        return $this->warehouse;
+        return $this->depo;
     }
 
     /**

@@ -204,7 +204,7 @@
                                             <thead>
                                             <tr>
                                                 <th>Sl</th>
-                                                <th>Warehouse</th>
+                                                <th>Depo</th>
                                                 <th>Contact Name</th>
                                                 <th>Contact No</th>
                                                 <th>Vehicle In</th>
@@ -218,7 +218,7 @@
                                             {% for index, delivery in order.deliveries %}
                                                 <tr>
                                                     <td>{{ index + 1 }}.</td>
-                                                    <td>{{ delivery.warehouse.name }}</td>
+                                                    <td>{{ delivery.depo.name }}</td>
                                                     <td>{{ delivery.contactName }}</td>
                                                     <td>{{ delivery.contactNo }}</td>
                                                     <td>{% if delivery.vehicleIn is not null %} {{ delivery.vehicleIn|date(php_date_format ~ " h:i a") }} {% endif %}</td>

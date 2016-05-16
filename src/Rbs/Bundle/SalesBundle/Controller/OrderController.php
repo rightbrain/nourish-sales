@@ -96,9 +96,9 @@ class OrderController extends BaseController
                 $em = $this->getDoctrine()->getManager();
                 $order->setArea($order->getCustomer()->getArea());
                 $this->orderRepository()->create($order);
-                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getWarehouse());
+                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getDepo());
 
-                $this->deliveryRepository()->createDelivery($order, $order->getCustomer()->getWarehouse());
+                $this->deliveryRepository()->createDelivery($order, $order->getCustomer()->getDepo());
 
                 $this->flashMessage('success', 'Order Add Successfully!');
 
@@ -144,7 +144,7 @@ class OrderController extends BaseController
                 if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
                     $stockRepo->subtractFromOnHold($oldQty);
                 }
-                $stockRepo->addStockToOnHold($order, $order->getCustomer()->getWarehouse());
+                $stockRepo->addStockToOnHold($order, $order->getCustomer()->getDepo());
                 $em->getRepository('RbsSalesBundle:Order')->update($order, true);
 
                 $this->flashMessage('success', 'Order Update Successfully!');
@@ -216,7 +216,7 @@ class OrderController extends BaseController
         }
 
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getWarehouse());
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getDepo());
         }
 
         $order->setOrderState(Order::ORDER_STATE_PROCESSING);
@@ -263,7 +263,7 @@ class OrderController extends BaseController
         }
 
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getWarehouse());
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getDepo());
         }
 
         $order->setOrderState(Order::ORDER_STATE_HOLD);
@@ -288,7 +288,7 @@ class OrderController extends BaseController
         /** @var OrderItem $item */
         foreach ($order->getOrderItems() as $item) {
             $stockItem = $stockRepo->findOneBy(
-                array('item' => $item->getItem()->getId(), 'warehouse' => $order->getCustomer()->getWarehouse()->getId())
+                array('item' => $item->getItem()->getId(), 'depo' => $order->getCustomer()->getDepo()->getId())
             );
             $item->isAvailable = $stockItem->isStockAvailable($item->getQuantity());
         }

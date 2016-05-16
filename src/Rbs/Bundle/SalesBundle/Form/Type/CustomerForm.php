@@ -3,7 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\AreaRepository;
-use Rbs\Bundle\CoreBundle\Repository\WarehouseRepository;
+use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\SalesBundle\Repository\CustomerGroupRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -49,13 +49,13 @@ class CustomerForm extends AbstractType
                         ->orderBy('u.username','ASC');
                 }
             ))
-            ->add('warehouse', 'entity', array(
-                'class' => 'RbsCoreBundle:Warehouse',
+            ->add('depo', 'entity', array(
+                'class' => 'RbsCoreBundle:Depo',
                 'property' => 'name',
                 'required' => false,
-                'empty_value' => 'Select Warehouse',
+                'empty_value' => 'Select Depo',
                 'empty_data' => null,
-                'query_builder' => function (WarehouseRepository $repository)
+                'query_builder' => function (DepoRepository $repository)
                 {
                     return $repository->createQueryBuilder('w')
                         ->where('w.deletedAt IS NULL')

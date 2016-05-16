@@ -71,8 +71,8 @@ services:
             - { name: kernel.event_listener, event: core.item.created, method: onItemCreated }
         arguments: [@doctrine.orm.entity_manager]
 
-    rbs_erp.sales.warehouse_create.listener:
+    rbs_erp.sales.depo_create.listener:
         class: Rbs\Bundle\SalesBundle\EventListener\StockCreateListener
         tags:
-            - { name: kernel.event_listener, event: core.warehouse.created, method: onWarehouseCreated }
+            - { name: kernel.event_listener, event: core.depo.created, method: onDepoCreated }
         arguments: [@doctrine.orm.entity_manager]

@@ -120,7 +120,7 @@ class SmsParse
 
         $delivery = new Delivery();
         $delivery->setOrderRef($this->order);
-        $delivery->setWarehouse($this->customer->getWarehouse());
+        $delivery->setDepo($this->customer->getDepo());
 
         $this->em->persist($delivery);
         $this->em->flush();
