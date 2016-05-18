@@ -24,8 +24,13 @@ class TargetRepository extends EntityRepository
         /** @var Target $target */
         foreach ($data->getChildEntities() as $target) {
             $target->setUser($data->getUser());
-            $target->setStartDate($this->getDateObject("01-".$target->getStartDate()));
-            $target->setEndDate($this->getDateObject($this->getDateWithLastDateOfMonth("01-".$target->getEndDate())));
+            if($target->getStartDate() == null or $target->getEndDate() == null){
+                $target->setStartDate(null);
+                $target->setEndDate(null);
+            }else{
+                $target->setStartDate($this->getDateObject("01-".$target->getStartDate()));
+                $target->setEndDate($this->getDateObject($this->getDateWithLastDateOfMonth("01-".$target->getEndDate())));
+            }
             $this->_em->persist($target);
         }
         $this->_em->flush();

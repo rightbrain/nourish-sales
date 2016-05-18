@@ -21,25 +21,13 @@ class TargetSubForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('quantity', 'text', array(
-                'constraints' => array(
-                    new NotBlank(array('message'=>'Name should not be blank'))
-                )
-            ))
+            ->add('quantity', 'text')
             ->add('startDate', 'text', array(
-                'constraints' => array(
-                    new NotBlank(array('message'=>'Name should not be blank'))
-                ),
-                'label' => 'Start Date',
                 'attr' => array(
                     'class' => 'form-control month-year-picker'
                 )
             ))
             ->add('endDate', 'text', array(
-                'constraints' => array(
-                    new NotBlank(array('message'=>'Name should not be blank'))
-                ),
-                'label' => 'End Date',
                 'attr' => array(
                     'class' => 'form-control month-year-picker'
                 )
