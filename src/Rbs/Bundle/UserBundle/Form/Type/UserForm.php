@@ -4,6 +4,7 @@ namespace Rbs\Bundle\UserBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
+use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -30,7 +31,10 @@ class UserForm extends AbstractType
             ))
             ->add('userType', 'choice', array(
                 'choices'  => array(
-                    'USER' => User::USER
+                    'USER' => User::USER,
+                    'RSM' => User::RSM,
+                    'SR' => User::SR,
+                    'AGENT' => User::AGENT
                 ),
                 'data' => User::USER
             ))
@@ -55,6 +59,16 @@ class UserForm extends AbstractType
                     )),
                     new email()
                 ),
+            ))
+            ->add('parentId', 'entity', array(
+                'class' => 'Rbs\Bundle\UserBundle\Entity\User',
+                'query_builder' => function(UserRepository $userRepository) {
+                    return $userRepository->createQueryBuilder('u')
+                        ->where("u.userType != :userType")
+                        ->setParameter('userType', User::AGENT);
+                },
+                'mapped' => false,
+                'property' => 'username'
             ))
         ;
 

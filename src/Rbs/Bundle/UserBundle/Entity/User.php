@@ -31,7 +31,8 @@ class User extends BaseUser
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
 
-    const CUSTOMER = 'CUSTOMER';
+    const RSM = 'RSM';
+    const SR = 'SR';
     const AGENT = 'AGENT';
     const USER = 'USER';
 
@@ -45,7 +46,7 @@ class User extends BaseUser
     /**
      * @var array $type
      *
-     * @ORM\Column(name="user_type", type="string", length=255, columnDefinition="ENUM('USER', 'CUSTOMER', 'AGENT')")
+     * @ORM\Column(name="user_type", type="string", length=255, columnDefinition="ENUM('USER', 'RSM', 'SR', 'AGENT')")
      */
     private $userType;
 
@@ -68,6 +69,13 @@ class User extends BaseUser
      * @ORM\JoinTable(name="users_projects")
      **/
     private $projects;
+
+    /**
+     * @var integer
+     * 
+     * @ORM\Column(name="parent_id", type="integer", nullable=true)
+     */
+    protected $parentId;
 
     public function __construct()
     {
@@ -148,5 +156,21 @@ class User extends BaseUser
     public function setUserType($userType)
     {
         $this->userType = $userType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getParentId()
+    {
+        return $this->parentId;
+    }
+
+    /**
+     * @param mixed $parentId
+     */
+    public function setParentId($parentId)
+    {
+        $this->parentId = $parentId;
     }
 }

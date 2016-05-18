@@ -80,6 +80,8 @@ class UserController extends Controller
 
             if ($form->isValid()) {
 
+                $user->setParentId($request->request->get('user')['parentId']);
+
                 $user->setEnabled(true);
                 $this->getDoctrine()->getRepository('RbsUserBundle:User')->create($user);
 
