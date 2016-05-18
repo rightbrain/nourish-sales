@@ -69,6 +69,11 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
+        if ($this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN', 'ROLE_ADMIN'))) {
+            $menu['Sales']->addChild('Target', array('route' => 'target_list'))
+                ->setAttribute('icon', 'fa fa-th-list');
+        }
+
         if ($this->authorizationChecker->isGranted(array('ROLE_REPORT', 'ROLE_ADMIN'))) {
             $menu['Sales']->addChild('Report', array('route' => 'reports_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
