@@ -22,6 +22,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.target:
+        class: Rbs\Bundle\SalesBundle\Datatables\TargetDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.stock:
         class: Rbs\Bundle\SalesBundle\Datatables\StockDatatable
         tags:
