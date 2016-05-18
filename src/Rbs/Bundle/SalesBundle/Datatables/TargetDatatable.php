@@ -40,6 +40,7 @@ class TargetDatatable extends BaseDatatable
 
         $this->columnBuilder
             ->add('user.username', 'column', array('title' => 'Username'))
+            ->add('user.userType', 'column', array('title' => 'Designation'))
             ->add('quantity', 'column', array('title' => 'Quantity'))
             ->add('remaining', 'column', array('title' => 'Remaining'))
             ->add('subCategory.subCategoryName', 'column', array('title' => 'subCategory'))
