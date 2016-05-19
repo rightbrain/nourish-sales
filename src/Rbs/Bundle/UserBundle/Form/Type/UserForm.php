@@ -64,8 +64,8 @@ class UserForm extends AbstractType
                 'class' => 'Rbs\Bundle\UserBundle\Entity\User',
                 'query_builder' => function(UserRepository $userRepository) {
                     return $userRepository->createQueryBuilder('u')
-                        ->where("u.userType != :userType")
-                        ->setParameter('userType', User::AGENT);
+                        ->where("u.userType != :AGENT")
+                        ->setParameters(array('AGENT'=> User::AGENT));
                 },
                 'mapped' => false,
                 'property' => 'username'
