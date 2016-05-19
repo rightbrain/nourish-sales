@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\UserBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -28,12 +29,13 @@ class UserUpdateForm extends AbstractType
                 ),
             ))
             ->add('userType', 'choice', array(
-                'empty_value' => 'Select user type',
                 'choices'  => array(
-                    'USER' => 'USER',
-                    'AGENT' => 'AGENT'
+                    'USER' => User::USER,
+                    'RSM' => User::RSM,
+                    'SR' => User::SR,
+                    'AGENT' => User::AGENT
                 ),
-                'required' => false,
+                'data' => User::USER
             ))
         ;
 
