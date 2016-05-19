@@ -205,6 +205,6 @@ class Target
     {
         $difference = $this->getStartDate()->diff($this->getEndDate()); // $difference->y // $difference->m // $difference->d
         
-        return $difference->m;
+        return $difference->m + 1 ;
     }
 }
