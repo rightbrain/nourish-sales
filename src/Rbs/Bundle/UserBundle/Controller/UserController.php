@@ -116,6 +116,8 @@ class UserController extends Controller
 
             if ($form->isValid()) {
 
+                $user->setParentId($request->request->get('user')['parentId']);
+
                 $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
 
                 $this->get('session')->getFlashBag()->add(
