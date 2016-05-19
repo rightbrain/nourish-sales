@@ -4,6 +4,7 @@ namespace Rbs\Bundle\UserBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
+use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -36,6 +37,18 @@ class UserUpdateForm extends AbstractType
                     'AGENT' => User::AGENT
                 ),
                 'data' => User::USER
+            ))
+            ->add('parentId', 'entity', array(
+                'class' => 'Rbs\Bundle\UserBundle\Entity\User',
+                'query_builder' => function(UserRepository $userRepository) {
+                    return $userRepository->createQueryBuilder('u')
+                        ->where("u.userType != :AGENT")
+                        ->setParameters(array('AGENT'=> User::AGENT));
+                },
+                'mapped' => false,
+                'property' => 'username',
+                'required' => false,
+                'empty_value' => 'Select Parent',
             ))
         ;
 
