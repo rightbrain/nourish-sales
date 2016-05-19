@@ -13,6 +13,10 @@ class SecurityPermissionProvider implements ProviderInterface
 
             'GROUP' => array(
                 'ROLE_GROUP_VIEW', 'ROLE_GROUP_CREATE'
+            ),
+            
+            'SALES' => array(
+                'ROLE_RSM_GROUP', 'ROLE_SR_GROUP'
             )
         );
     }
