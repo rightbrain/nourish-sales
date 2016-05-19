@@ -84,6 +84,11 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
+        if ($this->authorizationChecker->isGranted(array('ROLE_SR_GROUP'))) {
+            $menu['Sales']->addChild('SR', array('route' => 'target_sr_my'))
+                ->setAttribute('icon', 'fa fa-th-list');
+        }
+
         return $menu;
     }
 }

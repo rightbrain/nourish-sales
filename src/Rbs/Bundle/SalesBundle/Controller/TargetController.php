@@ -130,6 +130,22 @@ class TargetController extends BaseController
     }
 
     /**
+     * @Route("/target/sr/my", name="target_sr_my")
+     * @Template("RbsSalesBundle:Target:sr-my.html.twig")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function srMyAction()
+    {
+        $target = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->findOneBy(array('user' => $this->getUser()));
+        $myTargets = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->myTarget($this->getUser()->getId());
+
+        return array(
+            'target'       => $target,
+            'myTargets'       => $myTargets,
+        );
+    }
+
+    /**
      * @Route("/target/sr/{id}", name="target_sr")
      * @Template("RbsSalesBundle:Target:sr-new.html.twig")
      * @param Request $request
