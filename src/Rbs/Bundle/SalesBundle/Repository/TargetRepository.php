@@ -68,4 +68,31 @@ class TargetRepository extends EntityRepository
         $dateObject = new DateTime($stringDate);
         return $dateObject;
     }
+    
+    public function srListByParentId($parentId)
+    {
+        $query = $this->createQueryBuilder('t');
+        $query->join('t.user', 'u');
+        $query->where('u.parentId = :parentId');
+        $query->andWhere('t.quantity > 0 or t.quantity is not null');
+        $query->andWhere('t.startDate is not null');
+        $query->andWhere('t.endDate is not null');
+        $query->setParameter('parentId', $parentId);
+        $query->orderBy('t.createdAt', 'DESC');
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function myTarget($userId)
+    {
+        $query = $this->createQueryBuilder('t');
+        $query->where('t.user = :userId');
+        $query->andWhere('t.quantity > 0 or t.quantity is not null');
+        $query->andWhere('t.startDate is not null');
+        $query->andWhere('t.endDate is not null');
+        $query->setParameter('userId', $userId);
+        $query->orderBy('t.createdAt', 'DESC');
+
+        return $query->getQuery()->getResult();
+    }
 }

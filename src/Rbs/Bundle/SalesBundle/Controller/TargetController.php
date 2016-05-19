@@ -5,6 +5,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Target;
 use Rbs\Bundle\SalesBundle\Form\Type\TargetForm;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -51,9 +52,12 @@ class TargetController extends BaseController
          */
         $function = function($qb)
         {
+            $qb->join('targets.user', 'u');
             $qb->where('targets.quantity > 0');
             $qb->andWhere('targets.startDate is not null');
             $qb->andWhere('targets.endDate is not null');
+            $qb->andWhere('u.userType = :RSM');
+            $qb->setParameter('RSM', User::RSM);
             $qb->orderBy('targets.createdAt', 'desc');
         };
         $query->addWhereAll($function);
@@ -94,6 +98,74 @@ class TargetController extends BaseController
 
             if ($form->isValid()) {
                 $em->getRepository('RbsSalesBundle:Target')->create($target);
+                $this->flashMessage('success', 'Target Add Successfully!');
+                return $this->redirect($this->generateUrl('target_list'));
+            }
+        }
+        return array(
+            'form' => $form->createView(),
+            'subCategories' => $sc
+        );
+    }
+
+    /**
+     * @Route("/target/my", name="target_my")
+     * @Template("RbsSalesBundle:Target:my.html.twig")
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function myAction()
+    {
+        $target = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->findOneBy(array('user' => $this->getUser()));
+        $myTargets = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->myTarget($this->getUser()->getId());
+
+        $srList = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findByParentId($this->getUser()->getId());
+        $srTargetList = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->srListByParentId($this->getUser()->getId());
+
+        return array(
+            'target'       => $target,
+            'myTargets'       => $myTargets,
+            'srList'       => $srList,
+            'srTargetList' => $srTargetList
+        );
+    }
+
+    /**
+     * @Route("/target/sr/{id}", name="target_sr")
+     * @Template("RbsSalesBundle:Target:sr-new.html.twig")
+     * @param Request $request
+     * @param User $user
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function srTargetAction(Request $request, User $user)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $subCategories = $em->getRepository('RbsCoreBundle:SubCategory')->findAll();
+
+        $target = new Target();
+
+        $target->setUser($user);
+
+        foreach ($subCategories as $subCategory) {
+            $subCategoryWiseField = new Target();
+            $subCategoryWiseField->setQuantity(0);
+            $subCategoryWiseField->setSubCategory($subCategory);
+            $targets[] = $subCategoryWiseField;
+            $sc[] = $subCategory->getSubCategoryName();
+        }
+
+        $form = $this->createForm(new TargetForm(), $target, array(
+            'action' => $this->generateUrl('target_create'), 'method' => 'POST',
+            'attr' => array('novalidate' => 'novalidate')
+        ));
+
+        $form->get('child_entities')->setData($targets);
+
+        if ('POST' === $request->getMethod()) {
+
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $em->getRepository('RbsSalesBundle:Target')->srTargetCreate($target);
                 $this->flashMessage('success', 'Target Add Successfully!');
                 return $this->redirect($this->generateUrl('target_list'));
             }
