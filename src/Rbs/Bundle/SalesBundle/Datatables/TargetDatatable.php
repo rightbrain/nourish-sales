@@ -11,11 +11,8 @@ class TargetDatatable extends BaseDatatable
 {
     public function getLineFormatter()
     {
-        /** @var Order $order */
         $formatter = function($line){
-            //$order = $this->em->getRepository('RbsSalesBundle:Order')->find($line['id']);
             $line["monthDiff"] = $this->monthDifference($line['startDate'], $line['endDate']);
-
             return $line;
         };
 
@@ -70,6 +67,6 @@ class TargetDatatable extends BaseDatatable
     {
         $difference = $start->diff($end); // $difference->y // $difference->m // $difference->d
 
-        return $difference->m;
+        return $difference->m + 1 ;
     }
 }
