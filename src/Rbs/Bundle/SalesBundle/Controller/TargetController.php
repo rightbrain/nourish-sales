@@ -181,9 +181,9 @@ class TargetController extends BaseController
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                $em->getRepository('RbsSalesBundle:Target')->srTargetCreate($target);
+                $em->getRepository('RbsSalesBundle:Target')->create($target);
                 $this->flashMessage('success', 'Target Add Successfully!');
-                return $this->redirect($this->generateUrl('target_list'));
+                return $this->redirect($this->generateUrl('target_my'));
             }
         }
         return array(
