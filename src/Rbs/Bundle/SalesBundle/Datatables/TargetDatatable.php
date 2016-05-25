@@ -44,6 +44,28 @@ class TargetDatatable extends BaseDatatable
             ->add('startDate', 'datetime', array('title' => 'startDate', 'date_format' => $dateFormat))
             ->add('endDate', 'datetime', array('title' => 'endDate', 'date_format' => $dateFormat))
             ->add('monthDiff', 'virtual', array('title' => 'Month'))
+            ->add(null, 'action', array(
+                'width' => '200px',
+                'title' => 'Update',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'target_update',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Edit',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'edit-action',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button'
+                        )
+                    )
+                )
+            ))
         ;
     }
 

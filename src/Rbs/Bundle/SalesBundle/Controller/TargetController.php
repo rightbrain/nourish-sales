@@ -5,6 +5,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Target;
 use Rbs\Bundle\SalesBundle\Form\Type\TargetForm;
+use Rbs\Bundle\SalesBundle\Form\Type\TargetUpdateForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -105,6 +106,72 @@ class TargetController extends BaseController
         return array(
             'form' => $form->createView(),
             'subCategories' => $sc
+        );
+    }
+
+    /**
+     * @Route("/target/update/{id}", name="target_update", options={"expose"=true})
+     * @Template("RbsSalesBundle:Target:update.html.twig")
+     * @param Request $request
+     * @param Target $target
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function updateAction(Request $request, Target $target)
+    {
+        $form = $this->createForm(new TargetUpdateForm(), $target);
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->update($target);
+
+                $this->get('session')->getFlashBag()->add(
+                    'success',
+                    'Target Updated Successfully!'
+                );
+
+                return $this->redirect($this->generateUrl('target_list'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+            'target' => $target
+        );
+    }
+
+    /**
+     * @Route("/target/sr/update/{id}", name="target_sr_update", options={"expose"=true})
+     * @Template("RbsSalesBundle:Target:update.html.twig")
+     * @param Request $request
+     * @param Target $target
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function updateSrAction(Request $request, Target $target)
+    {
+        $form = $this->createForm(new TargetUpdateForm(), $target);
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->update($target);
+
+                $this->get('session')->getFlashBag()->add(
+                    'success',
+                    'Target Updated Successfully!'
+                );
+
+                return $this->redirect($this->generateUrl('target_my'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+            'target' => $target
         );
     }
 

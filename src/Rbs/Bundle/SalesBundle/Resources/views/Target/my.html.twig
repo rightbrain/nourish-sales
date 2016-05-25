@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 
-{% block title %}{{ parent() }} : Target {% endblock %}
+{% block title %}{{ parent() }} : My Target {% endblock %}
 
 {% block body %}
 
@@ -93,6 +93,7 @@
                             <th>Start Date</th>
                             <th>End Date</th>
                             <th>Month</th>
+                            <th>Edit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -106,6 +107,8 @@
                             <td class="col-md-1">{{ srTarget.startDate | date('M Y') }}</td>
                             <td class="col-md-1">{{ srTarget.endDate | date('M Y') }}</td>
                             <td class="col-md-1">{{ srTarget.getMonthDifference() }}</td>
+                            <td class="col-md-1"><a class="btn btn-primary btn-xs" href="{{ path('target_sr_update', {id : srTarget.id}) }}">
+                                    <i class="glyphicon glyphicon-edit"></i>Update</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>
