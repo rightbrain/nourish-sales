@@ -57,7 +57,7 @@ class OrderController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb) use ($user, $customerRepository)
         {
-            if ($user->getUserType() == User::CUSTOMER) {
+            if ($user->getUserType() == User::AGENT) {
                 $customer = $customerRepository->findOneBy(array('user' => $user->getId()));
                 $qb->andWhere('orders.customer = :customer')->setParameter('customer', array($customer));
             } else if ($user->getUserType() == User::AGENT) {

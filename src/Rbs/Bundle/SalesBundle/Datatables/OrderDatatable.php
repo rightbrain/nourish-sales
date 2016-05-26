@@ -48,7 +48,7 @@ class OrderDatatable extends BaseDatatable
     {
         /** @var User $user */
         $this->user = $this->securityToken->getToken()->getUser();
-        $this->showCustomerName = $this->user->getUserType() != User::CUSTOMER;
+        $this->showCustomerName = $this->user->getUserType() != User::AGENT;
 
         $this->features->setFeatures(array_merge($this->defaultFeatures(), array('state_save' => true)));
         $this->options->setOptions(array_merge($this->defaultOptions(), array(
