@@ -48,6 +48,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.order.readable.sms:
+        class: Rbs\Bundle\SalesBundle\Datatables\OrderReadableSmsDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.stock.history:
         class: Rbs\Bundle\SalesBundle\Datatables\StockHistoryDatatable
         tags:
