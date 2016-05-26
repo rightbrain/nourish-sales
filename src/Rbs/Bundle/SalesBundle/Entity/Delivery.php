@@ -82,7 +82,7 @@ class Delivery
     /**
      * @var Order
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order", inversedBy="deliveries")
      * @ORM\JoinColumn(name="order_id", nullable=false)
      */
     private $orderRef;
