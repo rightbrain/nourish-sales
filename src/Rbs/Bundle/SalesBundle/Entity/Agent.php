@@ -11,14 +11,14 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
- * Customer
+ * Agent
  *
- * @ORM\Table(name="customers")
- * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\CustomerRepository")
+ * @ORM\Table(name="agents")
+ * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\AgentRepository")
  * @ORMSubscribedEvents()
- * @UniqueEntity("customerID")
+ * @UniqueEntity("agentID")
  */
-class Customer
+class Agent
 {
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
@@ -44,15 +44,15 @@ class Customer
     protected $user;
 
     /**
-     * @var CustomerGroup
+     * @var AgentGroup
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\CustomerGroup", inversedBy="customers")
-     * @ORM\JoinColumn(name="customer_group")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\AgentGroup", inversedBy="agents")
+     * @ORM\JoinColumn(name="agent_group")
      */
-    private $customerGroup;
+    private $agentGroup;
 
     /**
-     * @ORM\OneToMany(targetEntity="Payment", mappedBy="customer", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Payment", mappedBy="agent", cascade={"persist"})
      */
     private $payments;
 
@@ -73,10 +73,10 @@ class Customer
     /**
      * @var string
      *
-     * @ORM\Column(name="customer_ID", type="string", length=255, nullable=false, unique=true)
+     * @ORM\Column(name="agent_ID", type="string", length=255, nullable=false, unique=true)
      * @Assert\NotBlank()
      */
-    private $customerID;
+    private $agentID;
 
     /**
      * @var boolean
@@ -89,10 +89,10 @@ class Customer
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="agent", nullable=true)
+     * @ORM\JoinColumn(name="sr", nullable=true)
      * @Assert\NotBlank()
      */
-    private $agent;
+    private $sr;
 
     /**
      * @var Depo
@@ -161,33 +161,33 @@ class Customer
     /**
      * @return string
      */
-    public function getCustomerID()
+    public function getAgentID()
     {
-        return $this->customerID;
+        return $this->agentID;
     }
 
     /**
-     * @param string $customerID
+     * @param string $agentID
      */
-    public function setCustomerID($customerID)
+    public function setAgentID($agentID)
     {
-        $this->customerID = $customerID;
+        $this->agentID = $agentID;
     }
 
     /**
      * @return User
      */
-    public function getAgent()
+    public function getSr()
     {
-        return $this->agent;
+        return $this->sr;
     }
 
     /**
-     * @param User $agent
+     * @param User $sr
      */
-    public function setAgent($agent)
+    public function setSr($sr)
     {
-        $this->agent = $agent;
+        $this->sr = $sr;
     }
 
     /**
@@ -223,19 +223,19 @@ class Customer
     }
 
     /**
-     * @return CustomerGroup
+     * @return AgentGroup
      */
-    public function getCustomerGroup()
+    public function getAgentGroup()
     {
-        return $this->customerGroup;
+        return $this->agentGroup;
     }
 
     /**
-     * @param CustomerGroup $customerGroup
+     * @param AgentGroup $agentGroup
      */
-    public function setCustomerGroup($customerGroup)
+    public function setAgentGroup($agentGroup)
     {
-        $this->customerGroup = $customerGroup;
+        $this->agentGroup = $agentGroup;
     }
 
     /**

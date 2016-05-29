@@ -77,15 +77,15 @@ class OrderRepository extends EntityRepository
         }
     }
 
-    function getCustomerWiseOrder($customer, $returnQuery = false)
+    function getAgentWiseOrder($agent, $returnQuery = false)
     {
         $query = $this->createQueryBuilder('o')
             ->where('o.deletedAt IS NULL')
             ->orderBy('o.id', 'DESC')
             ->andWhere('o.orderState != :complete or o.orderState != :cancel')
             ->andWhere('o.paymentState != :paid')
-            ->andWhere('o.customer = :customer')
-            ->setParameter('customer', $customer)
+            ->andWhere('o.agent = :agent')
+            ->setParameter('agent', $agent)
             ->setParameter('complete', Order::ORDER_STATE_COMPLETE)
             ->setParameter('cancel', Order::ORDER_STATE_CANCEL)
             ->setParameter('paid', Order::PAYMENT_STATE_PAID);

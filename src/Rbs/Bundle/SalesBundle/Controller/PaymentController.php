@@ -3,7 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
-use Rbs\Bundle\SalesBundle\Entity\Customer;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\PaymentForm;
 use Rbs\Bundle\UserBundle\Entity\User;
@@ -23,7 +23,7 @@ class PaymentController extends BaseController
     /**
      * @Route("/payments", name="payments_home")
      * @Template()
-     * @JMS\Secure(roles="ROLE_CUSTOMER, ROLE_PAYMENT_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_PAYMENT_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function indexAction()
     {
@@ -40,13 +40,13 @@ class PaymentController extends BaseController
      *
      * @Route("/payment_list_ajax", name="payment_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_CUSTOMER, ROLE_PAYMENT_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_PAYMENT_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function listAjaxAction(Request $request)
     {
         /** @var User $user */
         $user = $this->getUser();
-        $customerRepository = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer');
+        $agentRepository = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
         $datatable = $this->get('rbs_erp.sales.datatable.payment');
         $datatable->buildDatatable();
 
@@ -59,7 +59,7 @@ class PaymentController extends BaseController
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
-        $function = function($qb) use ($dateFilter, $user, $customerRepository)
+        $function = function($qb) use ($dateFilter, $user, $agentRepository)
         {
             if ($dateFilter) {
                 list($fromDate, $toDate) = explode('--', $dateFilter);
@@ -75,12 +75,12 @@ class PaymentController extends BaseController
                 }
             }
 
-            if ($user->getUserType() == User::CUSTOMER) {
-                $customer = $customerRepository->findOneBy(array('user' => $user->getId()));
-                $qb->andWhere('payments.customer = :customer')->setParameter('customer', array($customer));
+            if ($user->getUserType() == User::AGENT) {
+                $agent = $agentRepository->findOneBy(array('user' => $user->getId()));
+                $qb->andWhere('payments.agent = :agent')->setParameter('agent', array($agent));
             } else if ($user->getUserType() == User::AGENT) {
-                $customers = $customerRepository->findBy(array('agent' => $user->getId()));
-                $qb->andWhere('payments.customer IN(:customers)')->setParameter('customers', $customers);
+                $agents = $agentRepository->findBy(array('agent' => $user->getId()));
+                $qb->andWhere('payments.agent IN(:agents)')->setParameter('agents', $agents);
             }
         };
         $query->addWhereAll($function);
@@ -124,13 +124,13 @@ class PaymentController extends BaseController
 
     /**
      * @Route("/payment/partial_payment_orders/{id}", name="partial_payment_orders", options={"expose"=true})
-     * @param Customer $customer
+     * @param Agent $agent
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
-    public function getCustomerPartialOrder(Customer $customer)
+    public function getAgentPartialOrder(Agent $agent)
     {
-        $orders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getCustomerWiseOrder($customer->getId());
+        $orders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getAgentWiseOrder($agent->getId());
 
         $orderArr = array();
         foreach ($orders as $order) {

@@ -43,14 +43,14 @@ class Payment
     protected $orders;
 
     /**
-     * @var Customer
+     * @var Agent
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Customer", inversedBy="payments", cascade={"persist"})
-     * @ORM\JoinColumn(name="customer_id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent", inversedBy="payments", cascade={"persist"})
+     * @ORM\JoinColumn(name="agent_id", nullable=false)
      *
      * @Assert\NotBlank()
      */
-    private $customer;
+    private $agent;
 
     /**
      * @var array $type
@@ -136,19 +136,19 @@ class Payment
     }
 
     /**
-     * @return Customer
+     * @return Agent
      */
-    public function getCustomer()
+    public function getAgent()
     {
-        return $this->customer;
+        return $this->agent;
     }
 
     /**
-     * @param Customer $customer
+     * @param Agent $agent
      */
-    public function setCustomer($customer)
+    public function setAgent($agent)
     {
-        $this->customer = $customer;
+        $this->agent = $agent;
     }
 
     /**

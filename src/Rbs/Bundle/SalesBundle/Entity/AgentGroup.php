@@ -8,13 +8,13 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
- * CustomerGroup
+ * AgentGroup
  *
- * @ORM\Table(name="customer_groups")
- * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\CustomerGroupRepository")
+ * @ORM\Table(name="agent_groups")
+ * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\AgentGroupRepository")
  * @ORMSubscribedEvents()
  */
-class CustomerGroup
+class AgentGroup
 {
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
@@ -32,9 +32,9 @@ class CustomerGroup
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\Customer", mappedBy="customerGroup")
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent", mappedBy="agentGroup")
      */
-    private $customers;
+    private $agents;
 
     /**
      * @var string
@@ -77,16 +77,16 @@ class CustomerGroup
     /**
      * @return ArrayCollection
      */
-    public function getCustomers()
+    public function getAgents()
     {
-        return $this->customers;
+        return $this->agents;
     }
 
     /**
-     * @param ArrayCollection $customers
+     * @param ArrayCollection $agents
      */
-    public function setCustomers($customers)
+    public function setAgents($agents)
     {
-        $this->customers = $customers;
+        $this->agents = $agents;
     }
 }

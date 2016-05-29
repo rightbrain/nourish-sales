@@ -267,7 +267,7 @@ var Demo = function() {
 
         //main function to initiate the theme
         init: function() {
-            // handles style customer tool
+            // handles style agent tool
             handleTheme(); 
             
             // handle layout style change

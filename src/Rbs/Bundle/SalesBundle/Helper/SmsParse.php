@@ -4,7 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Helper;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use Rbs\Bundle\SalesBundle\Entity\Customer;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
@@ -21,8 +21,8 @@ class SmsParse
 
     public $error;
 
-    /** @var Customer */
-    protected $customer;
+    /** @var Agent */
+    protected $agent;
 
     /** @var Order */
     protected $order ;
@@ -63,13 +63,13 @@ class SmsParse
         $msg = $this->sms->getMsg();
         $splitMsg = array_filter(explode(',', $msg));
 
-        $customerId = isset($splitMsg[0]) ? trim($splitMsg[0]) : 0;
+        $agentId = isset($splitMsg[0]) ? trim($splitMsg[0]) : 0;
         $orderInfo = isset($splitMsg[1]) ? trim($splitMsg[1]) : '';
         $bankName = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
         $bankBranch = isset($splitMsg[3]) ? trim($splitMsg[3]) : '';
         $amount = isset($splitMsg[4]) ? trim($splitMsg[4]) : '';
 
-        $this->setCustomer($customerId);
+        $this->setAgent($agentId);
         $this->setOrderItems($orderInfo);
         $this->setPayment($bankName, $bankBranch, $amount);
     }
@@ -89,9 +89,9 @@ class SmsParse
         $this->order = new Order();
 
         $this->sms->setStatus('READ');
-        $this->sms->setCustomer($this->customer);
+        $this->sms->setAgent($this->agent);
         $this->sms->setOrder($this->order);
-        $this->order->setArea($this->customer->getArea());
+        $this->order->setArea($this->agent->getArea());
 
         /** @var OrderItem $orderItem */
         foreach ($this->orderItems as $orderItem) {
@@ -99,7 +99,7 @@ class SmsParse
             $orderItem->setOrder($this->order);
         }
 
-        $this->order->setCustomer($this->customer);
+        $this->order->setAgent($this->agent);
         $this->order->setTotalAmount($this->order->getItemsTotalAmount());
         $this->order->setOrderState(Order::ORDER_STATE_PENDING);
         $this->order->setPaymentState(Order::PAYMENT_STATE_PENDING);
@@ -110,7 +110,7 @@ class SmsParse
 
         if ($this->payment) {
             $this->payment->addOrder($this->order);
-            $this->payment->setCustomer($this->customer);
+            $this->payment->setAgent($this->agent);
             $this->em->persist($this->payment);
 
             $payments = new ArrayCollection();
@@ -120,7 +120,7 @@ class SmsParse
 
         $delivery = new Delivery();
         $delivery->setOrderRef($this->order);
-        $delivery->setDepo($this->customer->getDepo());
+        $delivery->setDepo($this->agent->getDepo());
 
         $this->em->persist($delivery);
         $this->em->flush();
@@ -136,24 +136,24 @@ class SmsParse
         $this->sms->setMsg(str_replace($string, '<span class="error">'.$string.'</span>', $this->sms->getMsg()));
     }
 
-    protected function setCustomer($customerId)
+    protected function setAgent($agentId)
     {
-        $this->customer = $this->em->getRepository('RbsSalesBundle:Customer')->findOneBy(array('customerID' => $customerId));
+        $this->agent = $this->em->getRepository('RbsSalesBundle:Agent')->findOneBy(array('agentID' => $agentId));
 
-        if (!$this->customer) {
-            $this->setError('Invalid customer ID');
-            $this->markError($customerId);
+        if (!$this->agent) {
+            $this->setError('Invalid agent ID');
+            $this->markError($agentId);
         } else {
 
-            $userMobile = $this->trimMobileNo($this->customer->getUser()->getProfile()->getCellphone());
+            $userMobile = $this->trimMobileNo($this->agent->getUser()->getProfile()->getCellphone());
             $smsMobileNo = $this->trimMobileNo($this->sms->getMobileNo());
 
             if (!$this->endsWith($userMobile, $smsMobileNo)) {
-                $this->setError('Customer mobile no does not match with mobile number of sms');
+                $this->setError('Agent mobile no does not match with mobile number of sms');
             }
         }
 
-        return $this->customer;
+        return $this->agent;
     }
 
     protected function setOrderItems($orderInfo)

@@ -13,7 +13,7 @@ use Rbs\Bundle\UserBundle\Entity\User;
 class OrderDatatable extends BaseDatatable
 {
     private $user;
-    protected $showCustomerName;
+    protected $showAgentName;
 
     public function getLineFormatter()
     {
@@ -29,8 +29,8 @@ class OrderDatatable extends BaseDatatable
             $line["deliveryState"] = $order->getOrderState() == Order::ORDER_STATE_CANCEL ? '' : '<span class="label label-sm label-'.$this->getStatusColor($order->getDeliveryState()).'"> '.$order->getDeliveryState().' </span>';
             $line["totalAmount"] = number_format($order->getTotalAmount(), 2);
             $line["paidAmount"] = number_format($order->getPaidAmount(), 2);
-            if ($this->showCustomerName) {
-                $line["fullName"] = $order->getCustomer()->getUser()->getProfile()->getFullName();
+            if ($this->showAgentName) {
+                $line["fullName"] = $order->getAgent()->getUser()->getProfile()->getFullName();
             }
 
             $line["actionButtons"] = $this->generateActionList($order);
@@ -48,7 +48,7 @@ class OrderDatatable extends BaseDatatable
     {
         /** @var User $user */
         $this->user = $this->securityToken->getToken()->getUser();
-        $this->showCustomerName = $this->user->getUserType() != User::AGENT;
+        $this->showAgentName = $this->user->getUserType() != User::AGENT;
 
         $this->features->setFeatures(array_merge($this->defaultFeatures(), array('state_save' => true)));
         $this->options->setOptions(array_merge($this->defaultOptions(), array(
@@ -76,8 +76,8 @@ class OrderDatatable extends BaseDatatable
         $twigVars = $this->twig->getGlobals();
         $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
         $this->columnBuilder->add('id', 'column', array('title' => 'Order ID'));
-        if ($this->showCustomerName) {
-            $this->columnBuilder->add('customer.user.id', 'column', array('title' => 'Customer Name', 'render' => 'resolveCustomerName'));
+        if ($this->showAgentName) {
+            $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName'));
         }
         $this->columnBuilder->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
             ->add('orderState', 'column', array('title' => 'Order State', 'render' => 'Order.OrderStateFormat'))

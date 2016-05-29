@@ -1,18 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }} : Customer Group Create {% endblock %}
+{% block title %}{{ parent() }} : Agent update {% endblock %}
 
 {% block body %}
     <div class="col-md-12">
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-globe"></i>Add Customer Group
+                    <i class="fa fa-globe"></i>Update Agent
                 </div>
             </div>
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_groups_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}
-                {% include "RbsSalesBundle:CustomerGroup:new_content.html.twig" %}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('agents_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}
+                {% include "RbsSalesBundle:Agent:update_content.html.twig" %}
             </div>
         </div>
     </div>

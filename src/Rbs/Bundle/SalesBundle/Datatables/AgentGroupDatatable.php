@@ -2,14 +2,14 @@
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
-use Rbs\Bundle\SalesBundle\Entity\CustomerGroup;
+use Rbs\Bundle\SalesBundle\Entity\AgentGroup;
 
 /**
- * Class CustomerGroupDatatable
+ * Class AgentGroupDatatable
  *
  * @package Rbs\Bundle\SalesBundle\Datatables
  */
-class CustomerGroupDatatable extends BaseDatatable
+class AgentGroupDatatable extends BaseDatatable
 {
     /**
      * {@inheritdoc}
@@ -20,12 +20,12 @@ class CustomerGroupDatatable extends BaseDatatable
         $this->options->setOptions($this->defaultOptions());
 
         $this->ajax->setOptions(array(
-            'url' => $this->router->generate('customer_groups_list_ajax'),
+            'url' => $this->router->generate('agent_groups_list_ajax'),
             'type' => 'GET'
         ));
 
         $this->columnBuilder
-            ->add('label', 'column', array('title' => 'Customer group name'))
+            ->add('label', 'column', array('title' => 'Agent group name'))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Action',
@@ -33,7 +33,7 @@ class CustomerGroupDatatable extends BaseDatatable
                 'end_html' => '</div>',
                 'actions' => array(
                     array(
-                        'route' => 'customer_group_update',
+                        'route' => 'agent_group_update',
                         'route_parameters' => array(
                             'id' => 'id'
                         ),
@@ -50,7 +50,7 @@ class CustomerGroupDatatable extends BaseDatatable
                         'role' => 'ROLE_ADMIN',
                     ),
                     array(
-                        'route' => 'customer_group_delete',
+                        'route' => 'agent_group_delete',
                         'route_parameters' => array(
                             'id' => 'id'
                         ),
@@ -76,7 +76,7 @@ class CustomerGroupDatatable extends BaseDatatable
      */
     public function getEntity()
     {
-        return 'Rbs\Bundle\SalesBundle\Entity\CustomerGroup';
+        return 'Rbs\Bundle\SalesBundle\Entity\AgentGroup';
     }
 
     /**
@@ -84,6 +84,6 @@ class CustomerGroupDatatable extends BaseDatatable
      */
     public function getName()
     {
-        return 'customer_group_datatable';
+        return 'agent_group_datatable';
     }
 }

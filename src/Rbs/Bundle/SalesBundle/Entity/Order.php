@@ -61,12 +61,12 @@ class Order
     private $orderItems;
 
     /**
-     * @var Customer
+     * @var Agent
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Customer")
-     * @ORM\JoinColumn(name="customer_id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent")
+     * @ORM\JoinColumn(name="agent_id", nullable=false)
      */
-    private $customer;
+    private $agent;
 
     /**
      * @var Area
@@ -283,19 +283,19 @@ class Order
     }
 
     /**
-     * @return Customer
+     * @return Agent
      */
-    public function getCustomer()
+    public function getAgent()
     {
-        return $this->customer;
+        return $this->agent;
     }
 
     /**
-     * @param Customer $customer
+     * @param Agent $agent
      */
-    public function setCustomer($customer)
+    public function setAgent($agent)
     {
-        $this->customer = $customer;
+        $this->agent = $agent;
     }
 
     /**

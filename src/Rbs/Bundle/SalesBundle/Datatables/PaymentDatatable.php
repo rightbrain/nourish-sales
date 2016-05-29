@@ -14,7 +14,7 @@ use Rbs\Bundle\UserBundle\Entity\User;
 class PaymentDatatable extends BaseDatatable
 {
     private $user;
-    protected $allowCustomerSearch;
+    protected $allowAgentSearch;
 
     public function getLineFormatter()
     {
@@ -22,8 +22,8 @@ class PaymentDatatable extends BaseDatatable
         $formatter = function($line){
             $line['bankInfo'] = 'Payment Method:'.$line['paymentMethod'].', Bank Name:'.$line['bankName'].', Branch Name:'.$line['branchName'];
             $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
-            if ($this->allowCustomerSearch) {
-                $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $line['customer']['user']['id']));
+            if ($this->allowAgentSearch) {
+                $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $line['agent']['user']['id']));
                 $line["fullName"] = $profile->getFullName();
             }
 
@@ -40,7 +40,7 @@ class PaymentDatatable extends BaseDatatable
     {
         /** @var User $user */
         $this->user = $this->securityToken->getToken()->getUser();
-        $this->allowCustomerSearch = $this->user->getUserType() != User::CUSTOMER;
+        $this->allowAgentSearch = $this->user->getUserType() != User::AGENT;
 
         $this->features->setFeatures($this->defaultFeatures());
         $this->options->setOptions(array_merge($this->defaultOptions(), array(
@@ -52,7 +52,7 @@ class PaymentDatatable extends BaseDatatable
         $this->callbacks->setCallbacks(array
             (
                 'init_complete' => "function( settings ) {
-                        Payment.filterInit({$this->allowCustomerSearch});
+                        Payment.filterInit({$this->allowAgentSearch});
                 }"
             )
         );
@@ -66,8 +66,8 @@ class PaymentDatatable extends BaseDatatable
         $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
 
         $this->columnBuilder->add('createdAt', 'datetime', array( 'title' => 'Date', 'date_format' => $dateFormat ));
-        if ($this->allowCustomerSearch) {
-            $this->columnBuilder->add('customer.user.id', 'column', array('title' => 'Customer Name', 'render' => 'resolveCustomerName'));
+        if ($this->allowAgentSearch) {
+            $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName'));
         }
 
         $this->columnBuilder->add('amount', 'column', array('visible' => false))

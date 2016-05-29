@@ -1,6 +1,6 @@
 var Payment = function()
 {
-    function filterInit(allowCustomerSearch){
+    function filterInit(allowAgentSearch){
 
         if (!$('#external_filter_container').length) {
             $('<div id="external_filter_container">' +
@@ -9,7 +9,7 @@ var Payment = function()
                 '<span class="input-group-addon">to</span>' +
                 '<input type="text" class="form-control input-small" value="" style="margin-left: 0">' +
                 '</div></div>' +
-                '<div id="customer-filter"></div>' +
+                '<div id="agent-filter"></div>' +
                 '<button class="btn green pull-right payment-filter-btn">Filter</button>' +
                 '</div>').appendTo('#payment_datatable_filter');
         }
@@ -22,13 +22,13 @@ var Payment = function()
             format: 'dd-mm-yyyy'
         });
 
-        if (allowCustomerSearch) {
-            $("#customer-filter").select2({
-                placeholder: "Customers",
+        if (allowAgentSearch) {
+            $("#agent-filter").select2({
+                placeholder: "Agents",
                 allowClear: true,
                 minimumInputLength: 3,
                 ajax: {
-                    url: Routing.generate('customer_search'),
+                    url: Routing.generate('agent_search'),
                     dataType: 'json',
                     quietMillis: 250,
                     data: function (term, page) {
@@ -58,8 +58,8 @@ var Payment = function()
             if (startDate && endDate) {
                 table.columns(0).search(fromDate+'--'+toDate);
             }
-            if (allowCustomerSearch) {
-                table.columns(1).search($("#customer-filter").val());
+            if (allowAgentSearch) {
+                table.columns(1).search($("#agent-filter").val());
             }
             table.draw();
         });
@@ -74,21 +74,21 @@ var Payment = function()
         $('.dataTables_scrollHead').find('table thead tr').eq(1).remove();
     }
 
-    function handleCustomerChange()
+    function handleAgentChange()
     {
-        if (!$("#payment_customer").length) {
+        if (!$("#payment_agent").length) {
             return;
         }
-        $("#payment_customer").change(function () {
+        $("#payment_agent").change(function () {
             var ordersElm = $('#payment_orders');
-            var customer = $(this).val();
-            if (customer == '') {
+            var agent = $(this).val();
+            if (agent == '') {
                 ordersElm.find('option').remove();
                 return fales;
             }
             $.ajax({
                 type: "post",
-                url: Routing.generate('partial_payment_orders', {id: customer}),
+                url: Routing.generate('partial_payment_orders', {id: agent}),
                 dataType: 'json',
                 success: function(data) {
                     ordersElm.find('option').remove();
@@ -106,7 +106,7 @@ var Payment = function()
 
     function init()
     {
-        handleCustomerChange();
+        handleAgentChange();
     }
 
     return {

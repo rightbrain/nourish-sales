@@ -14,7 +14,7 @@ class ConfigureMenuListener extends ContextAwareListener
         /** @var MenuItem $menu */
         $menu = $event->getMenu();
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_CUSTOMER', 'ROLE_AGENT'))) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_AGENT'))) {
             return $menu;
         }
 

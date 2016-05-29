@@ -88,7 +88,7 @@ class DeliveryController extends BaseController
         return $this->render('RbsSalesBundle:Delivery:view.html.twig', array(
             'delivery'  => $delivery,
             'order'     => $delivery->getOrderRef(),
-            'customer'  => $delivery->getOrderRef()->getCustomer(),
+            'agent'  => $delivery->getOrderRef()->getAgent(),
             'partialItems' => $partialItems
         ));
     }

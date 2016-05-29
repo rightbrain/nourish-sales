@@ -25,7 +25,7 @@ class OrderController extends BaseController
      * @Route("/orders", name="orders_home")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_CUSTOMER, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function indexAction(Request $request)
     {
@@ -42,27 +42,27 @@ class OrderController extends BaseController
      *
      * @Route("/orders_list_ajax", name="orders_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_CUSTOMER, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function listAjaxAction()
     {
         /** @var User $user */
         $user = $this->getUser();
-        $customerRepository = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer');
+        $agentRepository = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
         $datatable = $this->get('rbs_erp.sales.datatable.order');
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
 
         /** @var QueryBuilder $qb */
-        $function = function($qb) use ($user, $customerRepository)
+        $function = function($qb) use ($user, $agentRepository)
         {
             if ($user->getUserType() == User::AGENT) {
-                $customer = $customerRepository->findOneBy(array('user' => $user->getId()));
-                $qb->andWhere('orders.customer = :customer')->setParameter('customer', array($customer));
+                $agent = $agentRepository->findOneBy(array('user' => $user->getId()));
+                $qb->andWhere('orders.agent = :agent')->setParameter('agent', array($agent));
             } else if ($user->getUserType() == User::AGENT) {
-                $customers = $customerRepository->findBy(array('agent' => $user->getId()));
-                $qb->andWhere('orders.customer IN(:customers)')->setParameter('customers', $customers);
+                $agents = $agentRepository->findBy(array('agent' => $user->getId()));
+                $qb->andWhere('orders.agent IN(:agents)')->setParameter('agents', $agents);
             }
         };
         $query->addWhereAll($function);
@@ -74,7 +74,7 @@ class OrderController extends BaseController
      * @Route("/order/readable/sms", name="order_readable_sms")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_CUSTOMER, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function indexOrderReadableSmsAction(Request $request)
     {
@@ -91,7 +91,7 @@ class OrderController extends BaseController
      *
      * @Route("/order_readable_sms_list_ajax", name="order_readable_sms_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_CUSTOMER, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function listAjaxOrderReadableSmsAction()
     {
@@ -133,11 +133,11 @@ class OrderController extends BaseController
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $order->setArea($order->getCustomer()->getArea());
+                $order->setArea($order->getAgent()->getArea());
                 $this->orderRepository()->create($order);
-                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getDepo());
+                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getAgent()->getDepo());
 
-                $this->deliveryRepository()->createDelivery($order, $order->getCustomer()->getDepo());
+                $this->deliveryRepository()->createDelivery($order, $order->getAgent()->getDepo());
 
                 $this->flashMessage('success', 'Order Add Successfully!');
 
@@ -183,7 +183,7 @@ class OrderController extends BaseController
                 if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
                     $stockRepo->subtractFromOnHold($oldQty);
                 }
-                $stockRepo->addStockToOnHold($order, $order->getCustomer()->getDepo());
+                $stockRepo->addStockToOnHold($order, $order->getAgent()->getDepo());
                 $em->getRepository('RbsSalesBundle:Order')->update($order, true);
 
                 $this->flashMessage('success', 'Order Update Successfully!');
@@ -202,7 +202,7 @@ class OrderController extends BaseController
      * @Route("/order/details/{id}", name="order_details", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_CUSTOMER, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function detailsAction(Order $order)
     {
@@ -227,16 +227,16 @@ class OrderController extends BaseController
 
     protected function checkViewOrderAccess(Order $order)
     {
-        if ($this->isGranted('ROLE_CUSTOMER') && $order->getCustomer()->getUser()->getId() != $this->getUser()->getId()) {
+        if ($this->isGranted('ROLE_AGENT') && $order->getAgent()->getUser()->getId() != $this->getUser()->getId()) {
             throw new AccessDeniedException('Access Denied');
         }
 
         if ($this->isGranted('ROLE_AGENT')) {
-            $isOwnCustomer = $this->customerRepository()->findOneBy(array(
+            $isOwnAgent = $this->agentRepository()->findOneBy(array(
                 'agent' => $this->getUser(),
-                'id' => $order->getCustomer()->getId()
+                'id' => $order->getAgent()->getId()
             ));
-            if (!$isOwnCustomer) {
+            if (!$isOwnAgent) {
                 throw new AccessDeniedException('Access Denied');
             }
         }
@@ -255,7 +255,7 @@ class OrderController extends BaseController
         }
 
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getDepo());
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getAgent()->getDepo());
         }
 
         $order->setOrderState(Order::ORDER_STATE_PROCESSING);
@@ -302,7 +302,7 @@ class OrderController extends BaseController
         }
 
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getCustomer()->getDepo());
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getAgent()->getDepo());
         }
 
         $order->setOrderState(Order::ORDER_STATE_HOLD);
@@ -327,7 +327,7 @@ class OrderController extends BaseController
         /** @var OrderItem $item */
         foreach ($order->getOrderItems() as $item) {
             $stockItem = $stockRepo->findOneBy(
-                array('item' => $item->getItem()->getId(), 'depo' => $order->getCustomer()->getDepo()->getId())
+                array('item' => $item->getItem()->getId(), 'depo' => $order->getAgent()->getDepo()->getId())
             );
             $item->isAvailable = $stockItem->isStockAvailable($item->getQuantity());
         }
@@ -364,8 +364,8 @@ class OrderController extends BaseController
      */
     public function paymentReviewAction(Order $order)
     {
-        $customer = $order->getCustomer();
-        $currentCreditLimit = $this->customerRepository()->getCurrentCreditLimit($customer);
+        $agent = $order->getAgent();
+        $currentCreditLimit = $this->agentRepository()->getCurrentCreditLimit($agent);
         $isOverCredit = $currentCreditLimit < $order->getTotalAmount();
 
         return $this->render('RbsSalesBundle:Order:paymentReview.html.twig', array(
@@ -399,11 +399,11 @@ class OrderController extends BaseController
      */
     public function paymentApproveAction(Order $order)
     {
-        $customer = $order->getCustomer();
-        $currentCreditLimit = $this->customerRepository()->getCurrentCreditLimit($customer);
+        $agent = $order->getAgent();
+        $currentCreditLimit = $this->agentRepository()->getCurrentCreditLimit($agent);
         $isOverCredit = $currentCreditLimit < $order->getTotalAmount();
 
-        if (!$customer->isVIP() && $isOverCredit) {
+        if (!$agent->isVIP() && $isOverCredit) {
             $order->setPaymentState(Order::PAYMENT_STATE_CREDIT_APPROVAL);
         } else if ($order->getTotalAmount() === $order->getPaidAmount()) {
             $order->setPaymentState(Order::PAYMENT_STATE_PAID);

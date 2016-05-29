@@ -2,7 +2,7 @@
 namespace Rbs\Bundle\SalesBundle\Event;
 
 use Rbs\Bundle\CoreBundle\Event\BaseEvent;
-use Rbs\Bundle\SalesBundle\Entity\Customer;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 
 class OrderApproveEvent extends BaseEvent
@@ -13,19 +13,19 @@ class OrderApproveEvent extends BaseEvent
     protected $payment;
 
     /**
-     * @var Customer
+     * @var Agent
      */
-    protected $customer;
+    protected $agent;
 
     /**
      * @var String
      */
     protected $eventName;
 
-    public function __construct(Payment $payment, Customer $customer)
+    public function __construct(Payment $payment, Agent $agent)
     {
         $this->payment = $payment;
-        $this->customer = $customer;
+        $this->agent = $agent;
     }
 
     /**
@@ -63,7 +63,7 @@ class OrderApproveEvent extends BaseEvent
     protected function getDescriptionString()
     {
         if ($this->payment->getAmount() > 0) {
-            $descriptionTemplate = "Payment %s has been deposit by #%s to %s"; // amount, customer ID, Bank and Branch Name
+            $descriptionTemplate = "Payment %s has been deposit by #%s to %s"; // amount, agent ID, Bank and Branch Name
             $orderIds = $this->getOrderIds();
 
             if ($orderIds) {
@@ -73,16 +73,16 @@ class OrderApproveEvent extends BaseEvent
             $bankInfo = $this->payment->getBankName() . ", " . $this->payment->getBranchName();
             $description = sprintf($descriptionTemplate,
                 number_format($this->payment->getAmount(), 2),
-                $this->customer->getId(),
+                $this->agent->getId(),
                 $bankInfo,
                 $orderIds
             );
         } else {
-            $descriptionTemplate = "Payment %s has subtract from #%s for %s"; // amount, customer ID, remarks
+            $descriptionTemplate = "Payment %s has subtract from #%s for %s"; // amount, agent ID, remarks
 
             $description = sprintf($descriptionTemplate,
                 number_format($this->payment->getAmount(), 2),
-                $this->customer->getId(),
+                $this->agent->getId(),
                 $this->payment->getRemark()
             );
         }

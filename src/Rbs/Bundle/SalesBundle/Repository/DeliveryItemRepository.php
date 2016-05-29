@@ -16,8 +16,8 @@ class DeliveryItemRepository extends EntityRepository
 {
     public function getPartialDeliveredItems(Delivery $delivery)
     {
-        $customers = $delivery->getOrderRef()->getCustomer();
-        $orders = $this->_em->getRepository('RbsSalesBundle:Order')->findBy(array('customer' => $customers, 'deliveryState' => Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
+        $agents = $delivery->getOrderRef()->getAgent();
+        $orders = $this->_em->getRepository('RbsSalesBundle:Order')->findBy(array('agent' => $agents, 'deliveryState' => Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
 
         $data = array();
         foreach ($orders as $order) {

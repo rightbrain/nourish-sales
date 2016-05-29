@@ -17,8 +17,8 @@ services:
          tags:
              - { name: rbs.user.permission_provider, alias: sales }
 
-    rbs_erp.sales.datatable.customer:
-        class: Rbs\Bundle\SalesBundle\Datatables\CustomerDatatable
+    rbs_erp.sales.datatable.agent:
+        class: Rbs\Bundle\SalesBundle\Datatables\AgentDatatable
         tags:
             - { name: sg.datatable.view }
 
@@ -59,8 +59,8 @@ services:
             - { name: sg.datatable.view }
         arguments: [@security.authorization_checker, @security.token_storage, @twig, @translator, @router, @doctrine.orm.entity_manager, @service_container]
 
-    rbs_erp.sales.datatable.customer.group:
-        class: Rbs\Bundle\SalesBundle\Datatables\CustomerGroupDatatable
+    rbs_erp.sales.datatable.agent.group:
+        class: Rbs\Bundle\SalesBundle\Datatables\AgentGroupDatatable
         tags:
             - { name: sg.datatable.view }
 
@@ -70,7 +70,7 @@ services:
             - { name: sg.datatable.view }
 
     rbs_erp.sales.registration.form.type:
-        class: Rbs\Bundle\SalesBundle\Form\Type\CustomerForm
+        class: Rbs\Bundle\SalesBundle\Form\Type\AgentForm
         tags:
             - { name: form.type, alias: rbs_user_bundle_user }
         arguments: ['%fos_user.model.user.class%']

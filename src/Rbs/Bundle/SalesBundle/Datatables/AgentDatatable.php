@@ -2,14 +2,14 @@
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
-use Rbs\Bundle\SalesBundle\Entity\Customer;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 
 /**
- * Class CustomerDatatable
+ * Class AgentDatatable
  *
  * @package Rbs\Bundle\SalesBundle\Datatables
  */
-class CustomerDatatable extends BaseDatatable
+class AgentDatatable extends BaseDatatable
 {
     /**
      * {@inheritdoc}
@@ -20,15 +20,15 @@ class CustomerDatatable extends BaseDatatable
         $this->options->setOptions($this->defaultOptions());
 
         $this->ajax->setOptions(array(
-            'url' => $this->router->generate('customers_list_ajax'),
+            'url' => $this->router->generate('agents_list_ajax'),
             'type' => 'GET'
         ));
 
         $this->columnBuilder
-            ->add('customerID', 'column', array('title' => 'Customer ID'))
-            ->add('user.profile.fullName', 'column', array('title' => 'Customer name'))
+            ->add('agentID', 'column', array('title' => 'Agent ID'))
+            ->add('user.profile.fullName', 'column', array('title' => 'Agent name'))
             ->add('user.profile.cellphone', 'column', array('title' => 'Cell Phone'))
-            ->add('customerGroup.label', 'column', array('title' => 'Group'))
+            ->add('agentGroup.label', 'column', array('title' => 'Group'))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Update',
@@ -36,7 +36,7 @@ class CustomerDatatable extends BaseDatatable
                 'end_html' => '</div>',
                 'actions' => array(
                     array(
-                        'route' => 'customer_update',
+                        'route' => 'agent_update',
                         'route_parameters' => array(
                             'id' => 'id'
                         ),
@@ -53,7 +53,7 @@ class CustomerDatatable extends BaseDatatable
                         'role' => 'ROLE_ADMIN',
                     ),
                     array(
-                        'route' => 'customer_update_password',
+                        'route' => 'agent_update_password',
                         'route_parameters' => array(
                             'id' => 'user.id'
                         ),
@@ -77,7 +77,7 @@ class CustomerDatatable extends BaseDatatable
                 'end_html' => '</div>',
                 'actions' => array(
                     array(
-                        'route' => 'customer_delete',
+                        'route' => 'agent_delete',
                         'route_parameters' => array(
                             'id' => 'id'
                         ),
@@ -94,7 +94,7 @@ class CustomerDatatable extends BaseDatatable
                         'role' => 'ROLE_ADMIN'
                     ),
                     array(
-                        'route' => 'customer_details',
+                        'route' => 'agent_details',
                         'route_parameters' => array(
                             'id' => 'id'
                         ),
@@ -119,7 +119,7 @@ class CustomerDatatable extends BaseDatatable
      */
     public function getEntity()
     {
-        return 'Rbs\Bundle\SalesBundle\Entity\Customer';
+        return 'Rbs\Bundle\SalesBundle\Entity\Agent';
     }
 
     /**
@@ -127,6 +127,6 @@ class CustomerDatatable extends BaseDatatable
      */
     public function getName()
     {
-        return 'customer_datatable';
+        return 'agent_datatable';
     }
 }

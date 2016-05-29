@@ -3,7 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
-use Rbs\Bundle\SalesBundle\Form\Type\CustomerProfileForm;
+use Rbs\Bundle\SalesBundle\Form\Type\AgentProfileForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-class UserCustomerForm extends AbstractType
+class UserAgentForm extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -31,9 +31,9 @@ class UserCustomerForm extends AbstractType
             ))
             ->add('userType', 'choice', array(
                 'choices'  => array(
-                    'CUSTOMER' => User::CUSTOMER
+                    'AGENT' => User::AGENT
                 ),
-                'data' => User::CUSTOMER
+                'data' => User::AGENT
             ))
             ->add('plainPassword', 'repeated', array(
                 'type' => 'password',
@@ -60,7 +60,7 @@ class UserCustomerForm extends AbstractType
         ;
 
         $builder
-            ->add('profile', new CustomerProfileForm());
+            ->add('profile', new AgentProfileForm());
 
     }
 

@@ -3,7 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
-use Rbs\Bundle\SalesBundle\Repository\CustomerRepository;
+use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\SmsRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;

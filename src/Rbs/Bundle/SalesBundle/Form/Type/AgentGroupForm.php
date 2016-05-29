@@ -8,7 +8,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class CustomerGroupForm extends AbstractType
+class AgentGroupForm extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -30,12 +30,12 @@ class CustomerGroupForm extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Rbs\Bundle\SalesBundle\Entity\CustomerGroup'
+            'data_class' => 'Rbs\Bundle\SalesBundle\Entity\AgentGroup'
         ));
     }
 
     public function getName()
     {
-        return 'customer_group';
+        return 'agent_group';
     }
 }

@@ -1,10 +1,10 @@
 {{ form_start(form, {'method': 'POST'}) }}
 
 <div class="form-group">
-    <label class="col-md-2 control-label">Customer</label>
+    <label class="col-md-2 control-label">Agent</label>
     <div class="col-md-6" style="margin-top: 10px;">
-        {{ order.customer.user.profile.fullName }}
-        {#{{ form_widget(form.customer, { 'attr':{'disabled':'disabled'} }) }}#}
+        {{ order.agent.user.profile.fullName }}
+        {#{{ form_widget(form.agent, { 'attr':{'disabled':'disabled'} }) }}#}
     </div>
 </div>
 
@@ -73,7 +73,7 @@
             <th colspan="2">{{ form_widget(form.totalAmount, { 'attr': {'style': ''}} ) }}</th>
         </tr>
         <tr>
-            <td colspan="6"><input id="order_customer" type="hidden" value="{{ order.customer.id }}"></td>
+            <td colspan="6"><input id="order_agent" type="hidden" value="{{ order.agent.id }}"></td>
             <td>{{ form_row(form.submit) }}</td>
         </tr>
         </tfoot>

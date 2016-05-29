@@ -4,13 +4,16 @@ namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\AreaRepository;
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
-use Rbs\Bundle\SalesBundle\Repository\CustomerGroupRepository;
+use Rbs\Bundle\SalesBundle\Repository\AgentGroupRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
-class CustomerUpdateForm extends AbstractType
+class AgentForm extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -25,21 +28,24 @@ class CustomerUpdateForm extends AbstractType
                     '1' => 'Yes'
                 )
             ))
-            ->add('customerID')
+            ->add('srID', 'text', array(
+                'constraints' => array(
+                )
+            ))
             ->add('creditLimit')
             ->add('openingBalance')
-            ->add('agent', 'entity', array(
+            ->add('sr', 'entity', array(
                 'class' => 'RbsUserBundle:User',
                 'property' => 'username',
                 'required' => false,
-                'empty_value' => 'Select Agent',
+                'empty_value' => 'Select SR',
                 'empty_data' => null,
                 'query_builder' => function (UserRepository $repository)
                 {
                     return $repository->createQueryBuilder('u')
-                        ->where('u.userType = :Agent')
+                        ->where('u.userType = :sr')
                         ->andWhere('u.deletedAt IS NULL')
-                        ->setParameter('Agent', 'Agent')
+                        ->setParameter('sr', 'SR')
                         ->orderBy('u.username','ASC');
                 }
             ))
@@ -69,13 +75,13 @@ class CustomerUpdateForm extends AbstractType
                         ->orderBy('a.areaName','ASC');
                 }
             ))
-            ->add('customerGroup', 'entity', array(
-                'class' => 'RbsSalesBundle:CustomerGroup',
+            ->add('agentGroup', 'entity', array(
+                'class' => 'RbsSalesBundle:AgentGroup',
                 'property' => 'label',
                 'required' => false,
                 'empty_value' => 'Select Group',
                 'empty_data' => null,
-                'query_builder' => function (CustomerGroupRepository $repository)
+                'query_builder' => function (AgentGroupRepository $repository)
                 {
                     return $repository->createQueryBuilder('cg')
                         ->where('cg.deletedAt IS NULL')
@@ -85,7 +91,7 @@ class CustomerUpdateForm extends AbstractType
         ;
 
         $builder
-            ->add('user', new UserCustomerUpdateForm());
+            ->add('user', new UserAgentForm());
 
         $builder
             ->add('submit', 'submit', array(
@@ -100,12 +106,12 @@ class CustomerUpdateForm extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Rbs\Bundle\SalesBundle\Entity\Customer'
+            'data_class' => 'Rbs\Bundle\SalesBundle\Entity\Agent'
         ));
     }
 
     public function getName()
     {
-        return 'user_customer';
+        return 'user_agent';
     }
 }

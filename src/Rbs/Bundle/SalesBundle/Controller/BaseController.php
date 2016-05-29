@@ -13,11 +13,11 @@ use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 class BaseController extends CoreBaseController
 {
     /**
-     * @return \Rbs\Bundle\SalesBundle\Repository\CustomerRepository
+     * @return \Rbs\Bundle\SalesBundle\Repository\AgentRepository
      */
-    protected function customerRepository()
+    protected function agentRepository()
     {
-        return $this->getDoctrine()->getRepository('RbsSalesBundle:Customer');
+        return $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
     }
 
     /**

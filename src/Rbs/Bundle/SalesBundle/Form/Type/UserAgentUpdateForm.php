@@ -5,9 +5,10 @@ namespace Rbs\Bundle\SalesBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class CustomerProfileForm extends AbstractType
+class UserAgentUpdateForm extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -16,23 +17,19 @@ class CustomerProfileForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('fullName', null, array(
+            ->add('email', 'email', array(
+                'label' => 'form.email', 'translation_domain' => 'FOSUserBundle',
                 'constraints' => array(
-                    new NotBlank()
-                )
+                    new NotBlank(array(
+                        'message'=>'Email should not be blank'
+                    )),
+                    new email()
+                ),
             ))
-            ->add('cellphone', null, array(
-                'constraints' => array(
-                    new NotBlank()
-                )
-            ))
-            ->add('address', null, array(
-                'constraints' => array(
-                    new NotBlank()
-                )
-            ))
-            ->add('file')
         ;
+
+        $builder
+            ->add('profile', new AgentProfileForm());
     }
 
     /**
@@ -41,12 +38,12 @@ class CustomerProfileForm extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Rbs\Bundle\UserBundle\Entity\Profile'
+            'data_class' => 'Rbs\Bundle\UserBundle\Entity\User'
         ));
     }
 
     public function getName()
     {
-        return 'user_profile';
+        return 'user';
     }
 }

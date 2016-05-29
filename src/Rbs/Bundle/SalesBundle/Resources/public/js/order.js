@@ -1,11 +1,11 @@
 var Order = function()
 {
-    var customer = $("#order_customer").val();
-    if (customer) {
+    var agent = $("#order_agent").val();
+    if (agent) {
         $.ajax({
             type: "post",
-            url: Routing.generate('find_customer_ajax'),
-            data: "customer=" + customer,
+            url: Routing.generate('find_agent_ajax'),
+            data: "agent=" + agent,
             dataType: 'json',
             success: function (response) {
                 var creditLimit = response.creditLimit;
@@ -84,7 +84,7 @@ var Order = function()
         $.ajax({
             type: "post",
             url: Routing.generate('find_stock_item_ajax'),
-            data: "item=" + item + "&customer=" + $('#order_customer').val(),
+            data: "item=" + item + "&agent=" + $('#order_agent').val(),
             dataType: 'json',
             success: function (response) {
                 var onHand = response.onHand;
@@ -165,10 +165,10 @@ var Order = function()
             addItemForm($collectionHolder);
         });
 
-        $("#order_customer").change(function () {
+        $("#order_agent").change(function () {
             $collectionHolder.find('tr').remove();
-            var customer = $(this).val();
-            if (customer == false) {
+            var agent = $(this).val();
+            if (agent == false) {
                 $('.hide_button').hide();
                 $("div.credit_limit").html('');
             } else {
@@ -179,8 +179,8 @@ var Order = function()
                 });
                 $.ajax({
                     type: "post",
-                    url: Routing.generate('find_customer_ajax'),
-                    data: "customer=" + customer,
+                    url: Routing.generate('find_agent_ajax'),
+                    data: "agent=" + agent,
                     dataType: 'json',
                     success: function (response) {
                         var creditLimit = response.creditLimit;

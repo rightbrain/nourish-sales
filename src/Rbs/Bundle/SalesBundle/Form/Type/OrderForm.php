@@ -2,7 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
-use Rbs\Bundle\SalesBundle\Repository\CustomerRepository;
+use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\SmsRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
@@ -26,26 +26,26 @@ class OrderForm extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $customer = $options['data']->getCustomer();
+        $agent = $options['data']->getAgent();
         $refSMS = $options['data']->getRefSms();
 
-        if (!$customer) {
+        if (!$agent) {
             $builder
-                ->add('customer', 'entity', array(
-                    'class' => 'RbsSalesBundle:Customer',
+                ->add('agent', 'entity', array(
+                    'class' => 'RbsSalesBundle:Agent',
                     'property' => 'user.profile.fullName',
                     'required' => false,
-                    'empty_value' => 'Select Customer',
+                    'empty_value' => 'Select Agent',
                     'empty_data' => null,
-                    'query_builder' => function (CustomerRepository $repository)
+                    'query_builder' => function (AgentRepository $repository)
                     {
                         return $repository->createQueryBuilder('c')
                             ->join('c.user', 'u')
                             ->join('u.profile', 'p')
                             ->where('u.deletedAt IS NULL')
                             ->andWhere('u.enabled = 1')
-                            ->andWhere('u.userType = :CUSTOMER')
-                            ->setParameter('CUSTOMER', 'CUSTOMER')
+                            ->andWhere('u.userType = :AGENT')
+                            ->setParameter('AGENT', 'AGENT')
                             ->orderBy('p.fullName','ASC');
                     }
                 ));

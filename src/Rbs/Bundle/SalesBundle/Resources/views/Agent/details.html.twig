@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 
-{% block title %}{{ parent() }} : Customer Details {% endblock %}
+{% block title %}{{ parent() }} : Agent Details {% endblock %}
 
 {% block body %}
 
@@ -8,12 +8,12 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    Customer Details
+                    Agent Details
                 </div>
             </div>
 
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customers_home'), label: 'Back to List', 'icon': 'plus'}) }}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('agents_home'), label: 'Back to List', 'icon': 'plus'}) }}
                 <div class="dataTables_wrapper no-footer">
 
                     <div class="row">
@@ -23,11 +23,11 @@
                                 {#<div class="portlet">#}
                                     {#<div class="portlet-body">#}
                                         {#<table class="table">#}
-                                            {#<tr><th><h4>Customer Photo</h4></th></tr>#}
+                                            {#<tr><th><h4>Agent Photo</h4></th></tr>#}
                                             {#<tr>#}
                                                {#<td>#}
                                                    {#<div class="profile-userpic">#}
-                                                       {#<img src="{{ asset('../uploads/user/'~customer.user.profile.path) }}" class="img-responsive" alt="{{ customer.user.profile.fullname }}">#}
+                                                       {#<img src="{{ asset('../uploads/user/'~agent.user.profile.path) }}" class="img-responsive" alt="{{ agent.user.profile.fullname }}">#}
                                                    {#</div>#}
                                                {#</td>#}
                                             {#</tr>#}
@@ -40,50 +40,50 @@
                                 <div class="portlet-body">
                                     <table class="table">
                                         <tr>
-                                            <th colspan="4"><h4>Customer Profile Information</h4></th>
+                                            <th colspan="4"><h4>Agent Profile Information</h4></th>
                                         </tr>
                                         <tr>
-                                            <th colspan="4"><h4 class="modal-title">Customer ID <span class="badge badge-primary">{{ customer.customerID }}</span></h4></th>
+                                            <th colspan="4"><h4 class="modal-title">Agent ID <span class="badge badge-primary">{{ agent.agentID }}</span></h4></th>
                                         </tr>
                                         <tr>
-                                            <th>Customer Name</th>
-                                            <td>{{ customer.user.profile.fullname }}</td>
+                                            <th>Agent Name</th>
+                                            <td>{{ agent.user.profile.fullname }}</td>
                                             <th>Cellphone</th>
-                                            <td>{{ customer.user.profile.cellphone }}</td>
+                                            <td>{{ agent.user.profile.cellphone }}</td>
                                         </tr>
                                         <tr>
                                             <th>Created By</th>
-                                            <td>{{ customer.createdBy }}</td>
+                                            <td>{{ agent.createdBy }}</td>
                                             <th>Created Date</th>
-                                            <td>{{ customer.createdAt | date(php_date_format) }}</td>
+                                            <td>{{ agent.createdAt | date(php_date_format) }}</td>
                                         </tr>
                                         <tr>
                                             <th>Current Balance</th>
-                                            <td>{{ customerCurrentBalance }}</td>
+                                            <td>{{ agentCurrentBalance }}</td>
                                             <th>VIP</th>
-                                            <td>{% if customer.vIP %} Yes {% else %} Not {% endif %}</td>
+                                            <td>{% if agent.vIP %} Yes {% else %} Not {% endif %}</td>
                                         </tr>
                                         <tr>
                                             <th>Credit limit</th>
-                                            <td>{{ customer.creditLimit }}</td>
+                                            <td>{{ agent.creditLimit }}</td>
                                             <th>Agent</th>
-                                            <td>{{ customer.agent.profile.fullname }}</td>
+                                            <td>{{ agent.agent.profile.fullname }}</td>
                                         </tr>
                                         <tr>
                                             <th>Opening balance</th>
-                                            <td>{{ customer.openingBalance }}</td>
+                                            <td>{{ agent.openingBalance }}</td>
                                             <th>Area</th>
-                                            <td>{{ customer.area.areaName }}</td>
+                                            <td>{{ agent.area.areaName }}</td>
                                         </tr>
                                         <tr>
                                             <th>Depo</th>
-                                            <td>{{ customer.depo.name }}</td>
+                                            <td>{{ agent.depo.name }}</td>
                                             <th>Group</th>
-                                            <td>{{ customer.customerGroup.label|default('') }}</td>
+                                            <td>{{ agent.agentGroup.label|default('') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Address</th>
-                                            <td>{{ customer.user.profile.address }}</td>
+                                            <td>{{ agent.user.profile.address }}</td>
                                             <th></th>
                                             <td></td>
                                         </tr>
@@ -96,16 +96,16 @@
                                     <table class="table">
                                         <tr>
                                             <th colspan="2">
-                                                <h4>Customer Login Information</h4>
+                                                <h4>Agent Login Information</h4>
                                             </th>
                                         </tr>
                                         <tr>
-                                            <th>Customer Username</th>
-                                            <td>{{ customer.user.username }}</td>
+                                            <th>Agent Username</th>
+                                            <td>{{ agent.user.username }}</td>
                                         </tr>
                                         <tr>
                                             <th>Email</th>
-                                            <td>{{ customer.user.email }}</td>
+                                            <td>{{ agent.user.email }}</td>
                                         </tr>
                                     </table>
                                 </div>

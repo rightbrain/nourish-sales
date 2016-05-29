@@ -26,8 +26,8 @@
                                             <th colspan="4"><h4 class="modal-title">Order No <span class="badge badge-primary">{{ order.id }}</span></h4></th>
                                         </tr>
                                         <tr>
-                                            <th>Customer Name</th>
-                                            <td>{{ order.customer.user.username }}</td>
+                                            <th>Agent Name</th>
+                                            <td>{{ order.agent.user.username }}</td>
                                             <th>Order Date</th>
                                             <td>{{ order.createdAt|date(php_date_format) }}</td>
                                         </tr>

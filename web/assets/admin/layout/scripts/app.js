@@ -133,7 +133,7 @@ var App = function() {
     }
 }();
 
-function resolveCustomerName(data, type, row, meta)
+function resolveAgentName(data, type, row, meta)
 {
     return row.fullName;
 }

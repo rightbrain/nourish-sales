@@ -1,6 +1,6 @@
 {{ form_start(form, {'method': 'POST'}) }}
 
-    <h4>Customer Profile Information</h4>
+    <h4>Agent Profile Information</h4>
 
     <div class="form-group">
         <label for="inputEmail12" class="col-md-2 control-label">VIP</label>
@@ -12,10 +12,10 @@
     </div>
 
     <div class="form-group">
-        <label for="inputEmail12" class="col-md-2 control-label">Customer ID</label>
+        <label for="inputEmail12" class="col-md-2 control-label">Agent ID</label>
         <div class="col-md-10">
             <div class="input-icon">
-                {{ form_widget(form.customerID, { 'attr': {'class': ''} }) }}
+                {{ form_widget(form.agentID, { 'attr': {'class': ''} }) }}
             </div>
         </div>
     </div>
@@ -29,7 +29,7 @@
         {{ form_row(form.agent, { 'attr': {'class': ''} }) }}
         {{ form_row(form.user.profile.cellphone, { 'attr': {'class': ''} }) }}
         {{ form_row(form.user.profile.address, { 'attr': {'class': ''} }) }}
-        {{ form_row(form.customerGroup, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.agentGroup, { 'attr': {'class': ''} }) }}
 
     <div class="form-group">
         <label for="inputEmail12" class="col-md-2 control-label">Photo</label>
@@ -42,7 +42,7 @@
     </div>
 
     <hr>
-    <h4>Customer Email Information</h4>
+    <h4>Agent Email Information</h4>
 
         {{ form_row(form.user.email, { 'attr': {'class': ''} }) }}
 

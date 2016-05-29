@@ -37,12 +37,12 @@ class Sms
     private $order;
 
     /**
-     * @var Customer
+     * @var Agent
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Customer")
-     * @ORM\JoinColumn(name="customers", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent")
+     * @ORM\JoinColumn(name="agents", nullable=true)
      */
-    private $customer;
+    private $agent;
 
     /**
      * @var string
@@ -118,19 +118,19 @@ class Sms
     }
 
     /**
-     * @return Customer
+     * @return Agent
      */
-    public function getCustomer()
+    public function getAgent()
     {
-        return $this->customer;
+        return $this->agent;
     }
 
     /**
-     * @param Customer $customer
+     * @param Agent $agent
      */
-    public function setCustomer($customer)
+    public function setAgent($agent)
     {
-        $this->customer = $customer;
+        $this->agent = $agent;
     }
 
     /**
@@ -143,6 +143,7 @@ class Sms
 
     /**
      * @param \DateTime $date
+     * @return $this
      */
     public function setDate($date)
     {

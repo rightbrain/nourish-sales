@@ -5,7 +5,7 @@ var Delivery = function()
             $('<div id="external_filter_container">' +
                 '<div><input class="form-control input-small" placeholder="Order ID"></div>' +
                 '<div><input class="form-control date-picker" placeholder="Order Date"></div>' +
-                '<div id="customer-filter"></div>' +
+                '<div id="agent-filter"></div>' +
                 '<button class="btn green pull-right payment-filter-btn">Filter</button>' +
                 '</div>').appendTo('#delivery_datatable_filter');
         }

@@ -7,12 +7,12 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-globe"></i>Add Customers
+                    <i class="fa fa-globe"></i>Add Agents
                 </div>
             </div>
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('customers_home'), label: 'Back to List', 'icon': 'plus'}) }}
-                {% include "RbsSalesBundle:Customer:new_content.html.twig" %}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('agents_home'), label: 'Back to List', 'icon': 'plus'}) }}
+                {% include "RbsSalesBundle:Agent:new_content.html.twig" %}
             </div>
         </div>
     </div>

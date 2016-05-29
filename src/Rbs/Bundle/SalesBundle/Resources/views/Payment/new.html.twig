@@ -14,7 +14,7 @@
                 {{ include('_elements/_back_to_list_button.html.twig', {url: path('payments_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}
                 {{ form_start(form, {'method': 'POST'}) }}
 
-                    {{ form_row(form.customer) }}
+                    {{ form_row(form.agent) }}
                     {{ form_row(form.amount) }}
                     {{ form_row(form.bankName) }}
                     {{ form_row(form.branchName) }}

@@ -94,11 +94,11 @@ class StockController extends Controller
     public function findItemAction(Request $request)
     {
         $item = $request->request->get('item');
-        $customer = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->find($request->request->get('customer'));
+        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($request->request->get('agent'));
 
         $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(array(
             'item' => $item,
-            'depo' => $customer->getDepo()->getId()
+            'depo' => $agent->getDepo()->getId()
         ));
 
         $response = array(

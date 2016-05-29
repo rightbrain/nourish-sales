@@ -18,8 +18,8 @@ class SecurityPermissionProvider implements ProviderInterface
                 'ROLE_PAYMENT_APPROVE', 'ROLE_PAYMENT_OVER_CREDIT_APPROVE', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_VIEW'
             ),
 
-            'CUSTOMER' => array(
-                'ROLE_CUSTOMER_VIEW', 'ROLE_CUSTOMER_CREATE'
+            'AGENT' => array(
+                'ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE'
             ),
 
             'STOCK' => array(

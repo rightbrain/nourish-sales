@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 
-{% block title %}{{ parent() }} : Customer {% endblock %}
+{% block title %}{{ parent() }} : Agent {% endblock %}
 
 {% block body %}
 
@@ -8,14 +8,14 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-globe"></i>Customers
+                    <i class="fa fa-globe"></i>Agents
                 </div>
             </div>
             <div class="portlet-body">
                 <div>
-                <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_create'), label: 'Add New Customer', 'icon': 'plus'}) }}</div>
-                <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_group_create'), label: 'Add New Customer Group', 'icon': 'plus'}) }}</div>
-                <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('customer_groups_home'), label: 'View Customer Group', 'icon': 'plus'}) }}</div>
+                <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('agent_create'), label: 'Add New Agent', 'icon': 'plus'}) }}</div>
+                <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('agent_group_create'), label: 'Add New Agent Group', 'icon': 'plus'}) }}</div>
+                <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('agent_groups_home'), label: 'View Agent Group', 'icon': 'plus'}) }}</div>
                 </div>
                     <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}

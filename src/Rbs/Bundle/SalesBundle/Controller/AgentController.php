@@ -3,8 +3,8 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
-use Rbs\Bundle\SalesBundle\Entity\Customer;
-use Rbs\Bundle\SalesBundle\Form\Type\CustomerUpdateForm;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
+use Rbs\Bundle\SalesBundle\Form\Type\AgentUpdateForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdatePasswordForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -17,25 +17,25 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
- * Customer Controller.
+ * Agent Controller.
  *
  */
-class CustomerController extends BaseController
+class AgentController extends BaseController
 {
     /**
-     * @Route("/customers", name="customers_home")
+     * @Route("/agents", name="agents_home")
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function indexAction()
     {
-        $customers = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->customers();
-        $datatable = $this->get('rbs_erp.sales.datatable.customer');
+        $agents = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->agents();
+        $datatable = $this->get('rbs_erp.sales.datatable.agent');
         $datatable->buildDatatable();
 
-        return $this->render('RbsSalesBundle:Customer:index.html.twig', array(
-            'customers' => $customers,
+        return $this->render('RbsSalesBundle:Agent:index.html.twig', array(
+            'agents' => $agents,
             'datatable' => $datatable
         ));
     }
@@ -43,44 +43,44 @@ class CustomerController extends BaseController
     /**
      * Lists all Category entities.
      *
-     * @Route("/customers_list_ajax", name="customers_list_ajax", options={"expose"=true})
+     * @Route("/agents_list_ajax", name="agents_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function listAjaxAction()
     {
-        $datatable = $this->get('rbs_erp.sales.datatable.customer');
+        $datatable = $this->get('rbs_erp.sales.datatable.agent');
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("customers.deletedAt IS NULL");
+            $qb->andWhere("agents.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 
         if ($this->isGranted('ROLE_AGENT')) {
-            $query->getQuery()->andWhere('customers.agent = :agent')->setParameter('agent', $this->getUser());
+            $query->getQuery()->andWhere('agents.sr = :agent')->setParameter('sr', $this->getUser());
         }
 
         return $query->getResponse();
     }
 
     /**
-     * @Route("/customer/create", name="customer_create")
-     * @Template("RbsSalesBundle:Customer:new.html.twig")
+     * @Route("/agent/create", name="agent_create")
+     * @Template("RbsSalesBundle:Agent:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE, ROLE_AGENT, ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_AGENT_CREATE, ROLE_AGENT, ROLE_ADMIN")
      */
     public function createAction(Request $request)
     {
-        $customer = new Customer();
+        $agent = new Agent();
 
         $service = $this->get('rbs_erp.sales.registration.form.type');
 
-        $form = $this->createForm($service, $customer, array(
+        $form = $this->createForm($service, $agent, array(
             'attr' => array('novalidate' => 'novalidate')
         ));
 
@@ -89,16 +89,16 @@ class CustomerController extends BaseController
 
             if ($form->isValid()) {
 
-                $customer->getUser()->setEnabled(1);
-                $customer->getUser()->addRole('ROLE_CUSTOMER');
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->create($customer);
+                $agent->getUser()->setEnabled(1);
+                $agent->getUser()->addRole('ROLE_AGENT');
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
-                    'Customer Create Successfully!'
+                    'Agent Create Successfully!'
                 );
 
-                return $this->redirect($this->generateUrl('customers_home'));
+                return $this->redirect($this->generateUrl('agents_home'));
             }
         }
 
@@ -108,16 +108,16 @@ class CustomerController extends BaseController
     }
 
     /**
-     * @Route("/customer/update/{id}", name="customer_update", options={"expose"=true})
-     * @Template("RbsSalesBundle:Customer:update.html.twig")
+     * @Route("/agent/update/{id}", name="agent_update", options={"expose"=true})
+     * @Template("RbsSalesBundle:Agent:update.html.twig")
      * @param Request $request
-     * @param Customer $customer
+     * @param Agent $agent
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE, ROLE_AGENT, ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_AGENT_CREATE, ROLE_AGENT, ROLE_ADMIN")
      */
-    public function updateAction(Request $request, Customer $customer)
+    public function updateAction(Request $request, Agent $agent)
     {
-        $form = $this->createForm(new CustomerUpdateForm(), $customer, array(
+        $form = $this->createForm(new AgentUpdateForm(), $agent, array(
             'attr' => array('novalidate' => 'novalidate')
         ));
 
@@ -126,14 +126,14 @@ class CustomerController extends BaseController
 
             if ($form->isValid()) {
 
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->update($customer);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->update($agent);
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
                     'User Updated Successfully!'
                 );
 
-                return $this->redirect($this->generateUrl('customers_home'));
+                return $this->redirect($this->generateUrl('agents_home'));
             }
         }
 
@@ -143,12 +143,12 @@ class CustomerController extends BaseController
     }
 
     /**
-     * @Route("/customer/update/password/{id}", name="customer_update_password", options={"expose"=true})
-     * @Template("RbsSalesBundle:Customer:update.password.html.twig")
+     * @Route("/agent/update/password/{id}", name="agent_update_password", options={"expose"=true})
+     * @Template("RbsSalesBundle:Agent:update.password.html.twig")
      * @param Request $request
      * @param User $user
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_CUSTOMER, ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_ADMIN")
      */
     public function updatePasswordAction(Request $request, User $user)
     {
@@ -180,74 +180,74 @@ class CustomerController extends BaseController
     }
 
     /**
-     * @Route("/customer/details/{id}", name="customer_details", options={"expose"=true})
+     * @Route("/agent/details/{id}", name="agent_details", options={"expose"=true})
      * @Template()
-     * @param Customer $customer
+     * @param Agent $agent
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE, ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT_VIEW, ROLE_AGENT_CREATE, ROLE_ADMIN")
      */
-    public function detailsAction(Customer $customer)
+    public function detailsAction(Agent $agent)
     {
-        $this->checkViewDetailAccess($customer);
+        $this->checkViewDetailAccess($agent);
 
-        $customerCurrentBalance = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer')->getCurrentBalance($customer);
+        $agentCurrentBalance = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getCurrentBalance($agent);
 
-        return $this->render('RbsSalesBundle:Customer:details.html.twig', array(
-            'customer' => $customer,
-            'customerCurrentBalance' => $customerCurrentBalance
+        return $this->render('RbsSalesBundle:Agent:details.html.twig', array(
+            'agent' => $agent,
+            'agentCurrentBalance' => $agentCurrentBalance
         ));
     }
 
-    protected function checkViewDetailAccess(Customer $customer)
+    protected function checkViewDetailAccess(Agent $agent)
     {
         if ($this->isGranted('ROLE_AGENT')) {
 
-            if ($customer->getAgent() != $this->getUser()) {
+            if ($agent->getSr() != $this->getUser()) {
                 throw new AccessDeniedException('Access Denied');
             }
         }
     }
 
     /**
-     * @Route("/customer/delete/{id}", name="customer_delete", options={"expose"=true})
-     * @param Customer $customer
+     * @Route("/agent/delete/{id}", name="agent_delete", options={"expose"=true})
+     * @param Agent $agent
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_CUSTOMER_CREATE, ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_AGENT_CREATE, ROLE_ADMIN")
      */
-    public function deleteAction(Customer $customer)
+    public function deleteAction(Agent $agent)
     {
-        if($customer->getUser()->getProfile()->getPath()) {
-            $customer->getUser()->getProfile()->removeFile($customer->getUser()->getProfile()->getPath());
+        if($agent->getUser()->getProfile()->getPath()) {
+            $agent->getUser()->getProfile()->removeFile($agent->getUser()->getProfile()->getPath());
         }
 
-        $this->getDoctrine()->getManager()->remove($customer);
+        $this->getDoctrine()->getManager()->remove($agent);
         $this->getDoctrine()->getManager()->flush();
 
         $this->get('session')->getFlashBag()->add(
             'success',
-            'Customer Successfully Delete'
+            'Agent Successfully Delete'
         );
 
-        return $this->redirect($this->generateUrl('customers_home'));
+        return $this->redirect($this->generateUrl('agents_home'));
     }
 
     /**
-     * find customer ajax
-     * @Route("find_customer_ajax", name="find_customer_ajax", options={"expose"=true})
+     * find agent ajax
+     * @Route("find_agent_ajax", name="find_agent_ajax", options={"expose"=true})
      * @param Request $request
      * @return Response
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
-    public function findCustomerAction(Request $request)
+    public function findAgentAction(Request $request)
     {
-        $customerId = $request->request->get('customer');
+        $agentId = $request->request->get('agent');
 
-        $customerRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Customer');
-        $customer = $customerRepo->find($customerId);
+        $agentRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
+        $agent = $agentRepo->find($agentId);
 
         $response = new Response(json_encode(array(
-            'creditLimit' => $customerRepo->getCurrentCreditLimit($customer),
-            'balance' => $customerRepo->getCurrentBalance($customer)
+            'creditLimit' => $agentRepo->getCurrentCreditLimit($agent),
+            'balance' => $agentRepo->getCurrentBalance($agent)
         )));
 
         $response->headers->set('Content-Type', 'application/json');
@@ -256,21 +256,21 @@ class CustomerController extends BaseController
     }
 
     /**
-     * @Route("/payment/customer-search", name="customer_search", options={"expose"=true})
+     * @Route("/payment/agent-search", name="agent_search", options={"expose"=true})
      * @param Request $request
      * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_CUSTOMER_VIEW, ROLE_CUSTOMER_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
-    public function getCustomers(Request $request)
+    public function getAgents(Request $request)
     {
-        $qb = $this->customerRepository()->createQueryBuilder('c');
+        $qb = $this->agentRepository()->createQueryBuilder('c');
         $qb->join('c.user', 'u');
         $qb->join('u.profile', 'p');
         $qb->select('u.id, p.fullName AS text');
         $qb->setMaxResults(100);
 
-        if ($customerName = $request->query->get('q')) {
-            $qb->where("p.fullName LIKE '%{$customerName}%'");
+        if ($agentName = $request->query->get('q')) {
+            $qb->where("p.fullName LIKE '%{$agentName}%'");
         }
 
         return new JsonResponse($qb->getQuery()->getResult());

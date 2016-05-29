@@ -3,7 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\SalesBundle\Entity\Order;
-use Rbs\Bundle\SalesBundle\Repository\CustomerRepository;
+use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -28,7 +28,7 @@ class PaymentForm extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $customer = $this->request->request->get('payment[customer]', null, true);
+        $agent = $this->request->request->get('payment[agent]', null, true);
 
         $builder
             ->add('amount')
@@ -43,20 +43,20 @@ class PaymentForm extends AbstractType
                 ),
                 'required' => false,
             ))
-            ->add('customer', 'entity', array(
-                'class' => 'RbsSalesBundle:Customer',
+            ->add('agent', 'entity', array(
+                'class' => 'RbsSalesBundle:Agent',
                 'property' => 'user.profile.fullName',
-                'empty_value' => 'Select Customer',
+                'empty_value' => 'Select Agent',
                 'empty_data' => null,
-                'query_builder' => function (CustomerRepository $repository)
+                'query_builder' => function (AgentRepository $repository)
                 {
                     return $repository->createQueryBuilder('c')
                         ->join('c.user', 'u')
                         ->join('u.profile', 'p')
                         ->where('u.deletedAt IS NULL')
                         ->andWhere('u.enabled = 1')
-                        ->andWhere('u.userType = :CUSTOMER')
-                        ->setParameter('CUSTOMER', 'CUSTOMER')
+                        ->andWhere('u.userType = :AGENT')
+                        ->setParameter('AGENT', 'AGENT')
                         ->orderBy('p.fullName','ASC');
                 }
             ))
@@ -71,13 +71,13 @@ class PaymentForm extends AbstractType
                 'property' => 'orderIdAndDueAmount',
                 'multiple' => true,
                 'required' => false,
-                'query_builder' => function (OrderRepository $repository) use ($customer)
+                'query_builder' => function (OrderRepository $repository) use ($agent)
                 {
-                    if (!$customer) {
+                    if (!$agent) {
                         return $repository->createQueryBuilder('o')
                             ->setMaxResults(0);
                     } else {
-                        return $repository->getCustomerWiseOrder($customer, true);
+                        return $repository->getAgentWiseOrder($agent, true);
                     }
                 }
             ));

@@ -3,8 +3,8 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
-use Rbs\Bundle\SalesBundle\Entity\CustomerGroup;
-use Rbs\Bundle\SalesBundle\Form\Type\CustomerGroupForm;
+use Rbs\Bundle\SalesBundle\Entity\AgentGroup;
+use Rbs\Bundle\SalesBundle\Form\Type\AgentGroupForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -12,74 +12,74 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Customer Group Controller.
+ * Agent Group Controller.
  *
  */
-class CustomerGroupController extends Controller
+class AgentGroupController extends Controller
 {
     /**
-     * @Route("/customer/groups", name="customer_groups_home")
+     * @Route("/agent/groups", name="agent_groups_home")
      * @Method("GET")
      * @Template()
      */
     public function indexAction()
     {
-        $customerGroups = $this->getDoctrine()->getRepository('RbsSalesBundle:CustomerGroup')->customerGroups();
-        $datatable = $this->get('rbs_erp.sales.datatable.customer.group');
+        $agentGroups = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentGroup')->agentGroups();
+        $datatable = $this->get('rbs_erp.sales.datatable.agent.group');
         $datatable->buildDatatable();
 
-        return $this->render('RbsSalesBundle:CustomerGroup:index.html.twig', array(
-            'customerGroups' => $customerGroups,
+        return $this->render('RbsSalesBundle:AgentGroup:index.html.twig', array(
+            'agentGroups' => $agentGroups,
             'datatable' => $datatable
         ));
     }
 
     /**
-     * Lists all CustomerGroup entities.
+     * Lists all AgentGroup entities.
      *
-     * @Route("/customer_groups_list_ajax", name="customer_groups_list_ajax", options={"expose"=true})
+     * @Route("/agent_groups_list_ajax", name="agent_groups_list_ajax", options={"expose"=true})
      * @Method("GET")
      */
     public function listAjaxAction()
     {
-        $datatable = $this->get('rbs_erp.sales.datatable.customer.group');
+        $datatable = $this->get('rbs_erp.sales.datatable.agent.group');
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("customer_groups.deletedAt IS NULL");
+            $qb->andWhere("agent_groups.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
         return $query->getResponse();
     }
 
     /**
-     * @Route("/customer/group/create", name="customer_group_create")
-     * @Template("RbsSalesBundle:CustomerGroup:new.html.twig")
+     * @Route("/agent/group/create", name="agent_group_create")
+     * @Template("RbsSalesBundle:AgentGroup:new.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function createAction(Request $request)
     {
-        $customerGroup = new CustomerGroup();
+        $agentGroup = new AgentGroup();
 
-        $form = $this->createForm(new CustomerGroupForm(), $customerGroup);
+        $form = $this->createForm(new AgentGroupForm(), $agentGroup);
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
 
             if ($form->isValid()) {
 
-                $this->getDoctrine()->getRepository('RbsSalesBundle:CustomerGroup')->create($customerGroup);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:AgentGroup')->create($agentGroup);
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
-                    'Customer Group Create Successfully!'
+                    'Agent Group Create Successfully!'
                 );
 
-                return $this->redirect($this->generateUrl('customer_groups_home'));
+                return $this->redirect($this->generateUrl('agent_groups_home'));
             }
         }
 
@@ -89,29 +89,29 @@ class CustomerGroupController extends Controller
     }
 
     /**
-     * @Route("/customer/group/update/{id}", name="customer_group_update", options={"expose"=true})
-     * @Template("RbsSalesBundle:CustomerGroup:new.html.twig")
+     * @Route("/agent/group/update/{id}", name="agent_group_update", options={"expose"=true})
+     * @Template("RbsSalesBundle:AgentGroup:new.html.twig")
      * @param Request $request
-     * @param CustomerGroup $customerGroup
+     * @param AgentGroup $agentGroup
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
-    public function updateAction(Request $request, CustomerGroup $customerGroup)
+    public function updateAction(Request $request, AgentGroup $agentGroup)
     {
-        $form = $this->createForm(new CustomerGroupForm(), $customerGroup);
+        $form = $this->createForm(new AgentGroupForm(), $agentGroup);
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
 
             if ($form->isValid()) {
 
-                $this->getDoctrine()->getRepository('RbsSalesBundle:CustomerGroup')->update($customerGroup);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:AgentGroup')->update($agentGroup);
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
                     'User Updated Successfully!'
                 );
 
-                return $this->redirect($this->generateUrl('customer_groups_home'));
+                return $this->redirect($this->generateUrl('agent_groups_home'));
             }
         }
 
@@ -121,20 +121,20 @@ class CustomerGroupController extends Controller
     }
 
     /**
-     * @Route("/customer/group/delete/{id}", name="customer_group_delete", options={"expose"=true})
-     * @param CustomerGroup $customerGroup
+     * @Route("/agent/group/delete/{id}", name="agent_group_delete", options={"expose"=true})
+     * @param AgentGroup $agentGroup
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    public function deleteAction(CustomerGroup $customerGroup)
+    public function deleteAction(AgentGroup $agentGroup)
     {
-        $this->getDoctrine()->getManager()->remove($customerGroup);
+        $this->getDoctrine()->getManager()->remove($agentGroup);
         $this->getDoctrine()->getManager()->flush();
 
         $this->get('session')->getFlashBag()->add(
             'success',
-            'Customer Group Successfully Delete'
+            'Agent Group Successfully Delete'
         );
 
-        return $this->redirect($this->generateUrl('customer_groups_home'));
+        return $this->redirect($this->generateUrl('agent_groups_home'));
     }
 }
