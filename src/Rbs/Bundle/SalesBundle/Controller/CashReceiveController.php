@@ -3,6 +3,8 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\SalesBundle\Entity\CashReceive;
+use Rbs\Bundle\SalesBundle\Form\Type\CashReceiveForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -32,7 +34,7 @@ class CashReceiveController extends BaseController
     }
 
     /**
-     * Lists all Target entities.
+     * Lists all CashReceive entities.
      *
      * @Route("/cash_receive_list_ajax", name="cash_receive_list_ajax", options={"expose"=true})
      * @Method("GET")
@@ -60,5 +62,33 @@ class CashReceiveController extends BaseController
         };
         $query->addWhereAll($function);
         return $query->getResponse();
+    }
+
+    /**
+     * @Route("/cash/receive/create", name="cash_receive_create", options={"expose"=true})
+     * @Template("RbsSalesBundle:CashReceive:new.html.twig")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function createAction(Request $request)
+    {
+        $cashReceive = new CashReceive();
+        $form = $this->createForm(new CashReceiveForm(), $cashReceive, array(
+            'action' => $this->generateUrl('cash_receive_create'), 'method' => 'POST',
+            'attr' => array('novalidate' => 'novalidate')
+        ));
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:CashReceive')->create($cashReceive);
+                $this->flashMessage('success', 'Cash Receive Successfully!');
+                return $this->redirect($this->generateUrl('cash_receive_list'));
+            }
+        }
+        return array(
+            'form' => $form->createView()
+        );
     }
 }

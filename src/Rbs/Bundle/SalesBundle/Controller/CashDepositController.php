@@ -3,6 +3,8 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\SalesBundle\Entity\CashDeposit;
+use Rbs\Bundle\SalesBundle\Form\Type\CashDepositForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -32,7 +34,7 @@ class CashDepositController extends BaseController
     }
 
     /**
-     * Lists all Target entities.
+     * Lists all CashDeposit entities.
      *
      * @Route("/cash_deposit_list_ajax", name="cash_deposit_list_ajax", options={"expose"=true})
      * @Method("GET")
@@ -60,5 +62,33 @@ class CashDepositController extends BaseController
         };
         $query->addWhereAll($function);
         return $query->getResponse();
+    }
+
+    /**
+     * @Route("/cash/deposit/create", name="cash_deposit_create", options={"expose"=true})
+     * @Template("RbsSalesBundle:CashDeposit:new.html.twig")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function createAction(Request $request)
+    {
+        $cashDeposit = new CashDeposit();
+        $form = $this->createForm(new CashDepositForm(), $cashDeposit, array(
+            'action' => $this->generateUrl('cash_deposit_create'), 'method' => 'POST',
+            'attr' => array('novalidate' => 'novalidate')
+        ));
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:CashDeposit')->create($cashDeposit);
+                $this->flashMessage('success', 'Cash Deposit Successfully!');
+                return $this->redirect($this->generateUrl('cash_deposit_list'));
+            }
+        }
+        return array(
+            'form' => $form->createView()
+        );
     }
 }

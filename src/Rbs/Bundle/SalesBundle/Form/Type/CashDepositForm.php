@@ -16,6 +16,12 @@ class CashDepositForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('deposit')
+            ->add('bankName')
+            ->add('branchName')
+            ->add('remark')
+            ->add('depositedAt')
+            ->add('depositedBy')
             ->add('file')
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')

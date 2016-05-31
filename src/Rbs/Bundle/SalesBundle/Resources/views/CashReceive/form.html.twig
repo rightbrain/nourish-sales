@@ -11,9 +11,12 @@
                 </div>
             </div>
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('payments_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('cash_receive_list'), label: 'Back to List', 'icon': 'chevron-left'}) }}
                 {{ form_start(form, {'method': 'POST'}) }}
 
+                    {{ form_row(form.amount) }}
+                    {{ form_row(form.order) }}
+                    {{ form_row(form.depositor) }}
                     {{ form_row(form.remark) }}
 
                 {{ form_end(form) }}

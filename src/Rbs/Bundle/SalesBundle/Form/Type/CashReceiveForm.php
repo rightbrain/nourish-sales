@@ -16,7 +16,10 @@ class CashReceiveForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-
+            ->add('amount')
+            ->add('order')
+            ->add('depositor')
+            ->add('remark')
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')
             ))
