@@ -27,6 +27,16 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.cash.receive:
+        class: Rbs\Bundle\SalesBundle\Datatables\CashReceiveDatatable
+        tags:
+            - { name: sg.datatable.view }
+
+    rbs_erp.sales.datatable.cash.deposit:
+        class: Rbs\Bundle\SalesBundle\Datatables\CashDepositDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.stock:
         class: Rbs\Bundle\SalesBundle\Datatables\StockDatatable
         tags:
