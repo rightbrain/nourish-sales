@@ -19,8 +19,18 @@
                     {{ form_row(form.branchName) }}
                     {{ form_row(form.depositedAt) }}
                     {{ form_row(form.depositedBy) }}
-                    {{ form_row(form.file) }}
+
                     {{ form_row(form.remark) }}
+
+                <div class="form-group">
+                    <label for="inputEmail12" class="col-md-2 control-label">Slip</label>
+                    <div class="col-md-4">
+                        <div class="input-icon">
+                            <i class="fa fa-folder"></i>
+                            {{ form_widget(form.file, { 'attr': {'class': 'form-control'} }) }}
+                        </div>
+                    </div>
+                </div>
 
                 {{ form_end(form) }}
             </div>

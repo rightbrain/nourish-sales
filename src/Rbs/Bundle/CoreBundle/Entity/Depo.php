@@ -2,8 +2,10 @@
 
 namespace Rbs\Bundle\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 use Symfony\Component\Validator\Constraints AS Assert;
@@ -52,6 +54,20 @@ class Depo
      **/
     private $area;
 
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinTable(name="user_id")
+     **/
+    protected $users;
+
+    public function __construct()
+    {
+        $this->bundles = new ArrayCollection();
+        $this->users = new ArrayCollection();
+    }
+    
     /**
      * Get id
      *
@@ -129,5 +145,21 @@ class Depo
     public function getArea()
     {
         return $this->area;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUsers()
+    {
+        return $this->users;
+    }
+
+    /**
+     * @param mixed $users
+     */
+    public function setUsers($users)
+    {
+        $this->users = $users;
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\UserBundle\Entity\User;
+use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -20,8 +22,23 @@ class CashDepositForm extends AbstractType
             ->add('bankName')
             ->add('branchName')
             ->add('remark')
-            ->add('depositedAt')
-            ->add('depositedBy')
+            ->add($builder->create('depositedAt', 'text', array(
+                'label' => 'Date',
+                'attr' => array(
+                    'class' => 'date-picker'
+                ),
+                'empty_data' => new \DateTime(),
+                'required' => false
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
+            ->add('depositedBy', 'entity', array(
+                'class' => 'Rbs\Bundle\UserBundle\Entity\User',
+                'query_builder' => function(UserRepository $userRepository) {
+                    return $userRepository->createQueryBuilder('u')
+                        ->andWhere("u.userType = :USER")
+                        ->setParameters(array('USER' => User::USER));
+                },
+                'property' => 'username'
+            ))
             ->add('file')
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')

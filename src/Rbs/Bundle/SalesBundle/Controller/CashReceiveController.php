@@ -52,13 +52,11 @@ class CashReceiveController extends BaseController
          */
         $function = function($qb)
         {
-            $qb->join('targets.user', 'u');
-            $qb->where('targets.quantity > 0');
-            $qb->andWhere('targets.startDate is not null');
-            $qb->andWhere('targets.endDate is not null');
-            $qb->andWhere('u.userType = :RSM');
-            $qb->setParameter('RSM', User::RSM);
-            $qb->orderBy('targets.createdAt', 'desc');
+            $qb->join('cash_receives.depo', 'd');
+            $qb->join('d.users', 'u');
+            $qb->andWhere('u.id =:user');
+            $qb->setParameter('user', $this->getUser()->getId());
+            $qb->orderBy('cash_receives.receivedAt', 'desc');
         };
         $query->addWhereAll($function);
         return $query->getResponse();
@@ -66,27 +64,40 @@ class CashReceiveController extends BaseController
 
     /**
      * @Route("/cash/receive/create", name="cash_receive_create", options={"expose"=true})
-     * @Template("RbsSalesBundle:CashReceive:new.html.twig")
+     * @Template("RbsSalesBundle:CashReceive:form.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function createAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         $cashReceive = new CashReceive();
         $form = $this->createForm(new CashReceiveForm(), $cashReceive, array(
             'action' => $this->generateUrl('cash_receive_create'), 'method' => 'POST',
             'attr' => array('novalidate' => 'novalidate')
         ));
+        $getDepoId = $em->getRepository('RbsCoreBundle:Depo')->getDepoId($this->getUser()->getId());
+        $cashReceivedId = $em->getRepository('RbsSalesBundle:CashReceive')->getLastCashReceivedId($this->getUser()->getId());
+        if($cashReceivedId!=null){
+            $lastTotalReceivedAmount = $em->getRepository('RbsSalesBundle:CashReceive')->lastTotalReceivedAmount($cashReceivedId);
+            $lastTotalAmount = $lastTotalReceivedAmount!=null?$lastTotalReceivedAmount:0;
+            $cashReceive->setTotalReceivedAmount($lastTotalAmount+$request->request->all()['cash_receive']['amount']);
+        }else{
+            $cashReceive->setTotalReceivedAmount(0);
+        }
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
-
             if ($form->isValid()) {
-                $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:CashReceive')->create($cashReceive);
+                $cashReceive->setReceivedAt(new \DateTime());
+                $cashReceive->setReceivedBy($this->getUser());
+                $cashReceive->setDepo($em->getRepository('RbsCoreBundle:Depo')->find($getDepoId[0]['id']));
+                $em->getRepository('RbsSalesBundle:CashReceive')->create($cashReceive);
                 $this->flashMessage('success', 'Cash Receive Successfully!');
                 return $this->redirect($this->generateUrl('cash_receive_list'));
             }
         }
+        
         return array(
             'form' => $form->createView()
         );

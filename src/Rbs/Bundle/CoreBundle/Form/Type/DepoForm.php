@@ -2,6 +2,8 @@
 
 namespace Rbs\Bundle\CoreBundle\Form\Type;
 
+use Rbs\Bundle\UserBundle\Entity\User;
+use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -17,6 +19,15 @@ class DepoForm extends AbstractType
         $builder
             ->add('name')
             ->add('description')
+            ->add('users', 'entity', array(
+                'class' => 'Rbs\Bundle\UserBundle\Entity\User',
+                'query_builder' => function(UserRepository $userRepository) {
+                    return $userRepository->createQueryBuilder('u')
+                        ->andWhere("u.userType = :USER")
+                        ->setParameters(array('USER' => User::USER));
+                },
+                'property' => 'username'
+            ))
             ->add('area', null, array(
                 'attr' => array('class' => 'select2me')
             ))

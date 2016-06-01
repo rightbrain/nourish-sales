@@ -72,19 +72,15 @@ class DepoController extends BaseController
      */
     public function createAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         $entity = new Depo();
         $form = $this->createCreateForm($entity);
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($entity);
-            $em->flush();
-
+            $em->getRepository('RbsCoreBundle:Depo')->create($entity);
             $this->dispatch('core.depo.created', new DepoEvent($entity));
-
             $this->flashMessage('success', 'Depo Created Successfully');
-
             return $this->redirect($this->generateUrl('depo'));
         }
 

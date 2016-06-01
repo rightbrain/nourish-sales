@@ -35,4 +35,28 @@ class CashReceiveRepository extends EntityRepository
         $this->_em->flush();
         return $this->_em;
     }
+
+    public function getLastCashReceivedId($user)
+    {
+        $query = $this->createQueryBuilder('cr');
+        $query->join('cr.depo', 'd');
+        $query->join('d.users', 'u');
+        $query->select('cr.id');
+        $query->andWhere('u.id = :user');
+        $query->setParameter('user', $user);
+        $query->orderBy('cr.receivedAt', 'desc');
+        $query->getMaxResults(1);
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function lastTotalReceivedAmount($cashReceivedId)
+    {
+        $query = $this->createQueryBuilder('cr');
+        $query->select('cr.totalReceivedAmount');
+        $query->andWhere('cr.id = :cashReceivedId');
+        $query->setParameter('cashReceivedId', $cashReceivedId);
+        
+        return $query->getQuery()->getResult();
+    }
 }

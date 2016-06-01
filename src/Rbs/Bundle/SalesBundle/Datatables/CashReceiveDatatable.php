@@ -9,16 +9,6 @@ namespace Rbs\Bundle\SalesBundle\Datatables;
  */
 class CashReceiveDatatable extends BaseDatatable
 {
-    public function getLineFormatter()
-    {
-        $formatter = function($line){
-            $line["monthDiff"] = $this->monthDifference($line['startDate'], $line['endDate']);
-            return $line;
-        };
-
-        return $formatter;
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -27,16 +17,19 @@ class CashReceiveDatatable extends BaseDatatable
         $this->features->setFeatures($this->defaultFeatures());
         $this->options->setOptions($this->defaultOptions());
 
-        $twigVars = $this->twig->getGlobals();
-        $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
-
         $this->ajax->setOptions(array(
             'url' => $this->router->generate('cash_receive_list_ajax'),
             'type' => 'GET'
         ));
 
         $this->columnBuilder
-            ->add('user.username', 'column', array('title' => 'Username'))
+            ->add('receivedAt', 'datetime', array('title' => 'Date', 'date_format' => 'LLL' ))
+            ->add('order.id', 'column', array('title' => 'Order Number'))
+            ->add('depo.name', 'column', array('title' => 'Depo'))
+            ->add('receivedBy.username', 'column', array('title' => 'Depositor'))
+            ->add('amount', 'column', array('title' => 'Amount'))
+            ->add('depositor', 'column', array('title' => 'Bank Name'))
+            ->add('remark', 'column', array('title' => 'Remark'))
         ;
     }
 
@@ -54,12 +47,5 @@ class CashReceiveDatatable extends BaseDatatable
     public function getName()
     {
         return 'cash_receive_datatable';
-    }
-
-    public function monthDifference($start, $end)
-    {
-        $difference = $start->diff($end);
-
-        return $difference->m + 1 ;
     }
 }

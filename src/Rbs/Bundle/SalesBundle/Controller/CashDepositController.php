@@ -52,13 +52,11 @@ class CashDepositController extends BaseController
          */
         $function = function($qb)
         {
-            $qb->join('targets.user', 'u');
-            $qb->where('targets.quantity > 0');
-            $qb->andWhere('targets.startDate is not null');
-            $qb->andWhere('targets.endDate is not null');
-            $qb->andWhere('u.userType = :RSM');
-            $qb->setParameter('RSM', User::RSM);
-            $qb->orderBy('targets.createdAt', 'desc');
+            $qb->join('cash_deposits.depo', 'd');
+            $qb->join('d.users', 'u');
+            $qb->andWhere('u.id =:user');
+            $qb->setParameter('user', $this->getUser()->getId());
+            $qb->orderBy('cash_deposits.depositedAt', 'desc');
         };
         $query->addWhereAll($function);
         return $query->getResponse();
@@ -66,7 +64,7 @@ class CashDepositController extends BaseController
 
     /**
      * @Route("/cash/deposit/create", name="cash_deposit_create", options={"expose"=true})
-     * @Template("RbsSalesBundle:CashDeposit:new.html.twig")
+     * @Template("RbsSalesBundle:CashDeposit:form.html.twig")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
