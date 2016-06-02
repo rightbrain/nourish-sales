@@ -45,7 +45,7 @@ class CashReceiveRepository extends EntityRepository
         $query->andWhere('u.id = :user');
         $query->setParameter('user', $user);
         $query->orderBy('cr.receivedAt', 'desc');
-        $query->getMaxResults(1);
+        $query->setMaxResults(1);
 
         return $query->getQuery()->getResult();
     }
@@ -57,6 +57,18 @@ class CashReceiveRepository extends EntityRepository
         $query->andWhere('cr.id = :cashReceivedId');
         $query->setParameter('cashReceivedId', $cashReceivedId);
         
+        return $query->getQuery()->getResult();
+    }
+
+    public function getAllCashReceiveGroupByDepo()
+    {
+        $query = $this->createQueryBuilder('cr');
+        $query->join('cr.depo', 'd');
+        $query->select('SUM(cr.amount) as total');
+        $query->addSelect('d.name');
+        $query->addSelect('d.id');
+        $query->groupBy('cr.depo');
+
         return $query->getQuery()->getResult();
     }
 }

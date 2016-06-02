@@ -23,7 +23,7 @@ class CashReceiveController extends BaseController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function stockHistoryAllAction(Request $request)
+    public function cashReceiveListAction(Request $request)
     {
         $datatable = $this->get('rbs_erp.sales.datatable.cash.receive');
         $datatable->buildDatatable();
@@ -85,7 +85,7 @@ class CashReceiveController extends BaseController
             $total =$lastTotalAmount['totalReceivedAmount']+$_POST['cash_receive']['amount'];
             $cashReceive->setTotalReceivedAmount($total);
         }else{
-            $cashReceive->setTotalReceivedAmount(0);
+            $cashReceive->setTotalReceivedAmount($_POST['cash_receive']['amount']);
         }
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
@@ -104,5 +104,24 @@ class CashReceiveController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+    
+    /**
+     * @Route("/cash/receive/from/depo/list", name="cash_receive_from_depo_list", options={"expose"=true})
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function cashReceiveFromDepoListAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $cashDeposites = $em->getRepository('RbsSalesBundle:CashDeposit')->getAllCashDepositGroupByDepo();
+        $cashReceives = $em->getRepository('RbsSalesBundle:CashReceive')->getAllCashReceiveGroupByDepo();
+
+        foreach ($cashReceives as $cashReceive) {
+            $cashReceive[]      = $cashReceive['id'];
+        }
+        
+        return $this->render('RbsSalesBundle:CashReceive:admin.html.twig', array(
+        ));
     }
 }

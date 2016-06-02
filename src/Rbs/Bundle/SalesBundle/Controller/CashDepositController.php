@@ -23,7 +23,7 @@ class CashDepositController extends BaseController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function stockHistoryAllAction(Request $request)
+    public function cashDepositListAction(Request $request)
     {
         $datatable = $this->get('rbs_erp.sales.datatable.cash.deposit');
         $datatable->buildDatatable();
@@ -82,10 +82,10 @@ class CashDepositController extends BaseController
         if($cashDepositedId!=null && 'POST' === $request->getMethod()){
             $lastTotalDepositedAmount = $em->getRepository('RbsSalesBundle:CashDeposit')->lastTotalDepositAmount($cashDepositedId[0]['id']);
             $lastTotalAmount = $lastTotalDepositedAmount!=null?$lastTotalDepositedAmount[0]:0;
-            $total = $lastTotalAmount['totalDepositedAmount']+(float) $_POST['cash_deposit']['deposit'];
+            $total = $lastTotalAmount['totalDepositedAmount']+$_POST['cash_deposit']['deposit'];
             $cashDeposit->setTotalDepositedAmount($total);
         }else{
-            $cashDeposit->setTotalDepositedAmount(0);
+            $cashDeposit->setTotalDepositedAmount($_POST['cash_deposit']['deposit']);
         }
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);

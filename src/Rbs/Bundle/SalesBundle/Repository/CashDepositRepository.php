@@ -44,8 +44,8 @@ class CashDepositRepository extends EntityRepository
         $query->select('cd.id');
         $query->andWhere('u.id = :user');
         $query->setParameter('user', $user);
-        $query->orderBy('cd.createdAt', 'desc');
-        $query->getMaxResults(1);
+        $query->orderBy('cd.depositedAt', 'desc');
+        $query->setMaxResults(1);
 
         return $query->getQuery()->getResult();
     }
@@ -56,6 +56,18 @@ class CashDepositRepository extends EntityRepository
         $query->select('cd.totalDepositedAmount');
         $query->andWhere('cd.id = :cashDepositedId');
         $query->setParameter('cashDepositedId', $cashDepositedId);
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getAllCashDepositGroupByDepo()
+    {
+        $query = $this->createQueryBuilder('cd');
+        $query->join('cd.depo', 'd');
+        $query->select('SUM(cd.deposit) as totalDeposit');
+        $query->addSelect('d.name');
+        $query->addSelect('d.id');
+        $query->groupBy('cd.depo');
 
         return $query->getQuery()->getResult();
     }
