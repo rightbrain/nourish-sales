@@ -91,7 +91,7 @@ var App = function() {
         $(modals).on('shown.bs.modal', function (e) {
             setTimeout(function(){
                 $('.date-picker').datepicker({
-                    format: "d-m-yyyy",
+                    format: "yyyy-mm-dd",
                     autoclose: true
                 }).datepicker('setDate', new Date());
             }, 200);
@@ -122,7 +122,8 @@ var App = function() {
             $('.date-picker, .input-daterange').datepicker({
                 rtl: Metronic.isRTL(),
                 //orientation: "left",
-                autoclose: true
+                autoclose: true,
+                format: "yyyy-mm-dd"
             });
             //$('body').removeClass("modal-open"); // fix bug when inline picker is used in modal
         }

@@ -70,16 +70,28 @@ class CashDepositController extends BaseController
      */
     public function createAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         $cashDeposit = new CashDeposit();
         $form = $this->createForm(new CashDepositForm(), $cashDeposit, array(
             'action' => $this->generateUrl('cash_deposit_create'), 'method' => 'POST',
             'attr' => array('novalidate' => 'novalidate')
         ));
 
+        $getDepoId = $em->getRepository('RbsCoreBundle:Depo')->getDepoId($this->getUser()->getId());
+        $cashDepositedId = $em->getRepository('RbsSalesBundle:CashDeposit')->getLastCashDepositId($this->getUser()->getId());
+        if($cashDepositedId!=null && 'POST' === $request->getMethod()){
+            $lastTotalDepositedAmount = $em->getRepository('RbsSalesBundle:CashDeposit')->lastTotalDepositAmount($cashDepositedId[0]['id']);
+            $lastTotalAmount = $lastTotalDepositedAmount!=null?$lastTotalDepositedAmount[0]:0;
+            $total = $lastTotalAmount['totalDepositedAmount']+(float) $_POST['cash_deposit']['deposit'];
+            $cashDeposit->setTotalDepositedAmount($total);
+        }else{
+            $cashDeposit->setTotalDepositedAmount(0);
+        }
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
-
             if ($form->isValid()) {
+                $cashDeposit->setDepositedBy($this->getUser());
+                $cashDeposit->setDepo($em->getRepository('RbsCoreBundle:Depo')->find($getDepoId[0]['id']));
                 $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:CashDeposit')->create($cashDeposit);
                 $this->flashMessage('success', 'Cash Deposit Successfully!');
                 return $this->redirect($this->generateUrl('cash_deposit_list'));

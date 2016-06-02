@@ -35,4 +35,28 @@ class CashDepositRepository extends EntityRepository
         $this->_em->flush();
         return $this->_em;
     }
+
+    public function getLastCashDepositId($user)
+    {
+        $query = $this->createQueryBuilder('cd');
+        $query->join('cd.depo', 'd');
+        $query->join('d.users', 'u');
+        $query->select('cd.id');
+        $query->andWhere('u.id = :user');
+        $query->setParameter('user', $user);
+        $query->orderBy('cd.createdAt', 'desc');
+        $query->getMaxResults(1);
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function lastTotalDepositAmount($cashDepositedId)
+    {
+        $query = $this->createQueryBuilder('cd');
+        $query->select('cd.totalDepositedAmount');
+        $query->andWhere('cd.id = :cashDepositedId');
+        $query->setParameter('cashDepositedId', $cashDepositedId);
+
+        return $query->getQuery()->getResult();
+    }
 }
