@@ -66,7 +66,7 @@ class CashDepositRepository extends EntityRepository
         $query->join('cd.depo', 'd');
         $query->select('SUM(cd.deposit) as totalDeposit');
         $query->addSelect('d.name');
-        $query->addSelect('d.id');
+        $query->addSelect('d.id as depoId');
         $query->groupBy('cd.depo');
 
         return $query->getQuery()->getResult();

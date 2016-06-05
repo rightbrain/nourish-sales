@@ -17,6 +17,10 @@ class SecurityPermissionProvider implements ProviderInterface
             
             'SALES' => array(
                 'ROLE_RSM_GROUP', 'ROLE_SR_GROUP'
+            ),
+
+            'HEAD_OFFICE' => array(
+                'ROLE_HEAD_OFFICE', 'ROLE_HEAD_OFFICE'
             )
         );
     }

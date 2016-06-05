@@ -114,14 +114,17 @@ class CashReceiveController extends BaseController
     public function cashReceiveFromDepoListAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $cashDeposites = $em->getRepository('RbsSalesBundle:CashDeposit')->getAllCashDepositGroupByDepo();
+        $cashDepositsData = $em->getRepository('RbsSalesBundle:CashDeposit')->getAllCashDepositGroupByDepo();
         $cashReceives = $em->getRepository('RbsSalesBundle:CashReceive')->getAllCashReceiveGroupByDepo();
 
-        foreach ($cashReceives as $cashReceive) {
-            $cashReceive[]      = $cashReceive['id'];
+        $cashDeposits = array();
+        foreach ($cashDepositsData as $value) {
+            $cashDeposits[$value['depoId']] = $value;
         }
-        
+
         return $this->render('RbsSalesBundle:CashReceive:admin.html.twig', array(
+            'cashDeposits' => $cashDeposits,
+            'cashReceives'=> $cashReceives
         ));
     }
 }

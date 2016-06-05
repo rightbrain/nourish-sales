@@ -66,7 +66,7 @@ class CashReceiveRepository extends EntityRepository
         $query->join('cr.depo', 'd');
         $query->select('SUM(cr.amount) as total');
         $query->addSelect('d.name');
-        $query->addSelect('d.id');
+        $query->addSelect('d.id as depoId');
         $query->groupBy('cr.depo');
 
         return $query->getQuery()->getResult();
