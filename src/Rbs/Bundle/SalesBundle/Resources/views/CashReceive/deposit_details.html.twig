@@ -29,7 +29,7 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-globe"></i>Cash Receive From Depo List
+                    <i class="fa fa-globe"></i>Cash Receive From {{ depoName }}
                 </div>
             </div>
             <div class="portlet-body">
@@ -38,19 +38,17 @@
                     <thead>
                     <tr>
                         <th>Sl</th>
-                        <th>Depo Name</th>
-                        <th>Total Amount</th>
-                        <th>Due Amount</th>
+                        <th>Date of Deposit</th>
+                        <th>Deposit Amount</th>
                     </tr>
                     </thead>
                     <tbody>
 
-                    {% for cashReceive in cashReceives %}
+                    {% for cashDeposit in cashDeposits %}
                         <tr>
                             <td>{{ loop.index }}</td>
-                            <td><a href="{{ path('cash_receive_from_depo_details', {'id': cashReceive.depoId }) }}">{{ cashReceive.name }}</a></td>
-                            <td><a href="{{ path('cash_receive_from_depo_receive_details', {'id': cashReceive.depoId }) }}">{{ cashReceive.total }}</a></td>
-                            <td>{{ cashDeposits[cashReceive.depoId] is defined ? (cashReceive.total - cashDeposits[cashReceive.depoId].totalDeposit) : 0 }}</td>
+                            <td>{{ cashDeposit.depositedAt | date('d-m-Y') }}</td>
+                            <td>{{ cashDeposit.deposit }}</td>
                         </tr>
                     {% endfor %}
 

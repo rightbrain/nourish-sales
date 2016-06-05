@@ -71,4 +71,18 @@ class CashReceiveRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function getCashDepositReceiveDetails($depoId)
+    {
+        $query = $this->createQueryBuilder('cr');
+        $query->join('cr.depo', 'd');
+        $query->select('d.name');
+        $query->addSelect('d.id as depoId');
+        $query->addSelect('cr.amount');
+        $query->addSelect('cr.receivedAt');
+        $query->where('cr.depo = :depo');
+        $query->setParameter('depo', $depoId);
+
+        return $query->getQuery()->getResult();
+    }
 }

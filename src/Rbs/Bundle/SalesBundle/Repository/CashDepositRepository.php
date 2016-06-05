@@ -71,4 +71,18 @@ class CashDepositRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function getCashDepositDetails($depoId)
+    {
+        $query = $this->createQueryBuilder('cd');
+        $query->join('cd.depo', 'd');
+        $query->select('d.name');
+        $query->addSelect('d.id as depoId');
+        $query->addSelect('cd.deposit');
+        $query->addSelect('cd.depositedAt');
+        $query->where('cd.depo = :depo');
+        $query->setParameter('depo', $depoId);
+
+        return $query->getQuery()->getResult();
+    }
 }

@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\SalesBundle\Entity\CashReceive;
 use Rbs\Bundle\SalesBundle\Form\Type\CashReceiveForm;
 use Rbs\Bundle\UserBundle\Entity\User;
@@ -125,6 +126,38 @@ class CashReceiveController extends BaseController
         return $this->render('RbsSalesBundle:CashReceive:admin.html.twig', array(
             'cashDeposits' => $cashDeposits,
             'cashReceives'=> $cashReceives
+        ));
+    }
+    
+    /**
+     * @Route("/cash/receive/from/depo/details/{id}", name="cash_receive_from_depo_details", options={"expose"=true})
+     * @param Depo $depo
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function cashReceiveFromDepoDetailsListAction(Depo $depo)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $cashDeposits = $em->getRepository('RbsSalesBundle:CashDeposit')->getCashDepositDetails($depo->getId());
+
+        return $this->render('RbsSalesBundle:CashReceive:deposit_details.html.twig', array(
+            'cashDeposits' => $cashDeposits,
+            'depoName' => $depo->getName()
+        ));
+    }
+    
+    /**
+     * @Route("/cash/receive/from/depo/receive/details/{id}", name="cash_receive_from_depo_receive_details", options={"expose"=true})
+     * @param Depo $depo
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function cashReceiveFromDepoReceiveDetailsListAction(Depo $depo)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $cashReceives = $em->getRepository('RbsSalesBundle:CashReceive')->getCashDepositReceiveDetails($depo->getId());
+
+        return $this->render('RbsSalesBundle:CashReceive:receive_from_agent_details.html.twig', array(
+            'cashReceives' => $cashReceives,
+            'depoName' => $depo->getName()
         ));
     }
 }
