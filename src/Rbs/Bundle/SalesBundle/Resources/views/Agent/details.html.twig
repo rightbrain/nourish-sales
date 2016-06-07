@@ -67,7 +67,7 @@
                                             <th>Credit limit</th>
                                             <td>{{ agent.creditLimit }}</td>
                                             <th>Agent</th>
-                                            <td>{{ agent.agent.profile.fullname }}</td>
+                                            <td>{{ agent.user.profile.fullname }}</td>
                                         </tr>
                                         <tr>
                                             <th>Opening balance</th>
@@ -77,7 +77,7 @@
                                         </tr>
                                         <tr>
                                             <th>Depo</th>
-                                            <td>{{ agent.depo.name }}</td>
+                                            <td>{{ agent.depo }}</td>
                                             <th>Group</th>
                                             <td>{{ agent.agentGroup.label|default('') }}</td>
                                         </tr>

@@ -3,9 +3,11 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\SalesBundle\Entity\AgentsBankInfo;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
+use Rbs\Bundle\SalesBundle\Form\Type\AgentsBankInfoForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -37,6 +39,78 @@ class OrderController extends BaseController
         ));
     }
 
+    /**
+     * @Route("/orders/my", name="orders_my_home")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function myOrdersAction(Request $request)
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.order.individual');
+        $datatable->buildDatatable();
+
+        return $this->render('RbsSalesBundle:Order:my.html.twig', array(
+            'datatable' => $datatable,
+        ));
+    }
+    /**
+     * Lists all Category entities.
+     *
+     * @Route("/orders_list_my_ajax", name="orders_list_my_ajax", options={"expose"=true})
+     * @Method("GET")
+     */
+    public function listAjaxMyAction()
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        $agentRepository = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
+        $datatable = $this->get('rbs_erp.sales.datatable.order.individual');
+        $datatable->buildDatatable();
+
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+
+        /** @var QueryBuilder $qb */
+        $function = function($qb) use ($user, $agentRepository)
+        {
+            $qb->join('orders.agent', 'a');
+            $qb->join('a.user', 'u');
+            $qb->andWhere('u.id =:user');
+            $qb->setParameter('user', $this->getUser()->getId());
+        };
+        $query->addWhereAll($function);
+
+        return $query->getResponse();
+    }
+
+    /**
+     * @Route("/orders/my/bank-info", name="orders_my_bank_info", options={"expose"=true})
+     * @Template("RbsSalesBundle:Agent:bank_slip_upload.html.twig")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function agentBankInfoCreateAction(Request $request)
+    {
+        $agentsBankInfo = new AgentsBankInfo();
+        $form = $this->createForm(new AgentsBankInfoForm($this->getUser()), $agentsBankInfo, array(
+            'action' => $this->generateUrl('orders_my_bank_info'), 'method' => 'POST',
+            'attr' => array('novalidate' => 'novalidate')
+        ));
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $agentsBankInfo->setAgent($this->getUser());
+                $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:AgentsBankInfo')->create($agentsBankInfo);
+                $this->flashMessage('success', 'Bank info add Successfully!');
+                return $this->redirect($this->generateUrl('orders_my_home'));
+            }
+        }
+        
+        return array(
+            'form' => $form->createView()
+        );
+    }
+    
     /**
      * Lists all Category entities.
      *

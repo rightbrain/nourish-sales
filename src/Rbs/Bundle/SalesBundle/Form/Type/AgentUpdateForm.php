@@ -28,21 +28,6 @@ class AgentUpdateForm extends AbstractType
             ->add('agentID')
             ->add('creditLimit')
             ->add('openingBalance')
-            ->add('agent', 'entity', array(
-                'class' => 'RbsUserBundle:User',
-                'property' => 'username',
-                'required' => false,
-                'empty_value' => 'Select Agent',
-                'empty_data' => null,
-                'query_builder' => function (UserRepository $repository)
-                {
-                    return $repository->createQueryBuilder('u')
-                        ->where('u.userType = :sr')
-                        ->andWhere('u.deletedAt IS NULL')
-                        ->setParameter('sr', 'SR')
-                        ->orderBy('u.username','ASC');
-                }
-            ))
             ->add('depo', 'entity', array(
                 'class' => 'RbsCoreBundle:Depo',
                 'property' => 'name',

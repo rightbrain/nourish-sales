@@ -68,46 +68,6 @@ class AgentController extends BaseController
     }
 
     /**
-     * @Route("/agent/create", name="agent_create")
-     * @Template("RbsSalesBundle:Agent:new.html.twig")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_AGENT_CREATE, ROLE_AGENT, ROLE_ADMIN")
-     */
-    public function createAction(Request $request)
-    {
-        $agent = new Agent();
-
-        $service = $this->get('rbs_erp.sales.registration.form.type');
-
-        $form = $this->createForm($service, $agent, array(
-            'attr' => array('novalidate' => 'novalidate')
-        ));
-
-        if ('POST' === $request->getMethod()) {
-            $form->handleRequest($request);
-
-            if ($form->isValid()) {
-
-                $agent->getUser()->setEnabled(1);
-                $agent->getUser()->addRole('ROLE_AGENT');
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
-
-                $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'Agent Create Successfully!'
-                );
-
-                return $this->redirect($this->generateUrl('agents_home'));
-            }
-        }
-
-        return array(
-            'form' => $form->createView()
-        );
-    }
-
-    /**
      * @Route("/agent/update/{id}", name="agent_update", options={"expose"=true})
      * @Template("RbsSalesBundle:Agent:update.html.twig")
      * @param Request $request

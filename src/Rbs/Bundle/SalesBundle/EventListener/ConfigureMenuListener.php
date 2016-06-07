@@ -112,6 +112,12 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
+        $menu['Sales']->addChild('My Orders', array('route' => 'orders_my_home'))
+            ->setAttribute('icon', 'fa fa-th-list');
+
+        $menu['Sales']->addChild('Bank Slip', array('route' => 'bank_info_list'))
+            ->setAttribute('icon', 'fa fa-th-list');
+
         return $menu;
     }
 }

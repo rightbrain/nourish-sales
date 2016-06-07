@@ -58,6 +58,16 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.order.individual:
+        class: Rbs\Bundle\SalesBundle\Datatables\OrderMyDatatable
+        tags:
+            - { name: sg.datatable.view }
+
+    rbs_erp.sales.datatable.agent.bank.info:
+        class: Rbs\Bundle\SalesBundle\Datatables\AgentsBankInfoDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.order.readable.sms:
         class: Rbs\Bundle\SalesBundle\Datatables\OrderReadableSmsDatatable
         tags:
