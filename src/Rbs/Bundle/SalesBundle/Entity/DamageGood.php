@@ -9,14 +9,14 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
- * AgentsBankInfo
+ * DamageGood
  *
- * @ORM\Table(name="agents_bank_info")
- * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\AgentsBankInfoRepository")
+ * @ORM\Table(name="damage_goods")
+ * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\DamageGoodRepository")
  * @ORMSubscribedEvents()
  * @ORM\HasLifecycleCallbacks
  */
-class AgentsBankInfo
+class DamageGood
 {
     const ACTIVE = 'ACTIVE';
     const INACTIVE = 'INACTIVE';
@@ -70,22 +70,6 @@ class AgentsBankInfo
      * @ORM\Column(name="remarks", type="text", nullable=true)
      */
     private $remark;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="bank_name", type="string", length=250, nullable=true)
-     * @Assert\NotBlank()
-     */
-    private $bankName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="branch_name", type="string", length=250, nullable=true)
-     * @Assert\NotBlank()
-     */
-    private $branchName;
 
     /**
      * @ORM\Column(name="path", type="string", length=255, nullable=true)
@@ -188,38 +172,6 @@ class AgentsBankInfo
     {
         $this->remark = $remark;
     }
-
-    /**
-     * @return string
-     */
-    public function getBankName()
-    {
-        return $this->bankName;
-    }
-
-    /**
-     * @param string $bankName
-     */
-    public function setBankName($bankName)
-    {
-        $this->bankName = $bankName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBranchName()
-    {
-        return $this->branchName;
-    }
-
-    /**
-     * @param string $branchName
-     */
-    public function setBranchName($branchName)
-    {
-        $this->branchName = $branchName;
-    }
     
     /**
      * Get path
@@ -238,7 +190,6 @@ class AgentsBankInfo
     public function preUpload()
     {
         if (null !== $this->getFile()) {
-            // do whatever you want to generate a unique name
             $filename = sha1(uniqid(mt_rand(), true));
             $this->path = $filename . '.' . $this->getFile()->guessExtension();
         }
@@ -308,7 +259,7 @@ class AgentsBankInfo
     {
         // get rid of the __DIR__ so it doesn't screw up
         // when displaying uploaded doc/image in the view.
-        return 'uploads/sales/agent-bank-slip';
+        return 'uploads/sales/damage-goods';
     }
 
     /**

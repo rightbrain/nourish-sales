@@ -118,6 +118,9 @@ class ConfigureMenuListener extends ContextAwareListener
         $menu['Sales']->addChild('Bank Slip', array('route' => 'bank_info_list'))
             ->setAttribute('icon', 'fa fa-th-list');
 
+        $menu['Sales']->addChild('Damage Good', array('route' => 'damage_good_list'))
+            ->setAttribute('icon', 'fa fa-th-list');
+
         return $menu;
     }
 }
