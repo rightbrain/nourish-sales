@@ -50,11 +50,11 @@ class DamageGoodController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->join('damage_good.agent', 'a');
-            $qb->join('a.user', 'u');
-            $qb->andWhere('u.id =:user');
-            $qb->setParameter('user', $this->getUser()->getId());
+            $qb->join('damage_goods.agent', 'u');
+            $qb->andWhere('u =:user');
+            $qb->setParameter('user', $this->getUser());
         };
+        $query->addWhereAll($function);
         
         return $query->getResponse();
     }

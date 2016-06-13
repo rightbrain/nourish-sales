@@ -24,7 +24,7 @@ class ConfigureMenuListener extends ContextAwareListener
         if ($this->authorizationChecker->isGranted(array('ROLE_AGENT', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
             $menu['Sales']->addChild('Orders', array('route' => 'orders_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
-            if ($this->isMatch('order')) {
+            if ($this->isMatch('orders')) {
                 $menu['Sales']->getChild('Orders')->setCurrent(true);
             }
         }
@@ -32,9 +32,7 @@ class ConfigureMenuListener extends ContextAwareListener
         if ($this->authorizationChecker->isGranted(array('ROLE_AGENT', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
             $menu['Sales']->addChild('Orders From SMS', array('route' => 'order_readable_sms'))
                 ->setAttribute('icon', 'fa fa-th-list');
-            if ($this->isMatch('order')) {
-                $menu['Sales']->getChild('Orders')->setCurrent(true);
-            }
+
         }
 
         if ($this->authorizationChecker->isGranted(array('ROLE_DELIVERY_MANAGE'))) {
@@ -112,14 +110,16 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
-        $menu['Sales']->addChild('My Orders', array('route' => 'orders_my_home'))
-            ->setAttribute('icon', 'fa fa-th-list');
+        if ($this->user->getUserType() == User::AGENT){
+            $menu['Sales']->addChild('My Orders', array('route' => 'orders_my_home'))
+                ->setAttribute('icon', 'fa fa-th-list');
 
-        $menu['Sales']->addChild('Bank Slip', array('route' => 'bank_info_list'))
-            ->setAttribute('icon', 'fa fa-th-list');
+            $menu['Sales']->addChild('Bank Slip', array('route' => 'bank_info_list'))
+                ->setAttribute('icon', 'fa fa-th-list');
 
-        $menu['Sales']->addChild('Damage Good', array('route' => 'damage_good_list'))
-            ->setAttribute('icon', 'fa fa-th-list');
+            $menu['Sales']->addChild('Damage Good', array('route' => 'damage_good_list'))
+                ->setAttribute('icon', 'fa fa-th-list');
+        }
 
         return $menu;
     }
