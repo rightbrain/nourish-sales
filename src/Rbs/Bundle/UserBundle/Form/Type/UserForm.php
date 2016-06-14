@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\UserBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\CoreBundle\Repository\AreaRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
@@ -59,6 +60,19 @@ class UserForm extends AbstractType
                     )),
                     new email()
                 ),
+            ))
+            ->add('area', 'entity', array(
+                'class' => 'RbsCoreBundle:Area',
+                'property' => 'areaName',
+                'required' => false,
+                'empty_value' => 'Select Area',
+                'empty_data' => null,
+                'query_builder' => function (AreaRepository $repository)
+                {
+                    return $repository->createQueryBuilder('a')
+                        ->where('a.deletedAt IS NULL')
+                        ->orderBy('a.areaName','ASC');
+                }
             ))
             ->add('parentId', 'entity', array(
                 'class' => 'Rbs\Bundle\UserBundle\Entity\User',

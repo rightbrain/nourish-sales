@@ -2,7 +2,6 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
-use Rbs\Bundle\CoreBundle\Repository\AreaRepository;
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\SalesBundle\Repository\AgentGroupRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
@@ -60,19 +59,6 @@ class AgentForm extends AbstractType
                     return $repository->createQueryBuilder('w')
                         ->where('w.deletedAt IS NULL')
                         ->orderBy('w.name','ASC');
-                }
-            ))
-            ->add('area', 'entity', array(
-                'class' => 'RbsCoreBundle:Area',
-                'property' => 'areaName',
-                'required' => false,
-                'empty_value' => 'Select Area',
-                'empty_data' => null,
-                'query_builder' => function (AreaRepository $repository)
-                {
-                    return $repository->createQueryBuilder('a')
-                        ->where('a.deletedAt IS NULL')
-                        ->orderBy('a.areaName','ASC');
                 }
             ))
             ->add('agentGroup', 'entity', array(

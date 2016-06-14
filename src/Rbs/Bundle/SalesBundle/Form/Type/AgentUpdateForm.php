@@ -41,19 +41,6 @@ class AgentUpdateForm extends AbstractType
                         ->orderBy('w.name','ASC');
                 }
             ))
-            ->add('area', 'entity', array(
-                'class' => 'RbsCoreBundle:Area',
-                'property' => 'areaName',
-                'required' => false,
-                'empty_value' => 'Select Area',
-                'empty_data' => null,
-                'query_builder' => function (AreaRepository $repository)
-                {
-                    return $repository->createQueryBuilder('a')
-                        ->where('a.deletedAt IS NULL')
-                        ->orderBy('a.areaName','ASC');
-                }
-            ))
             ->add('agentGroup', 'entity', array(
                 'class' => 'RbsSalesBundle:AgentGroup',
                 'property' => 'label',

@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\UserBundle\Entity;
 
+use Rbs\Bundle\CoreBundle\Entity\Area;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
@@ -76,6 +77,14 @@ class User extends BaseUser
      * @ORM\Column(name="parent_id", type="integer", nullable=true)
      */
     protected $parentId;
+
+    /**
+     * @var Area
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Area")
+     * @ORM\JoinColumn(name="area", nullable=true)
+     */
+    private $area;
 
     public function __construct()
     {
@@ -172,5 +181,21 @@ class User extends BaseUser
     public function setParentId($parentId)
     {
         $this->parentId = $parentId;
+    }
+
+    /**
+     * @return Area
+     */
+    public function getArea()
+    {
+        return $this->area;
+    }
+
+    /**
+     * @param Area $area
+     */
+    public function setArea($area)
+    {
+        $this->area = $area;
     }
 }
