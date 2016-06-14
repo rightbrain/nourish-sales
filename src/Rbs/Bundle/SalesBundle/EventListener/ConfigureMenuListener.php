@@ -85,12 +85,12 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_RSM_GROUP'))) {
+        if ($this->user->getUserType() == User::RSM and $this->authorizationChecker->isGranted(array('ROLE_RSM_GROUP'))){
             $menu['Sales']->addChild('RSM', array('route' => 'target_my'))
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_SR_GROUP'))) {
+        if ($this->user->getUserType() == User::SR and $this->authorizationChecker->isGranted(array('ROLE_SR_GROUP'))) {
             $menu['Sales']->addChild('SR', array('route' => 'target_sr_my'))
                 ->setAttribute('icon', 'fa fa-th-list');
         }

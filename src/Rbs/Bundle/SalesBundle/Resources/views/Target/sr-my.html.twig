@@ -29,7 +29,7 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-globe"></i>Target {{ target.user.username }}
+                    <i class="fa fa-globe"></i>Target {{ target.user.username | default('') }}
                 </div>
             </div>
             <div class="portlet-body">
