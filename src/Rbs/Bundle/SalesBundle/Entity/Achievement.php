@@ -9,13 +9,13 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
- * Target
+ * Achievement
  *
- * @ORM\Table(name="targets")
- * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\TargetRepository")
+ * @ORM\Table(name="achievements")
+ * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\AchievementRepository")
  * @ORMSubscribedEvents()
  */
-class Target
+class Achievement
 {
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
@@ -38,13 +38,6 @@ class Target
     private $quantity;
 
     /**
-     * @var integer
-     *
-     * @ORM\Column(name="remaining", type="integer", nullable=true)
-     */
-    private $remaining = 0;
-
-    /**
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
@@ -52,6 +45,14 @@ class Target
      */
     private $user;
 
+    /**
+     * @var Agent
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent")
+     * @ORM\JoinColumn(name="agent_id", nullable=false)
+     */
+    private $agent;
+    
     /**
      * @var SubCategory
      *
@@ -63,18 +64,9 @@ class Target
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="start_date", type="datetime", nullable=true)
+     * @ORM\Column(name="date", type="datetime", nullable=true)
      */
-    private $startDate;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="end_date", type="datetime", nullable=true)
-     */
-    private $endDate;
-
-    public $childEntities;
+    private $date;
 
     /**
      * Get id
@@ -103,22 +95,6 @@ class Target
     }
 
     /**
-     * @return int
-     */
-    public function getRemaining()
-    {
-        return $this->remaining;
-    }
-
-    /**
-     * @param int $remaining
-     */
-    public function setRemaining($remaining)
-    {
-        $this->remaining = $remaining;
-    }
-
-    /**
      * @return User
      */
     public function getUser()
@@ -135,51 +111,19 @@ class Target
     }
 
     /**
-     * @return \DateTime
+     * @return Agent
      */
-    public function getStartDate()
+    public function getAgent()
     {
-        return $this->startDate;
+        return $this->agent;
     }
 
     /**
-     * @param \DateTime $startDate
+     * @param Agent $agent
      */
-    public function setStartDate($startDate)
+    public function setAgent($agent)
     {
-        $this->startDate = $startDate;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getEndDate()
-    {
-        return $this->endDate;
-    }
-
-    /**
-     * @param \DateTime $endDate
-     */
-    public function setEndDate($endDate)
-    {
-        $this->endDate = $endDate;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getChildEntities()
-    {
-        return $this->childEntities;
-    }
-
-    /**
-     * @param mixed $childEntities
-     */
-    public function setChildEntities($childEntities)
-    {
-        $this->childEntities = $childEntities;
+        $this->agent = $agent;
     }
 
     /**
@@ -199,12 +143,18 @@ class Target
     }
 
     /**
-     * @return mixed
+     * @return \DateTime
      */
-    public function getMonthDifference()
+    public function getDate()
     {
-        $difference = $this->getStartDate()->diff($this->getEndDate()); // $difference->y // $difference->m // $difference->d
-        
-        return $difference->m + 1 ;
+        return $this->date;
+    }
+
+    /**
+     * @param \DateTime $date
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
     }
 }

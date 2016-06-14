@@ -27,6 +27,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.achievement:
+        class: Rbs\Bundle\SalesBundle\Datatables\AchievementDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.cash.receive:
         class: Rbs\Bundle\SalesBundle\Datatables\CashReceiveDatatable
         tags:
