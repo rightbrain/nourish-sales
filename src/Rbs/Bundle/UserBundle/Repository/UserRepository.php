@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\UserBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\UserBundle\Entity\User;
 
 /**
  * UserRepository
@@ -42,6 +43,24 @@ class UserRepository extends EntityRepository
         $query->where('u.userType = :User OR u.userType = :Agent');
         $query->setParameter('User', 'User');
         $query->setParameter('Agent', 'Agent');
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getRsmList()
+    {
+        $query = $this->createQueryBuilder('u');
+        $query->where('u.userType = :RSM');
+        $query->setParameter('RSM', User::RSM);
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getSrList()
+    {
+        $query = $this->createQueryBuilder('u');
+        $query->where('u.userType = :SR');
+        $query->setParameter('SR', User::SR);
 
         return $query->getQuery()->getResult();
     }

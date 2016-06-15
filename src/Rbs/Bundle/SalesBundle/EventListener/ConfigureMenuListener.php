@@ -101,6 +101,11 @@ class ConfigureMenuListener extends ContextAwareListener
         }
 
         if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
+            $menu['Sales']->addChild('RSM Swapping', array('route' => 'swapping_rsm_list'))
+                ->setAttribute('icon', 'fa fa-th-list');
+        }
+
+        if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
             $menu['Sales']->addChild('Cash Deposit', array('route' => 'cash_deposit_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
         }
