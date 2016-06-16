@@ -144,46 +144,46 @@ class OrderController extends BaseController
         return $query->getResponse();
     }
 
-    /**
-     * @Route("/order/readable/sms", name="order_readable_sms")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
-     */
-    public function indexOrderReadableSmsAction(Request $request)
-    {
-        $datatable = $this->get('rbs_erp.sales.datatable.order.readable.sms');
-        $datatable->buildDatatable();
-
-        return $this->render('RbsSalesBundle:Order:readable.html.twig', array(
-            'datatable' => $datatable,
-        ));
-    }
-    
-    /**
-     * Lists all Order entities.
-     *
-     * @Route("/order_readable_sms_list_ajax", name="order_readable_sms_list_ajax", options={"expose"=true})
-     * @Method("GET")
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
-     */
-    public function listAjaxOrderReadableSmsAction()
-    {
-        $datatable = $this->get('rbs_erp.sales.datatable.order.readable.sms');
-        $datatable->buildDatatable();
-
-        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
-        /** @var QueryBuilder $qb */
-        $function = function($qb)
-        {
-            $qb->join('orders.agent', 'u');
-            $qb->andWhere('u =:user');
-            $qb->setParameter('user', $this->getUser());
-        };
-        $query->addWhereAll($function);
-
-        return $query->getResponse();
-    }
+//    /**
+//     * @Route("/order/readable/sms", name="order_readable_sms")
+//     * @param Request $request
+//     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+//     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+//     */
+//    public function indexOrderReadableSmsAction(Request $request)
+//    {
+//        $datatable = $this->get('rbs_erp.sales.datatable.order.readable.sms');
+//        $datatable->buildDatatable();
+//
+//        return $this->render('RbsSalesBundle:Order:readable.html.twig', array(
+//            'datatable' => $datatable,
+//        ));
+//    }
+//    
+//    /**
+//     * Lists all Order entities.
+//     *
+//     * @Route("/order_readable_sms_list_ajax", name="order_readable_sms_list_ajax", options={"expose"=true})
+//     * @Method("GET")
+//     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+//     */
+//    public function listAjaxOrderReadableSmsAction()
+//    {
+//        $datatable = $this->get('rbs_erp.sales.datatable.order.readable.sms');
+//        $datatable->buildDatatable();
+//
+//        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+//        /** @var QueryBuilder $qb */
+//        $function = function($qb)
+//        {
+//            $qb->join('orders.agent', 'u');
+//            $qb->andWhere('u =:user');
+//            $qb->setParameter('user', $this->getUser());
+//        };
+//        $query->addWhereAll($function);
+//
+//        return $query->getResponse();
+//    }
 
     /**
      * @Route("/order/create", name="order_create", options={"expose"=true})
