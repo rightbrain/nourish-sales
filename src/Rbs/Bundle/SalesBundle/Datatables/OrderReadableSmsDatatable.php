@@ -21,7 +21,7 @@ class OrderReadableSmsDatatable extends BaseDatatable
         $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
 
         $this->ajax->setOptions(array(
-            'url' => $this->router->generate('order_readable_sms_list_ajax'),
+            'url' => $this->router->generate('orders_list_ajax'),
             'type' => 'GET'
         ));
         
