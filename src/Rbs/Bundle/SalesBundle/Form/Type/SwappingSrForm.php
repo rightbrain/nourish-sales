@@ -2,12 +2,22 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\CoreBundle\Repository\AreaRepository;
+use Rbs\Bundle\UserBundle\Entity\User;
+use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SwappingSrForm extends AbstractType
 {
+    private $user;
+
+    public function __construct($user)
+    {
+        $this->user = $user;
+    }
+    
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -15,6 +25,28 @@ class SwappingSrForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
+            ->add('username', 'entity', array(
+                'class' => 'Rbs\Bundle\UserBundle\Entity\User',
+                'property' => 'username',
+                'query_builder' => function(UserRepository $userRepository) {
+                    return $userRepository->createQueryBuilder('u')
+                        ->andWhere("u.id = :userId")
+                        ->setParameters(array('userId' => $this->user->getId()));
+                }
+            ))
+            ->add('area', 'entity', array(
+                'class' => 'RbsCoreBundle:Area',
+                'property' => 'areaName',
+                'required' => false,
+                'empty_value' => 'Select Area',
+                'empty_data' => null,
+                'query_builder' => function (AreaRepository $repository)
+                {
+                    return $repository->createQueryBuilder('a')
+                        ->where('a.deletedAt IS NULL')
+                        ->orderBy('a.areaName','ASC');
+                }
+            ))
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')
             ))

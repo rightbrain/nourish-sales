@@ -75,9 +75,12 @@ class TargetRepository extends EntityRepository
         $query->join('t.user', 'u');
         $query->where('u.parentId = :parentId');
         $query->andWhere('t.quantity > 0 or t.quantity is not null');
+        $query->andWhere('t.quantity > t.remaining');
+        $query->andWhere('t.status = :RUNNING');
         $query->andWhere('t.startDate is not null');
         $query->andWhere('t.endDate is not null');
         $query->setParameter('parentId', $parentId);
+        $query->setParameter('RUNNING', Target::RUNNING);
         $query->orderBy('t.createdAt', 'DESC');
 
         return $query->getQuery()->getResult();
@@ -88,10 +91,39 @@ class TargetRepository extends EntityRepository
         $query = $this->createQueryBuilder('t');
         $query->where('t.user = :userId');
         $query->andWhere('t.quantity > 0 or t.quantity is not null');
+        $query->andWhere('t.quantity > t.remaining');
+        $query->andWhere('t.status = :RUNNING');
         $query->andWhere('t.startDate is not null');
         $query->andWhere('t.endDate is not null');
         $query->setParameter('userId', $userId);
+        $query->setParameter('RUNNING', Target::RUNNING);
         $query->orderBy('t.createdAt', 'DESC');
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getUserTarget($userId)
+    {
+        $query = $this->createQueryBuilder('t');
+        $query->where('t.user = :userId');
+        $query->andWhere('t.quantity > 0 or t.quantity is not null');
+        $query->andWhere('t.quantity > t.remaining');
+        $query->andWhere('t.status = :RUNNING');
+        $query->andWhere('t.startDate is not null');
+        $query->andWhere('t.endDate is not null');
+        $query->setParameter('userId', $userId);
+        $query->setParameter('RUNNING', Target::RUNNING);
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getSRUserTarget($userId)
+    {
+        $query = $this->createQueryBuilder('t');
+        $query->where('t.user = :userId');
+        $query->andWhere('t.status = :RUNNING');
+        $query->setParameter('userId', $userId);
+        $query->setParameter('RUNNING', Target::RUNNING);
 
         return $query->getQuery()->getResult();
     }

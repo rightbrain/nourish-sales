@@ -85,12 +85,12 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
-        if ($this->user->getUserType() == User::RSM and $this->authorizationChecker->isGranted(array('ROLE_RSM_GROUP'))){
+        if ($this->user->getUserType() == User::RSM or $this->authorizationChecker->isGranted(array('ROLE_RSM_GROUP'))){
             $menu['Sales']->addChild('RSM', array('route' => 'target_my'))
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
-        if ($this->user->getUserType() == User::SR and $this->authorizationChecker->isGranted(array('ROLE_SR_GROUP'))) {
+        if ($this->user->getUserType() == User::SR or $this->authorizationChecker->isGranted(array('ROLE_SR_GROUP'))) {
             $menu['Sales']->addChild('SR', array('route' => 'target_sr_my'))
                 ->setAttribute('icon', 'fa fa-th-list');
         }
@@ -102,6 +102,11 @@ class ConfigureMenuListener extends ContextAwareListener
 
         if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
             $menu['Sales']->addChild('RSM Swapping', array('route' => 'swapping_rsm_list'))
+                ->setAttribute('icon', 'fa fa-th-list');
+        }
+
+        if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
+            $menu['Sales']->addChild('SR Swapping', array('route' => 'swapping_sr_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 

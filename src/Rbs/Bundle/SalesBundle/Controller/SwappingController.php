@@ -48,12 +48,27 @@ class SwappingController extends Controller
 
         if ('POST' === $request->getMethod()) {
             $user->setArea($em->getRepository('RbsCoreBundle:Area')->find($request->request->get('rsm_swap')['areaNew']));
+            $targets = $em->getRepository('RbsSalesBundle:Target')->getUserTarget($user->getId());
+            $targetsSwapping = $em->getRepository('RbsSalesBundle:Target')->getUserTarget($request->request->get('rsm_swap')['userChange']);
+
+            foreach ($targets as $target){
+                $target->setUser($em->getRepository('RbsUserBundle:User')->find($request->request->get('rsm_swap')['userChange']));
+                $em->getRepository('RbsSalesBundle:Target')->update($target);
+            }
+            foreach ($targetsSwapping as $targetSwapping){
+                $targetSwapping->setUser($em->getRepository('RbsUserBundle:User')->find($request->request->get('rsm_swap')['username']));
+                $em->getRepository('RbsSalesBundle:Target')->update($targetSwapping);
+            }
+
+            $userSwapping = $em->getRepository('RbsUserBundle:User')->find($request->request->get('rsm_swap')['userChange']);
+            $userSwapping->setArea($em->getRepository('RbsCoreBundle:Area')->find($request->request->get('rsm_swap')['areaOld']));
+            $em->getRepository('RbsUserBundle:User')->update($userSwapping);
 
             $em->getRepository('RbsUserBundle:User')->update($user);
-            $this->setSwappingData($request);
+
             $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'Swap Successfully!'
+                        'success',
+                        'Swap Successfully!'
                 );
 
             return $this->redirect($this->generateUrl('swapping_rsm_list'));
@@ -62,14 +77,6 @@ class SwappingController extends Controller
         return array(
             'form' => $form->createView()
         );
-    }
-
-    private function setSwappingData($request)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $userSwapping = $em->getRepository('RbsUserBundle:User')->find($request->request->get('rsm_swap')['userChange']);
-        $userSwapping->setArea($em->getRepository('RbsCoreBundle:Area')->find($request->request->get('rsm_swap')['areaOld']));
-        $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($userSwapping);
     }
 
     /**
@@ -96,20 +103,29 @@ class SwappingController extends Controller
      */
     public function swappingSrCreateAction(Request $request, User $user)
     {
-        $form = $this->createForm(new SwappingSrForm(), $user);
+        $em = $this->getDoctrine()->getManager();
+        $form = $this->createForm(new SwappingSrForm($user), $user);
 
         if ('POST' === $request->getMethod()) {
-            $form->handleRequest($request);
+            $user->setArea($em->getRepository('RbsCoreBundle:Area')->find($request->request->get('sr_swap')['area']));
+            $parentId = $em->getRepository('RbsUserBundle:User')->getNawParentId($request->request->get('sr_swap')['area']);
+            $user->setParentId($parentId[0]['id']);
+            
+            $em->getRepository('RbsUserBundle:User')->update($user);
 
-            if ($form->isValid()) {
-                $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
-                $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'Swap Successfully!'
+            $targets = $em->getRepository('RbsSalesBundle:Target')->getSRUserTarget($user->getId());
+            foreach ($targets as $target){
+                $target->setQuantity(0);
+                $target->setRemaining(0);
+                $em->getRepository('RbsSalesBundle:Target')->update($target);
+            }
+            
+            $this->get('session')->getFlashBag()->add(
+                        'success',
+                        'Swap Successfully!'
                 );
 
-                return $this->redirect($this->generateUrl('swapping_sr_list'));
-            }
+            return $this->redirect($this->generateUrl('swapping_sr_list'));
         }
 
         return array(

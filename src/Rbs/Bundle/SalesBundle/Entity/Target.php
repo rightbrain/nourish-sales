@@ -17,6 +17,10 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  */
 class Target
 {
+    const RUNNING = 'RUNNING';
+    const PENDING = 'PENDING';
+    const CLOSED = 'CLOSED';
+    
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
@@ -73,6 +77,13 @@ class Target
      * @ORM\Column(name="end_date", type="datetime", nullable=true)
      */
     private $endDate;
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('RUNNING', 'PENDING' , 'CLOSED')", nullable=false)
+     */
+    private $status = 'RUNNING';
 
     public $childEntities;
 

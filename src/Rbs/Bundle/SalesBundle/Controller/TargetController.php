@@ -24,7 +24,7 @@ class TargetController extends BaseController
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function stockHistoryAllAction(Request $request)
+    public function targetListAction(Request $request)
     {
         $datatable = $this->get('rbs_erp.sales.datatable.target');
         $datatable->buildDatatable();
@@ -237,7 +237,7 @@ class TargetController extends BaseController
         }
 
         $form = $this->createForm(new TargetForm(), $target, array(
-            'action' => $this->generateUrl('target_create'), 'method' => 'POST',
+            'method' => 'POST',
             'attr' => array('novalidate' => 'novalidate')
         ));
 

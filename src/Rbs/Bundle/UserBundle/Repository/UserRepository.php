@@ -64,4 +64,16 @@ class UserRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function getNawParentId($areaId)
+    {
+        $query = $this->createQueryBuilder('u');
+        $query->select('u.id');
+        $query->where('u.userType = :RSM');
+        $query->andWhere('u.area = :area');
+        $query->setParameter('RSM', User::RSM);
+        $query->setParameter('area', $areaId);
+
+        return $query->getQuery()->getResult();
+    }
 }
