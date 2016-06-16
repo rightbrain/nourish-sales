@@ -176,7 +176,7 @@ class OrderController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->join('orders_readable_sms.agent', 'u');
+            $qb->join('orders.agent', 'u');
             $qb->andWhere('u =:user');
             $qb->setParameter('user', $this->getUser());
         };
