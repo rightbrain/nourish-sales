@@ -176,9 +176,8 @@ class OrderController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-//            $qb->join('orders.agent', 'u');
-//            $qb->andWhere('u =:user');
-//            $qb->setParameter('user', $this->getUser());
+            $qb->join('orders.refSMS', 's');
+            $qb->andWhere('s is not null');
         };
         $query->addWhereAll($function);
 

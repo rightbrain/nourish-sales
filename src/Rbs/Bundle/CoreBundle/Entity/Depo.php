@@ -55,12 +55,10 @@ class Depo
     private $area;
 
     /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
-     * @ORM\JoinTable(name="user_id")
+     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinTable(name="users_depos")
      **/
-    protected $users;
+    private $users;
 
     public function __construct()
     {
@@ -148,18 +146,31 @@ class Depo
     }
 
     /**
-     * @return mixed
+     * @param User $user
+     * @return $this
+     */
+    public function addUser(User $user)
+    {
+        if (!$this->getUsers()->contains($user)) {
+            $this->users->add($user);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function removeUser(User $user)
+    {
+        $this->users->removeElement($user);
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getUsers()
     {
         return $this->users;
-    }
-
-    /**
-     * @param mixed $users
-     */
-    public function setUsers($users)
-    {
-        $this->users = $users;
     }
 }

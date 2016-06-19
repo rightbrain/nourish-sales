@@ -26,7 +26,8 @@ class DepoForm extends AbstractType
                         ->andWhere("u.userType = :USER")
                         ->setParameters(array('USER' => User::USER));
                 },
-                'property' => 'username'
+                'property' => 'username',
+                'multiple' => true,
             ))
             ->add('area', null, array(
                 'attr' => array('class' => 'select2me')

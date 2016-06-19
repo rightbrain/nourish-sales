@@ -115,6 +115,11 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
+        if ($this->user->getUserType() == User::USER and $this->authorizationChecker->isGranted(array('ROLE_DEPO_USER'))) {
+            $menu['Sales']->addChild('Cash Receive', array('route' => 'cash_receive_create'))
+                ->setAttribute('icon', 'fa fa-th-list');
+        }
+
         if ($this->authorizationChecker->isGranted(array('ROLE_HEAD_OFFICE'))) {
             $menu['Sales']->addChild('Cash Receive From Depo', array('route' => 'cash_receive_from_depo_list'))
                 ->setAttribute('icon', 'fa fa-th-list');

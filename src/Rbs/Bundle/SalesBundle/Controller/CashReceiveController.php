@@ -78,28 +78,33 @@ class CashReceiveController extends BaseController
             'attr' => array('novalidate' => 'novalidate')
         ));
         $getDepoId = $em->getRepository('RbsCoreBundle:Depo')->getDepoId($this->getUser()->getId());
-        $cashReceivedId = $em->getRepository('RbsSalesBundle:CashReceive')->getLastCashReceivedId($this->getUser()->getId());
+//        var_dump($getDepoId);die;
+        if($getDepoId && 'POST' === $request->getMethod()){
+            $cashReceivedId = $em->getRepository('RbsSalesBundle:CashReceive')->getLastCashReceivedId($this->getUser()->getId());
 
-        if($cashReceivedId!=null && 'POST' === $request->getMethod()){
-            $lastTotalReceivedAmount = $em->getRepository('RbsSalesBundle:CashReceive')->lastTotalReceivedAmount($cashReceivedId[0]['id']);
-            $lastTotalAmount = $lastTotalReceivedAmount!=null?$lastTotalReceivedAmount[0]:0;
-            $total =$lastTotalAmount['totalReceivedAmount']+$_POST['cash_receive']['amount'];
-            $cashReceive->setTotalReceivedAmount($total);
-        }else{
-            $cashReceive->setTotalReceivedAmount($_POST['cash_receive']['amount']);
-        }
-        if ('POST' === $request->getMethod()) {
-            $form->handleRequest($request);
-
-            if ($form->isValid()) {
-
-                $cashReceive->setReceivedAt(new \DateTime());
-                $cashReceive->setReceivedBy($this->getUser());
-                $cashReceive->setDepo($em->getRepository('RbsCoreBundle:Depo')->find($getDepoId[0]['id']));
-                $em->getRepository('RbsSalesBundle:CashReceive')->create($cashReceive);
-                $this->flashMessage('success', 'Cash Receive Successfully!');
-                return $this->redirect($this->generateUrl('cash_receive_list'));
+            if($cashReceivedId!=null && 'POST' === $request->getMethod()){
+                $lastTotalReceivedAmount = $em->getRepository('RbsSalesBundle:CashReceive')->lastTotalReceivedAmount($cashReceivedId[0]['id']);
+                $lastTotalAmount = $lastTotalReceivedAmount!=null?$lastTotalReceivedAmount[0]:0;
+                $total =$lastTotalAmount['totalReceivedAmount']+$_POST['cash_receive']['amount'];
+                $cashReceive->setTotalReceivedAmount($total);
+            }else if ('POST' === $request->getMethod()){
+                $cashReceive->setTotalReceivedAmount($_POST['cash_receive']['amount']);
             }
+            if ('POST' === $request->getMethod()) {
+                $form->handleRequest($request);
+
+                if ($form->isValid()) {
+
+                    $cashReceive->setReceivedAt(new \DateTime());
+                    $cashReceive->setReceivedBy($this->getUser());
+                    $cashReceive->setDepo($em->getRepository('RbsCoreBundle:Depo')->find($getDepoId[0]['id']));
+                    $em->getRepository('RbsSalesBundle:CashReceive')->create($cashReceive);
+                    $this->flashMessage('success', 'Cash Receive Successfully!');
+                    return $this->redirect($this->generateUrl('cash_receive_list'));
+                }
+            }
+        }else if ('POST' === $request->getMethod()){
+            $this->flashMessage('error', 'You are not a depo user');
         }
         
         return array(
