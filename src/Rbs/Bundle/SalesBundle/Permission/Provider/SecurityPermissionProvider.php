@@ -19,7 +19,7 @@ class SecurityPermissionProvider implements ProviderInterface
             ),
 
             'AGENT' => array(
-                'ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE'
+                'ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE', 'ROLE_AGENT_TRUCK_INFO_ADD'
             ),
 
             'AGENT_INDIVIDUAL' => array(

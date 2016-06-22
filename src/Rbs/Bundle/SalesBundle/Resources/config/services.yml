@@ -73,6 +73,16 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.agent.truck.info:
+        class: Rbs\Bundle\SalesBundle\Datatables\AgentsTruckInfoDatatable
+        tags:
+            - { name: sg.datatable.view }
+
+    rbs_erp.sales.datatable.agent.my.truck.info:
+        class: Rbs\Bundle\SalesBundle\Datatables\AgentsMyTruckInfoDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.damage.good:
         class: Rbs\Bundle\SalesBundle\Datatables\DamageGoodDatatable
         tags:
