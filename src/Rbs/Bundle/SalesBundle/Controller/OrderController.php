@@ -208,7 +208,7 @@ class OrderController extends BaseController
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $order->setArea($order->getAgent()->getArea());
+                $order->setLocation($order->getAgent()->getUser()->getLocation());
                 $this->orderRepository()->create($order);
                 $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getAgent()->getDepo());
 

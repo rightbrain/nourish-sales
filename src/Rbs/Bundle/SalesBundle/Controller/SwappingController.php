@@ -47,7 +47,7 @@ class SwappingController extends Controller
         $form = $this->createForm(new SwappingRsmForm($user), $user);
 
         if ('POST' === $request->getMethod()) {
-            $user->setArea($em->getRepository('RbsCoreBundle:Area')->find($request->request->get('rsm_swap')['areaNew']));
+            $user->setLocation($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('rsm_swap')['areaNew']));
             $targets = $em->getRepository('RbsSalesBundle:Target')->getUserTarget($user->getId());
             $targetsSwapping = $em->getRepository('RbsSalesBundle:Target')->getUserTarget($request->request->get('rsm_swap')['userChange']);
 
@@ -61,7 +61,7 @@ class SwappingController extends Controller
             }
 
             $userSwapping = $em->getRepository('RbsUserBundle:User')->find($request->request->get('rsm_swap')['userChange']);
-            $userSwapping->setArea($em->getRepository('RbsCoreBundle:Area')->find($request->request->get('rsm_swap')['areaOld']));
+            $userSwapping->setLocation($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('rsm_swap')['areaOld']));
             $em->getRepository('RbsUserBundle:User')->update($userSwapping);
 
             $em->getRepository('RbsUserBundle:User')->update($user);
@@ -107,7 +107,7 @@ class SwappingController extends Controller
         $form = $this->createForm(new SwappingSrForm($user), $user);
 
         if ('POST' === $request->getMethod()) {
-            $user->setArea($em->getRepository('RbsCoreBundle:Area')->find($request->request->get('sr_swap')['area']));
+            $user->setLocation($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('sr_swap')['area']));
             $parentId = $em->getRepository('RbsUserBundle:User')->getNawParentId($request->request->get('sr_swap')['area']);
             $user->setParentId($parentId[0]['id']);
             

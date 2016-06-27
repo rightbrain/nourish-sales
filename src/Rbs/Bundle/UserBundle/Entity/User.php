@@ -2,7 +2,7 @@
 
 namespace Rbs\Bundle\UserBundle\Entity;
 
-use Rbs\Bundle\CoreBundle\Entity\Area;
+use Rbs\Bundle\CoreBundle\Entity\Location;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
@@ -79,12 +79,12 @@ class User extends BaseUser
     protected $parentId;
 
     /**
-     * @var Area
+     * @var Location
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Area")
-     * @ORM\JoinColumn(name="area", nullable=true)
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Location")
+     * @ORM\JoinColumn(name="location_id", nullable=true)
      */
-    private $area;
+    private $location;
 
     public function __construct()
     {
@@ -184,18 +184,18 @@ class User extends BaseUser
     }
 
     /**
-     * @return Area
+     * @return Location
      */
-    public function getArea()
+    public function getLocation()
     {
-        return $this->area;
+        return $this->location;
     }
 
     /**
-     * @param Area $area
+     * @param Location $location
      */
-    public function setArea($area)
+    public function setLocation($location)
     {
-        $this->area = $area;
+        $this->location = $location;
     }
 }

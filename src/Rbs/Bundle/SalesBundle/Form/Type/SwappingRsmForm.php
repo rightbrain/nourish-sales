@@ -2,7 +2,8 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
-use Rbs\Bundle\CoreBundle\Repository\AreaRepository;
+use Rbs\Bundle\CoreBundle\Entity\Location;
+use Rbs\Bundle\CoreBundle\Repository\LocationRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
@@ -35,19 +36,17 @@ class SwappingRsmForm extends AbstractType
                 }
             ))
             ->add('areaNew', 'entity', array(
-                'class' => 'RbsCoreBundle:Area',
-                'property' => 'areaName',
+                'class' => 'RbsCoreBundle:Location',
+                'property' => 'name',
                 'required' => false,
                 'mapped' => false,
-                'empty_value' => 'Select Area',
+                'empty_value' => 'Select Location',
                 'empty_data' => null,
-                'query_builder' => function (AreaRepository $repository)
+                'query_builder' => function (LocationRepository $repository)
                 {
-                    return $repository->createQueryBuilder('a')
-                        ->where('a.deletedAt IS NULL')
-                        ->andWhere("a.id != :area")
-                        ->setParameters(array('area' => $this->user->getArea()->getId()))
-                        ->orderBy('a.areaName','ASC');
+                    return $repository->createQueryBuilder('l')
+                        ->where("l.id != :location")
+                        ->setParameters(array('location' => $this->user->getLocation()->getId()));
                 }
             ))
             ->add('userChange', 'entity', array(
@@ -65,14 +64,14 @@ class SwappingRsmForm extends AbstractType
                 }
             ))
             ->add('areaOld', 'entity', array(
-                'class' => 'RbsCoreBundle:Area',
-                'property' => 'areaName',
+                'class' => 'RbsCoreBundle:Location',
+                'property' => 'name',
                 'mapped' => false,
-                'query_builder' => function (AreaRepository $repository)
+                'query_builder' => function (LocationRepository $repository)
                 {
-                    return $repository->createQueryBuilder('a')
-                        ->andWhere("a.id = :area")
-                        ->setParameters(array('area' => $this->user->getArea()->getId()));
+                    return $repository->createQueryBuilder('l')
+                        ->andWhere("l.id = :location")
+                        ->setParameters(array('location' => $this->user->getLocation()->getId()));
                 }
             ))
             ->add('submit', 'submit', array(

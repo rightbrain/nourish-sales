@@ -50,9 +50,9 @@ class Depo
     private $description;
 
     /**
-     * @ORM\OneToOne(targetEntity="Area")
+     * @ORM\OneToOne(targetEntity="Location")
      **/
-    private $area;
+    private $location;
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
@@ -123,29 +123,6 @@ class Depo
     }
 
     /**
-     * Set area
-     *
-     * @param Area $area
-     * @return Depo
-     */
-    public function setArea($area)
-    {
-        $this->area = $area;
-
-        return $this;
-    }
-
-    /**
-     * Get area
-     *
-     * @return Area
-     */
-    public function getArea()
-    {
-        return $this->area;
-    }
-
-    /**
      * @param User $user
      * @return $this
      */
@@ -172,5 +149,21 @@ class Depo
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param mixed $location
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
     }
 }

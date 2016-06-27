@@ -18,7 +18,7 @@
                     <tr>
                         <th>Sl</th>
                         <th>RSM Name</th>
-                        <th>Area</th>
+                        <th>Location</th>
                         <th>Edit</th>
                     </tr>
                     </thead>
@@ -28,7 +28,7 @@
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ rsm.profile.fullname }}</td>
-                            <td>{{ rsm.area.areaName | default('') }}</td>
+                            <td>{{ rsm.location.name | default('') }}</td>
                             <td><a href="{{ path('swapping_rsm_create', {'id': rsm.id }) }}"> Swap </a></td>
                         </tr>
                     {% endfor %}

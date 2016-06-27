@@ -18,7 +18,7 @@
                     <tr>
                         <th>Sl</th>
                         <th>SR Name</th>
-                        <th>Area</th>
+                        <th>Location</th>
                         <th>Edit</th>
                     </tr>
                     </thead>
@@ -28,7 +28,7 @@
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ sr.profile.fullname }}</td>
-                            <td>{{ sr.area.areaName | default('') }}</td>
+                            <td>{{ sr.location.name | default('') }}</td>
                             <td><a href="{{ path('swapping_sr_create', {'id': sr.id }) }}"> Swap </a></td>
                         </tr>
                     {% endfor %}

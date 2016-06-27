@@ -2,7 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
-use Rbs\Bundle\CoreBundle\Repository\AreaRepository;
+use Rbs\Bundle\CoreBundle\Repository\LocationRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
@@ -34,17 +34,16 @@ class SwappingSrForm extends AbstractType
                         ->setParameters(array('userId' => $this->user->getId()));
                 }
             ))
-            ->add('area', 'entity', array(
-                'class' => 'RbsCoreBundle:Area',
-                'property' => 'areaName',
+            ->add('location', 'entity', array(
+                'class' => 'RbsCoreBundle:Location',
+                'property' => 'name',
                 'required' => false,
-                'empty_value' => 'Select Area',
+                'empty_value' => 'Select Location',
                 'empty_data' => null,
-                'query_builder' => function (AreaRepository $repository)
+                'query_builder' => function (LocationRepository $repository)
                 {
-                    return $repository->createQueryBuilder('a')
-                        ->where('a.deletedAt IS NULL')
-                        ->orderBy('a.areaName','ASC');
+                    return $repository->createQueryBuilder('l')
+                        ->orderBy('l.name','ASC');
                 }
             ))
             ->add('submit', 'submit', array(

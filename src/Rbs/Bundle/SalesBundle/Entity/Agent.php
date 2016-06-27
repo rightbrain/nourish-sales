@@ -1,8 +1,8 @@
 <?php
 namespace Rbs\Bundle\SalesBundle\Entity;
 
-use Rbs\Bundle\CoreBundle\Entity\Area;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
+use Rbs\Bundle\CoreBundle\Entity\Location;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -104,14 +104,6 @@ class Agent
     private $depo;
 
     /**
-     * @var Area
-     *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Area")
-     * @ORM\JoinColumn(name="area", nullable=true)
-     */
-    private $area;
-
-    /**
      * Get id
      *
      * @return integer
@@ -204,22 +196,6 @@ class Agent
     public function setDepo($depo)
     {
         $this->depo = $depo;
-    }
-
-    /**
-     * @return Area
-     */
-    public function getArea()
-    {
-        return $this->area;
-    }
-
-    /**
-     * @param Area $area
-     */
-    public function setArea($area)
-    {
-        $this->area = $area;
     }
 
     /**
