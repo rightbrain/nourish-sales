@@ -43,7 +43,8 @@ class UserUpdateForm extends AbstractType
                 'query_builder' => function(UserRepository $userRepository) {
                     return $userRepository->createQueryBuilder('u')
                         ->where("u.userType != :AGENT")
-                        ->setParameters(array('AGENT'=> User::AGENT));
+                        ->andWhere("u.userType != :SR")
+                        ->setParameters(array('AGENT'=> User::AGENT, 'SR' => User::SR));
                 },
                 'mapped' => false,
                 'property' => 'username',
