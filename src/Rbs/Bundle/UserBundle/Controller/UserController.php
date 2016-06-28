@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\UserBundle\Controller;
 
+use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdateForm;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdatePasswordForm;
@@ -52,7 +53,7 @@ class UserController extends Controller
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-//            $qb->andWhere("users.userType NOT IN('AGENT')");
+            $qb->where("users.userType NOT IN('AGENT')");
             $qb->andWhere("users.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
@@ -79,6 +80,12 @@ class UserController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
+
+                if($request->request->get('user')['userType'] == User::AGENT and $request->request->get('user')['level3'] != null){
+                    $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level3']));
+                }else if($request->request->get('user')['userType'] != User::AGENT and $request->request->get('user')['level1'] != null){
+                    $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level1']));
+                }
 
                 $user->setParentId($request->request->get('user')['parentId']);
 
@@ -115,6 +122,12 @@ class UserController extends Controller
             $form->handleRequest($request);
 
             if ($form->isValid()) {
+
+                if($request->request->get('user')['userType'] == User::AGENT and $request->request->get('user')['level3'] != null){
+                    $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level3']));
+                }else if($request->request->get('user')['userType'] != User::AGENT and $request->request->get('user')['level1'] != null){
+                    $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level1']));
+                }
 
                 $user->setParentId($request->request->get('user')['parentId']);
 

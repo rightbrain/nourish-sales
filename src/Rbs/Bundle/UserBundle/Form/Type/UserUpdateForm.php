@@ -3,7 +3,6 @@
 namespace Rbs\Bundle\UserBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
-use Rbs\Bundle\CoreBundle\Repository\LocationRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
@@ -39,19 +38,6 @@ class UserUpdateForm extends AbstractType
                 ),
                 'data' => User::USER
             ))
-            ->add('location', 'entity', array(
-                'class' => 'RbsCoreBundle:Location',
-                'property' => 'name',
-                'required' => false,
-                'empty_value' => 'Select Location',
-                'empty_data' => null,
-                'query_builder' => function (LocationRepository $repository)
-                {
-                    return $repository->createQueryBuilder('l')
-                        ->where('l.level = 4 OR l.level = 8')
-                        ->orderBy('l.name','ASC');
-                }
-            ))
             ->add('parentId', 'entity', array(
                 'class' => 'Rbs\Bundle\UserBundle\Entity\User',
                 'query_builder' => function(UserRepository $userRepository) {
@@ -63,6 +49,49 @@ class UserUpdateForm extends AbstractType
                 'property' => 'username',
                 'required' => false,
                 'empty_value' => 'Select Parent',
+            ))
+            ->add('level1', 'entity', array(
+                'label' => 'Zilla',
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('a')
+                        ->where('a.level = :level')->setParameter('level', 4)->orderBy('a.name');
+                },
+                'attr' => array(
+                    'class' => 'zilla-selector select2me'
+                ),
+                'required' => false,
+                'mapped' => false
+            ))
+            ->add('level2', 'entity', array(
+                'label' => 'Thana/UpoZilla',
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
+                'query_builder' => function (EntityRepository $er) {
+                    $qb = $er->createQueryBuilder('a')
+                        ->where('a.level = :level')->setParameter('level', 5)->orderBy('a.name');
+                    return $qb;
+                },
+                'attr' => array(
+                    'class' => 'thana-selector select2me'
+                ),
+                'placeholder' => 'Choose an option',
+                'required' => false,
+                'mapped' => false
+            ))
+            ->add('level3', 'entity', array(
+                'label' => 'Union',
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
+                'query_builder' => function (EntityRepository $er) {
+                    $qb = $er->createQueryBuilder('a')
+                        ->where('a.level = :level')->setParameter('level', 6)->orderBy('a.name');
+                    return $qb;
+                },
+                'attr' => array(
+                    'class' => 'union-selector select2me'
+                ),
+                'placeholder' => 'Choose an option',
+                'required' => false,
+                'mapped' => false
             ))
         ;
 
