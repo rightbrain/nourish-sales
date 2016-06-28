@@ -32,6 +32,7 @@ class User extends BaseUser
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
 
+    const ZM = 'ZM';
     const RSM = 'RSM';
     const SR = 'SR';
     const AGENT = 'AGENT';
@@ -47,7 +48,7 @@ class User extends BaseUser
     /**
      * @var array $type
      *
-     * @ORM\Column(name="user_type", type="string", length=255, columnDefinition="ENUM('USER', 'RSM', 'SR', 'AGENT')")
+     * @ORM\Column(name="user_type", type="string", length=255, columnDefinition="ENUM('USER', 'ZM', 'RSM', 'SR', 'AGENT')")
      */
     private $userType;
 

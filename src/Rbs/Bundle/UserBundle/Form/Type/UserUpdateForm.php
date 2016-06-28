@@ -32,6 +32,7 @@ class UserUpdateForm extends AbstractType
             ->add('userType', 'choice', array(
                 'choices'  => array(
                     'USER' => User::USER,
+                    'ZM' => User::ZM,
                     'RSM' => User::RSM,
                     'SR' => User::SR,
                     'AGENT' => User::AGENT
