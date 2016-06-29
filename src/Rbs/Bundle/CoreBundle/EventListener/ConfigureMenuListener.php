@@ -85,7 +85,14 @@ class ConfigureMenuListener extends ContextAwareListener
             if ($this->isMatch('depo')) {
                 $menu['Manage System']->getChild('Depos')->setCurrent(true);
             }
+        }
 
+        if ($this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
+            $menu['Manage System']->addChild('Incentive', array('route' => 'sale_incentive_list'))
+                ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('sale_incentive_list')) {
+                $menu['Manage System']->getChild('Incentive')->setCurrent(true);
+            }
         }
 
         if ($this->authorizationChecker->isGranted('ROLE_COST_HEADER_MANAGE')) {
