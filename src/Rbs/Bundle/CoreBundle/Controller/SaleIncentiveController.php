@@ -24,10 +24,12 @@ class SaleIncentiveController extends BaseController
      */
     public function listAction()
     {
-        $saleIncentives = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->findAll();
+        $saleIncentivesForMonth = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentiveByGroup();
+        $saleIncentivesForYear = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentiveByYear();
 
         return $this->render('RbsCoreBundle:SaleIncentive:index.html.twig', array(
-            'saleIncentives' => $saleIncentives
+            'saleIncentivesForMonth' => $saleIncentivesForMonth,
+            'saleIncentivesForYear' => $saleIncentivesForYear
         ));
     }
 

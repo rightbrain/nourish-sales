@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\CoreBundle\Entity\SaleIncentive;
 
 /**
  * SaleIncentiveRepository
@@ -34,5 +35,27 @@ class SaleIncentiveRepository extends EntityRepository
         $this->_em->persist($data);
         $this->_em->flush();
         return $this->_em;
+    }
+    
+    public function getAllMonthIncentiveByGroup()
+    {
+        $query = $this->createQueryBuilder('si');
+        $query->where('si.deletedAt IS NULL');
+        $query->andWhere('si.durationType = :month');
+        $query->setParameter('month', SaleIncentive::MONTH);
+        $query->groupBy('si.incentiveGroup');
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getAllMonthIncentiveByYear()
+    {
+        $query = $this->createQueryBuilder('si');
+        $query->where('si.deletedAt IS NULL');
+        $query->andWhere('si.durationType = :year');
+        $query->setParameter('year', SaleIncentive::YEAR);
+        $query->groupBy('si.incentiveGroup');
+
+        return $query->getQuery()->getResult();
     }
 }
