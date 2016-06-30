@@ -17,6 +17,8 @@ class SaleIncentive
 {
     const YEAR = 'YEAR';
     const MONTH = 'MONTH';
+    const SALE = 'SALE';
+    const TRANSPORT = 'TRANSPORT';
     
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
@@ -63,9 +65,16 @@ class SaleIncentive
     /**
      * @var string
      *
-     * @ORM\Column(name="incentive_group", type="string", length=255, nullable=false)
+     * @ORM\Column(name="groups", type="string", length=255, nullable=false)
      */
-    private $incentiveGroup;
+    private $group;
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="type", type="string", length=255, columnDefinition="ENUM('SALE', 'TRANSPORT')", nullable=false)
+     */
+    private $type;
     
     /**
      * Get id
@@ -144,16 +153,32 @@ class SaleIncentive
     /**
      * @return string
      */
-    public function getIncentiveGroup()
+    public function getGroup()
     {
-        return $this->incentiveGroup;
+        return $this->group;
     }
 
     /**
-     * @param string $incentiveGroup
+     * @param string $group
      */
-    public function setIncentiveGroup($incentiveGroup)
+    public function setGroup($group)
     {
-        $this->incentiveGroup = $incentiveGroup;
+        $this->group = $group;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
     }
 }

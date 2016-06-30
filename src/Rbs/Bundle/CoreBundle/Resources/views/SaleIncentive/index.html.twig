@@ -14,10 +14,91 @@
             <div class="portlet-body">
                     <div class="dataTables_wrapper no-footer">
 
+                        {% if rowLengthMonth >0 %}
+                        <div class="col-md-12">
+                            <div class="portlet-title">
+                                <div class="caption" style="font-weight: bolder;">Month</div>
+                            </div>
+                        </div>
 
+                        {% set p = 0 %}
+                        {% set m = 0 %}
+                        {% for i in 1..totalMonthGroupCount %}
 
+                            <div class="col-md-12">
+                                <div class="portlet-title">
+                                    <div class="caption">
 
+                                        {% for categories in monthWiseAllCategoryName[p] %}
+                                            {{ categories['name'] }} /
+                                        {% endfor %}
+                                        {% set p = p + 1 %}
+                                    </div>
+                                </div>
 
+                                <table class="table table-bordered table-striped">
+                                    <tbody>
+                                        <tr>
+                                            {% for i in 1..rowLengthMonth[i-1] %}
+                                                <td class="col-md-1 bold">{{ saleIncentivesForMonthGroup[m].quantity }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                        <tr>
+                                            {% for i in 1..rowLengthMonth[i-1] %}
+                                                <td class="col-md-1 bold">{{ saleIncentivesForMonthGroup[m].amount }}</td>
+                                            {% endfor %}
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {% set i = i + 1 %}
+                            {% set m = m + 1 %}
+                        {% endfor %}
+                        {% endif %}
+                        <div style="clear: both"></div>
+
+                        {% if rowLengthYear >0 %}
+                        <div class="col-md-12">
+                            <div class="portlet-title">
+                                <div class="caption" style="font-weight: bolder;">Year</div>
+                            </div>
+                        </div>
+
+                        {% set t = 0 %}
+                        {% set q = 0 %}
+                        {% for i in 1..totalYearGroupCount %}
+
+                            <div class="col-md-12">
+                                <div class="portlet-title">
+                                    <div class="caption">
+                                        {% for categories in yearWiseAllCategoryName[q] %}
+                                            {{ categories['name'] }} /
+                                        {% endfor %}
+                                        {% set q = q + 1 %}
+                                    </div>
+                                </div>
+
+                                <table class="table table-bordered table-striped">
+                                    <tbody>
+                                    <tr>
+                                        {% for i in 1..rowLengthYear[i-1] %}
+                                            <td class="col-md-1 bold">{{ saleIncentivesForYearGroup[t].quantity }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    <tr>
+                                        {% for i in 1..rowLengthYear[i-1] %}
+                                            <td class="col-md-1 bold">{{ saleIncentivesForYearGroup[t].amount }}</td>
+                                        {% endfor %}
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {% set i = i + 1 %}
+                            {% set t = t + 1 %}
+                        {% endfor %}
+                        {% endif %}
                     <div style="clear: both"></div>
                 </div>
             </div>

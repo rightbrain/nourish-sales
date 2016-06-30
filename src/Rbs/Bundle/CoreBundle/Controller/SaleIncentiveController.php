@@ -25,11 +25,48 @@ class SaleIncentiveController extends BaseController
     public function listAction()
     {
         $saleIncentivesForMonth = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentiveByGroup();
+        $saleIncentivesForMonthGroup = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentiveByMonthGroup();
         $saleIncentivesForYear = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentiveByYear();
+        $saleIncentivesForYearGroup = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentiveByYearGroup();
+
+        $totalMonthGroupCount = sizeof($this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getTotalMonthGroupCount());
+        $totalYearGroupCount = sizeof($this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getTotalYearGroupCount());
+
+        $monthAllCategories = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getMonthAllCategories();
+        $yearAllCategories = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getYearAllCategories();
+
+        $rowLengthMonth = null;
+        $rowLengthYear = null;
+        $monthWiseAllCategoryName = null;
+        $yearWiseAllCategoryName = null;
+
+        foreach ($saleIncentivesForMonthGroup as $key => $saleIncentive) {
+            $countMonthRow = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getMonthRowByGroup($saleIncentive->getGroup());
+            $rowLengthMonth[] = sizeof($countMonthRow);
+        }
+        foreach ($saleIncentivesForYearGroup as $saleIncentive) {
+            $countYearRow = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getYearRowByGroup($saleIncentive->getGroup());
+            $rowLengthYear[] = sizeof($countYearRow);
+        }
+
+        foreach ($monthAllCategories as $monthAllCategory){
+            $monthWiseAllCategoryName[] = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getMonthWiseAllCategoryName($monthAllCategory['group']);
+        }
+        foreach ($yearAllCategories as $yearAllCategory){
+            $yearWiseAllCategoryName[] = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getYearWiseAllCategoryName($yearAllCategory['group']);
+        }
 
         return $this->render('RbsCoreBundle:SaleIncentive:index.html.twig', array(
             'saleIncentivesForMonth' => $saleIncentivesForMonth,
-            'saleIncentivesForYear' => $saleIncentivesForYear
+            'saleIncentivesForMonthGroup' => $saleIncentivesForMonthGroup,
+            'saleIncentivesForYearGroup' => $saleIncentivesForYearGroup,
+            'saleIncentivesForYear' => $saleIncentivesForYear,
+            'totalMonthGroupCount' => $totalMonthGroupCount,
+            'totalYearGroupCount' => $totalYearGroupCount,
+            'rowLengthMonth' => $rowLengthMonth,
+            'rowLengthYear' => $rowLengthYear,
+            'monthWiseAllCategoryName' => $monthWiseAllCategoryName,
+            'yearWiseAllCategoryName' => $yearWiseAllCategoryName,
         ));
     }
 
@@ -57,7 +94,8 @@ class SaleIncentiveController extends BaseController
                     $saleIncentive->setCategory($this->getDoctrine()->getRepository('RbsCoreBundle:Category')->find($value));
                     $saleIncentive->setQuantity($request->request->get('sale_incentive')['quantity']);
                     $saleIncentive->setDurationType($request->request->get('sale_incentive')['durationType']);
-                    $saleIncentive->setIncentiveGroup($request->request->get('sale_incentive')['incentiveGroup']);
+                    $saleIncentive->setGroup($request->request->get('sale_incentive')['group']);
+                    $saleIncentive->setType(SaleIncentive::SALE);
                     $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->create($saleIncentive);
                 }
 

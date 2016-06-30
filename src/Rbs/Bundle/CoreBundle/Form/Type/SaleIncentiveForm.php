@@ -35,7 +35,7 @@ class SaleIncentiveForm extends AbstractType
                 'property' => 'name',
                 'multiple' => true
             ))
-            ->add('incentiveGroup')
+            ->add('group')
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')
             ))
