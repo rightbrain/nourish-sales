@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\UserBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdateForm;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdatePasswordForm;
@@ -71,6 +72,7 @@ class UserController extends Controller
     public function createAction(Request $request)
     {
         $user = new User();
+        $agent = new Agent();
 
         $service = $this->get('rbs_user.registration.form.type');
 
@@ -81,8 +83,8 @@ class UserController extends Controller
 
             if ($form->isValid()) {
 
-                if($request->request->get('user')['userType'] == User::AGENT and $request->request->get('user')['level3'] != null){
-                    $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level3']));
+                if($request->request->get('user')['userType'] == User::AGENT and $request->request->get('user')['level2'] != null){
+                    $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level2']));
                 }else if($request->request->get('user')['userType'] != User::AGENT and $request->request->get('user')['level1'] != null){
                     $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level1']));
                 }
@@ -91,6 +93,11 @@ class UserController extends Controller
 
                 $user->setEnabled(true);
                 $this->getDoctrine()->getRepository('RbsUserBundle:User')->create($user);
+                if($request->request->get('user')['userType'] == User::AGENT and $request->request->get('user')['level2'] != null){
+                    $agent->setUser($this->getDoctrine()->getRepository('RbsUserBundle:User')->find($user->getId()));
+                    $agent->setAgentID($user->getId());
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
+                }
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
@@ -123,8 +130,8 @@ class UserController extends Controller
 
             if ($form->isValid()) {
 
-                if($request->request->get('user')['userType'] == User::AGENT and $request->request->get('user')['level3'] != null){
-                    $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level3']));
+                if($request->request->get('user')['userType'] == User::AGENT and $request->request->get('user')['level2'] != null){
+                    $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level2']));
                 }else if($request->request->get('user')['userType'] != User::AGENT and $request->request->get('user')['level1'] != null){
                     $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level1']));
                 }
@@ -132,7 +139,13 @@ class UserController extends Controller
                 $user->setParentId($request->request->get('user')['parentId']);
 
                 $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
-
+                if($request->request->get('user')['userType'] == User::AGENT and $request->request->get('user')['level2'] != null){
+                    $agent = new Agent();
+                    $agent->setUser($this->getDoctrine()->getRepository('RbsUserBundle:User')->find($user->getId()));
+                    $agent->setAgentID($user->getId());
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
+                }
+                
                 $this->get('session')->getFlashBag()->add(
                     'success',
                     'User Updated Successfully!'

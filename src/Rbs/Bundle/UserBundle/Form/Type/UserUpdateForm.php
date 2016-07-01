@@ -80,21 +80,6 @@ class UserUpdateForm extends AbstractType
                 'required' => false,
                 'mapped' => false
             ))
-            ->add('level3', 'entity', array(
-                'label' => 'Union',
-                'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
-                'query_builder' => function (EntityRepository $er) {
-                    $qb = $er->createQueryBuilder('a')
-                        ->where('a.level = :level')->setParameter('level', 6)->orderBy('a.name');
-                    return $qb;
-                },
-                'attr' => array(
-                    'class' => 'union-selector select2me'
-                ),
-                'placeholder' => 'Choose an option',
-                'required' => false,
-                'mapped' => false
-            ))
         ;
 
         $builder

@@ -28,7 +28,6 @@ class AgentDatatable extends BaseDatatable
             ->add('agentID', 'column', array('title' => 'Agent ID'))
             ->add('user.profile.fullName', 'column', array('title' => 'Agent name'))
             ->add('user.profile.cellphone', 'column', array('title' => 'Cell Phone'))
-            ->add('agentGroup.label', 'column', array('title' => 'Group'))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Update',
