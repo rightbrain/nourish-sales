@@ -30,7 +30,7 @@ class AgentUpdateForm extends AbstractType
                 'class' => 'RbsCoreBundle:ItemType',
                 'property' => 'itemType',
                 'required' => false,
-                'empty_value' => 'Select Product Type',
+                'empty_value' => 'Select Item Type',
                 'empty_data' => null,
                 'query_builder' => function (ItemTypeRepository $repository)
                 {
