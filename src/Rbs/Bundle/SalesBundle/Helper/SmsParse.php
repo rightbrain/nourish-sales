@@ -184,7 +184,7 @@ class SmsParse
                     $this->setError('Invalid qty code');
                     $this->markError($qty);
                     break;
-                } else if ($this->agent->getItemType() != $orderItem->getItem()->getItemType()) {
+                } else if ($this->agent->getItemType() != null and  $this->agent->getItemType() != $orderItem->getItem()->getItemType()) {
                     $this->setError('Product type not match');
                     $this->markError($sku);
                     break;
