@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
+use Rbs\Bundle\CoreBundle\Repository\ItemTypeRepository;
 use Rbs\Bundle\SalesBundle\Repository\AgentGroupRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -59,6 +60,19 @@ class AgentForm extends AbstractType
                     return $repository->createQueryBuilder('w')
                         ->where('w.deletedAt IS NULL')
                         ->orderBy('w.name','ASC');
+                }
+            ))
+            ->add('itemType', 'entity', array(
+                'class' => 'RbsCoreBundle:ItemType',
+                'property' => 'itemType',
+                'required' => false,
+                'empty_value' => 'Select Product Type',
+                'empty_data' => null,
+                'query_builder' => function (ItemTypeRepository $repository)
+                {
+                    return $repository->createQueryBuilder('it')
+                        ->where('it.deletedAt IS NULL')
+                        ->orderBy('it.itemType','ASC');
                 }
             ))
             ->add('agentGroup', 'entity', array(

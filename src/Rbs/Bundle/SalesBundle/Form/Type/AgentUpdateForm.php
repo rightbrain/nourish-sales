@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\AreaRepository;
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
+use Rbs\Bundle\CoreBundle\Repository\ItemTypeRepository;
 use Rbs\Bundle\SalesBundle\Repository\AgentGroupRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
@@ -24,6 +25,19 @@ class AgentUpdateForm extends AbstractType
                     '0' => 'Not',
                     '1' => 'Yes'
                 )
+            ))
+            ->add('itemType', 'entity', array(
+                'class' => 'RbsCoreBundle:ItemType',
+                'property' => 'itemType',
+                'required' => false,
+                'empty_value' => 'Select Product Type',
+                'empty_data' => null,
+                'query_builder' => function (ItemTypeRepository $repository)
+                {
+                    return $repository->createQueryBuilder('it')
+                        ->where('it.deletedAt IS NULL')
+                        ->orderBy('it.itemType','ASC');
+                }
             ))
             ->add('agentID')
             ->add('creditLimit')

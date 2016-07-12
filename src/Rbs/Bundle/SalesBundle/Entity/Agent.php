@@ -2,6 +2,7 @@
 namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Rbs\Bundle\CoreBundle\Entity\Depo;
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\CoreBundle\Entity\Location;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
@@ -79,6 +80,14 @@ class Agent
     private $agentID;
 
     /**
+     * @var ItemType
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\ItemType")
+     * @ORM\JoinColumn(name="item_type", nullable=true)
+     */
+    private $itemType;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="vip", type="boolean", nullable=true)
@@ -90,7 +99,6 @@ class Agent
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
      * @ORM\JoinColumn(name="sr", nullable=true)
-     * @Assert\NotBlank()
      */
     private $sr;
 
@@ -244,6 +252,22 @@ class Agent
     public function setOpeningBalance($openingBalance)
     {
         $this->openingBalance = $openingBalance;
+    }
+
+    /**
+     * @return ItemType
+     */
+    public function getItemType()
+    {
+        return $this->itemType;
+    }
+
+    /**
+     * @param ItemType $itemType
+     */
+    public function setItemType($itemType)
+    {
+        $this->itemType = $itemType;
     }
 
     /**
