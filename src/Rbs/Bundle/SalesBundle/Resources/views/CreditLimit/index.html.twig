@@ -32,6 +32,7 @@
             </div>
             <div class="portlet-body">
                 {{ include('_elements/_back_to_list_button.html.twig', {url: path('credit_limit_create'), label: 'Add Credit Limit', 'icon': 'plus'}) }}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('credit_limit_notification_list'), label: 'Notification Credit Limit', 'icon': 'list'}) }}
 
                 <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}
