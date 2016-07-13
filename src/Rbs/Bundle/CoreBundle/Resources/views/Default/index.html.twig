@@ -2,6 +2,27 @@
 
 {% block body %}
 
-    <h1>Welcome To Admin Panel</h1>
+    <h3 class="page-title">
+        Welcome To Admin Panel
+    </h3>
+
+    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="dashboard-stat red-intense">
+            <div class="visual">
+                <i class="fa fa-bar-chart-o"></i>
+            </div>
+            <div class="details">
+                <div class="number">
+                    {{ creditLimitNotification }}
+                </div>
+                <div class="desc">
+                    Credit Limit Will Expire
+                </div>
+            </div>
+            <a class="more" href="{{ path('credit_limit_notification_list') }}">
+                View more <i class="m-icon-swapright m-icon-white"></i>
+            </a>
+        </div>
+    </div>
 
 {% endblock %}
