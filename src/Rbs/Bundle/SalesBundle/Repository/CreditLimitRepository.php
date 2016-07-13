@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\CreditLimit;
 
 /**
  * CreditLimitRepository
@@ -34,5 +35,50 @@ class CreditLimitRepository extends EntityRepository
         $this->_em->persist($data);
         $this->_em->flush();
         return $this->_em;
+    }
+
+    public function creditLimitNotifications()
+    {
+        $notificationTime = new \DateTime('now');
+        $notificationTime->add(new \DateInterval('P15D'));
+        $notificationTime->format('Y-m-d');
+
+        $query = $this->createQueryBuilder('cl');
+        $query->join('cl.agent', 'a');
+        $query->join('a.user', 'u');
+        $query->join('cl.category', 'c');
+        $query->select('u.username as agentName');
+        $query->addSelect('a.id as agentId');
+        $query->addSelect('c.name as categoryName');
+        $query->addSelect('c.id as categoryId');
+        $query->addSelect('cl.id as creditLimitId');
+        $query->addSelect('cl.endDate as endDate');
+        $query->where('cl.endDate < :now');
+        $query->andWhere('u.userType = :AGENT');
+        $query->andWhere('cl.status = :ACTIVE');
+        $query->setParameters(array('AGENT'=>'AGENT', 'now' => $notificationTime, 'ACTIVE' => CreditLimit::ACTIVE));
+        $query->groupBy('cl.agent', 'cl.category');
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function creditLimitNotificationCount()
+    {
+        $notificationTime = new \DateTime('now');
+        $notificationTime->add(new \DateInterval('P15D'));
+        $notificationTime->format('Y-m-d');
+
+        $query = $this->createQueryBuilder('cl');
+        $query->join('cl.agent', 'a');
+        $query->join('a.user', 'u');
+        $query->join('cl.category', 'c');
+        $query->select('COUNT(cl.id)');
+        $query->where('cl.endDate < :now');
+        $query->andWhere('u.userType = :AGENT');
+        $query->andWhere('cl.status = :ACTIVE');
+        $query->setParameters(array('AGENT'=>'AGENT', 'now' => $notificationTime, 'ACTIVE' => CreditLimit::ACTIVE));
+        $query->groupBy('cl.agent', 'cl.category');
+
+        return $query->getQuery()->getSingleScalarResult();
     }
 }
