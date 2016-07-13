@@ -15,7 +15,11 @@ class DefaultController extends BaseController
      */
     public function indexAction()
     {
-        return array();
+        $creditLimitNotification = $this->getDoctrine()->getRepository('RbsSalesBundle:CreditLimit')->creditLimitNotificationCount();
+        
+        return array(
+            'creditLimitNotification' => $creditLimitNotification
+        );
     }
 
     /**
