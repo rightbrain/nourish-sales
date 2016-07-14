@@ -116,4 +116,32 @@ class OrderItemRepository extends EntityRepository
             $query->setParameter('end_date', $data['end_date'].' 23:59:59');
         }
     }
+
+    public function getAmountDiff($agentId, $startDate, $endDate)
+    {
+        $query = $this->createQueryBuilder('oi');
+        $query->join('oi.order', 'o');
+        $query->join('o.agent', 'a');
+        $query->join('a.user', 'u');
+        $query->join('oi.item', 'i');
+        $query->join('i.category', 'ca');
+
+        $query->select('ca.name as categoryName');
+        $query->addSelect('ca.id as categoryId');
+        $query->addSelect('u.username as agentName');
+        $query->addSelect('a.id as agentId');
+        $query->addSelect('SUM(oi.paidAmount) as paidAmount');
+        $query->addSelect('SUM(oi.totalAmount) as totalAmount');
+
+        $query->where('o.agent = :agentId');
+        $query->andWhere('o.orderState = :COMPLETE');
+
+        $query->andWhere('o.createdAt >= :startDate');
+        $query->andWhere('o.createdAt <= :endDate');
+
+        $query->setParameters(array('COMPLETE' => Order::ORDER_STATE_COMPLETE, 'agentId' => $agentId, 'startDate' => $startDate, 'endDate' => $endDate));
+        $query->groupBy('ca.id');
+
+        return $query->getQuery()->getScalarResult();
+    }
 }

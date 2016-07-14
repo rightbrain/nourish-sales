@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\SalesBundle\Entity\CreditLimit;
+use Rbs\Bundle\UserBundle\Entity\User;
 
 /**
  * CreditLimitRepository
@@ -56,10 +57,37 @@ class CreditLimitRepository extends EntityRepository
         $query->where('cl.endDate < :now');
         $query->andWhere('u.userType = :AGENT');
         $query->andWhere('cl.status = :ACTIVE');
-        $query->setParameters(array('AGENT'=>'AGENT', 'now' => $notificationTime, 'ACTIVE' => CreditLimit::ACTIVE));
+        $query->setParameters(array('AGENT'=> User::AGENT, 'now' => $notificationTime, 'ACTIVE' => CreditLimit::ACTIVE));
         $query->groupBy('cl.agent', 'cl.category');
 
         return $query->getQuery()->getResult();
+    }
+
+    public function checkCreditLimit($agentId, $startDate, $endDate)
+    {
+        $query = $this->createQueryBuilder('cl');
+        $query->join('cl.agent', 'a');
+        $query->join('a.user', 'u');
+        $query->join('cl.category', 'c');
+        $query->select('u.username as agentName');
+        $query->addSelect('a.id as agentId');
+        $query->addSelect('c.name as categoryName');
+        $query->addSelect('c.id as categoryId');
+        $query->addSelect('cl.id as creditLimitId');
+        $query->addSelect('cl.endDate as endDate');
+        $query->addSelect('cl.startDate as startDate');
+        $query->addSelect('SUM(cl.amount) as amount');
+        $query->where('cl.agent = :agentId');
+        $query->andWhere('u.userType = :AGENT');
+        $query->andWhere('cl.status = :ACTIVE');
+
+        $query->andWhere('cl.endDate >= :startDate');
+        $query->andWhere('cl.endDate <= :endDate');
+
+        $query->setParameters(array('AGENT'=> User::AGENT,'ACTIVE' => CreditLimit::ACTIVE, 'agentId' => $agentId, 'startDate' => $startDate, 'endDate' => $endDate));
+        $query->groupBy('cl.category');
+
+        return $query->getQuery()->getScalarResult();
     }
 
     public function creditLimitNotificationCount()
@@ -76,7 +104,7 @@ class CreditLimitRepository extends EntityRepository
         $query->where('cl.endDate < :now');
         $query->andWhere('u.userType = :AGENT');
         $query->andWhere('cl.status = :ACTIVE');
-        $query->setParameters(array('AGENT'=>'AGENT', 'now' => $notificationTime, 'ACTIVE' => CreditLimit::ACTIVE));
+        $query->setParameters(array('AGENT'=> User::AGENT, 'now' => $notificationTime, 'ACTIVE' => CreditLimit::ACTIVE));
         $query->groupBy('cl.agent', 'cl.category');
 
         return $query->getQuery()->getSingleScalarResult();

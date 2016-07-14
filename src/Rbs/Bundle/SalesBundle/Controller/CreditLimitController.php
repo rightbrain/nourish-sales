@@ -53,8 +53,6 @@ class CreditLimitController extends BaseController
          */
         $function = function($qb)
         {
-//            $qb->where('credit_limits.status = :ACTIVE');
-//            $qb->setParameter('ACTIVE', CreditLimit::ACTIVE);
             $qb->orderBy('credit_limits.createdAt', 'desc');
             $qb->orderBy('credit_limits.status', 'asc');
         };
@@ -66,7 +64,7 @@ class CreditLimitController extends BaseController
      * @Route("/credit/limit/create", name="credit_limit_create")
      * @Template("RbsSalesBundle:CreditLimit:new.html.twig")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function createAction(Request $request)
     {
@@ -115,7 +113,7 @@ class CreditLimitController extends BaseController
      * @Route("/credit/limit/add/{agentId}/{categoryId}/{creditLimitId}", name="credit_limit_add")
      * @Template("RbsSalesBundle:CreditLimit:new.html.twig")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function addAction(Request $request)
     {
@@ -152,5 +150,40 @@ class CreditLimitController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+
+    protected function checkCreditLimit($agentId, $startDate, $endDate)
+    {
+        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($agentId);
+        $agentOpeningBalance = $agent->getOpeningBalance();
+        $agentCreditLimit = $this->getDoctrine()->getRepository('RbsSalesBundle:CreditLimit')->checkCreditLimit($agentId, $startDate, $endDate);
+        $agentOrderItem = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->getAmountDiff($agentId, $startDate, $endDate);
+        $crCategoryWise = array();
+        $cr = array();
+        foreach ($agentCreditLimit as $value) {
+            if (!isset($cr[(int)$value['categoryId']])) {
+                $cr[(int)$value['categoryId']] = array('creditLimitAmount' => 0, 'paidAmount' => 0, 'totalAmount' => 0);
+            }
+            $cr[(int)$value['categoryId']]['agentId'] = $value['agentId'];
+            $cr[(int)$value['categoryId']]['agentName'] = $value['agentName'];
+            $cr[(int)$value['categoryId']]['categoryName'] = $value['categoryName'];
+            $cr[(int)$value['categoryId']]['categoryId'] = $value['categoryId'];
+            $cr[(int)$value['categoryId']]['endDate'] = $value['endDate'];
+            $cr[(int)$value['categoryId']]['startDate'] = $value['startDate'];
+            $cr[(int)$value['categoryId']]['creditLimitAmount'] = (float)$value['amount'];
+        }
+        foreach ($agentOrderItem as $value) {
+            $cr[(int)$value['categoryId']]['paidAmount'] = (float)$value['paidAmount'];
+            $cr[(int)$value['categoryId']]['totalAmount'] = (float)$value['totalAmount'];
+        }
+
+        foreach ($cr as $value) {
+            $crCategoryWise[(int)$value['categoryId']]['agentName'] = $value['agentName'];
+            $crCategoryWise[(int)$value['categoryId']]['categoryName'] = $value['categoryName'];
+            $crCategoryWise[(int)$value['categoryId']]['categoryId'] = $value['categoryId'];
+            $crCategoryWise[(int)$value['categoryId']]['creditLimit'] = (float)$value['creditLimitAmount'] + $agentOpeningBalance + (float)$value['paidAmount'] - (float)$value['totalAmount'];
+        }
+
+        return $crCategoryWise;
     }
 }
