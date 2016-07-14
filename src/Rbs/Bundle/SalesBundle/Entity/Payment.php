@@ -20,6 +20,9 @@ class Payment
     const PAYMENT_METHOD_CHEQUE = 'CHEQUE';
     const PAYMENT_METHOD_BANK = 'BANK';
 
+    const DR = 'DR';
+    const CR = 'CR';
+
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
@@ -58,6 +61,13 @@ class Payment
      * @ORM\Column(name="payment_method", type="string", length=255, columnDefinition="ENUM('CASH', 'CHEQUE', 'BANK')", nullable=false)
      */
     private $paymentMethod = 'BANK';
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="transaction_type", type="string", length=255, columnDefinition="ENUM('DR', 'CR')", nullable=true)
+     */
+    private $transactionType;
 
     /**
      * @var string
@@ -285,6 +295,22 @@ class Payment
         $this->paymentVia = $paymentVia;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTransactionType()
+    {
+        return $this->transactionType;
+    }
+
+    /**
+     * @param array $transactionType
+     */
+    public function setTransactionType($transactionType)
+    {
+        $this->transactionType = $transactionType;
     }
 
 }
