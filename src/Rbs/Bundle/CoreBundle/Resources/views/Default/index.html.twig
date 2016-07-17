@@ -13,7 +13,7 @@
             </div>
             <div class="details">
                 <div class="number">
-                    {{ creditLimitNotification }}
+                    {{ creditLimitNotification | default(0) }}
                 </div>
                 <div class="desc">
                     Credit Limit Will Expire

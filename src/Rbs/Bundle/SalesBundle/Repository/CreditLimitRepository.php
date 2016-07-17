@@ -105,7 +105,6 @@ class CreditLimitRepository extends EntityRepository
         $query->andWhere('u.userType = :AGENT');
         $query->andWhere('cl.status = :ACTIVE');
         $query->setParameters(array('AGENT'=> User::AGENT, 'now' => $notificationTime, 'ACTIVE' => CreditLimit::ACTIVE));
-        $query->groupBy('cl.agent', 'cl.category');
 
         return $query->getQuery()->getSingleScalarResult();
     }
