@@ -29,7 +29,7 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_AGENT', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN', 'ROLE_SUPER_ADMIN', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
             $menu['Sales']->addChild('Orders From SMS', array('route' => 'order_readable_sms'))
                 ->setAttribute('icon', 'fa fa-th-list');
 
@@ -59,7 +59,7 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_AGENT', 'ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE'))) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN', 'ROLE_SUPER_ADMIN'))) {
             $menu['Sales']->addChild('Agents', array('route' => 'agents_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('agent')) {
