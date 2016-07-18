@@ -21,7 +21,7 @@ class ConfigureMenuListener extends ContextAwareListener
             ->setAttribute('icon', 'fa fa-bar-chart-o')
             ->setLinkAttribute('data-hover', 'dropdown');
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_AGENT', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
             $menu['Sales']->addChild('Orders', array('route' => 'orders_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('orders')) {
@@ -51,7 +51,7 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_AGENT', 'ROLE_PAYMENT_VIEW', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_APPROVE', 'ROLE_PAYMENT_OVER_CREDIT_APPROVE'))) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_AGENT', 'ROLE_ADMIN', 'ROLE_PAYMENT_VIEW', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_APPROVE', 'ROLE_PAYMENT_OVER_CREDIT_APPROVE'))) {
             $menu['Sales']->addChild('Payments', array('route' => 'payments_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('payment')) {
