@@ -115,6 +115,11 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
+        if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
+            $menu['Sales']->addChild('Agents Laser', array('route' => 'agents_laser'))
+                ->setAttribute('icon', 'fa fa-th-list');
+        }
+
         if ($this->user->getUserType() == User::USER and $this->authorizationChecker->isGranted(array('ROLE_DEPO_USER'))) {
             $menu['Sales']->addChild('Cash Receive', array('route' => 'cash_receive_create'))
                 ->setAttribute('icon', 'fa fa-th-list');
@@ -146,6 +151,9 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
 
             $menu['Sales']->addChild('Damage Good', array('route' => 'damage_good_list'))
+                ->setAttribute('icon', 'fa fa-th-list');
+
+            $menu['Sales']->addChild('My Laser', array('route' => 'my_laser'))
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
