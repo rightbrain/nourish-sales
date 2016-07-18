@@ -3,6 +3,8 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\Payment;
+use Rbs\Bundle\UserBundle\Entity\User;
 
 /**
  * PaymentRepository
@@ -34,5 +36,118 @@ class PaymentRepository extends EntityRepository
         $this->_em->persist($data);
         $this->_em->flush();
         return $this->_em;
+    }
+
+    public function getAgentPreviousCreditLaserTotal($data)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->join('p.agent', 'a');
+        $query->join('a.user', 'u');
+        $query->select('SUM(p.amount) as creditAmount');
+        $query->where('u.userType = :AGENT');
+        $query->andWhere('a.id = :agentId');
+        $query->andWhere('p.transactionType = :CR');
+        if (!empty($data['start_date'])) {
+            $query->andWhere('p.depositDate < :startDate');
+            $query->setParameter('startDate', $data['start_date'].' 00:00:01');
+        }
+        $query->setParameter('AGENT', User::AGENT);
+        $query->setParameter('agentId', $data['agent']);
+        $query->setParameter('CR', Payment::CR);
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
+    public function getAgentCreditLaserTotal($data)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->join('p.agent', 'a');
+        $query->join('a.user', 'u');
+        $query->select('SUM(p.amount) as creditAmount');
+        $query->where('u.userType = :AGENT');
+        $query->andWhere('a.id = :agentId');
+        $query->andWhere('p.transactionType = :CR');
+        if (!empty($data['end_date'])) {
+            $query->andWhere('p.depositDate < :endDate');
+            $query->setParameter('endDate', $data['end_date'].' 23:59:5');
+        }
+        $query->setParameter('AGENT', User::AGENT);
+        $query->setParameter('agentId', $data['agent']);
+        $query->setParameter('CR', Payment::CR);
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
+    public function getAgentPreviousDebitLaserTotal($data)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->join('p.agent', 'a');
+        $query->join('a.user', 'u');
+        $query->select('SUM(p.amount) as debitAmount');
+        $query->where('u.userType = :AGENT');
+        $query->andWhere('a.id = :agentId');
+        $query->andWhere('p.transactionType = :DR');
+        if (!empty($data['start_date'])) {
+            $query->andWhere('p.depositDate < :startDate');
+            $query->setParameter('startDate', $data['start_date'].' 00:00:01');
+        }
+        $query->setParameter('AGENT', User::AGENT);
+        $query->setParameter('agentId', $data['agent']);
+        $query->setParameter('DR', Payment::DR);
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
+    public function getAgentDebitLaserTotal($data)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->join('p.agent', 'a');
+        $query->join('a.user', 'u');
+        $query->select('SUM(p.amount) as debitAmount');
+        $query->where('u.userType = :AGENT');
+        $query->andWhere('a.id = :agentId');
+        $query->andWhere('p.transactionType = :DR');
+        if (!empty($data['end_date'])) {
+            $query->andWhere('p.depositDate < :endDate');
+            $query->setParameter('endDate', $data['end_date'].' 23:59:5');
+        }
+        $query->setParameter('AGENT', User::AGENT);
+        $query->setParameter('agentId', $data['agent']);
+        $query->setParameter('DR', Payment::DR);
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
+
+    public function getAgentLaser($data)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->join('p.agent', 'a');
+        $query->join('a.user', 'u');
+        $query->select('u.username');
+        $query->addSelect('p.amount');
+        $query->addSelect('p.transactionType');
+        $query->addSelect('p.remark');
+        $query->addSelect('p.depositDate');
+        $query->where('u.userType = :AGENT');
+        $query->andWhere('a.id = :agentId');
+        $query->setParameter('AGENT', User::AGENT);
+        $query->setParameter('agentId', $data['agent']);
+        $this->handleSearchByTwoDate($query, $data['start_date'], $data['end_date']);
+        $query->orderBy('p.depositDate', 'asc');
+
+        return $query->getQuery()->getScalarResult();
+    }
+
+    protected function handleSearchByTwoDate($query, $startDate, $endDate)
+    {
+        if (!empty($startDate) && !empty($endDate)) {
+            $query->andWhere('p.depositDate >= :startDate');
+            $query->andWhere('p.depositDate <= :endDate');
+            $query->setParameter('startDate', $startDate.' 00:00:01');
+            $query->setParameter('endDate', $endDate.' 23:59:59');
+        } elseif (!empty($startDate) && empty($endDate)){
+            $query->andWhere('p.depositDate >= :startDate');
+            $query->setParameter('startDate', $startDate.' 00:00:01');
+        }
     }
 }
