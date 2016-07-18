@@ -4,6 +4,8 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
+use Rbs\Bundle\SalesBundle\Entity\AgentsBankInfo;
+use Rbs\Bundle\SalesBundle\Form\Type\AgentsBankInfoForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -56,5 +58,34 @@ class AgentsBankInfoController extends BaseController
         $query->addWhereAll($function);
         
         return $query->getResponse();
+    }
+
+    /**
+     * @Route("/orders/my/bank-info", name="orders_my_bank_info", options={"expose"=true})
+     * @Template("RbsSalesBundle:Agent:bank_slip_upload.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function agentBankInfoCreateAction(Request $request)
+    {
+        $agentsBankInfo = new AgentsBankInfo();
+        $form = $this->createForm(new AgentsBankInfoForm($this->getUser()), $agentsBankInfo, array(
+            'action' => $this->generateUrl('orders_my_bank_info'), 'method' => 'POST',
+            'attr' => array('novalidate' => 'novalidate')
+        ));
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $agentsBankInfo->setAgent($this->getUser());
+                $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:AgentsBankInfo')->create($agentsBankInfo);
+                $this->flashMessage('success', 'Bank info add Successfully!');
+                return $this->redirect($this->generateUrl('orders_my_home'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
     }
 }

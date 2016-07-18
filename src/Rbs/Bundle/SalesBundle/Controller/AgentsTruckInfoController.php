@@ -99,7 +99,7 @@ class AgentsTruckInfoController extends BaseController
      * @Route("/agent/truck/info/add", name="agent_truck_info_add")
      * @Template("RbsSalesBundle:AgentTruck:form.html.twig")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function addAction(Request $request)
     {

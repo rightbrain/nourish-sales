@@ -81,35 +81,6 @@ class OrderController extends BaseController
 
         return $query->getResponse();
     }
-
-    /**
-     * @Route("/orders/my/bank-info", name="orders_my_bank_info", options={"expose"=true})
-     * @Template("RbsSalesBundle:Agent:bank_slip_upload.html.twig")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     */
-    public function agentBankInfoCreateAction(Request $request)
-    {
-        $agentsBankInfo = new AgentsBankInfo();
-        $form = $this->createForm(new AgentsBankInfoForm($this->getUser()), $agentsBankInfo, array(
-            'action' => $this->generateUrl('orders_my_bank_info'), 'method' => 'POST',
-            'attr' => array('novalidate' => 'novalidate')
-        ));
-
-        if ('POST' === $request->getMethod()) {
-            $form->handleRequest($request);
-            if ($form->isValid()) {
-                $agentsBankInfo->setAgent($this->getUser());
-                $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:AgentsBankInfo')->create($agentsBankInfo);
-                $this->flashMessage('success', 'Bank info add Successfully!');
-                return $this->redirect($this->generateUrl('orders_my_home'));
-            }
-        }
-        
-        return array(
-            'form' => $form->createView()
-        );
-    }
     
     /**
      * Lists all Category entities.
@@ -188,7 +159,7 @@ class OrderController extends BaseController
      * @Route("/order/create", name="order_create", options={"expose"=true})
      * @Template("RbsSalesBundle:Order:new.html.twig")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE")
      */
     public function createAction(Request $request)
@@ -230,7 +201,7 @@ class OrderController extends BaseController
      * @Template("RbsSalesBundle:Order:edit.html.twig")
      * @param Request $request
      * @param Order $order
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function updateAction(Request $request, Order $order)

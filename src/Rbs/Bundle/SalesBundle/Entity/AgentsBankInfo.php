@@ -110,22 +110,6 @@ class AgentsBankInfo
     }
 
     /**
-     * @return Agent
-     */
-    public function getAgent()
-    {
-        return $this->agent;
-    }
-
-    /**
-     * @param Agent $agent
-     */
-    public function setAgent($agent)
-    {
-        $this->agent = $agent;
-    }
-
-    /**
      * @return Order
      */
     public function getOrder()
@@ -340,5 +324,21 @@ class AgentsBankInfo
         return null === $this->path
             ? null
             : $this->getUploadDir() . '/' . $this->path;
+    }
+
+    /**
+     * @return User
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param User $agent
+     */
+    public function setAgent($agent)
+    {
+        $this->agent = $agent;
     }
 }
