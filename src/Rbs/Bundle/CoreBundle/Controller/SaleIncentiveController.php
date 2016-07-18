@@ -24,49 +24,54 @@ class SaleIncentiveController extends BaseController
      */
     public function listAction()
     {
-        $saleIncentivesForMonth = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentiveByGroup();
+        $groupMonth = array();
+        $groupMonth1 = array();
+        $groupYear = array();
+        $groupYear1 = array();
+
+        $saleIncentivesForMonth = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentive();
         $saleIncentivesForMonthGroup = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentiveByMonthGroup();
-        $saleIncentivesForYear = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentiveByYear();
-        $saleIncentivesForYearGroup = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentiveByYearGroup();
-
-        $totalMonthGroupCount = sizeof($this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getTotalMonthGroupCount());
-        $totalYearGroupCount = sizeof($this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getTotalYearGroupCount());
-
-        $monthAllCategories = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getMonthAllCategories();
-        $yearAllCategories = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getYearAllCategories();
-
-        $rowLengthMonth = null;
-        $rowLengthYear = null;
-        $monthWiseAllCategoryName = null;
-        $yearWiseAllCategoryName = null;
-
-        foreach ($saleIncentivesForMonthGroup as $key => $saleIncentive) {
-            $countMonthRow = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getMonthRowByGroup($saleIncentive->getGroup());
-            $rowLengthMonth[] = sizeof($countMonthRow);
-        }
-        foreach ($saleIncentivesForYearGroup as $saleIncentive) {
-            $countYearRow = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getYearRowByGroup($saleIncentive->getGroup());
-            $rowLengthYear[] = sizeof($countYearRow);
+        $totalMonthGroupName = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getTotalMonthGroupName();
+        foreach ($totalMonthGroupName as $key => $groupName) {
+            foreach ($saleIncentivesForMonthGroup as $saleIncentive) {
+                if($saleIncentive['group'] == $groupName['group']){
+                    $groupMonth[$key][$saleIncentive['name']] = $saleIncentive['name'];
+                }
+            }
+            foreach ($saleIncentivesForMonth as $i => $saleIncentive) {
+                if($saleIncentive['group'] == $groupName['group']){
+                    $groupMonth1[$key][$i]['amount'] = $saleIncentive['amount'];
+                    $groupMonth1[$key][$i]['quantity'] = $saleIncentive['quantity'];
+                    $groupMonth1[$key][$i]['group'] = $saleIncentive['group'];
+                    $groupMonth1[$key][$i]['name'] = $saleIncentive['name'];
+                }
+            }
         }
 
-        foreach ($monthAllCategories as $monthAllCategory){
-            $monthWiseAllCategoryName[] = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getMonthWiseAllCategoryName($monthAllCategory['group']);
-        }
-        foreach ($yearAllCategories as $yearAllCategory){
-            $yearWiseAllCategoryName[] = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getYearWiseAllCategoryName($yearAllCategory['group']);
+        $saleIncentivesForYear = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllYearIncentive();
+        $saleIncentivesForYearGroup = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllYearIncentiveByMonthGroup();
+        $totalYearGroupName = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getTotalYearGroupName();
+        foreach ($totalYearGroupName as $key => $groupName) {
+            foreach ($saleIncentivesForYearGroup as $saleIncentive) {
+                if($saleIncentive['group'] == $groupName['group']){
+                    $groupYear[$key][$saleIncentive['name']] = $saleIncentive['name'];
+                }
+            }
+            foreach ($saleIncentivesForYear as $i => $saleIncentive) {
+                if($saleIncentive['group'] == $groupName['group']){
+                    $groupYear1[$key][$i]['amount'] = $saleIncentive['amount'];
+                    $groupYear1[$key][$i]['quantity'] = $saleIncentive['quantity'];
+                    $groupYear1[$key][$i]['group'] = $saleIncentive['group'];
+                    $groupYear1[$key][$i]['name'] = $saleIncentive['name'];
+                }
+            }
         }
 
         return $this->render('RbsCoreBundle:SaleIncentive:index.html.twig', array(
-            'saleIncentivesForMonth' => $saleIncentivesForMonth,
-            'saleIncentivesForMonthGroup' => $saleIncentivesForMonthGroup,
-            'saleIncentivesForYearGroup' => $saleIncentivesForYearGroup,
-            'saleIncentivesForYear' => $saleIncentivesForYear,
-            'totalMonthGroupCount' => $totalMonthGroupCount,
-            'totalYearGroupCount' => $totalYearGroupCount,
-            'rowLengthMonth' => $rowLengthMonth,
-            'rowLengthYear' => $rowLengthYear,
-            'monthWiseAllCategoryName' => $monthWiseAllCategoryName,
-            'yearWiseAllCategoryName' => $yearWiseAllCategoryName,
+            'groupMonth' => $groupMonth,
+            'groupMonth1' => $groupMonth1,
+            'groupYear' => $groupYear,
+            'groupYear1' => $groupYear1,
         ));
     }
 
@@ -74,7 +79,7 @@ class SaleIncentiveController extends BaseController
      * @Route("/sale/incentive/create", name="sale_incentive_create")
      * @Template("RbsCoreBundle:SaleIncentive:form.html.twig")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function createAction(Request $request)
     {
