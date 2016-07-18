@@ -40,7 +40,6 @@ class AgentUpdateForm extends AbstractType
                 }
             ))
             ->add('agentID')
-            ->add('creditLimit')
             ->add('openingBalance')
             ->add('depo', 'entity', array(
                 'class' => 'RbsCoreBundle:Depo',

@@ -72,7 +72,7 @@ class AgentController extends BaseController
      * @Template("RbsSalesBundle:Agent:update.html.twig")
      * @param Request $request
      * @param Agent $agent
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @JMS\Secure(roles="ROLE_AGENT_CREATE, ROLE_AGENT, ROLE_ADMIN")
      */
     public function updateAction(Request $request, Agent $agent)

@@ -32,7 +32,6 @@ class AgentForm extends AbstractType
                 'constraints' => array(
                 )
             ))
-            ->add('creditLimit')
             ->add('openingBalance')
             ->add('sr', 'entity', array(
                 'class' => 'RbsUserBundle:User',

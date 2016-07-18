@@ -60,13 +60,6 @@ class Agent
     /**
      * @var float
      *
-     * @ORM\Column(name="credit_limit", type="float", nullable=true)
-     */
-    private $creditLimit = 0;
-
-    /**
-     * @var float
-     *
      * @ORM\Column(name="opening_balance", type="float", nullable=true)
      */
     private $openingBalance = 0;
