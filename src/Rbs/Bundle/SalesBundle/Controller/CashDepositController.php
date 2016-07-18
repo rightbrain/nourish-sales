@@ -63,7 +63,7 @@ class CashDepositController extends BaseController
      * @Route("/cash/deposit/create", name="cash_deposit_create", options={"expose"=true})
      * @Template("RbsSalesBundle:CashDeposit:form.html.twig")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function createAction(Request $request)
     {
@@ -81,7 +81,7 @@ class CashDepositController extends BaseController
             $lastTotalAmount = $lastTotalDepositedAmount!=null?$lastTotalDepositedAmount[0]:0;
             $total = $lastTotalAmount['totalDepositedAmount']+$_POST['cash_deposit']['deposit'];
             $cashDeposit->setTotalDepositedAmount($total);
-        }else{
+        }elseif('POST' === $request->getMethod()){
             $cashDeposit->setTotalDepositedAmount($_POST['cash_deposit']['deposit']);
         }
         if ('POST' === $request->getMethod()) {

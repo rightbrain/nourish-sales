@@ -29,9 +29,9 @@ class OrderItemForm extends AbstractType
                 {
                     return $repository->createQueryBuilder('i')
                         ->where('i.deletedAt IS NULL')
-                        ->orderBy('i.name','ASC')
-                        ->join('i.bundles', 'bundles')
-                        ->andWhere('bundles.id = :saleBundleId')->setParameter('saleBundleId', RbsSalesBundle::ID);
+                        ->orderBy('i.name','ASC');
+//                        ->join('i.bundles', 'bundles')
+//                        ->andWhere('bundles.id = :saleBundleId')->setParameter('saleBundleId', RbsSalesBundle::ID);
                 }
             ))
             ->add('quantity', 'text', array(

@@ -1,0 +1,113 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : My Laser {% endblock %}
+
+{% block body %}
+
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-list"></i>My Laser
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="dataTables_wrapper no-footer">
+
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        <form method="get" novalidate="novalidate">
+
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="input-icon right">
+                                        {{ form_widget(formSearch.start_date, { 'attr': {'placeholder': 'Select Start Date'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="input-icon right">
+                                        {{ form_widget(formSearch.end_date, { 'attr': {'placeholder': 'Select End Date'}}) }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-1">
+                                    <input type="submit" value="Search" class="btn blue">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="input-icon right">
+                                    Agent Name: {{ agent.user.username | default('') }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12" style="margin-top: 25px;">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Transaction Date</th>
+                                    <th>Details</th>
+                                    <th>DR/CR</th>
+                                    <th>Debit Amount</th>
+                                    <th>Credit Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td colspan="3" style="text-align: right">Previous Balance: </td>
+                                <td>{{ agentPreviousDebitLaserTotal | default(0) }}</td>
+                                <td>{{ agentPreviousCreditLaserTotal | default(0) }}</td>
+                            </tr>
+                            {% for laser in agentLaser %}
+                                <tr>
+                                    <td class="col-md-1 bold">{{ laser['depositDate'] | date('d F y') }}</td>
+                                    <td class="col-md-1 bold">{{ laser['remark'] | default('') }}</td>
+                                    <td class="col-md-1 bold">{{ laser['transactionType'] | default('') }}</td>
+                                    <td class="col-md-1 bold">{% if laser['transactionType'] == 'DR' %}{{ laser['amount'] | number_format }}{% endif %}</td>
+                                    <td class="col-md-1 bold">{% if laser['transactionType'] == 'CR' %}{{ laser['amount'] | number_format }}{% endif %}</td>
+                                </tr>
+                            {% endfor %}
+                            <tr>
+                                <td colspan="3" style="text-align: right">Total: </td>
+                                <td>{{ agentDebitLaserTotal | default(0) }}</td>
+                                <td>{{ agentCreditLaserTotal | default(0) }}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+    'assets/global/plugins/select2/select2.css'
+    filter='cssrewrite'%}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+    'assets/global/plugins/select2/select2.min.js'
+     %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}
+

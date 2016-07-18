@@ -5,6 +5,8 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
+use Rbs\Bundle\SalesBundle\Form\Search\Type\AgentSearchType;
+use Rbs\Bundle\SalesBundle\Form\Search\Type\TwoDateSearchType;
 use Rbs\Bundle\SalesBundle\Form\Type\PaymentForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -92,7 +94,7 @@ class PaymentController extends BaseController
      * @Route("/payment/create", name="payment_create", options={"expose"=true})
      * @Template("RbsSalesBundle:Payment:new.html.twig")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function createAction(Request $request)
@@ -140,4 +142,87 @@ class PaymentController extends BaseController
         return new JsonResponse($orderArr);
     }
 
+    /**
+     * @Route("/agents/laser", name="agents_laser")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ADMIN")
+     */
+    public function laserAction(Request $request)
+    {
+        $form = new AgentSearchType();
+        $data = $request->query->get($form->getName());
+        $formSearch = $this->createForm($form, $data);
+
+        if(!empty($data['start_date'])){
+            $agentPreviousDebitLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentPreviousDebitLaserTotal($data);
+            $agentPreviousCreditLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentPreviousCreditLaserTotal($data);
+        }else{
+            $agentPreviousDebitLaserTotal = 0;
+            $agentPreviousCreditLaserTotal = 0;
+        }
+        $previousBalance = $agentPreviousCreditLaserTotal - $agentPreviousDebitLaserTotal;
+
+        $agentDebitLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentDebitLaserTotal($data);
+        $agentCreditLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentCreditLaserTotal($data);
+        $currentBalance = $agentCreditLaserTotal - $agentDebitLaserTotal;
+
+        $agentLaser = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentLaser($data);
+        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($data['agent']);
+
+        return $this->render('RbsSalesBundle:Laser:laser.html.twig', array(
+            'agentLaser' => $agentLaser,
+            'formSearch' => $formSearch->createView(),
+            'agentPreviousDebitLaserTotal' => $agentPreviousDebitLaserTotal,
+            'agent' => $agent,
+            'agentPreviousCreditLaserTotal' => $agentPreviousCreditLaserTotal,
+            'previousBalance' => $previousBalance,
+            'agentDebitLaserTotal' => $agentDebitLaserTotal,
+            'agentCreditLaserTotal' => $agentCreditLaserTotal,
+            'currentBalance' => $currentBalance,
+        ));
+    }
+
+    /**
+     * @Route("/my/laser", name="my_laser")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_AGENT")
+     */
+    public function myLaserAction(Request $request)
+    {
+        $userId = $this->getUser()->getId();
+        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array('user' => $userId));
+
+        $form = new TwoDateSearchType();
+        $data = $request->query->get($form->getName());
+        $formSearch = $this->createForm($form, $data);
+
+        if(!empty($data['start_date'])){
+            $agentPreviousDebitLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getMyPreviousDebitLaserTotal($agent->getId(), $data);
+            $agentPreviousCreditLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getMyPreviousCreditLaserTotal($agent->getId(), $data);
+        }else{
+            $agentPreviousDebitLaserTotal = 0;
+            $agentPreviousCreditLaserTotal = 0;
+        }
+        $previousBalance = $agentPreviousCreditLaserTotal - $agentPreviousDebitLaserTotal;
+
+        $agentDebitLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getMyDebitLaserTotal($agent->getId(), $data);
+        $agentCreditLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getMyCreditLaserTotal($agent->getId(), $data);
+        $currentBalance = $agentCreditLaserTotal - $agentDebitLaserTotal;
+
+        $agentLaser = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getMyLaser($agent->getId(), $data);
+
+        return $this->render('RbsSalesBundle:Laser:my-laser.html.twig', array(
+            'agentLaser' => $agentLaser,
+            'formSearch' => $formSearch->createView(),
+            'agentPreviousDebitLaserTotal' => $agentPreviousDebitLaserTotal,
+            'agent' => $agent,
+            'agentPreviousCreditLaserTotal' => $agentPreviousCreditLaserTotal,
+            'previousBalance' => $previousBalance,
+            'agentDebitLaserTotal' => $agentDebitLaserTotal,
+            'agentCreditLaserTotal' => $agentCreditLaserTotal,
+            'currentBalance' => $currentBalance,
+        ));
+    }
 }
