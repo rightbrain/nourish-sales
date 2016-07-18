@@ -25,7 +25,7 @@ class DepoDatatable extends BaseDatatable
         $this->columnBuilder
             ->add('name', 'column', array('title' => 'Name',))
             ->add('description', 'column', array('title' => 'Description',))
-            ->add('area.areaName', 'column', array('title' => 'Area',))
+            ->add('location.name', 'column', array('title' => 'Area',))
             ->add(null, 'action', array(
                 'width' => '180px',
                 'title' => 'Action',

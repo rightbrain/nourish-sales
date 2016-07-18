@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\CoreBundle\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
@@ -29,8 +30,33 @@ class DepoForm extends AbstractType
                 'property' => 'username',
                 'multiple' => true,
             ))
-            ->add('area', null, array(
-                'attr' => array('class' => 'select2me')
+            ->add('level1', 'entity', array(
+                'label' => 'Zilla',
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('a')
+                        ->where('a.level = :level')->setParameter('level', 4)->orderBy('a.name');
+                },
+                'attr' => array(
+                    'class' => 'zilla-selector select2me'
+                ),
+                'required' => false,
+                'mapped' => false
+            ))
+            ->add('level2', 'entity', array(
+                'label' => 'Thana/UpoZilla',
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
+                'query_builder' => function (EntityRepository $er) {
+                    $qb = $er->createQueryBuilder('a')
+                        ->where('a.level = :level')->setParameter('level', 5)->orderBy('a.name');
+                    return $qb;
+                },
+                'attr' => array(
+                    'class' => 'thana-selector select2me'
+                ),
+                'placeholder' => 'Choose an option',
+                'required' => false,
+                'mapped' => false
             ))
         ;
     }
@@ -50,6 +76,6 @@ class DepoForm extends AbstractType
      */
     public function getName()
     {
-        return 'rbs_bundle_corebundle_depo';
+        return 'depo';
     }
 }

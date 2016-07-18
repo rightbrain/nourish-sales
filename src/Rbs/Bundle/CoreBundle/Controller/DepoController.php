@@ -69,6 +69,8 @@ class DepoController extends BaseController
      * @Method("POST")
      * @Template("RbsCoreBundle:Depo:new.html.twig")
      * @JMS\Secure(roles="ROLE_DEPO_MANAGE")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function createAction(Request $request)
     {
@@ -78,6 +80,7 @@ class DepoController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $entity->setLocation($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('depo')['level2']));
             $em->getRepository('RbsCoreBundle:Depo')->create($entity);
             $this->dispatch('core.depo.created', new DepoEvent($entity));
             $this->flashMessage('success', 'Depo Created Successfully');
@@ -224,6 +227,7 @@ class DepoController extends BaseController
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
+            $entity->setLocation($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('depo')['level2']));
             $em->flush();
             $this->flashMessage('success', 'Depo Updated Successfully');
             return $this->redirect($this->generateUrl('depo'));

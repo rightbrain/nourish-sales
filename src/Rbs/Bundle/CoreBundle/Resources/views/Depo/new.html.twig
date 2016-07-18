@@ -15,3 +15,19 @@
         </div>
     </div>
 {% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+    "assets/global/plugins/select2/select2.min.js"
+    'bundles/rbscore/js/area.js' %}
+    %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock javascripts %}
+
+{% block documentReady %}
+    {{ parent() }}
+    $("select[multiple=multiple]").multiSelect({selectableOptgroup: true});
+    $('select.union-selector, select.thana-selector').html('')
+    $('select.zilla-selector').trigger('change');
+{% endblock documentReady %}
