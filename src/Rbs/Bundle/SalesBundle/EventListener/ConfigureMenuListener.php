@@ -155,6 +155,9 @@ class ConfigureMenuListener extends ContextAwareListener
 
             $menu['Sales']->addChild('My Laser', array('route' => 'my_laser'))
                 ->setAttribute('icon', 'fa fa-th-list');
+
+            $menu['Sales']->addChild('My Doc', array('route' => 'my_doc'))
+                ->setAttribute('icon', 'fa fa-th-list');
         }
 
         return $menu;

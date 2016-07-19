@@ -3,7 +3,6 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\CoreBundle\Entity\ItemType;
-use Rbs\Bundle\CoreBundle\Entity\Location;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -56,6 +55,16 @@ class Agent
      * @ORM\OneToMany(targetEntity="Payment", mappedBy="agent", cascade={"persist"})
      */
     private $payments;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AgentDoc", mappedBy="agent", cascade={"persist"})
+     */
+    private $agentDocs;
+
+    /**
+     * @ORM\OneToMany(targetEntity="AgentsBankInfo", mappedBy="agent", cascade={"persist"})
+     */
+    private $agentsBankInfo;
 
     /**
      * @var float
@@ -133,22 +142,6 @@ class Agent
     public function setUser($user)
     {
         $this->user = $user;
-    }
-
-    /**
-     * @return float
-     */
-    public function getCreditLimit()
-    {
-        return $this->creditLimit;
-    }
-
-    /**
-     * @param float $creditLimit
-     */
-    public function setCreditLimit($creditLimit)
-    {
-        $this->creditLimit = $creditLimit;
     }
 
     /**
@@ -277,6 +270,38 @@ class Agent
     public function setPayments($payments)
     {
         $this->payments = $payments;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAgentDocs()
+    {
+        return $this->agentDocs;
+    }
+
+    /**
+     * @param mixed $agentDocs
+     */
+    public function setAgentDocs($agentDocs)
+    {
+        $this->agentDocs = $agentDocs;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAgentsBankInfo()
+    {
+        return $this->agentsBankInfo;
+    }
+
+    /**
+     * @param mixed $agentsBankInfo
+     */
+    public function setAgentsBankInfo($agentsBankInfo)
+    {
+        $this->agentsBankInfo = $agentsBankInfo;
     }
 
     protected function getCurrentCreditLimit()

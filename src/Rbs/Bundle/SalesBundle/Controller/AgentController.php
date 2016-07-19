@@ -4,6 +4,8 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
+use Rbs\Bundle\SalesBundle\Entity\AgentDoc;
+use Rbs\Bundle\SalesBundle\Form\Type\AgentDocForm;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentUpdateForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdatePasswordForm;
@@ -234,5 +236,55 @@ class AgentController extends BaseController
         }
 
         return new JsonResponse($qb->getQuery()->getResult());
+    }
+
+    /**
+     * @Route("/my/doc", name="my_doc")
+     * @Method("GET")
+     * @Template()
+     * @JMS\Secure(roles="ROLE_AGENT")
+     */
+    public function myDocAction()
+    {
+        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array(
+                                                     'user' => $this->getUser()->getId()));
+        $docs = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentDoc')->getAllFileForLogInAgent($agent->getId());
+
+        return $this->render('RbsSalesBundle:Agent:my-doc.html.twig', array(
+            'agent' => $agent,
+            'docs' => $docs,
+        ));
+    }
+
+    /**
+     * @Route("/my/doc/add", name="my_doc_add")
+     * @Template("RbsSalesBundle:Agent:my-doc-upload.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_AGENT")
+     */
+    public function agentBankInfoCreateAction(Request $request)
+    {
+        $agentDoc = new AgentDoc();
+        $form = $this->createForm(new AgentDocForm($this->getUser()), $agentDoc, array(
+            'action' => $this->generateUrl('my_doc_add'), 'method' => 'POST',
+            'attr' => array('novalidate' => 'novalidate')
+        ));
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array(
+                    'user' => $this->getUser()->getId()));
+                $agentDoc->setAgent($agent);
+                $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:AgentDoc')->create($agentDoc);
+                $this->flashMessage('success', 'Agent Doc add Successfully!');
+                return $this->redirect($this->generateUrl('my_doc'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
     }
 }
