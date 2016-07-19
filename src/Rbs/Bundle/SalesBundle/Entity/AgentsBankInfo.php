@@ -2,7 +2,6 @@
 namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -35,9 +34,9 @@ class AgentsBankInfo
     private $id;
 
     /**
-     * @var User
+     * @var Agent
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent", inversedBy="agentsBankInfo", cascade={"persist"})
      * @ORM\JoinColumn(name="agent_id", nullable=false)
      */
     private $agent;
@@ -204,6 +203,22 @@ class AgentsBankInfo
     {
         $this->branchName = $branchName;
     }
+
+    /**
+     * @return Agent
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param Agent $agent
+     */
+    public function setAgent($agent)
+    {
+        $this->agent = $agent;
+    }
     
     /**
      * Get path
@@ -324,21 +339,5 @@ class AgentsBankInfo
         return null === $this->path
             ? null
             : $this->getUploadDir() . '/' . $this->path;
-    }
-
-    /**
-     * @return User
-     */
-    public function getAgent()
-    {
-        return $this->agent;
-    }
-
-    /**
-     * @param User $agent
-     */
-    public function setAgent($agent)
-    {
-        $this->agent = $agent;
     }
 }

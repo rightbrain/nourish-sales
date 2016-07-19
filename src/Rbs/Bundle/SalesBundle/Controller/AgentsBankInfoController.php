@@ -77,7 +77,9 @@ class AgentsBankInfoController extends BaseController
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-                $agentsBankInfo->setAgent($this->getUser());
+                $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array(
+                                                             'user' => $this->getUser()->getId()));
+                $agentsBankInfo->setAgent($agent);
                 $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:AgentsBankInfo')->create($agentsBankInfo);
                 $this->flashMessage('success', 'Bank info add Successfully!');
                 return $this->redirect($this->generateUrl('orders_my_home'));
