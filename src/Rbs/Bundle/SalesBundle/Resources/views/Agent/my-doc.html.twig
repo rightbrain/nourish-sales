@@ -49,7 +49,11 @@
                                     <td class="col-md-1 bold">{{ index + 1 }}</td>
                                     <td class="col-md-1 bold">{{ doc.fileType }}</td>
                                     <td class="col-md-1 bold">{{ doc.remark }}</td>
-                                    <td class="col-md-1 bold">View</td>
+                                    <td class="col-md-1 bold">
+                                        <a class="btn btn-xs" href="#" onclick="javascript: window.open('/my/doc/view/{{ doc.id }}')">
+                                            <i class="fa fa-file"></i>
+                                        </a>
+                                    </td>
                                 </tr>
                             {% endfor %}
                             </tbody>

@@ -5,6 +5,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentDoc;
+use Rbs\Bundle\SalesBundle\Entity\Stock;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentDocForm;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentUpdateForm;
 use Rbs\Bundle\UserBundle\Entity\User;
@@ -286,5 +287,19 @@ class AgentController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @Route("my/doc/view/{id}", name="my_doc_view")
+     * @param AgentDoc $agentDoc
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @JMS\Secure(roles="ROLE_AGENT")
+     */
+    public function fileViewAction(AgentDoc $agentDoc)
+    {
+        return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
+            'path' => $agentDoc->getPath(),
+            'location' => '/uploads/sales/agent-documents/',
+        ));
     }
 }
