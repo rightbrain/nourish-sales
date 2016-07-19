@@ -112,6 +112,7 @@ class StockRepository extends EntityRepository
 
         $stock->setOnHand($quantity);
         $stockHistory->setStock($stock);
+        $stockHistory->setFromDepo($stock->getDepo());
 
         $stockRepo->update($stock);
         $this->create($stockHistory);

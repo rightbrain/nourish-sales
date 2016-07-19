@@ -25,7 +25,7 @@
                         <td class="numeric">{{ index + 1 }}.</td>
                         <td class="numeric">{{ stockHistory.createdAt | date('d-m-Y') }}</td>
                         <td class="numeric">{{ stockHistory.createdBy }}</td>
-                        <td class="numeric">{{ stockHistory.fromFactory.projectName }}</td>
+                        <td class="numeric">{{ stockHistory.fromDepo.name }}</td>
                         <td class="numeric">{{ stockHistory.quantity }}</td>
                         <td class="numeric">{{ stockHistory.description | default('') }}</td>
                     </tr>

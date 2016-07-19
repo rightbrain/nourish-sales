@@ -63,7 +63,6 @@ class StockHistoryDatatable extends BaseDatatable
                 'date_format' => 'LLL' // default = "lll"
             ))
             ->add('createdBy.username', 'column', array('title' => 'CreatedBy'))
-            ->add('fromFactory.projectName', 'column', array('title' => 'Factory Name'))
             ->add('stock.depo.name', 'column', array('title' => 'Depo'))
             ->add('quantity', 'column', array('title' => 'Quantity'))
             ->add('description', 'column', array('title' => 'Description'))

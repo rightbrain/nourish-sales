@@ -38,22 +38,7 @@ class StockHistoryForm extends AbstractType
                 'empty_data' => new \DateTime(),
                 'read_only' => true,
                 'required' => false
-            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
-            ->add('fromFactory', 'entity', array(
-                'class' => 'RbsCoreBundle:Project',
-                'property' => 'projectName',
-                'required' => false,
-                'empty_value' => 'Select Project',
-                'empty_data' => null,
-                'query_builder' => function (ProjectRepository $repository)
-                {
-                    return $repository->createQueryBuilder('p')
-                        ->where('p.deletedAt IS NULL')
-                        ->orderBy('p.projectName','ASC')
-                        ->join('p.bundles', 'bundles')
-                        ->andWhere('bundles.id = :salesBundleId')->setParameter('salesBundleId', RbsSalesBundle::ID);
-                }
-            ))
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'Y-m-d')))
             ->add('description')
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')

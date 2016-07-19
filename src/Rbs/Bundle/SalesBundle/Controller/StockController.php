@@ -129,8 +129,8 @@ class StockController extends Controller
     /**
      * @Route("/stock/{id}/create", name="stock_create", options={"expose"=true})
      * @Template("RbsSalesBundle:Stock:new.html.twig")
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @param Stock $stock
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @JMS\Secure(roles="ROLE_STOCK_CREATE")
      */
     public function createAction(Stock $stock)

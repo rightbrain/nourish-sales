@@ -2,7 +2,6 @@
 namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Rbs\Bundle\CoreBundle\Entity\Project;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -46,12 +45,12 @@ class StockHistory
     private $stock;
 
     /**
-     * @var Project
+     * @var Depo
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Project")
-     * @ORM\JoinColumn(name="from_factory", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Depo")
+     * @ORM\JoinColumn(name="from_depo", nullable=false)
      */
-    private $fromFactory;
+    private $fromDepo;
 
     /**
      * @var string
@@ -92,22 +91,6 @@ class StockHistory
     }
 
     /**
-     * @return Project
-     */
-    public function getFromFactory()
-    {
-        return $this->fromFactory;
-    }
-
-    /**
-     * @param Project $fromFactory
-     */
-    public function setFromFactory($fromFactory)
-    {
-        $this->fromFactory = $fromFactory;
-    }
-
-    /**
      * @return Stock
      */
     public function getStock()
@@ -137,5 +120,21 @@ class StockHistory
     public function setDescription($description)
     {
         $this->description = $description;
+    }
+
+    /**
+     * @return Depo
+     */
+    public function getFromDepo()
+    {
+        return $this->fromDepo;
+    }
+
+    /**
+     * @param Depo $fromDepo
+     */
+    public function setFromDepo($fromDepo)
+    {
+        $this->fromDepo = $fromDepo;
     }
 }
