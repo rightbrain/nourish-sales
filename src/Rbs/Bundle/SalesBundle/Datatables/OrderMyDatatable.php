@@ -35,7 +35,6 @@ class OrderMyDatatable extends BaseDatatable
             ->add('isCancel', 'virtual', array('visible' => false))
             ->add('enabled', 'virtual', array('visible' => false))
             ->add('disabled', 'virtual', array('visible' => false))
-            ->add('actionButtons', 'virtual', array('title' => 'Action'))
         ;
     }
 
