@@ -47,6 +47,14 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')) {
+            $menu['Manage System']->addChild('Locations', array('route' => 'locations'))
+                ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('locations')) {
+                $menu['Manage System']->getChild('Locations')->setCurrent(true);
+            }
+        }
+
 //        if ($this->authorizationChecker->isGranted('ROLE_SUB_CATEGORY_MANAGE')) {
 //            $menu['Manage System']->addChild('Sub Categories', array('route' => 'subcategory'))
 //                ->setAttribute('icon', 'fa fa-th-list');
