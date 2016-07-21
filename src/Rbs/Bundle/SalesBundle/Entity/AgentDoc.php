@@ -41,7 +41,7 @@ class AgentDoc
     /**
      * @var Agent
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent", inversedBy="payments", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent", inversedBy="agentDocs", cascade={"persist"})
      * @ORM\JoinColumn(name="agent_id", nullable=false)
      */
     private $agent;
