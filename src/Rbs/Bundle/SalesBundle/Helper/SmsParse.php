@@ -91,7 +91,7 @@ class SmsParse
         $this->sms->setStatus('READ');
         $this->sms->setAgent($this->agent);
         $this->sms->setOrder($this->order);
-        $this->order->setArea($this->agent->getArea());
+        $this->order->setLocation($this->agent->getUser()->getLocation());
 
         /** @var OrderItem $orderItem */
         foreach ($this->orderItems as $orderItem) {
