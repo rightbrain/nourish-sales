@@ -38,21 +38,23 @@
                 <div class="dataTables_wrapper no-footer">
 
                     <table class="table table-bordered table-striped">
-                        {#<thead>#}
-                            {#<tr>#}
-                                {#<th>Sector</th>#}
-                                {#<th>Zone</th>#}
-                                {#<th>Region</th>#}
-                                {#<th>District</th>#}
-                                {#<th>Upozilla</th>#}
-                            {#</tr>#}
-                        {#</thead>#}
+                        <thead>
+                        <tr>
+                            <th style="width: 80px;">Sector</th>
+                            <th style="width: 70px;">Zone</th>
+                            <th style="width: 73px;">Region</th>
+                            <th style="width: 90px;">District</th>
+                            <th>Upozilla</th>
+                        </tr>
+                        </thead>
+                    </table>
+                    <table class="table table-bordered table-striped">
                         <tbody>
                         {% for sector in locationsSectors %}
                             <tr>
                                 <td class="col-md-1 bold">{{ sector.name }}</td>
                                 <td>
-                                    <table class="table table-bordered table-striped">
+                                    <table style="margin-top: -9px;margin-left: -9px;" class="table table-bordered table-striped">
                                         <tbody>
                                         {% for zone in locationsZones %}
                                             {% if zone.parentId == sector.id %}
@@ -60,7 +62,7 @@
                                                     <td class="col-md-1 bold">{{ zone.name }}</td>
                                                     <td>
 
-                                                        <table class="table table-bordered table-striped">
+                                                        <table style="margin-top: -9px;margin-left: -9px;" class="table table-bordered table-striped">
                                                             <tbody>
                                                             {% for region in locationsRegions %}
                                                                 {% if region.parentId == zone.id %}
@@ -68,7 +70,7 @@
                                                                         <td class="col-md-1 bold">{{ region.name }}</td>
                                                                         <td>
 
-                                                                            <table class="table table-bordered table-striped">
+                                                                            <table style="margin-top: -9px;margin-left: -9px;" class="table table-bordered table-striped">
                                                                                 <tbody>
                                                                                 {% for district in locationsDistricts %}
                                                                                     {% if district.parentId == region.id %}
@@ -81,7 +83,7 @@
                                                                                                     {% for upozilla in locationsUpozillas %}
                                                                                                         {% if upozilla.parentId == district.id %}
                                                                                                             <tr>
-                                                                                                                <td class="col-md-1 bold">{{ upozilla.name }}</td>
+                                                                                                                <div>{{ upozilla.name }}</div>
                                                                                                             </tr>
                                                                                                         {% endif %}
                                                                                                     {% endfor %}
