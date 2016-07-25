@@ -1,21 +1,21 @@
 var Order = function()
 {
     var agent = $("#order_agent").val();
-    if (agent) {
-        $.ajax({
-            type: "post",
-            url: Routing.generate('find_agent_ajax'),
-            data: "agent=" + agent,
-            dataType: 'json',
-            success: function (response) {
-                var creditLimit = response.creditLimit;
-                $("div.credit_limit").html(creditLimit);
-            },
-            error: function(){
-                Metronic.unblockUI();
-            }
-        });
-    }
+    // if (agent) {
+    //     $.ajax({
+    //         type: "post",
+    //         url: Routing.generate('find_agent_ajax'),
+    //         data: "agent=" + agent,
+    //         dataType: 'json',
+    //         success: function (response) {
+    //             var creditLimit = response.creditLimit;
+    //             $("div.credit_limit").html(creditLimit);
+    //         },
+    //         error: function(){
+    //             Metronic.unblockUI();
+    //         }
+    //     });
+    // }
 
     function bindItemChangeEvent(collectionHolder) {
         collectionHolder.find('tr').each(function(index, elm){
@@ -165,36 +165,36 @@ var Order = function()
             addItemForm($collectionHolder);
         });
 
-        $("#order_agent").change(function () {
-            $collectionHolder.find('tr').remove();
-            var agent = $(this).val();
-            if (agent == false) {
-                $('.hide_button').hide();
-                $("div.credit_limit").html('');
-            } else {
-                Metronic.blockUI({
-                    target: null,
-                    animate: true,
-                    overlayColor: 'black'
-                });
-                $.ajax({
-                    type: "post",
-                    url: Routing.generate('find_agent_ajax'),
-                    data: "agent=" + agent,
-                    dataType: 'json',
-                    success: function (response) {
-                        var creditLimit = response.creditLimit;
-                        $("div.credit_limit").html(creditLimit);
-                        $addTagLink.trigger('click');
-                        Metronic.unblockUI();
-                    },
-                    error: function(){
-                        Metronic.unblockUI();
-                    }
-                });
-                $('.hide_button').show();
-            }
-        });
+        // $("#order_agent").change(function () {
+        //     $collectionHolder.find('tr').remove();
+        //     var agent = $(this).val();
+        //     if (agent == false) {
+        //         $('.hide_button').hide();
+        //         $("div.credit_limit").html('');
+        //     } else {
+        //         Metronic.blockUI({
+        //             target: null,
+        //             animate: true,
+        //             overlayColor: 'black'
+        //         });
+        //         $.ajax({
+        //             type: "post",
+        //             url: Routing.generate('find_agent_ajax'),
+        //             data: "agent=" + agent,
+        //             dataType: 'json',
+        //             success: function (response) {
+        //                 var creditLimit = response.creditLimit;
+        //                 $("div.credit_limit").html(creditLimit);
+        //                 $addTagLink.trigger('click');
+        //                 Metronic.unblockUI();
+        //             },
+        //             error: function(){
+        //                 Metronic.unblockUI();
+        //             }
+        //         });
+        //         $('.hide_button').show();
+        //     }
+        // });
 
         $('.order-item-list tbody').on("click keyup", ".quantity", (totalPriceCalculation));
     }
