@@ -44,24 +44,13 @@ class TransportIncentiveController extends BaseController
             ksort($transportIncentivesArr[$transportIncentive['district']][$transportIncentive['station']]['data'][$transportIncentive['depo']]);
         }
 
-        $heads = array();
-//        $head['district'] = 'District';
-//        $head['station'] = 'Station';
-        foreach ($depos as $key => $depo){
-            $heads[$depo['name']] = $depo['name'];
-            foreach ($itemTypes as $itemType){
-                $heads[$key][$itemType['itemType']] = $itemType['itemType'];
-            }
-        }
-
 //        print_r('<pre>');
-//        print_r($head); exit;
+//        print_r($transportIncentivesArr); exit;
 
         return $this->render('RbsCoreBundle:TransportIncentive:index.html.twig', array(
                 'transportIncentivesArr' => $transportIncentivesArr,
                 'depos' => $depos,
                 'itemTypes' => $itemTypes,
-                'heads' => $heads,
                 'itemTypeCount' => $itemTypeCount
         ));
     }
