@@ -96,10 +96,18 @@ class ConfigureMenuListener extends ContextAwareListener
         }
 
         if ($this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
-            $menu['Manage System']->addChild('Incentive', array('route' => 'sale_incentive_list'))
+            $menu['Manage System']->addChild('Sale Incentive', array('route' => 'sale_incentive_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('sale_incentive_list')) {
-                $menu['Manage System']->getChild('Incentive')->setCurrent(true);
+                $menu['Manage System']->getChild('Sale Incentive')->setCurrent(true);
+            }
+        }
+
+        if ($this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
+            $menu['Manage System']->addChild('Transport Incentive', array('route' => 'transport_incentive_list'))
+                ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('transport_incentive_list')) {
+                $menu['Manage System']->getChild('Transport Incentive')->setCurrent(true);
             }
         }
 
