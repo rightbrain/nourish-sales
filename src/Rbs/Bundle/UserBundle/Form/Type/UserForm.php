@@ -82,7 +82,8 @@ class UserForm extends AbstractType
                         ->where('a.level = :level')->setParameter('level', 4)->orderBy('a.name');
                 },
                 'attr' => array(
-                    'class' => 'zilla-selector select2me'
+                    'class' => 'zilla-selector select2me',
+                    'id' => 'user_level1'
                 ),
                 'required' => false,
                 'mapped' => false
@@ -96,7 +97,8 @@ class UserForm extends AbstractType
                     return $qb;
                 },
                 'attr' => array(
-                    'class' => 'thana-selector select2me'
+                    'class' => 'thana-selector select2me',
+                    'id' => 'user_level1'
                 ),
                 'placeholder' => 'Choose an option',
                 'required' => false,
