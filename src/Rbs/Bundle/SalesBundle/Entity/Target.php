@@ -2,8 +2,8 @@
 namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Rbs\Bundle\CoreBundle\Entity\SubCategory;
-use Rbs\Bundle\UserBundle\Entity\User;
+use Rbs\Bundle\CoreBundle\Entity\Category;
+use Rbs\Bundle\CoreBundle\Entity\Location;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
@@ -20,7 +20,9 @@ class Target
     const RUNNING = 'RUNNING';
     const PENDING = 'PENDING';
     const CLOSED = 'CLOSED';
-    
+    const INACTIVE = 'INACTIVE';
+    const ACTIVE = 'ACTIVE';
+
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
@@ -49,20 +51,20 @@ class Target
     private $remaining = 0;
 
     /**
-     * @var User
+     * @var Location
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="user_id")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Location")
+     * @ORM\JoinColumn(name="location_id")
      */
-    private $user;
+    private $location;
 
     /**
-     * @var SubCategory
+     * @var Category
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\SubCategory")
-     * @ORM\JoinColumn(name="sub_category_id")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Category")
+     * @ORM\JoinColumn(name="category_id")
      */
-    private $subCategory;
+    private $category;
 
     /**
      * @var \DateTime
@@ -81,7 +83,7 @@ class Target
     /**
      * @var array $type
      *
-     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('RUNNING', 'PENDING' , 'CLOSED')", nullable=false)
+     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('RUNNING', 'PENDING' , 'CLOSED', 'ACTIVE', 'INACTIVE')", nullable=false)
      */
     private $status = 'RUNNING';
 
@@ -130,22 +132,6 @@ class Target
     }
 
     /**
-     * @return User
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    /**
-     * @param User $user
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
-    }
-
-    /**
      * @return \DateTime
      */
     public function getStartDate()
@@ -178,6 +164,54 @@ class Target
     }
 
     /**
+     * @return Location
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param Location $location
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param array $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return Category
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param Category $category
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+    }
+
+    /**
      * @return mixed
      */
     public function getChildEntities()
@@ -191,22 +225,6 @@ class Target
     public function setChildEntities($childEntities)
     {
         $this->childEntities = $childEntities;
-    }
-
-    /**
-     * @return SubCategory
-     */
-    public function getSubCategory()
-    {
-        return $this->subCategory;
-    }
-
-    /**
-     * @param SubCategory $subCategory
-     */
-    public function setSubCategory($subCategory)
-    {
-        $this->subCategory = $subCategory;
     }
 
     /**

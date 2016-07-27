@@ -36,11 +36,10 @@ class TargetDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-            ->add('user.username', 'column', array('title' => 'Username'))
-            ->add('user.userType', 'column', array('title' => 'Designation'))
+            ->add('location.name', 'column', array('title' => 'District'))
             ->add('quantity', 'column', array('title' => 'Quantity'))
             ->add('remaining', 'column', array('title' => 'Remaining'))
-            ->add('subCategory.subCategoryName', 'column', array('title' => 'subCategory'))
+            ->add('category.name', 'column', array('title' => 'Category'))
             ->add('startDate', 'datetime', array('title' => 'startDate', 'date_format' => $dateFormat))
             ->add('endDate', 'datetime', array('title' => 'endDate', 'date_format' => $dateFormat))
             ->add('monthDiff', 'virtual', array('title' => 'Month'))

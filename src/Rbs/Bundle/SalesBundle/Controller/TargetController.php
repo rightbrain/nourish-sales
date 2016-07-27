@@ -53,12 +53,10 @@ class TargetController extends BaseController
          */
         $function = function($qb)
         {
-            $qb->join('targets.user', 'u');
+            $qb->join('targets.location', 'l');
             $qb->where('targets.quantity > 0');
             $qb->andWhere('targets.startDate is not null');
             $qb->andWhere('targets.endDate is not null');
-            $qb->andWhere('u.userType = :RSM');
-            $qb->setParameter('RSM', User::RSM);
             $qb->orderBy('targets.createdAt', 'desc');
         };
         $query->addWhereAll($function);
@@ -69,21 +67,21 @@ class TargetController extends BaseController
      * @Route("/target/create", name="target_create", options={"expose"=true})
      * @Template("RbsSalesBundle:Target:new.html.twig")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function createAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $subCategories = $em->getRepository('RbsCoreBundle:SubCategory')->findAll();
+        $categories = $em->getRepository('RbsCoreBundle:Category')->getAllActiveCategory();
 
         $target = new Target();
 
-        foreach ($subCategories as $subCategory) {
-            $subCategoryWiseField = new Target();
-            $subCategoryWiseField->setQuantity(0);
-            $subCategoryWiseField->setSubCategory($subCategory);
-            $targets[] = $subCategoryWiseField;
-            $sc[] = $subCategory->getSubCategoryName();
+        foreach ($categories as $category) {
+            $categoryWiseField = new Target();
+            $categoryWiseField->setQuantity(0);
+            $categoryWiseField->setCategory($category);
+            $targets[] = $categoryWiseField;
+            $sc[] = $category->getName();
         }
 
         $form = $this->createForm(new TargetForm(), $target, array(
@@ -103,9 +101,10 @@ class TargetController extends BaseController
                 return $this->redirect($this->generateUrl('target_list'));
             }
         }
+
         return array(
             'form' => $form->createView(),
-            'subCategories' => $sc
+            'categories' => $sc
         );
     }
 
@@ -114,7 +113,7 @@ class TargetController extends BaseController
      * @Template("RbsSalesBundle:Target:update.html.twig")
      * @param Request $request
      * @param Target $target
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function updateAction(Request $request, Target $target)
     {
@@ -125,7 +124,7 @@ class TargetController extends BaseController
 
             if ($form->isValid()) {
 
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->update($target);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->update($target, $request->request->get('target')['endDate']);
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
@@ -147,7 +146,7 @@ class TargetController extends BaseController
      * @Template("RbsSalesBundle:Target:update.html.twig")
      * @param Request $request
      * @param Target $target
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function updateSrAction(Request $request, Target $target)
     {
@@ -178,7 +177,7 @@ class TargetController extends BaseController
     /**
      * @Route("/target/my", name="target_my")
      * @Template("RbsSalesBundle:Target:my.html.twig")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\Response
      */
     public function myAction()
     {
@@ -199,7 +198,7 @@ class TargetController extends BaseController
     /**
      * @Route("/target/sr/my", name="target_sr_my")
      * @Template("RbsSalesBundle:Target:sr-my.html.twig")
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\Response
      */
     public function srMyAction()
     {
@@ -217,7 +216,7 @@ class TargetController extends BaseController
      * @Template("RbsSalesBundle:Target:sr-new.html.twig")
      * @param Request $request
      * @param User $user
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\Response
      */
     public function srTargetAction(Request $request, User $user)
     {

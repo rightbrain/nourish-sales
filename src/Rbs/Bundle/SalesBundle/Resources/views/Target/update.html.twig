@@ -16,16 +16,16 @@
                 {{ form_start(form) }}
 
                 <div class="form-group">
-                    <label class="col-md-2" style="margin-left: 30px;">RSM Name:</label>
+                    <label class="col-md-2" style="margin-left: 30px;">Location:</label>
                     <div class="col-md-4">
-                      {{ target.user.username }}
+                      {{ target.location.name }}
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label class="col-md-2" style="margin-left: 30px;">Sub Category Name:</label>
+                    <label class="col-md-2" style="margin-left: 30px;">Category Name:</label>
                     <div class="col-md-4">
-                        {{ target.subCategory.subCategoryName }}
+                        {{ target.category.categoryName }}
                     </div>
                 </div>
 
@@ -41,8 +41,8 @@
                         <tbody>
                             <tr>
                                 <td class="col-md-2">{{ form_widget(form.quantity) }}</td>
-                                <td class="col-md-2">{{ form_widget(form.startDate) }}</td>
-                                <td class="col-md-2">{{ form_widget(form.endDate) }}</td>
+                                {#<td class="col-md-2">{{ form_widget(form.startDate) }}</td>#}
+                                {#<td class="col-md-2">{{ form_widget(form.endDate) }}</td>#}
                             </tr>
                         </tbody>
                     </table>
@@ -83,7 +83,7 @@
     {{ parent() }}
 
     $(".month-year-picker").datepicker( {
-        format: "mm-yyyy",
+        format: "dd-mm-yyyy",
         viewMode: "months",
         minViewMode: "months",
         autoclose: true

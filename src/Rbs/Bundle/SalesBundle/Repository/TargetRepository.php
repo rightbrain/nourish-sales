@@ -23,7 +23,7 @@ class TargetRepository extends EntityRepository
     {
         /** @var Target $target */
         foreach ($data->getChildEntities() as $target) {
-            $target->setUser($data->getUser());
+            $target->setLocation($data->getLocation());
             if($target->getStartDate() == null or $target->getEndDate() == null){
                 $target->setStartDate(null);
                 $target->setEndDate(null);
@@ -42,8 +42,10 @@ class TargetRepository extends EntityRepository
         $this->_em->flush();
     }
 
-    public function update($data)
+    public function update($data, $endDate)
     {
+        $data->setEndDate($this->getDateObject($this->getDateWithLastDateOfMonth($endDate)));
+
         $this->_em->persist($data);
         $this->_em->flush();
         return $this->_em;

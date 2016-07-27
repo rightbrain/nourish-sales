@@ -2,16 +2,10 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
-use Rbs\Bundle\CoreBundle\Repository\ProjectRepository;
-use Rbs\Bundle\SalesBundle\RbsSalesBundle;
-use Rbs\Bundle\UserBundle\Entity\User;
-use Rbs\Bundle\UserBundle\Repository\UserRepository;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\NotBlank;
 
 class TargetForm extends AbstractType
 {
@@ -22,15 +16,16 @@ class TargetForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('user', 'entity', array(
-                'class' => 'Rbs\Bundle\UserBundle\Entity\User',
-                'query_builder' => function(UserRepository $userRepository) {
-                    return $userRepository->createQueryBuilder('u')
-                        ->where("u.userType != :AGENT")
-                        ->andWhere("u.userType != :USER")
-                        ->setParameters(array('AGENT'=> User::AGENT, 'USER' => User::USER));
+            ->add('location', 'entity', array(
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('a')
+                        ->where('a.level = :level')->setParameter('level', 4)->orderBy('a.name');
                 },
-                'property' => 'username'
+                'attr' => array(
+                    'class' => 'zilla-selector select2me'
+                ),
+                'required' => false,
             ))
             ->add('child_entities', 'collection', array(
                 'type' => new TargetSubForm(),
