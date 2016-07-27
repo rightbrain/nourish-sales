@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\CoreBundle\Repository\LocationRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
@@ -35,16 +36,22 @@ class SwappingSrForm extends AbstractType
                 }
             ))
             ->add('location', 'entity', array(
-                'class' => 'RbsCoreBundle:Location',
-                'property' => 'name',
-                'required' => false,
-                'empty_value' => 'Select Location',
-                'empty_data' => null,
-                'query_builder' => function (LocationRepository $repository)
-                {
-                    return $repository->createQueryBuilder('l')
-                        ->orderBy('l.name','ASC');
-                }
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('a')
+                        ->where('a.level = :level')
+                        ->andWhere('a.id != :oldLocation')
+                        ->setParameter('level', 4)
+                        ->setParameter('oldLocation', $this->user->getLocation()->getId())
+                        ->orderBy('a.name');
+                },
+                'attr' => array(
+                    'class' => 'zilla-selector select2me',
+                    'id' => 'user_level1'
+                ),
+                'placeholder' => 'Choose an Location',
+                'required' => true,
+                'mapped' => false
             ))
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')

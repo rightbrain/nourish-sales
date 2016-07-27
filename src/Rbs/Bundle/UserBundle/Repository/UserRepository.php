@@ -47,6 +47,16 @@ class UserRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function findUsersByLocation($locationId)
+    {
+        $query = $this->createQueryBuilder('u');
+        $query->join('u.location', 'l');
+        $query->where('u.location = :location');
+        $query->setParameter('location', $locationId);
+
+        return $query->getQuery()->getResult();
+    }
+
     public function getRsmList()
     {
         $query = $this->createQueryBuilder('u');
