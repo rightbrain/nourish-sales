@@ -5,7 +5,9 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use DateTime;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\CreditLimit;
+use Rbs\Bundle\SalesBundle\Entity\CreditLimitIndividual;
 use Rbs\Bundle\SalesBundle\Form\Type\CreditLimitForm;
+use Rbs\Bundle\SalesBundle\Form\Type\CreditLimitSubForm;
 use Rbs\Bundle\SalesBundle\Form\Type\CreditLimitWithAgentForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -68,19 +70,44 @@ class CreditLimitController extends BaseController
      */
     public function createAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+        $categories = $em->getRepository('RbsCoreBundle:Category')->getAllActiveCategory();
+
         $creditLimit = new CreditLimit();
 
-        $form = $this->createForm(new CreditLimitForm(), $creditLimit);
+        foreach ($categories as $category) {
+            $categoryWiseField = new CreditLimit();
+            $categoryWiseField->setCategory($category);
+            $creditLimits[] = $categoryWiseField;
+            $sc[] = $category->getName();
+            $ca[] = $category->getId();
+        }
+
+        $form = $this->createForm(new CreditLimitForm(), $creditLimit, array(
+            'action' => $this->generateUrl('credit_limit_create'), 'method' => 'POST',
+            'attr' => array('novalidate' => 'novalidate')
+        ));
+
+        $form->get('child_entities')->setData($creditLimits);
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
 
             if ($form->isValid()) {
+                $i = 0;
+                foreach ($request->request->get('credit_limit')['child_entities'] as $entity){
+                    $creditLimit = new CreditLimit();
+                    $creditLimit->setCategory($this->getDoctrine()->getRepository('RbsCoreBundle:Category')->find($ca[$i]));
+                    $creditLimit->setCreatedAt(new \DateTime());
+                    $creditLimit->setCreatedBy($this->getUser());
+                    $creditLimit->setAmount($entity['amount']);
+                    $creditLimit->setAgent($this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($request->request->get('credit_limit')['agent']));
 
-                $creditLimit->setCreatedAt(new \DateTime());
-                $creditLimit->setCreatedBy($this->getUser());
-
-                $this->getDoctrine()->getRepository('RbsSalesBundle:CreditLimit')->create($creditLimit);
+                    $creditLimit->setStartDate(new DateTime($entity['startDate']));
+                    $creditLimit->setEndDate(new DateTime($entity['endDate']));
+                    $i = $i + 1;
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:CreditLimit')->create($creditLimit);
+                }
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
@@ -92,7 +119,8 @@ class CreditLimitController extends BaseController
         }
 
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'categories' => $sc,
         );
     }
 
@@ -111,7 +139,7 @@ class CreditLimitController extends BaseController
 
     /**
      * @Route("/credit/limit/add/{agentId}/{categoryId}/{creditLimitId}", name="credit_limit_add")
-     * @Template("RbsSalesBundle:CreditLimit:new.html.twig")
+     * @Template("RbsSalesBundle:CreditLimit:new_form.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      */

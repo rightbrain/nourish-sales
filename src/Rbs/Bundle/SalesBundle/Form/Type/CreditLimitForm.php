@@ -2,7 +2,6 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
-use Rbs\Bundle\CoreBundle\Repository\CategoryRepository;
 use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -17,21 +16,6 @@ class CreditLimitForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('amount', 'text')
-            ->add('startDate', 'date', array(
-                'widget' => 'single_text',
-                'html5' => false,
-                'attr' => array(
-                    'class' => 'date-picker'
-                )
-            ))
-            ->add('endDate', 'date', array(
-                'widget' => 'single_text',
-                'html5' => false,
-                'attr' => array(
-                    'class' => 'date-picker'
-                )
-            ))
             ->add('agent', 'entity', array(
                 'class' => 'RbsSalesBundle:Agent',
                 'property' => 'user.profile.fullName',
@@ -50,17 +34,8 @@ class CreditLimitForm extends AbstractType
                         ->orderBy('p.fullName','ASC');
                 }
             ))
-            ->add('category', 'entity', array(
-                'class' => 'RbsCoreBundle:Category',
-                'property' => 'categoryName',
-                'required' => false,
-                'empty_value' => 'Select Category',
-                'empty_data' => null,
-                'query_builder' => function (CategoryRepository $repository)
-                {
-                    return $repository->createQueryBuilder('c')
-                        ->where('c.deletedAt IS NULL');
-                }
+            ->add('child_entities', 'collection', array(
+                'type' => new CreditLimitSubForm(),
             ))
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')

@@ -73,10 +73,11 @@ class CreditLimit
      * @var float
      *
      * @ORM\Column(name="amounts", type="float", nullable=false)
-     * @Assert\NotBlank()
      */
     private $amount;
-    
+
+    public $childEntities;
+
     /**
      * Get id
      *
@@ -181,5 +182,21 @@ class CreditLimit
     public function setAmount($amount)
     {
         $this->amount = $amount;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChildEntities()
+    {
+        return $this->childEntities;
+    }
+
+    /**
+     * @param mixed $childEntities
+     */
+    public function setChildEntities($childEntities)
+    {
+        $this->childEntities = $childEntities;
     }
 }
