@@ -29,7 +29,7 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-list"></i>My Target ( {{ target.user.username | default('') }} )
+                    <i class="fa fa-list"></i>My Target ( {{ user.username }} : {{ user.location.name }} )
                 </div>
             </div>
             <div class="portlet-body">
@@ -37,7 +37,7 @@
                     <thead>
                     <tr>
                         <th>SL</th>
-                        <th>Sub Category</th>
+                        <th>Category</th>
                         <th>Quantity</th>
                         <th>Remaining</th>
                         <th>Start Date</th>
@@ -46,15 +46,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {% for myTarget in myTargets %}
+                    {% for target in targets %}
                         <tr>
                             <td class="col-md-1 bold">{{ loop.index }}</td>
-                            <td class="col-md-1 bold">{{ myTarget.subCategory.subCategoryName }}</td>
-                            <td class="col-md-1 bold">{{ myTarget.quantity }}</td>
-                            <td class="col-md-1 bold">{{ myTarget.remaining }}</td>
-                            <td class="col-md-1 bold">{{ myTarget.startDate | date('M Y') }}</td>
-                            <td class="col-md-1 bold">{{ myTarget.endDate | date('M Y') }}</td>
-                            <td class="col-md-1 bold">{{ myTarget.getMonthDifference() }}</td>
+                            <td class="col-md-1 bold">{{ target.category.categoryName }}</td>
+                            <td class="col-md-1 bold">{{ target.quantity }}</td>
+                            <td class="col-md-1 bold">{{ target.remaining }}</td>
+                            <td class="col-md-1 bold">{{ target.startDate | date('M Y') }}</td>
+                            <td class="col-md-1 bold">{{ target.endDate | date('M Y') }}</td>
+                            <td class="col-md-1 bold">{{ target.getMonthDifference() }}</td>
                         </tr>
                     {% endfor %}
                     </tbody>
@@ -62,7 +62,7 @@
             </div>
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-list"></i>Set Target For My SR
+                    <i class="fa fa-list"></i>My SR List
                 </div>
             </div>
             <div class="portlet-body">
@@ -71,7 +71,6 @@
                         <tr>
                             <th>SL</th>
                             <th>SR Name</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -79,47 +78,6 @@
                         <tr>
                             <td class="col-md-1 bold">{{ loop.index }}</td>
                             <td class="col-md-1">{{ sr.username }}</td>
-                            <td class="col-md-2">
-                                <a href="{{ path('target_sr', {'id': sr.id}) }}">Add Target</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="portlet-title">
-                <div class="caption">
-                    <i class="fa fa-list"></i>My SR Target
-                </div>
-            </div>
-            <div class="portlet-body">
-                <table class="table table-bordered table-striped">
-                    <thead>
-                        <tr>
-                            <th>SL</th>
-                            <th>Sub Category</th>
-                            <th>SR Name</th>
-                            <th>Quantity</th>
-                            <th>Remaining</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th>Month</th>
-                            <th>Edit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for srTarget in srTargetList %}
-                        <tr>
-                            <td class="col-md-1 bold">{{ loop.index }}</td>
-                            <td class="col-md-2">{{ srTarget.subCategory.subCategoryName }}</td>
-                            <td class="col-md-1">{{ srTarget.user.username }}</td>
-                            <td class="col-md-1">{{ srTarget.quantity }}</td>
-                            <td class="col-md-1">{{ srTarget.remaining }}</td>
-                            <td class="col-md-1">{{ srTarget.startDate | date('M Y') }}</td>
-                            <td class="col-md-1">{{ srTarget.endDate | date('M Y') }}</td>
-                            <td class="col-md-1">{{ srTarget.getMonthDifference() }}</td>
-                            <td class="col-md-1"><a class="btn btn-primary btn-xs" href="{{ path('target_sr_update', {id : srTarget.id}) }}">
-                                    <i class="glyphicon glyphicon-edit"></i>Update</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>

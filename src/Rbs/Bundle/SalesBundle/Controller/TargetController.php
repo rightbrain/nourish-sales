@@ -181,17 +181,13 @@ class TargetController extends BaseController
      */
     public function myAction()
     {
-        $target = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->findOneBy(array('user' => $this->getUser()));
-        $myTargets = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->myTarget($this->getUser()->getId());
-
-        $srList = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findByParentId($this->getUser()->getId());
-        $srTargetList = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->srListByParentId($this->getUser()->getId());
+        $targets = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->findMyLocationTargetRSM($this->getUser()->getLocation());
+        $srList = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findSRByParentId($this->getUser()->getId());
 
         return array(
-            'target'       => $target,
-            'myTargets'       => $myTargets,
+            'targets'       => $targets,
             'srList'       => $srList,
-            'srTargetList' => $srTargetList
+            'user'       => $this->getUser()
         );
     }
 

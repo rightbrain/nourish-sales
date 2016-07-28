@@ -129,4 +129,16 @@ class TargetRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function findMyLocationTargetRSM($location)
+    {
+        $query = $this->createQueryBuilder('t');
+        $query->join('t.location', 'l');
+        $query->where('l.id = :location');
+        $query->andWhere('t.status = :RUNNING');
+        $query->setParameter('location', $location);
+        $query->setParameter('RUNNING', Target::RUNNING);
+
+        return $query->getQuery()->getResult();
+    }
 }

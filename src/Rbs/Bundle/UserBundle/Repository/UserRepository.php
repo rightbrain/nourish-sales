@@ -75,6 +75,17 @@ class UserRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function findSRByParentId($parentId)
+    {
+        $query = $this->createQueryBuilder('u');
+        $query->where('u.userType = :SR');
+        $query->andWhere('u.parentId = :parentId');
+        $query->setParameter('SR', User::SR);
+        $query->setParameter('parentId', $parentId);
+
+        return $query->getQuery()->getResult();
+    }
+
     public function getNawParentId($locationId)
     {
         $query = $this->createQueryBuilder('u');

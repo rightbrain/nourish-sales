@@ -51,7 +51,7 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_AGENT', 'ROLE_ADMIN', 'ROLE_PAYMENT_VIEW', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_APPROVE', 'ROLE_PAYMENT_OVER_CREDIT_APPROVE'))) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
             $menu['Sales']->addChild('Payments', array('route' => 'payments_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('payment')) {
@@ -85,15 +85,15 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
-        if ($this->user->getUserType() == User::RSM or $this->authorizationChecker->isGranted(array('ROLE_RSM_GROUP'))){
+        if ($this->user->getUserType() == User::RSM){
             $menu['Sales']->addChild('RSM', array('route' => 'target_my'))
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
-        if ($this->user->getUserType() == User::SR or $this->authorizationChecker->isGranted(array('ROLE_SR_GROUP'))) {
-            $menu['Sales']->addChild('SR', array('route' => 'target_sr_my'))
-                ->setAttribute('icon', 'fa fa-th-list');
-        }
+//        if ($this->user->getUserType() == User::SR) {
+//            $menu['Sales']->addChild('SR', array('route' => 'target_sr_my'))
+//                ->setAttribute('icon', 'fa fa-th-list');
+//        }
 
         if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
             $menu['Sales']->addChild('Cash Receive', array('route' => 'cash_receive_list'))
