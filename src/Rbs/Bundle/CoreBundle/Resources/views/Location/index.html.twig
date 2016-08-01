@@ -40,10 +40,10 @@
                     <table class="table table-bordered table-striped">
                         <thead>
                         <tr>
-                            <th style="width: 80px;">Sector</th>
-                            <th style="width: 70px;">Zone</th>
-                            <th style="width: 73px;">Region</th>
-                            <th style="width: 90px;">District</th>
+                            <th style="width: 100px;">Sector</th>
+                            <th style="width: 100px;">Zone</th>
+                            <th style="width: 100px;">Region</th>
+                            <th style="width: 120px;">District</th>
                             <th>Upozilla</th>
                         </tr>
                         </thead>
@@ -52,30 +52,30 @@
                         <tbody>
                         {% for sector in locationsSectors %}
                             <tr>
-                                <td class="col-md-1 bold">{{ sector.name }}</td>
+                                <td class="col-md-1 bold" style="width: 100px;">{{ sector.name }}</td>
                                 <td>
-                                    <table style="margin-top: -9px;margin-left: -9px;" class="table table-bordered table-striped">
+                                    <table style="margin-bottom: -9px;margin-top: -9px;margin-left: -9px;" class="table table-bordered table-striped">
                                         <tbody>
                                         {% for zone in locationsZones %}
                                             {% if zone.parentId == sector.id %}
                                                 <tr>
-                                                    <td class="col-md-1 bold">{{ zone.name }}</td>
+                                                    <td class="col-md-1 bold" style="width: 100px;">{{ zone.name }}</td>
                                                     <td>
 
-                                                        <table style="margin-top: -9px;margin-left: -9px;" class="table table-bordered table-striped">
+                                                        <table style="margin-bottom: -9px;margin-top: -9px;margin-left: -9px;" class="table table-bordered table-striped">
                                                             <tbody>
                                                             {% for region in locationsRegions %}
                                                                 {% if region.parentId == zone.id %}
                                                                     <tr>
-                                                                        <td class="col-md-1 bold">{{ region.name }}</td>
+                                                                        <td class="col-md-1 bold" style="width: 100px;">{{ region.name }}</td>
                                                                         <td>
 
-                                                                            <table style="margin-top: -9px;margin-left: -9px;" class="table table-bordered table-striped">
+                                                                            <table style="margin-bottom: -9px;margin-top: -9px;margin-left: -9px;" class="table table-bordered table-striped">
                                                                                 <tbody>
                                                                                 {% for district in locationsDistricts %}
                                                                                     {% if district.parentId == region.id %}
                                                                                         <tr>
-                                                                                            <td class="col-md-1 bold">{{ district.name }}</td>
+                                                                                            <td class="col-md-1 bold" style="width: 120px;">{{ district.name }}</td>
                                                                                             <td>
 
                                                                                                 <table class="table table-bordered table-striped">
@@ -83,7 +83,7 @@
                                                                                                     {% for upozilla in locationsUpozillas %}
                                                                                                         {% if upozilla.parentId == district.id %}
                                                                                                             <tr>
-                                                                                                                <div>{{ upozilla.name }}</div>
+                                                                                                                <div style="width: 200px;">{{ upozilla.name }}</div>
                                                                                                             </tr>
                                                                                                         {% endif %}
                                                                                                     {% endfor %}
