@@ -35,7 +35,7 @@
                                             <th>Created By</th>
                                             <td>{{ order.createdBy.username | default('SMS') }}</td>
                                             <th>SMS ref.</th>
-                                            <td>{{ order.refSMS.msg | default('N/A') }}</td>
+                                            <td>{{ order.refSMS.msg | default('N/A') | raw }}</td>
                                         </tr>
                                         <tr>
                                             <th>Order Amount</th>
