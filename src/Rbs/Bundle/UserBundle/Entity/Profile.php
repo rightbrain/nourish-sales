@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
@@ -12,6 +13,10 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  * @ORM\Table(name="user_profiles")
  * @ORM\HasLifecycleCallbacks
  * @ORMSubscribedEvents()
+ * @UniqueEntity(
+ *     fields={"cellphone"},
+ *     message="This cellphone no is already in use."
+ * )
  */
 class Profile
 {

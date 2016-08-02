@@ -336,17 +336,17 @@ class AreaController extends BaseController
      */
     public function areaFilterAction(Request $request)
     {
-        $areas = array();
+        $locations = array();
         if ($request->query->get('id')) {
-            $areas = $this->getDoctrine()->getRepository('RbsCoreBundle:Address')->findBy(
+            $locations = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findBy(
                 array(
-                    'c4' => $request->query->get('id')
+                    'parentId' => $request->query->get('id')
                 )
             );
         }
 
         $html = '<option value="">Choose an option</option>';
-        foreach ($areas as $r) {
+        foreach ($locations as $r) {
             $html .= '<option value="'.$r->getId().'">'.$r->getName().'</option>';
         }
 
