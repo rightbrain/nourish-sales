@@ -80,15 +80,6 @@ class Project
     private $projectContactPerson;
 
     /**
-     * @var Area
-     *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Area")
-     * @ORM\JoinColumn(name="projects_area", nullable=true)
-     * @Assert\NotBlank()
-     */
-    private $projectArea;
-
-    /**
      * @var ProjectType
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\ProjectType")

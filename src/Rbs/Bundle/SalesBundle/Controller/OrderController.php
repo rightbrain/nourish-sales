@@ -248,7 +248,7 @@ class OrderController extends BaseController
      * @Route("/order/details/{id}", name="order_details", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function detailsAction(Order $order)
     {
@@ -273,11 +273,11 @@ class OrderController extends BaseController
 
     protected function checkViewOrderAccess(Order $order)
     {
-        if ($this->isGranted('ROLE_AGENT') && $order->getAgent()->getUser()->getId() != $this->getUser()->getId()) {
+        if ($this->isGranted('AGENT_INDIVIDUAL') && $order->getAgent()->getUser()->getId() != $this->getUser()->getId()) {
             throw new AccessDeniedException('Access Denied');
         }
 
-        if ($this->isGranted('ROLE_AGENT')) {
+        if ($this->isGranted('AGENT_INDIVIDUAL')) {
             $isOwnAgent = $this->agentRepository()->findOneBy(array(
                 'agent' => $this->getUser(),
                 'id' => $order->getAgent()->getId()

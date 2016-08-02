@@ -23,7 +23,7 @@ class SecurityPermissionProvider implements ProviderInterface
             ),
 
             'AGENT_INDIVIDUAL' => array(
-                'AGENT_INDIVIDUAL', 'AGENT_INDIVIDUAL'
+                'AGENT_INDIVIDUAL'
             ),
 
             'STOCK' => array(
