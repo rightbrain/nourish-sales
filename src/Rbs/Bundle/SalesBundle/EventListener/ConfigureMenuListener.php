@@ -140,6 +140,11 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
+        if ($this->user->getUserType() == User::SR){
+            $menu['Sales']->addChild('Damage Good', array('route' => 'damage_good_list'))
+                ->setAttribute('icon', 'fa fa-th-list');
+        }
+
         if ($this->user->getUserType() == User::AGENT){
             $menu['Sales']->addChild('My Truck List', array('route' => 'truck_info_my_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
@@ -148,9 +153,6 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
 
             $menu['Sales']->addChild('Bank Slip', array('route' => 'bank_info_list'))
-                ->setAttribute('icon', 'fa fa-th-list');
-
-            $menu['Sales']->addChild('Damage Good', array('route' => 'damage_good_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
 
             $menu['Sales']->addChild('My Laser', array('route' => 'my_laser'))
