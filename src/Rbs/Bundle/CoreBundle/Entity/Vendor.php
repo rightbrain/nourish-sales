@@ -119,14 +119,7 @@ class Vendor
      * @ORM\Column(name="payment_type", type="string", length=255)
      */
     private $PaymentType;
-
-    /**
-     * @var Area
-     *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Area", inversedBy="vendor", cascade={"persist"})
-     */
-    protected $area;
-
+    
     /**
      * @var ArrayCollection
      *

@@ -25,7 +25,7 @@ var Area = function()
             });
 
             $.ajax({
-                url: Routing.generate('area_filter'),
+                url: Routing.generate('location_filter'),
                 data: param,
                 success: function(html){
                     $("select."+appendTo).html(html).select2('val', '');
