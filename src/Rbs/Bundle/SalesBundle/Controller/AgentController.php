@@ -63,7 +63,7 @@ class AgentController extends BaseController
         };
         $query->addWhereAll($function);
 
-        if ($this->isGranted('ROLE_AGENT')) {
+        if ($this->isGranted('AGENT_INDIVIDUAL')) {
             $query->getQuery()->andWhere('agents.sr = :agent')->setParameter('sr', $this->getUser());
         }
 
