@@ -47,13 +47,15 @@ class AgentsBankInfoController extends BaseController
         $datatable = $this->get('rbs_erp.sales.datatable.agent.bank.info');
         $datatable->buildDatatable();
 
+        $user = $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:Agent')->findOneBy(array('user' => $this->getUser()));
+
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
-        $function = function($qb)
+        $function = function($qb) use ($user)
         {
             $qb->join('agents_bank_info.agent', 'u');
             $qb->andWhere('u =:user');
-            $qb->setParameter('user', $this->getUser());
+            $qb->setParameter('user', $user);
         };
         $query->addWhereAll($function);
         
