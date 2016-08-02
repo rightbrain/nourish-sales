@@ -411,13 +411,13 @@ class OrderController extends BaseController
     public function paymentReviewAction(Order $order)
     {
         $agent = $order->getAgent();
-        $currentCreditLimit = $this->agentRepository()->getCurrentCreditLimit($agent);
-        $isOverCredit = $currentCreditLimit < $order->getTotalAmount();
+//        $currentCreditLimit = $this->agentRepository()->getCurrentCreditLimit($agent);
+//        $isOverCredit = $currentCreditLimit < $order->getTotalAmount();
 
         return $this->render('RbsSalesBundle:Order:paymentReview.html.twig', array(
             'order' => $order,
-            'isOverCredit' => $isOverCredit,
-            'currentCreditLimit' => $currentCreditLimit,
+//            'isOverCredit' => $isOverCredit,
+//            'currentCreditLimit' => $currentCreditLimit,
         ));
     }
 
