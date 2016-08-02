@@ -26,6 +26,7 @@ class CreditLimitDatatable extends BaseDatatable
 
         $this->columnBuilder
             ->add('agent.user.username', 'column', array('title' => 'Agent'))
+            ->add('category.name', 'column', array('title' => 'Category'))
             ->add('startDate', 'datetime', array('title' => 'Start Date', 'date_format' => 'LL' ))
             ->add('endDate', 'datetime', array('title' => 'End Date', 'date_format' => 'LL' ))
             ->add('status', 'column', array('title' => 'Status'))
