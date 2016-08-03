@@ -29,7 +29,8 @@ var Area = function()
                 url: Routing.generate('location_filter_update', {id:userId}),
                 data: param,
                 success: function(html){
-                    $("select."+appendTo).html(html).select2('val', '');
+                    $("select."+appendTo).html(html);
+                    $('#user_upozilla').select2('destroy').select2();
                     Metronic.unblockUI(el);
                 },
                 error: function(){
