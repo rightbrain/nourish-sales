@@ -69,7 +69,6 @@ class UserForm extends AbstractType
                         ->andWhere("u.userType != :SR")
                         ->setParameters(array('AGENT'=> User::AGENT, 'SR' => User::SR));
                 },
-                'mapped' => false,
                 'property' => 'username',
                 'required' => false,
                 'empty_value' => 'Select Parent',
