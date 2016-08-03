@@ -60,7 +60,7 @@ class LocationController extends BaseController
             $html = '<option value="">Choose an option</option>';
             foreach ($locations as $r) {
                 if ($r->getId() == $user->getUpozilla()->getId()) {
-                    $selected = "selected";
+                    $selected = "selected=\"selected\"";
                 } else {
                     $selected = '';
                 }
