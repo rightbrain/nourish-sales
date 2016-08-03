@@ -181,7 +181,7 @@ class TargetController extends BaseController
      */
     public function myAction()
     {
-        $targets = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->findMyLocationTargetRSM($this->getUser()->getLocation());
+        $targets = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->findMyLocationTargetRSM($this->getUser()->getZilla());
         $srList = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findSRByParentId($this->getUser()->getId());
 
         return array(
