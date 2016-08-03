@@ -24,8 +24,9 @@ var Area = function()
                 overlayColor: 'black'
             });
 
+            var userId = document.getElementById('user_id_hidden').value;
             $.ajax({
-                url: Routing.generate('location_filter'),
+                url: Routing.generate('location_filter_update', {id:userId}),
                 data: param,
                 success: function(html){
                     $("select."+appendTo).html(html).select2('val', '');

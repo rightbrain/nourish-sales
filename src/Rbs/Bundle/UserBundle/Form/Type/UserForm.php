@@ -73,8 +73,7 @@ class UserForm extends AbstractType
                 'required' => false,
                 'empty_value' => 'Select Parent',
             ))
-            ->add('level1', 'entity', array(
-                'label' => 'Zilla',
+            ->add('zilla', 'entity', array(
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('a')
@@ -84,24 +83,19 @@ class UserForm extends AbstractType
                     'class' => 'zilla-selector select2me',
                     'id' => 'user_level1'
                 ),
-                'required' => false,
-                'mapped' => false
+                'required' => false
             ))
-            ->add('level2', 'entity', array(
-                'label' => 'Thana/UpoZilla',
+            ->add('upozilla', 'entity', array(
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
                 'query_builder' => function (EntityRepository $er) {
-                    $qb = $er->createQueryBuilder('a')
+                    return $er->createQueryBuilder('a')
                         ->where('a.level = :level')->setParameter('level', 5)->orderBy('a.name');
-                    return $qb;
                 },
                 'attr' => array(
                     'class' => 'thana-selector select2me',
-                    'id' => 'user_level1'
+                    'id' => 'user_level2'
                 ),
-                'placeholder' => 'Choose an option',
-                'required' => false,
-                'mapped' => false
+                'required' => false
             ))
         ;
 

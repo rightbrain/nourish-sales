@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\CoreBundle\Controller;
 
 use JMS\SecurityExtraBundle\Annotation as JMS;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -15,11 +16,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class LocationController extends BaseController
 {
-    
+
+    //     * @JMS\Secure(roles="ROLE_LOCATION_MANAGE")
     /**
      *
      * @Route("/filter-location/", name="location_filter", options={"expose"=true})
-     * @JMS\Secure(roles="ROLE_LOCATION_MANAGE")
      */
     public function areaFilterAction(Request $request)
     {
@@ -35,6 +36,36 @@ class LocationController extends BaseController
         $html = '<option value="">Choose an option</option>';
         foreach ($locations as $r) {
             $html .= '<option value="'.$r->getId().'">'.$r->getName().'</option>';
+        }
+
+        return new Response($html);
+    }
+    /**
+     *
+     * @Route("/filter-location-update/{id}", name="location_filter_update", options={"expose"=true})
+     */
+    public function areaUpdateFilterAction(Request $request, User $user)
+    {
+        $html = '';
+        $locations = array();
+        if ($request->query->get('id')) {
+            $locations = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findBy(
+                array(
+                    'parentId' => $request->query->get('id')
+                )
+            );
+        }
+
+        if($user->getUpozilla() == true) {
+            $html = '<option value="">Choose an option</option>';
+            foreach ($locations as $r) {
+                if ($r->getId() == $user->getUpozilla()->getId()) {
+                    $selected = "selected";
+                } else {
+                    $selected = '';
+                }
+                $html .= '<option value="' . $r->getId() . '" ' . $selected . '>' . $r->getName() . '</option>';
+            }
         }
 
         return new Response($html);

@@ -47,12 +47,12 @@ class UserRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
-    public function findUsersByLocation($locationId)
+    public function findUsersByLocation($zillaId)
     {
         $query = $this->createQueryBuilder('u');
-        $query->join('u.location', 'l');
-        $query->where('u.location = :location');
-        $query->setParameter('location', $locationId);
+        $query->join('u.zilla', 'z');
+        $query->where('z.id = :zilla');
+        $query->setParameter('zilla', $zillaId);
 
         return $query->getQuery()->getResult();
     }
@@ -86,14 +86,15 @@ class UserRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
-    public function getNawParentId($locationId)
+    public function getNawParentId($zillaId)
     {
         $query = $this->createQueryBuilder('u');
+        $query->join('u.zilla', 'z');
         $query->select('u.id');
         $query->where('u.userType = :RSM');
-        $query->andWhere('u.location = :location');
+        $query->andWhere('z.id = :zilla');
         $query->setParameter('RSM', User::RSM);
-        $query->setParameter('location', $locationId);
+        $query->setParameter('zilla', $zillaId);
 
         return $query->getQuery()->getResult();
     }
