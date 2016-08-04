@@ -46,7 +46,7 @@
 {% block documentReady %}
     {{ parent() }}
 
-    var upozilla = {{ user.upozilla.id }};
+    var upozilla = {{ user.upozilla.id | default(0) }};
 
     FormValidation.init();
     $("select[multiple=multiple]").multiSelect({selectableOptgroup: true});
