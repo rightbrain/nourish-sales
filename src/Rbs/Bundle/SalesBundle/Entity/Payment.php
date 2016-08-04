@@ -16,7 +16,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  */
 class Payment
 {
-    const PAYMENT_METHOD_CACHE = 'CACHE';
+    const PAYMENT_METHOD_CASH = 'CASH';
     const PAYMENT_METHOD_CHEQUE = 'CHEQUE';
     const PAYMENT_METHOD_BANK = 'BANK';
 
@@ -73,7 +73,6 @@ class Payment
      * @var string
      *
      * @ORM\Column(name="bank_name", type="string", length=250, nullable=true)
-     * @Assert\NotBlank()
      */
     private $bankName;
 
@@ -81,7 +80,6 @@ class Payment
      * @var string
      *
      * @ORM\Column(name="branch_name", type="string", length=250, nullable=true)
-     * @Assert\NotBlank()
      */
     private $branchName;
 

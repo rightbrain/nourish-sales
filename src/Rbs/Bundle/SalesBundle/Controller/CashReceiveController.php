@@ -5,6 +5,8 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\SalesBundle\Entity\CashReceive;
+use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\CashReceiveForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -67,18 +69,19 @@ class CashReceiveController extends BaseController
      * @Route("/cash/receive/create", name="cash_receive_create", options={"expose"=true})
      * @Template("RbsSalesBundle:CashReceive:form.html.twig")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
     public function createAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $cashReceive = new CashReceive();
+        $payment = new Payment();
         $form = $this->createForm(new CashReceiveForm(), $cashReceive, array(
             'action' => $this->generateUrl('cash_receive_create'), 'method' => 'POST',
             'attr' => array('novalidate' => 'novalidate')
         ));
         $getDepoId = $em->getRepository('RbsCoreBundle:Depo')->getDepoId($this->getUser()->getId());
-//        var_dump($getDepoId);die;
+
         if($getDepoId && 'POST' === $request->getMethod()){
             $cashReceivedId = $em->getRepository('RbsSalesBundle:CashReceive')->getLastCashReceivedId($this->getUser()->getId());
 
@@ -94,6 +97,17 @@ class CashReceiveController extends BaseController
                 $form->handleRequest($request);
 
                 if ($form->isValid()) {
+                    $od = $em->getRepository('RbsSalesBundle:Order')->find($request->request->get('cash_receive')['order']);
+
+                    $payment->setAgent($od->getAgent());
+                    $payment->setAmount($request->request->get('cash_receive')['amount']);
+                    $payment->setPaymentMethod(Payment::PAYMENT_METHOD_CASH);
+                    $payment->setRemark('Cash received by depo user.');
+                    $payment->setDepositDate(new \DateTime());
+                    $payment->setTransactionType(Payment::CR);
+                    $payment->addOrder($od);
+                    $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
+                    $em->getRepository('RbsSalesBundle:Payment')->create($payment);
 
                     $cashReceive->setReceivedAt(new \DateTime());
                     $cashReceive->setReceivedBy($this->getUser());
