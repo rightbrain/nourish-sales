@@ -8,6 +8,7 @@ use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentsBankInfo;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
+use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentsBankInfoForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
@@ -507,6 +508,18 @@ class OrderController extends BaseController
         if ($order->getOrderState() == Order::ORDER_STATE_PROCESSING &&
             in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))
         ) {
+            $em = $this->getDoctrine()->getManager();
+            $payment = new Payment();
+
+            $payment->setAgent($order->getAgent());
+            $payment->setAmount($order->getTotalAmount());
+            $payment->setPaymentMethod(Payment::PAYMENT_METHOD_REFUND);
+            $payment->setRemark('A new order create.');
+            $payment->setDepositDate(new \DateTime());
+            $payment->setTransactionType(Payment::DR);
+            $payment->addOrder($order);
+            $em->getRepository('RbsSalesBundle:Payment')->create($payment);
+
             $order->setDeliveryState(Order::DELIVERY_STATE_READY);
             $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
