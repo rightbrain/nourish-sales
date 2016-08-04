@@ -20,6 +20,9 @@ class DamageGood
 {
     const ACTIVE = 'ACTIVE';
     const INACTIVE = 'INACTIVE';
+    const APPROVED = 'APPROVED';
+    const VERIFIED = 'VERIFIED';
+    const PAID = 'PAID';
 
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
@@ -51,6 +54,36 @@ class DamageGood
     private $user;
 
     /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="approved_by", nullable=true)
+     */
+    private $approvedBy;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="verified_by", nullable=true)
+     */
+    private $verifiedBy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="approved_at", type="datetime", nullable=true)
+     */
+    private $approvedAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="verified_at", type="datetime", nullable=true)
+     */
+    private $verifiedAt;
+
+    /**
      * @var Order
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order")
@@ -61,7 +94,7 @@ class DamageGood
     /**
      * @var array $type
      *
-     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE')", nullable=false)
+     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE', 'APPROVED', 'VERIFIED', 'PAID')", nullable=false)
      */
     private $status = 'ACTIVE';
 
@@ -71,6 +104,13 @@ class DamageGood
      * @ORM\Column(name="amount", type="float")
      */
     private $amount = 0 ;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="refund_amount", type="float")
+     */
+    private $refundAmount = 0 ;
     
     /**
      * @var string
