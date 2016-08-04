@@ -17,6 +17,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 class Payment
 {
     const PAYMENT_METHOD_CASH = 'CASH';
+    const PAYMENT_METHOD_REFUND = 'REFUND';
     const PAYMENT_METHOD_CHEQUE = 'CHEQUE';
     const PAYMENT_METHOD_BANK = 'BANK';
 
@@ -58,7 +59,7 @@ class Payment
     /**
      * @var array $type
      *
-     * @ORM\Column(name="payment_method", type="string", length=255, columnDefinition="ENUM('CASH', 'CHEQUE', 'BANK')", nullable=false)
+     * @ORM\Column(name="payment_method", type="string", length=255, columnDefinition="ENUM('CASH', 'CHEQUE', 'BANK', 'REFUND')", nullable=false)
      */
     private $paymentMethod = 'BANK';
 
