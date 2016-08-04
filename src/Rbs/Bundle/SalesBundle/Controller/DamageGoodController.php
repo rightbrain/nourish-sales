@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\DamageGood;
+use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\DamageGoodForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -28,6 +29,20 @@ class DamageGoodController extends BaseController
     public function indexAction()
     {
         $datatable = $this->get('rbs_erp.sales.datatable.damage.good');
+        $datatable->buildDatatable();
+
+        return $this->render('RbsSalesBundle:DamageGood:index.html.twig', array(
+            'datatable' => $datatable
+        ));
+    }
+    /**
+     * @Route("/damage/good/admin/list", name="damage_good_admin_list")
+     * @Method("GET")
+     * @Template()
+     */
+    public function indexAdminAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.damage.good.admin');
         $datatable->buildDatatable();
 
         return $this->render('RbsSalesBundle:DamageGood:index.html.twig', array(
@@ -61,6 +76,38 @@ class DamageGoodController extends BaseController
     }
 
     /**
+     * Lists all AgentsBankInfo entities.
+     *
+     * @Route("/damage_good_admin_list_ajax", name="damage_good_admin_list_ajax", options={"expose"=true})
+     * @Method("GET")
+     */
+    public function listAjaxAdminAction()
+    {
+        $user = $this->getUser();
+        $datatable = $this->get('rbs_erp.sales.datatable.damage.good.admin');
+        $datatable->buildDatatable();
+
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb */
+        $function = function ($qb) use ($user){
+            $qb->join('damage_goods.agent', 'a');
+            $qb->join('damage_goods.user', 'u');
+            if($user->hasRole("ROLE_DAMAGE_GOODS_VERIFY")) {
+                $qb->andWhere('damage_goods.status = :ACTIVE');
+                $qb->setParameter('ACTIVE', DamageGood::ACTIVE);
+            }elseif($user->hasRole("ROLE_DAMAGE_GOODS_APPROVE")){
+                $qb->andWhere('damage_goods.status = :ACTIVE');
+                $qb->setParameter('ACTIVE', DamageGood::VERIFIED);
+            }
+            $qb->orderBy('damage_goods.createdAt', 'DESC');
+        };
+
+        $query->addWhereAll($function);
+
+        return $query->getResponse();
+    }
+
+    /**
      * @Route("/damage/good/form", name="damage_good_form", options={"expose"=true})
      * @Template("RbsSalesBundle:DamageGood:form.html.twig")
      * @param Request $request
@@ -90,5 +137,88 @@ class DamageGoodController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @Route("/damage/good/verify/{id}", name="damage_goods_verify", options={"expose"=true})
+     * @param DamageGood $damageGood
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_ADMIN, ROLE_DAMAGE_GOODS_VERIFY")
+     */
+    public function verifyAction(DamageGood $damageGood)
+    {
+        $damageGood->setStatus(DamageGood::VERIFIED);
+        $damageGood->setVerifiedAt(new \DateTime());
+        $damageGood->setVerifiedBy($this->getUser());
+        $this->getDoctrine()->getRepository('RbsSalesBundle:DamageGood')->update($damageGood);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Damage Goods Successfully Verified'
+        );
+
+        return $this->redirect($this->generateUrl('damage_good_admin_list'));
+    }
+
+    /**
+     * @Route("/damage/good/approve/{id}", name="damage_goods_approve", options={"expose"=true})
+     * @param Request $request
+     * @param DamageGood $damageGood
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_ADMIN, ROLE_DAMAGE_GOODS_APPROVE")
+     */
+    public function approveAction(Request $request, DamageGood $damageGood)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $payment = new Payment();
+        $payment->setAgent($damageGood->getAgent());
+        $payment->setAmount($request->request->get('refund'));
+        $payment->setPaymentMethod(Payment::PAYMENT_METHOD_REFUND);
+        $payment->setRemark('Refund for damage goods.');
+        $payment->setDepositDate(new \DateTime());
+        $payment->setTransactionType(Payment::CR);
+        $payment->addOrder($damageGood->getOrder());
+
+        $damageGood->setRefundAmount($request->request->get('refund'));
+        $damageGood->setStatus(DamageGood::APPROVED);
+        $damageGood->setApprovedAt(new \DateTime());
+        $damageGood->setApprovedBy($this->getUser());
+        $this->getDoctrine()->getRepository('RbsSalesBundle:DamageGood')->update($damageGood);
+
+        $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
+        $em->getRepository('RbsSalesBundle:Payment')->create($payment);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Damage Goods Successfully Verified'
+        );
+
+        return $this->redirect($this->generateUrl('damage_good_admin_list'));
+    }
+
+    /**
+     * @Route("/damage/good/view/{id}", name="damage_goods_view", options={"expose"=true})
+     * @param DamageGood $damageGood
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_ADMIN, ROLE_DAMAGE_GOODS_APPROVE")
+     */
+    public function viewAction(DamageGood $damageGood)
+    {
+        return $this->render('RbsSalesBundle:DamageGood:view.html.twig', array(
+            'damageGood' => $damageGood
+        ));
+    }
+
+    /**
+     * @Route("/damage/good/doc/view/{id}", name="damage_good_doc_view")
+     * @param DamageGood $damageGood
+     * @return Response
+     */
+    public function viewDocAction(DamageGood $damageGood)
+    {
+        return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
+            'path' => $damageGood->getPath(),
+            'location' => '/uploads/sales/damage-goods/',
+        ));
     }
 }
