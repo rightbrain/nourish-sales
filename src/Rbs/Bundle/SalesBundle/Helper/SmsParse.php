@@ -91,7 +91,7 @@ class SmsParse
         $this->sms->setStatus('READ');
         $this->sms->setAgent($this->agent);
         $this->sms->setOrder($this->order);
-        $this->order->setLocation($this->agent->getUser()->getLocation());
+        $this->order->setLocation($this->agent->getUser()->getUpozilla());
 
         /** @var OrderItem $orderItem */
         foreach ($this->orderItems as $orderItem) {
@@ -111,12 +111,14 @@ class SmsParse
         if ($this->payment) {
             $this->payment->addOrder($this->order);
             $this->payment->setAgent($this->agent);
+            $this->payment->setTransactionType(Payment::CR);
             $this->em->persist($this->payment);
 
             $payments = new ArrayCollection();
             $this->order->setPayments($payments);
             $payments->add($this->payment);
         }
+        $this->em->flush();
 
         $delivery = new Delivery();
         $delivery->setOrderRef($this->order);
@@ -184,7 +186,7 @@ class SmsParse
                     $this->setError('Invalid qty code');
                     $this->markError($qty);
                     break;
-                } else if ($this->agent->getItemType() != null and  $this->agent->getItemType() != $orderItem->getItem()->getItemType()) {
+                } else if ($this->agent->getItemType() != null and  $this->agent->getItemType() != $item->getItemType()) {
                     $this->setError('Product type not match');
                     $this->markError($sku);
                     break;
