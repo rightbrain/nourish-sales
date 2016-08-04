@@ -2,7 +2,9 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -34,10 +36,10 @@ class DamageGoodForm extends AbstractType
                 'query_builder' => function (OrderRepository $repository)
                 {
                     return $repository->createQueryBuilder('o')
-                        ->join('o.agent', 'a')
-                        ->join('a.user', 'u')
-                        ->andWhere('u.id =:user')
-                        ->setParameter('user', $this->user->getId());
+                        ->join('o.agent', 'a');
+//                        ->join('a.user', 'u')
+//                        ->andWhere('u.id =:user')
+//                        ->setParameter('user', $this->user->getId());
                 }
             ))
             ->add('file')

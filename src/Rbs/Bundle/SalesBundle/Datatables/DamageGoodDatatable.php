@@ -27,6 +27,8 @@ class DamageGoodDatatable extends BaseDatatable
 
         $this->columnBuilder
             ->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
+            ->add('user.username', 'column', array('title' => 'User'))
+            ->add('agent.user.username', 'column', array('title' => 'Agent'))
             ->add('remark', 'column', array('title' => 'Remark'))
             ->add('amount', 'column', array('title' => 'Amount'))
         ;

@@ -35,12 +35,20 @@ class DamageGood
     private $id;
 
     /**
-     * @var User
+     * @var Agent
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent")
      * @ORM\JoinColumn(name="agent_id", nullable=false)
      */
     private $agent;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="user_id", nullable=false)
+     */
+    private $user;
 
     /**
      * @var Order
@@ -107,6 +115,22 @@ class DamageGood
     public function setAgent($agent)
     {
         $this->agent = $agent;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
     }
 
     /**

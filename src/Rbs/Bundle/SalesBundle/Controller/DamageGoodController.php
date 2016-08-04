@@ -50,7 +50,8 @@ class DamageGoodController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->join('damage_goods.agent', 'u');
+            $qb->join('damage_goods.agent', 'a');
+            $qb->join('damage_goods.user', 'u');
             $qb->andWhere('u =:user');
             $qb->setParameter('user', $this->getUser());
         };
@@ -63,10 +64,11 @@ class DamageGoodController extends BaseController
      * @Route("/damage/good/form", name="damage_good_form", options={"expose"=true})
      * @Template("RbsSalesBundle:DamageGood:form.html.twig")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      */
     public function agentBankInfoCreateAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         $damageGood = new DamageGood();
         $form = $this->createForm(new DamageGoodForm($this->getUser()), $damageGood, array(
             'action' => $this->generateUrl('damage_good_form'), 'method' => 'POST',
@@ -76,7 +78,9 @@ class DamageGoodController extends BaseController
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-                $damageGood->setAgent($this->getUser());
+                $damageGood->setUser($this->getUser());
+                $od = $em->getRepository('RbsSalesBundle:Order')->find($request->request->get('damage_good')['order']);
+                $damageGood->setAgent($od->getAgent());
                 $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:DamageGood')->create($damageGood);
                 $this->flashMessage('success', 'Damage Goods add Successfully!');
                 return $this->redirect($this->generateUrl('damage_good_list'));
