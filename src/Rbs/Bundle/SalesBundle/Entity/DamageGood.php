@@ -236,6 +236,86 @@ class DamageGood
     {
         $this->remark = $remark;
     }
+
+    /**
+     * @return User
+     */
+    public function getApprovedBy()
+    {
+        return $this->approvedBy;
+    }
+
+    /**
+     * @param User $approvedBy
+     */
+    public function setApprovedBy($approvedBy)
+    {
+        $this->approvedBy = $approvedBy;
+    }
+
+    /**
+     * @return User
+     */
+    public function getVerifiedBy()
+    {
+        return $this->verifiedBy;
+    }
+
+    /**
+     * @param User $verifiedBy
+     */
+    public function setVerifiedBy($verifiedBy)
+    {
+        $this->verifiedBy = $verifiedBy;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getApprovedAt()
+    {
+        return $this->approvedAt;
+    }
+
+    /**
+     * @param \DateTime $approvedAt
+     */
+    public function setApprovedAt($approvedAt)
+    {
+        $this->approvedAt = $approvedAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getVerifiedAt()
+    {
+        return $this->verifiedAt;
+    }
+
+    /**
+     * @param \DateTime $verifiedAt
+     */
+    public function setVerifiedAt($verifiedAt)
+    {
+        $this->verifiedAt = $verifiedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRefundAmount()
+    {
+        return $this->refundAmount;
+    }
+
+    /**
+     * @param mixed $refundAmount
+     */
+    public function setRefundAmount($refundAmount)
+    {
+        $this->refundAmount = $refundAmount;
+    }
     
     /**
      * Get path
