@@ -24,11 +24,13 @@ var Area = function()
                 overlayColor: 'black'
             });
 
+            var userId = document.getElementById('user_id_hidden').value;
             $.ajax({
-                url: Routing.generate('location_filter'),
+                url: Routing.generate('location_filter_update', {id:userId}),
                 data: param,
                 success: function(html){
-                    $("select."+appendTo).html(html).select2('val', '');
+                    $("select."+appendTo).html(html);
+                    $('#user_upozilla').select2('destroy').select2();
                     Metronic.unblockUI(el);
                 },
                 error: function(){
@@ -39,9 +41,24 @@ var Area = function()
         });
     }
 
+    function userOrAgent()
+    {
+        $("#user_userType").change(function () {
+            var x = document.getElementById('user_level2');
+            x.style.visibility = 'hidden';
+
+            if($(this).val() == 'AGENT'){
+                x.style.visibility = 'visible';
+            }else {
+                x.style.visibility = 'hidden';
+            }
+        });
+    }
+
     function init()
     {
         areaChangeAction();
+        userOrAgent();
     }
 
     return {

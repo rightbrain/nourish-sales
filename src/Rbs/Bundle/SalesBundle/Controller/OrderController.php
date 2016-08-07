@@ -3,9 +3,12 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\Item;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentsBankInfo;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
+use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentsBankInfoForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
@@ -16,6 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation as JMS;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Order Controller.
@@ -179,7 +183,7 @@ class OrderController extends BaseController
 
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
-                $order->setLocation($order->getAgent()->getUser()->getLocation());
+                $order->setLocation($order->getAgent()->getUser()->getUpozilla());
                 $this->orderRepository()->create($order);
                 $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getAgent()->getDepo());
 
@@ -505,6 +509,18 @@ class OrderController extends BaseController
         if ($order->getOrderState() == Order::ORDER_STATE_PROCESSING &&
             in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))
         ) {
+            $em = $this->getDoctrine()->getManager();
+            $payment = new Payment();
+
+            $payment->setAgent($order->getAgent());
+            $payment->setAmount($order->getTotalAmount());
+            $payment->setPaymentMethod(Payment::PAYMENT_METHOD_REFUND);
+            $payment->setRemark('A new order create.');
+            $payment->setDepositDate(new \DateTime());
+            $payment->setTransactionType(Payment::DR);
+            $payment->addOrder($order);
+            $em->getRepository('RbsSalesBundle:Payment')->create($payment);
+
             $order->setDeliveryState(Order::DELIVERY_STATE_READY);
             $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 

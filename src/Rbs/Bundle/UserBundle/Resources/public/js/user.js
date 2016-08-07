@@ -42,12 +42,13 @@ var Area = function()
     function userOrAgent()
     {
         $("#user_userType").change(function () {
-            if(this.value == 'AGENT'){
-                document.getElementById("user_level2").disabled = false;
-                document.getElementById("user_level3").disabled = false;
+            var x = document.getElementById('user_level2');
+            x.style.visibility = 'hidden';
+
+            if($(this).val() == 'AGENT'){
+                x.style.visibility = 'visible';
             }else {
-                document.getElementById("user_level2").disabled = true;
-                document.getElementById("user_level3").disabled = true;
+                x.style.visibility = 'hidden';
             }
         });
     }

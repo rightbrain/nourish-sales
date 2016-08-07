@@ -93,4 +93,24 @@ class BaseDatatable extends AbstractDatatableView
     public function getEntity(){}
 
     public function getName(){}
+
+    protected function makeActionButton($route, $routeParam = array(), $role = 'ROLE_USER', $label = "", $buttonTitle = "", $icon = "", $btnClass = "btn btn-primary btn-xs", $additional = array())
+    {
+        $data = array(
+            'route' => $route,
+            'route_parameters' => $routeParam,
+            'label' => $label,
+            'icon' => $icon,
+            'attributes' => array(
+                'rel' => 'tooltip',
+                'title' => $buttonTitle,
+                'class' => $btnClass,
+                'role' => 'button'
+            ),
+            'confirm' => false,
+            'confirm_message' => 'Are you sure?',
+            'role' => $role,
+        );
+        return array_merge($data, $additional);
+    }
 }

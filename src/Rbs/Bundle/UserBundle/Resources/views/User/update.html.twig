@@ -37,7 +37,7 @@
 
     "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
     "assets/admin/pages/scripts/form-validation.js"
-    'bundles/rbsuser/js/user.js' %}
+    'bundles/rbsuser/js/user-update.js' %}
     %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
@@ -45,8 +45,11 @@
 
 {% block documentReady %}
     {{ parent() }}
+
+    var upozilla = {{ user.upozilla.id | default(0) }};
+
     FormValidation.init();
     $("select[multiple=multiple]").multiSelect({selectableOptgroup: true});
-    $('select.union-selector, select.thana-selector').html('')
+    $('select.union-selector, select.thana-selector').html('');
     $('select.zilla-selector').trigger('change');
 {% endblock documentReady %}

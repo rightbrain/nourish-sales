@@ -66,7 +66,7 @@ class UserController extends Controller
      * @Route("/user/create", name="user_create")
      * @Template("RbsUserBundle:User:new.html.twig")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_USER_CREATE, ROLE_ADMIN")
      */
     public function createAction(Request $request)
@@ -83,17 +83,9 @@ class UserController extends Controller
 
             if ($form->isValid()) {
 
-                if($request->request->get('user')['userType'] == User::AGENT and $request->request->get('user')['level2'] != null){
-                    $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level2']));
-                }else if($request->request->get('user')['userType'] != User::AGENT and $request->request->get('user')['level1'] != null){
-                    $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level1']));
-                }
-
-                $user->setParentId($request->request->get('user')['parentId']);
-
                 $user->setEnabled(true);
                 $this->getDoctrine()->getRepository('RbsUserBundle:User')->create($user);
-                if($request->request->get('user')['userType'] == User::AGENT and $request->request->get('user')['level2'] != null){
+                if($request->request->get('user')['userType'] == User::AGENT){
                     $agent->setUser($this->getDoctrine()->getRepository('RbsUserBundle:User')->find($user->getId()));
                     $agent->setAgentID($user->getId());
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
@@ -118,7 +110,7 @@ class UserController extends Controller
      * @Template("RbsUserBundle:User:update.html.twig")
      * @param Request $request
      * @param User $user
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_USER_CREATE, ROLE_ADMIN")
      */
     public function updateAction(Request $request, User $user)
@@ -130,20 +122,15 @@ class UserController extends Controller
 
             if ($form->isValid()) {
 
-                if($request->request->get('user')['userType'] == User::AGENT and $request->request->get('user')['level2'] != null){
-                    $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level2']));
-                }else if($request->request->get('user')['userType'] != User::AGENT and $request->request->get('user')['level1'] != null){
-                    $user->setLocation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('user')['level1']));
-                }
-
-                $user->setParentId($request->request->get('user')['parentId']);
-
                 $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
-                if($request->request->get('user')['userType'] == User::AGENT and $request->request->get('user')['level2'] != null){
-                    $agent = new Agent();
-                    $agent->setUser($this->getDoctrine()->getRepository('RbsUserBundle:User')->find($user->getId()));
-                    $agent->setAgentID($user->getId());
-                    $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
+                if($request->request->get('user')['userType'] == User::AGENT){
+                    $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array('user'=>$user->getId()));
+                    if($agent == false){
+                        $agent = new Agent();
+                        $agent->setUser($this->getDoctrine()->getRepository('RbsUserBundle:User')->find($user->getId()));
+                        $agent->setAgentID($user->getId());
+                        $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
+                    }
                 }
                 
                 $this->get('session')->getFlashBag()->add(
@@ -156,7 +143,8 @@ class UserController extends Controller
         }
 
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'user' => $user
         );
     }
 

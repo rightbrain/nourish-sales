@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\SmsRepository;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -45,7 +46,7 @@ class OrderForm extends AbstractType
                             ->where('u.deletedAt IS NULL')
                             ->andWhere('u.enabled = 1')
                             ->andWhere('u.userType = :AGENT')
-                            ->setParameter('AGENT', 'AGENT')
+                            ->setParameter('AGENT', User::AGENT)
                             ->orderBy('p.fullName','ASC');
                     }
                 ));

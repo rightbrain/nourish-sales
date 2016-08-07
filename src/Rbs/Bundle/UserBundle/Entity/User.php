@@ -73,9 +73,10 @@ class User extends BaseUser
     private $projects;
 
     /**
-     * @var integer
-     * 
-     * @ORM\Column(name="parent_id", type="integer", nullable=true)
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="parent_id", nullable=true)
      */
     protected $parentId;
 
@@ -83,9 +84,17 @@ class User extends BaseUser
      * @var Location
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Location")
-     * @ORM\JoinColumn(name="location_id", nullable=true)
+     * @ORM\JoinColumn(name="zilla_id", nullable=true)
      */
-    private $location;
+    private $zilla;
+
+    /**
+     * @var Location
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Location")
+     * @ORM\JoinColumn(name="upozilla_id", nullable=true)
+     */
+    private $upozilla;
 
     public function __construct()
     {
@@ -169,7 +178,7 @@ class User extends BaseUser
     }
 
     /**
-     * @return mixed
+     * @return User
      */
     public function getParentId()
     {
@@ -177,7 +186,7 @@ class User extends BaseUser
     }
 
     /**
-     * @param mixed $parentId
+     * @param User $parentId
      */
     public function setParentId($parentId)
     {
@@ -187,16 +196,32 @@ class User extends BaseUser
     /**
      * @return Location
      */
-    public function getLocation()
+    public function getZilla()
     {
-        return $this->location;
+        return $this->zilla;
     }
 
     /**
-     * @param Location $location
+     * @param Location $zilla
      */
-    public function setLocation($location)
+    public function setZilla($zilla)
     {
-        $this->location = $location;
+        $this->zilla = $zilla;
+    }
+
+    /**
+     * @return Location
+     */
+    public function getUpozilla()
+    {
+        return $this->upozilla;
+    }
+
+    /**
+     * @param Location $upozilla
+     */
+    public function setUpozilla($upozilla)
+    {
+        $this->upozilla = $upozilla;
     }
 }

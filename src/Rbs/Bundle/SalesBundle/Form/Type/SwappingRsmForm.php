@@ -43,7 +43,7 @@ class SwappingRsmForm extends AbstractType
                         ->where('a.level = :level')
                         ->andWhere('a.id != :oldLocation')
                         ->setParameter('level', 4)
-                        ->setParameter('oldLocation', $this->user->getLocation()->getId())
+                        ->setParameter('oldLocation', $this->user->getZilla()->getId())
                         ->orderBy('a.name');
                 },
                 'attr' => array(
@@ -76,7 +76,7 @@ class SwappingRsmForm extends AbstractType
                 {
                     return $repository->createQueryBuilder('l')
                         ->andWhere("l.id = :location")
-                        ->setParameters(array('location' => $this->user->getLocation()->getId()));
+                        ->setParameters(array('location' => $this->user->getZilla()->getId()));
                 }
             ))
             ->add('submit', 'submit', array(

@@ -18,8 +18,7 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-    "assets/global/plugins/select2/select2.min.js"
-    'bundles/rbscore/js/area.js' %}
+    "assets/global/plugins/select2/select2.min.js" %}
     %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
@@ -28,6 +27,5 @@
 {% block documentReady %}
     {{ parent() }}
     $("select[multiple=multiple]").multiSelect({selectableOptgroup: true});
-    $('select.union-selector, select.thana-selector').html('')
     $('select.zilla-selector').trigger('change');
 {% endblock documentReady %}

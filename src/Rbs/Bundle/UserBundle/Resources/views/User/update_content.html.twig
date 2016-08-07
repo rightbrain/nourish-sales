@@ -7,8 +7,8 @@
         {{ form_row(form.profile.designation, { 'attr': {'class': ''} }) }}
         {{ form_row(form.profile.cellphone, { 'attr': {'class': ''} }) }}
         {{ form_row(form.profile.address, { 'attr': {'class': ''} }) }}
-        {{ form_row(form.level1, { 'attr': {'class': 'zilla-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'ZillaZilla'} }) }}
-        {{ form_row(form.level2, { 'attr': {'class': 'thana-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'Thana/UpoZilla'} }) }}
+        {{ form_row(form.zilla, { 'attr': {'class': 'zilla-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'ZillaZilla'} }) }}
+        {{ form_row(form.upozilla, { 'attr': {'class': 'thana-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'Thana/UpoZilla'} }) }}
         {{ form_row(form.parentId, { 'attr': {'class': ''} }) }}
         {{ form_row(form.groups, { 'attr': {'class': ''} }) }}
 
@@ -27,7 +27,7 @@
 
         {{ form_row(form.email, { 'attr': {'class': ''} }) }}
     <hr>
-
+    <input id="user_id_hidden" type="hidden" value="{{ user.id }}"/>
     {{ form_row(form.submit, { 'attr': {'class': ''} }) }}
 
 {{ form_end(form) }}

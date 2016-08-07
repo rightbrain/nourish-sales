@@ -20,6 +20,9 @@ class DamageGood
 {
     const ACTIVE = 'ACTIVE';
     const INACTIVE = 'INACTIVE';
+    const APPROVED = 'APPROVED';
+    const VERIFIED = 'VERIFIED';
+    const PAID = 'PAID';
 
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
@@ -35,12 +38,50 @@ class DamageGood
     private $id;
 
     /**
-     * @var User
+     * @var Agent
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent")
      * @ORM\JoinColumn(name="agent_id", nullable=false)
      */
     private $agent;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="user_id", nullable=false)
+     */
+    private $user;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="approved_by", nullable=true)
+     */
+    private $approvedBy;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="verified_by", nullable=true)
+     */
+    private $verifiedBy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="approved_at", type="datetime", nullable=true)
+     */
+    private $approvedAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="verified_at", type="datetime", nullable=true)
+     */
+    private $verifiedAt;
 
     /**
      * @var Order
@@ -53,7 +94,7 @@ class DamageGood
     /**
      * @var array $type
      *
-     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE')", nullable=false)
+     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE', 'APPROVED', 'VERIFIED', 'PAID')", nullable=false)
      */
     private $status = 'ACTIVE';
 
@@ -63,6 +104,13 @@ class DamageGood
      * @ORM\Column(name="amount", type="float")
      */
     private $amount = 0 ;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="refund_amount", type="float")
+     */
+    private $refundAmount = 0 ;
     
     /**
      * @var string
@@ -107,6 +155,22 @@ class DamageGood
     public function setAgent($agent)
     {
         $this->agent = $agent;
+    }
+
+    /**
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
     }
 
     /**
@@ -171,6 +235,86 @@ class DamageGood
     public function setRemark($remark)
     {
         $this->remark = $remark;
+    }
+
+    /**
+     * @return User
+     */
+    public function getApprovedBy()
+    {
+        return $this->approvedBy;
+    }
+
+    /**
+     * @param User $approvedBy
+     */
+    public function setApprovedBy($approvedBy)
+    {
+        $this->approvedBy = $approvedBy;
+    }
+
+    /**
+     * @return User
+     */
+    public function getVerifiedBy()
+    {
+        return $this->verifiedBy;
+    }
+
+    /**
+     * @param User $verifiedBy
+     */
+    public function setVerifiedBy($verifiedBy)
+    {
+        $this->verifiedBy = $verifiedBy;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getApprovedAt()
+    {
+        return $this->approvedAt;
+    }
+
+    /**
+     * @param \DateTime $approvedAt
+     */
+    public function setApprovedAt($approvedAt)
+    {
+        $this->approvedAt = $approvedAt;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getVerifiedAt()
+    {
+        return $this->verifiedAt;
+    }
+
+    /**
+     * @param \DateTime $verifiedAt
+     */
+    public function setVerifiedAt($verifiedAt)
+    {
+        $this->verifiedAt = $verifiedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRefundAmount()
+    {
+        return $this->refundAmount;
+    }
+
+    /**
+     * @param mixed $refundAmount
+     */
+    public function setRefundAmount($refundAmount)
+    {
+        $this->refundAmount = $refundAmount;
     }
     
     /**
