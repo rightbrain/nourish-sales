@@ -41,6 +41,12 @@ var Order = function()
     }
 
     function addItemForm($collectionHolder) {
+
+        if ($('#order_agent').val() == '') {
+            toastr.error("Please select an agent.");
+            return false;
+        }
+
         var prototype = $collectionHolder.data('prototype');
         var index = $collectionHolder.data('index');
         var $newForm = prototype.replace(/__name__/g, index);
@@ -165,36 +171,36 @@ var Order = function()
             addItemForm($collectionHolder);
         });
 
-        // $("#order_agent").change(function () {
-        //     $collectionHolder.find('tr').remove();
-        //     var agent = $(this).val();
-        //     if (agent == false) {
-        //         $('.hide_button').hide();
-        //         $("div.credit_limit").html('');
-        //     } else {
-        //         Metronic.blockUI({
-        //             target: null,
-        //             animate: true,
-        //             overlayColor: 'black'
-        //         });
-        //         $.ajax({
-        //             type: "post",
-        //             url: Routing.generate('find_agent_ajax'),
-        //             data: "agent=" + agent,
-        //             dataType: 'json',
-        //             success: function (response) {
-        //                 var creditLimit = response.creditLimit;
-        //                 $("div.credit_limit").html(creditLimit);
-        //                 $addTagLink.trigger('click');
-        //                 Metronic.unblockUI();
-        //             },
-        //             error: function(){
-        //                 Metronic.unblockUI();
-        //             }
-        //         });
-        //         $('.hide_button').show();
-        //     }
-        // });
+        $("#order_agent").change(function () {
+            $collectionHolder.find('tr').remove();
+            var agent = $(this).val();
+            if (agent == false) {
+                $('.hide_button').hide();
+            } else {
+                Metronic.blockUI({
+                    target: null,
+                    animate: true,
+                    overlayColor: 'black'
+                });
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('find_agent_ajax'),
+                    data: "agent=" + agent,
+                    dataType: 'json',
+                    success: function (response) {
+                        var item_type_prototype = response.item_type_prototype;
+                        $collectionHolder.data('prototype', item_type_prototype);
+
+                        $addTagLink.trigger('click');
+                        Metronic.unblockUI();
+                    },
+                    error: function(){
+                        Metronic.unblockUI();
+                    }
+                });
+                $('.hide_button').show();
+            }
+        });
 
         $('.order-item-list tbody').on("click keyup", ".quantity", (totalPriceCalculation));
     }

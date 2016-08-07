@@ -5,9 +5,11 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentDoc;
+use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\Stock;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentDocForm;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentUpdateForm;
+use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdatePasswordForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -208,14 +210,14 @@ class AgentController extends BaseController
         $agentRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
         $agent = $agentRepo->find($agentId);
 
-        $response = new Response(json_encode(array(
-            'creditLimit' => $agentRepo->getCurrentCreditLimit($agent),
-            'balance' => $agentRepo->getCurrentBalance($agent)
-        )));
 
-        $response->headers->set('Content-Type', 'application/json');
+        $order = new Order();
+        $order->setAgent($agent);
+        $form = $this->createForm(new OrderForm(0), $order);
+        //$form->get('agent')->setData($agent);
+        $prototype = $this->renderView('@RbsSales/Order/_itemTypePrototype.html.twig', array('form' => $form->createView()));
 
-        return $response;
+        return new JsonResponse(array('item_type_prototype' => $prototype));
     }
 
     /**

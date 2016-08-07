@@ -48,17 +48,37 @@
                                 {% endif %}
                                 </tbody>
                                 <tfoot>
-                                {#{% if isOverCredit == true and order.agent.VIP != true %}#}
-                                    {#<tr><td colspan="4">#}
-                                            {#<div class="alert alert-danger" style="margin-bottom: 0; padding: 2px;">#}
-                                                {#<strong>Notice!</strong> This order amount is over credit.#}
-                                                {#{% if is_granted('ROLE_PAYMENT_OVER_CREDIT_APPROVE') == false %}#}
-                                                    {#Need another approval by management.#}
-                                                {#{% endif %}#}
-                                            {#</div>#}
-                                        {#</td></tr>#}
-                                {#{% endif %}#}
+                                {% if isOverCredit == true and order.agent.VIP != true %}
+                                    <tr><td colspan="4">
+                                            <div class="alert alert-danger" style="margin-bottom: 0; padding: 2px;">
+                                                <strong>Notice!</strong> This order amount is over credit.
+                                                {% if is_granted('ROLE_PAYMENT_OVER_CREDIT_APPROVE') == false %}
+                                                    Need another approval by management.
+                                                {% endif %}
+                                            </div>
+                                        </td></tr>
+                                {% endif %}
                                 </tfoot>
+                            </table>
+
+                            <div style="clear: both"></div>
+                            <br><br>
+                            <table class="table-bordered table-striped table-condensed flip-content col-md-12">
+                                <thead>
+                                <tr>
+                                    <th class="col-md-3">Category</th>
+                                    <th class="text-right col-md-1">Remaining Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for index, row in creditSummary %}
+                                    <tr>
+                                        <td>{{ row.name }}</td>
+                                        <td class="text-right">{{ row.remainAmount|number_format(2) }}</td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
                             </table>
 
                             <div style="clear: both"></div>
@@ -76,7 +96,7 @@
         </a>
         {% if is_granted('ROLE_PAYMENT_OVER_CREDIT_APPROVE') %}
             <a class="btn green confirmation-btn" href="{{ path('approve_credit_payment', {"id": order.id}) }}" data-title="Do you want to approve payment this order?">
-                Credit Payment Approve
+                {% if isOverCredit %}Credit {% endif %} Payment Approve
             </a>
         {% elseif is_granted('ROLE_PAYMENT_APPROVE') %}
             <a class="btn green confirmation-btn" href="{{ path('approve_payment', {"id": order.id}) }}">

@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\ItemRepository;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\RbsSalesBundle;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -12,12 +13,22 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class OrderItemForm extends AbstractType
 {
+    /** @var Agent */
+    private $agent;
+
+    public function __construct($agent = null)
+    {
+        $this->agent = $agent;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $itemTypeId = $this->agent && $this->agent->getItemType() ? $this->agent->getItemType()->getId() :  null;
+
         $builder
             ->add('item', 'entity', array(
                 'class' => 'RbsCoreBundle:Item',
@@ -25,13 +36,19 @@ class OrderItemForm extends AbstractType
                 'required' => false,
                 'empty_value' => 'Select Item',
                 'empty_data' => null,
-                'query_builder' => function (ItemRepository $repository)
+                'query_builder' => function (ItemRepository $repository) use ($itemTypeId)
                 {
-                    return $repository->createQueryBuilder('i')
+                    $qb = $repository->createQueryBuilder('i')
                         ->where('i.deletedAt IS NULL')
-                        ->orderBy('i.name','ASC');
-//                        ->join('i.bundles', 'bundles')
-//                        ->andWhere('bundles.id = :saleBundleId')->setParameter('saleBundleId', RbsSalesBundle::ID);
+                        ->orderBy('i.name','ASC')
+                        ->join('i.bundles', 'bundles')
+                        ->andWhere('bundles.id = :saleBundleId')->setParameter('saleBundleId', RbsSalesBundle::ID);
+                    if ($itemTypeId) {
+                        $qb->join('i.itemType', 'it');
+                        $qb->andWhere($qb->expr()->eq('it.id', $itemTypeId));
+                    }
+
+                    return $qb;
                 }
             ))
             ->add('quantity', 'text', array(

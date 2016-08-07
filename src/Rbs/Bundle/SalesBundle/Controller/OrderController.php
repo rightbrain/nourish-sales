@@ -259,7 +259,7 @@ class OrderController extends BaseController
         $this->checkViewOrderAccess($order);
 
         $deliveryItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->findBy(array(
-            'order' => $order->getId()
+            'order' => $order->getId(),
         ));
 
         $deliveredItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItems($order);
@@ -284,7 +284,7 @@ class OrderController extends BaseController
         if ($this->isGranted('AGENT_INDIVIDUAL')) {
             $isOwnAgent = $this->agentRepository()->findOneBy(array(
                 'agent' => $this->getUser(),
-                'id' => $order->getAgent()->getId()
+                'id' => $order->getAgent()->getId(),
             ));
             if (!$isOwnAgent) {
                 throw new AccessDeniedException('Access Denied');
@@ -414,14 +414,14 @@ class OrderController extends BaseController
      */
     public function paymentReviewAction(Order $order)
     {
-        $agent = $order->getAgent();
-//        $currentCreditLimit = $this->agentRepository()->getCurrentCreditLimit($agent);
-//        $isOverCredit = $currentCreditLimit < $order->getTotalAmount();
+        $creditLimitRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:CreditLimit');
+        $categoryWiseCreditSummary = $creditLimitRepo->getCategoryWiseCreditLimit($order);
+        $isOverCredit = $creditLimitRepo->isOverCreditLimitInAnyCategory($order, $categoryWiseCreditSummary);
 
         return $this->render('RbsSalesBundle:Order:paymentReview.html.twig', array(
             'order' => $order,
-//            'isOverCredit' => $isOverCredit,
-//            'currentCreditLimit' => $currentCreditLimit,
+            'creditSummary' => $categoryWiseCreditSummary,
+            'isOverCredit' => $isOverCredit,
         ));
     }
 
@@ -437,7 +437,7 @@ class OrderController extends BaseController
 
         return $this->render('RbsSalesBundle:Order:orderVerify.html.twig', array(
             'order' => $order,
-            'auditLogs' => $auditLogs
+            'auditLogs' => $auditLogs,
         ));
     }
 
@@ -450,8 +450,9 @@ class OrderController extends BaseController
     public function paymentApproveAction(Order $order)
     {
         $agent = $order->getAgent();
-        $currentCreditLimit = $this->agentRepository()->getCurrentCreditLimit($agent);
-        $isOverCredit = $currentCreditLimit < $order->getTotalAmount();
+        $creditLimitRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:CreditLimit');
+        $categoryWiseCreditSummary = $creditLimitRepo->getCategoryWiseCreditLimit($order);
+        $isOverCredit = $creditLimitRepo->isOverCreditLimitInAnyCategory($order, $categoryWiseCreditSummary);
 
         if (!$agent->isVIP() && $isOverCredit) {
             $order->setPaymentState(Order::PAYMENT_STATE_CREDIT_APPROVAL);
