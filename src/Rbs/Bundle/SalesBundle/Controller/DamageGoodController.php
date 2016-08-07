@@ -185,8 +185,8 @@ class DamageGoodController extends BaseController
         $damageGood->setApprovedBy($this->getUser());
         $this->getDoctrine()->getRepository('RbsSalesBundle:DamageGood')->update($damageGood);
 
-        $adjustment = $em->getRepository('RbsSalesBundle:Payment')->create($payment);
-        $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($adjustment);
+        $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
+        $em->getRepository('RbsSalesBundle:Payment')->create($payment);
 
         $this->get('session')->getFlashBag()->add(
             'success',
