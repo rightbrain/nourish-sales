@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 
 /**
  * OrderItemRepository
@@ -143,5 +144,36 @@ class OrderItemRepository extends EntityRepository
         $query->groupBy('ca.id');
 
         return $query->getQuery()->getScalarResult();
+    }
+
+    public function getCreditStatus(OrderItem $orderItem)
+    {
+        $creditInfo = $this->_em->getRepository('RbsSalesBundle:CreditLimit')
+            ->findOneBy(
+                array(
+                    'agent'    => $orderItem->getOrder()->getAgent(),
+                    'status'   => 'ACTIVE',
+                    'category' => $orderItem->getItem()->getCategory()[0],
+                )
+            );
+
+
+        $qb = $this->createQueryBuilder('oi');
+
+        $qb->select('SUM(oi.totalAmount) AS totalAmount');
+        $qb->addSelect('SUM(oi.paidAmount) AS paidAmount');
+        $qb->addSelect('SUM(oi.totalAmount) - SUM(oi.paidAmount) AS remainAmount');
+
+        $qb->join('oi.item', 'i');
+        $qb->join('i.category', 'c');
+        $qb->join('oi.order', 'o');
+
+        $qb->where('o.createdAt > :startDate')->setParameter('startDate', $creditInfo->getStartDate());
+        $qb->andWhere('o.createdAt < :eneDate')->setParameter('eneDate', $creditInfo->getEndDate());
+        $qb->andWhere($qb->expr()->eq('c.id', ':categoryId'))->setParameter('categoryId', $creditInfo->getCategory()->getId());
+        $qb->groupBy('c.id');
+        $result = $qb->getQuery()->getSingleResult();
+
+        return $result;
     }
 }
