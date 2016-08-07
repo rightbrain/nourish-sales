@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\SmsRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
@@ -27,6 +28,7 @@ class OrderForm extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var Agent $agent */
         $agent = $options['data']->getAgent();
         $refSMS = $options['data']->getRefSms();
 
@@ -105,7 +107,7 @@ class OrderForm extends AbstractType
             ->add('remark');
         $builder
             ->add('orderItems', 'collection', array(
-                'type'         => new OrderItemForm(),
+                'type'         => new OrderItemForm($agent),
                 'allow_add'    => true,
                 'allow_delete' => true,
                 'by_reference' => false,
