@@ -95,7 +95,7 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-        if ($this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')) {
             $menu['Manage System']->addChild('Sale Incentive', array('route' => 'sale_incentive_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('sale_incentive_list')) {
@@ -103,7 +103,7 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-        if ($this->authorizationChecker->isGranted('ROLE_SUPER_ADMIN')) {
+        if ($this->authorizationChecker->isGranted('ROLE_ADMIN', 'ROLE_SUPER_ADMIN')) {
             $menu['Manage System']->addChild('Transport Incentive', array('route' => 'transport_incentive_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('transport_incentive_list')) {
