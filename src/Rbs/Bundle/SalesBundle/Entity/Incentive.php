@@ -263,7 +263,7 @@ class Incentive
     public function isActive()
     {
         $state = false;
-        if($this->getStatus() == Incentive::ACTIVE){
+        if($this->getStatus() == Incentive::PENDING){
             $state = true;
         }
 
