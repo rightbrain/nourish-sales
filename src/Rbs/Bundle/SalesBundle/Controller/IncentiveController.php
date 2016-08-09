@@ -49,7 +49,9 @@ class IncentiveController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-
+            $qb->join('incentives.agent', 'a');
+            $qb->join('a.user', 'u');
+            $qb->join('u.profile', 'p');
         };
         $query->addWhereAll($function);
 
