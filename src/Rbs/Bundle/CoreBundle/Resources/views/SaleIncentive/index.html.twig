@@ -20,6 +20,8 @@
                             </div>
                         </div>
 
+                        {% if groupMonth1|length > 0  %}
+
                         {% for i in 0..groupMonth1 %}
 
                             <div class="col-md-12">
@@ -50,11 +52,15 @@
 
                         {% endfor %}
 
+                        {% endif %}
+
                         <div class="col-md-12">
                             <div class="portlet-title">
                                 <div class="caption" style="font-weight: bolder;">Year</div>
                             </div>
                         </div>
+
+                        {% if groupYear1|length > 0  %}
 
                         {% for i in 0..groupYear1 %}
 
@@ -85,6 +91,8 @@
                             </div>
 
                         {% endfor %}
+
+                        {% endif %}
 
                     <div style="clear: both"></div>
                 </div>
