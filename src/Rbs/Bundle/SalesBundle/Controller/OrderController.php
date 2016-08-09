@@ -416,12 +416,14 @@ class OrderController extends BaseController
     {
         $creditLimitRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:CreditLimit');
         $categoryWiseCreditSummary = $creditLimitRepo->getCategoryWiseCreditLimit($order);
-        $isOverCredit = $creditLimitRepo->isOverCreditLimitInAnyCategory($order, $categoryWiseCreditSummary);
+        $orderItemCategoryTotal = $order->categorySum();
+        $isOverCredit = $creditLimitRepo->isOverCreditLimitInAnyCategory($orderItemCategoryTotal, $categoryWiseCreditSummary);
 
         return $this->render('RbsSalesBundle:Order:paymentReview.html.twig', array(
             'order' => $order,
             'creditSummary' => $categoryWiseCreditSummary,
             'isOverCredit' => $isOverCredit,
+            'orderItemCategoryTotal' => $orderItemCategoryTotal
         ));
     }
 

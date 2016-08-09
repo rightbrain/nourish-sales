@@ -95,19 +95,21 @@ class CreditLimitRepository extends EntityRepository
             
             $data = $this->_em->getRepository('RbsSalesBundle:OrderItem')->getCreditStatus($orderItem);
             $data['name'] = $category->getName();
+            $data['totalAmount'] = (float)$data['totalAmount'];
+            $data['paidAmount'] = (float)$data['paidAmount'];
+            $data['creditRemain'] = (float)$data['creditRemain'];
             $categoryCredit[$category->getId()] = $data;
         }
 
         return $categoryCredit;
     }
     
-    public function isOverCreditLimitInAnyCategory(Order $order, $categoryWiseCreditSummary)
+    public function isOverCreditLimitInAnyCategory($orderItemCategoryTotal, $categoryWiseCreditSummary)
     {
         $isOverCredit = false;
         
-        foreach ($order->getOrderItems() as $orderItem) {
-            $catId = $orderItem->getItem()->getCategory()[0]->getId();
-            if ($categoryWiseCreditSummary[$catId] > $orderItem->getDueAmount()){
+        foreach ($orderItemCategoryTotal as $categoryId => $categoryTotal) {
+            if ($categoryWiseCreditSummary[$categoryId]['creditRemain'] < $categoryTotal){
                 $isOverCredit = true;
                 break;
             }

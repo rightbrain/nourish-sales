@@ -437,4 +437,21 @@ class Order
     {
         $this->location = $location;
     }
+    
+    public function categorySum()
+    {
+        $data = array();
+        /** @var OrderItem $orderItem */
+        foreach ($this->orderItems as $orderItem) {
+            $categoryId = $orderItem->getItem()->getFirstCategory()->getId();
+            
+            if (!isset($data[$categoryId])) {
+                $data[$categoryId] = 0;
+            }
+
+            $data[$categoryId] += $orderItem->getTotalAmount();
+        }
+        
+        return $data;
+    }
 }

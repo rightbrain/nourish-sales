@@ -67,14 +67,16 @@
                                 <thead>
                                 <tr>
                                     <th class="col-md-3">Category</th>
-                                    <th class="text-right col-md-1">Remaining Amount</th>
+                                    <th class="text-right col-md-1">Remaining <br>Credit Limit</th>
+                                    <th class="text-right col-md-1">Remaining <br>Credit Limit</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% for index, row in creditSummary %}
                                     <tr>
                                         <td>{{ row.name }}</td>
-                                        <td class="text-right">{{ row.remainAmount|number_format(2) }}</td>
+                                        <td class="text-right">{{ row.creditRemain|number_format(2) }}</td>
+                                        <td class="text-right">{{ orderItemCategoryTotal[index]|number_format(2) }}</td>
                                     </tr>
                                 {% endfor %}
 

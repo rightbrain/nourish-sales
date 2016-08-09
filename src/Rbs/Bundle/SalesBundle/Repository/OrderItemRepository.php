@@ -157,12 +157,11 @@ class OrderItemRepository extends EntityRepository
                 )
             );
 
-
         $qb = $this->createQueryBuilder('oi');
 
         $qb->select('SUM(oi.totalAmount) AS totalAmount');
         $qb->addSelect('SUM(oi.paidAmount) AS paidAmount');
-        $qb->addSelect('SUM(oi.totalAmount) - SUM(oi.paidAmount) AS remainAmount');
+        $qb->addSelect($creditInfo->getAmount() . ' - SUM(oi.totalAmount) + SUM(oi.paidAmount) AS creditRemain');
 
         $qb->join('oi.item', 'i');
         $qb->join('i.category', 'c');

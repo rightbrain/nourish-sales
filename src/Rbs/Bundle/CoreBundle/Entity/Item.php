@@ -350,4 +350,13 @@ class Item
     {
         $this->dueAmount = $dueAmount;
     }
+
+
+    /**
+     * @return Category
+     */
+    public function getFirstCategory()
+    {
+        return $this->category[0];
+    }
 }
