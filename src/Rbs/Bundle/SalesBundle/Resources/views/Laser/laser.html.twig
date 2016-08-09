@@ -53,7 +53,9 @@
                         <div class="form-group">
                             <div class="col-md-3">
                                 <div class="input-icon right">
-                                    Agent Name: {{ agent.user.username | default('') }}
+                                    {% if agent != null %}
+                                        Agent Name: {{ agent.user.username | default('') }}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -78,17 +80,22 @@
                             </tr>
                             {% for laser in agentLaser %}
                                 <tr>
-                                    <td class="col-md-1 bold">{{ laser['depositDate'] | date('d F y') }}</td>
-                                    <td class="col-md-1 bold">{{ laser['remark'] | default('') }}</td>
-                                    <td class="col-md-1 bold">{{ laser['transactionType'] | default('') }}</td>
-                                    <td class="col-md-1 bold">{% if laser['transactionType'] == 'DR' %}{{ laser['amount'] | number_format }}{% endif %}</td>
-                                    <td class="col-md-1 bold">{% if laser['transactionType'] == 'CR' %}{{ laser['amount'] | number_format }}{% endif %}</td>
+                                    <td class="col-md-1">{{ laser['depositDate'] | date('d F y') }}</td>
+                                    <td class="col-md-1">{{ laser['remark'] | default('') }}</td>
+                                    <td class="col-md-1">{{ laser['transactionType'] | default('') }}</td>
+                                    <td class="col-md-1">{% if laser['transactionType'] == 'DR' %}{{ laser['amount'] | number_format }}{% endif %}</td>
+                                    <td class="col-md-1">{% if laser['transactionType'] == 'CR' %}{{ laser['amount'] | number_format }}{% endif %}</td>
                                 </tr>
                             {% endfor %}
                             <tr>
-                                <td colspan="3" style="text-align: right">Total: </td>
-                                <td>{{ agentDebitLaserTotal | default(0) }}</td>
-                                <td>{{ agentCreditLaserTotal | default(0) }}</td>
+                                <td class="bold" colspan="3" style="text-align: right">Total: </td>
+                                <td class="bold">{{ agentDebitLaserTotal | default(0) }}</td>
+                                <td class="bold">{{ agentCreditLaserTotal | default(0) }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="5">
+                                    Current Balance {{ currentBalance|number_format }}tk
+                                </td>
                             </tr>
                             </tbody>
                         </table>
