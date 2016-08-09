@@ -25,7 +25,8 @@ class OrderReadableSmsDatatable extends BaseDatatable
             'type' => 'GET'
         ));
         
-        $this->columnBuilder->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
+        $this->columnBuilder->add('id', 'column', array('title' => 'Order No'))
+            ->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
             ->add('orderState', 'column', array('title' => 'Order State', 'render' => 'Order.OrderStateFormat'))
             ->add('paymentState', 'column', array('title' => 'Payment State', 'render' => 'Order.OrderStateFormat'))
             ->add('deliveryState', 'column', array('title' => 'Delivery State', 'render' => 'Order.OrderStateFormat'))

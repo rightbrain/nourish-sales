@@ -16,8 +16,10 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  */
 class Incentive
 {
+    const DENIED = 'DENIED';
     const ACTIVE = 'ACTIVE';
-    const INACTIVE = 'INACTIVE';
+    const PENDING = 'PENDING';
+    const APPROVED = 'APPROVED';
 
     const YEAR = 'YEAR';
     const MONTH = 'MONTH';
@@ -69,7 +71,7 @@ class Incentive
     /**
      * @var array $type
      *
-     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE')", nullable=false)
+     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'DENIED', 'APPROVED', 'PENDING')", nullable=false)
      */
     private $status = 'ACTIVE';
 
@@ -256,5 +258,15 @@ class Incentive
     public function setApprovedAt($approvedAt)
     {
         $this->approvedAt = $approvedAt;
+    }
+
+    public function isActive()
+    {
+        $state = false;
+        if($this->getStatus() == Incentive::ACTIVE){
+            $state = true;
+        }
+
+        return $state;
     }
 }
