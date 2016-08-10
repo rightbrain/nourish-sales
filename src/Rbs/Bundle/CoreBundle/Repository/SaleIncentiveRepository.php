@@ -36,18 +36,32 @@ class SaleIncentiveRepository extends EntityRepository
         $this->_em->flush();
         return $this->_em;
     }
-    
-    public function getAllMonthIncentive()
+
+    public function getAllMonthGroupIncentive()
     {
         $query = $this->createQueryBuilder('si');
         $query->join('si.category', 'c');
+        $query->distinct();
         $query->select('si.amount');
         $query->addSelect('si.quantity');
         $query->addSelect('si.group');
-        $query->addSelect('c.name');
         $query->where('si.deletedAt IS NULL');
         $query->andWhere('si.durationType = :month');
         $query->setParameter('month', SaleIncentive::MONTH);
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getAllYearGroupIncentive()
+    {
+        $query = $this->createQueryBuilder('si');
+        $query->distinct();
+        $query->select('si.amount');
+        $query->addSelect('si.quantity');
+        $query->addSelect('si.group');
+        $query->where('si.deletedAt IS NULL');
+        $query->andWhere('si.durationType = :year');
+        $query->setParameter('year', SaleIncentive::YEAR);
 
         return $query->getQuery()->getResult();
     }
@@ -75,21 +89,6 @@ class SaleIncentiveRepository extends EntityRepository
         $query->groupBy('si.group');
 
         return $query->getQuery()->getScalarResult();
-    }
-
-    public function getAllYearIncentive()
-    {
-        $query = $this->createQueryBuilder('si');
-        $query->join('si.category', 'c');
-        $query->select('si.amount');
-        $query->addSelect('si.quantity');
-        $query->addSelect('si.group');
-        $query->addSelect('c.name');
-        $query->where('si.deletedAt IS NULL');
-        $query->andWhere('si.durationType = :YEAR');
-        $query->setParameter('YEAR', SaleIncentive::YEAR);
-
-        return $query->getQuery()->getResult();
     }
 
     public function getAllYearIncentiveByMonthGroup()

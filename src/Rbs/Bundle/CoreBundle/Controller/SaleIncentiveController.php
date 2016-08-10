@@ -2,7 +2,6 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
-use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Entity\SaleIncentive;
 use Rbs\Bundle\CoreBundle\Form\Type\SaleIncentiveForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -25,11 +24,8 @@ class SaleIncentiveController extends BaseController
     public function listAction()
     {
         $groupMonth = array();
-        $groupMonth1 = array();
         $groupYear = array();
-        $groupYear1 = array();
 
-        $saleIncentivesForMonth = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentive();
         $saleIncentivesForMonthGroup = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthIncentiveByMonthGroup();
         $totalMonthGroupName = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getTotalMonthGroupName();
         foreach ($totalMonthGroupName as $key => $groupName) {
@@ -38,17 +34,20 @@ class SaleIncentiveController extends BaseController
                     $groupMonth[$key][$saleIncentive['name']] = $saleIncentive['name'];
                 }
             }
-            foreach ($saleIncentivesForMonth as $i => $saleIncentive) {
-                if($saleIncentive['group'] == $groupName['group']){
-                    $groupMonth1[$key][$i]['amount'] = $saleIncentive['amount'];
-                    $groupMonth1[$key][$i]['quantity'] = $saleIncentive['quantity'];
-                    $groupMonth1[$key][$i]['group'] = $saleIncentive['group'];
-                    $groupMonth1[$key][$i]['name'] = $saleIncentive['name'];
-                }
-            }
         }
 
-        $saleIncentivesForYear = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllYearIncentive();
+        $saleIncentivesForMonthGroup = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllMonthGroupIncentive();
+        $saleIncentiveA = array();
+        foreach ($saleIncentivesForMonthGroup as $i => $saleIncentive) {
+            $saleIncentiveA[$saleIncentive['group']][] = $saleIncentive;
+        }
+
+        $saleIncentivesForYearGroup = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllYearGroupIncentive();
+        $saleIncentiveB = array();
+        foreach ($saleIncentivesForYearGroup as $i => $saleIncentive) {
+            $saleIncentiveB[$saleIncentive['group']][] = $saleIncentive;
+        }
+
         $saleIncentivesForYearGroup = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getAllYearIncentiveByMonthGroup();
         $totalYearGroupName = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getTotalYearGroupName();
         foreach ($totalYearGroupName as $key => $groupName) {
@@ -57,21 +56,13 @@ class SaleIncentiveController extends BaseController
                     $groupYear[$key][$saleIncentive['name']] = $saleIncentive['name'];
                 }
             }
-            foreach ($saleIncentivesForYear as $i => $saleIncentive) {
-                if($saleIncentive['group'] == $groupName['group']){
-                    $groupYear1[$key][$i]['amount'] = $saleIncentive['amount'];
-                    $groupYear1[$key][$i]['quantity'] = $saleIncentive['quantity'];
-                    $groupYear1[$key][$i]['group'] = $saleIncentive['group'];
-                    $groupYear1[$key][$i]['name'] = $saleIncentive['name'];
-                }
-            }
         }
 
         return $this->render('RbsCoreBundle:SaleIncentive:index.html.twig', array(
             'groupMonth' => $groupMonth,
-            'groupMonth1' => $groupMonth1,
             'groupYear' => $groupYear,
-            'groupYear1' => $groupYear1,
+            'saleIncentiveA' => $saleIncentiveA,
+            'saleIncentiveB' => $saleIncentiveB,
         ));
     }
 

@@ -19,10 +19,10 @@
                                 <div class="caption" style="font-weight: bolder;">Month</div>
                             </div>
                         </div>
+                        {% if saleIncentiveA|length > 0  %}
 
-                        {% if groupMonth1|length > 0  %}
-
-                        {% for i in 0..groupMonth1 %}
+                        {% set i = 0 %}
+                        {% for index, saleIncentives in saleIncentiveA %}
 
                             <div class="col-md-12">
                                 <div class="portlet-title">
@@ -37,19 +37,19 @@
                                 <table class="table table-bordered table-striped">
                                     <tbody>
                                         <tr>
-                                            {% for group in groupMonth1[i] %}
+                                            {% for group in saleIncentives %}
                                                 <td class="col-md-1 bold">{{ group['quantity'] }}</td>
                                             {% endfor %}
                                         </tr>
                                         <tr>
-                                            {% for group in groupMonth1[i] %}
+                                            {% for group in saleIncentives %}
                                                 <td class="col-md-1 bold">{{ group['amount'] }}</td>
                                             {% endfor %}
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-
+                            {% set i = i + 1 %}
                         {% endfor %}
 
                         {% endif %}
@@ -60,15 +60,16 @@
                             </div>
                         </div>
 
-                        {% if groupYear1|length > 0  %}
+                        {% if saleIncentiveB|length > 0  %}
 
-                        {% for i in 0..groupYear1 %}
+                        {% set j = 0 %}
+                            {% for index, saleIncentives in saleIncentiveB %}
 
                             <div class="col-md-12">
                                 <div class="portlet-title">
                                     <div class="caption">
 
-                                        {% for groupName in groupYear[i] %}
+                                        {% for groupName in groupYear[j] %}
                                             {{ groupName }} /
                                         {% endfor %}
                                     </div>
@@ -77,19 +78,19 @@
                                 <table class="table table-bordered table-striped">
                                     <tbody>
                                         <tr>
-                                            {% for group in groupYear1[i] %}
+                                            {% for group in saleIncentives %}
                                                 <td class="col-md-1 bold">{{ group['quantity'] }}</td>
                                             {% endfor %}
                                         </tr>
                                         <tr>
-                                            {% for group in groupYear1[i] %}
+                                            {% for group in saleIncentives %}
                                                 <td class="col-md-1 bold">{{ group['amount'] }}</td>
                                             {% endfor %}
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
-
+                            {% set j = j + 1 %}
                         {% endfor %}
 
                         {% endif %}
