@@ -73,7 +73,7 @@ class Incentive
      *
      * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'DENIED', 'APPROVED', 'PENDING')", nullable=false)
      */
-    private $status = 'ACTIVE';
+    private $status = 'PENDING';
 
     /**
      * @var float

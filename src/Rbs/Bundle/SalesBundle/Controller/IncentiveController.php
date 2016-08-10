@@ -25,8 +25,26 @@ class IncentiveController extends BaseController
      */
     public function indexAction(Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
         $datatable = $this->get('rbs_erp.sales.datatable.incentive');
         $datatable->buildDatatable();
+
+        if ('POST' === $request->getMethod()) {
+            $incentive = new Incentive();
+
+            $incentive->setAgent($em->getRepository('RbsSalesBundle:Agent')->find($request->request->get('agent')));
+            $incentive->setType($request->request->get('type'));
+            $incentive->setAmount($request->request->get('amount'));
+            $incentive->setDuration($request->request->get('duration'));
+            $incentive->setDetails($request->request->get('details'));
+            $incentive->setDate(new \DateTime());
+
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Incentive')->create($incentive);
+
+            $this->get('session')->getFlashBag()->add(
+                'success', 'Incentive Add Successfully!'
+            );
+        }
 
         return $this->render('RbsSalesBundle:Incentive:index.html.twig', array(
             'datatable' => $datatable,
@@ -68,6 +86,21 @@ class IncentiveController extends BaseController
     {
         return $this->render('RbsSalesBundle:Incentive:details.html.twig', array(
             'incentive' => $incentive,
+        ));
+    }
+
+    /**
+     * @Route("/incentive/create", name="incentive_create", options={"expose"=true})
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ADMIN")
+     */
+    public function createAction(Request $request)
+    {
+        $agents = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getAll();
+
+        return $this->render('RbsSalesBundle:Incentive:new.html.twig', array(
+            'agents' => $agents
         ));
     }
 
