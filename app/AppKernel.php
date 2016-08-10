@@ -27,6 +27,7 @@ class AppKernel extends Kernel
             new Sg\DatatablesBundle\SgDatatablesBundle(),
             new Xiidea\EasyAuditBundle\XiideaEasyAuditBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
+            new Leezy\PheanstalkBundle\LeezyPheanstalkBundle(),
 
             new Rbs\Bundle\CoreBundle\RbsCoreBundle(),
             new Rbs\Bundle\UserBundle\RbsUserBundle(),

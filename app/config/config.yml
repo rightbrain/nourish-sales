@@ -105,3 +105,10 @@ fos_user:
             name:               fos_user_group_form
             validation_groups:  [Registration, Default]
 
+leezy_pheanstalk:
+    pheanstalks:
+        primary:
+            server: %beanstalkd_host%
+            default: true
+            timeout: 10
+            port: %beanstalkd_port%

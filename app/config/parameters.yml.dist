@@ -22,3 +22,7 @@ parameters:
         endPoint: http://192.168.1.10/rest-server/data.xml
         username: rest
         password: client
+
+    beanstalkd_host: localhost
+    beanstalkd_port: 11300
+    beanstalkd_tube: nsm
