@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "abb5f4fbf4d4311629855410f599b581",
-    "content-hash": "413046a9bd2889ec3bc6ee8760708b1b",
+    "hash": "cb814bb563a9605746661be840016455",
+    "content-hash": "35606c24d2d8856dedfeba4c9d240c9f",
     "packages": [
         {
             "name": "behat/transliterator",
@@ -867,7 +867,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSJsRoutingBundle/zipball/cc33cfd500cb056808a9f937d6c2e589b23ba936",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSJsRoutingBundle/zipball/0b102317cfb4d4f2a8250b9a5dc3480a9cebfb01",
                 "reference": "0b102317cfb4d4f2a8250b9a5dc3480a9cebfb01",
                 "shasum": ""
             },
@@ -925,7 +925,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/d5b28c367d393f9d9fbc48c4138b2a74d51c0c83",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/c3a3843db8a5202a672a5945d8071653a1661e55",
                 "reference": "c3a3843db8a5202a672a5945d8071653a1661e55",
                 "shasum": ""
             },
@@ -1577,7 +1577,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/DoctrineBehaviors/zipball/700415bb83598d266f17fc6991df388437eaf049",
+                "url": "https://api.github.com/repos/KnpLabs/DoctrineBehaviors/zipball/d411af325ed2636f0cf2012bc5ccd0974d189fc4",
                 "reference": "d411af325ed2636f0cf2012bc5ccd0974d189fc4",
                 "shasum": ""
             },
@@ -1826,6 +1826,66 @@
             "time": "2014-12-12 05:04:05"
         },
         {
+            "name": "leezy/pheanstalk-bundle",
+            "version": "3.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/armetiz/LeezyPheanstalkBundle.git",
+                "reference": "958da9fa1239a17ce8c9aff1d0d045f2afb32b48"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/armetiz/LeezyPheanstalkBundle/zipball/958da9fa1239a17ce8c9aff1d0d045f2afb32b48",
+                "reference": "958da9fa1239a17ce8c9aff1d0d045f2afb32b48",
+                "shasum": ""
+            },
+            "require": {
+                "pda/pheanstalk": "~3.0",
+                "php": ">=5.5.9",
+                "psr/log": "~1.0",
+                "symfony/console": "~2.5|~3.0",
+                "symfony/framework-bundle": "~2.5|~3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "phpunit/phpunit-mock-objects": "2.3.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Leezy\\PheanstalkBundle\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Tourlourat",
+                    "email": "thomas@tourlourat.com",
+                    "homepage": "http://www.armetiz.info"
+                }
+            ],
+            "description": "The LeezyPheanstalkBundle is a Symfony2 Bundle that provides a command line interface for manage the Beanstalkd workqueue server & a pheanstalk integration.",
+            "homepage": "https://github.com/armetiz/LeezyPheanstalkBundle",
+            "keywords": [
+                "asynchronous",
+                "beanstalkd",
+                "bundle",
+                "messaging",
+                "pheanstalk",
+                "queueing",
+                "symfony"
+            ],
+            "time": "2016-02-23 08:44:59"
+        },
+        {
             "name": "monolog/monolog",
             "version": "1.15.0",
             "source": {
@@ -1900,6 +1960,56 @@
                 "psr-3"
             ],
             "time": "2015-07-12 13:54:09"
+        },
+        {
+            "name": "pda/pheanstalk",
+            "version": "v3.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pda/pheanstalk.git",
+                "reference": "430e77c551479aad0c6ada0450ee844cf656a18b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pda/pheanstalk/zipball/430e77c551479aad0c6ada0450ee844cf656a18b",
+                "reference": "430e77c551479aad0c6ada0450ee844cf656a18b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Pheanstalk\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Paul Annesley",
+                    "email": "paul@annesley.cc",
+                    "homepage": "http://paul.annesley.cc/",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP client for beanstalkd queue",
+            "homepage": "https://github.com/pda/pheanstalk",
+            "keywords": [
+                "beanstalkd"
+            ],
+            "time": "2015-08-07 21:42:41"
         },
         {
             "name": "phpoption/phpoption",
@@ -2208,7 +2318,7 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stwe/DatatablesBundle/zipball/f0068e77a48a3fb35fce8039df6e62116850001b",
+                "url": "https://api.github.com/repos/stwe/DatatablesBundle/zipball/73ac0ed0ba5adbfe0139b19e1f1c073f4e4c120a",
                 "reference": "73ac0ed0ba5adbfe0139b19e1f1c073f4e4c120a",
                 "shasum": ""
             },
