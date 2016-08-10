@@ -110,6 +110,7 @@ class PaymentController extends BaseController
             $form->handleRequest($request);
 
             if ($form->isValid()) {
+                $payment->setTransactionType(Payment::CR);
                 $em = $this->getDoctrine()->getManager();
                 $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
                 $em->getRepository('RbsSalesBundle:Payment')->create($payment);
@@ -168,7 +169,11 @@ class PaymentController extends BaseController
         $currentBalance = $agentCreditLaserTotal - $agentDebitLaserTotal;
 
         $agentLaser = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentLaser($data);
-        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($data['agent']);
+        if($data['agent'] != null){
+            $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($data['agent']);
+        }else{
+            $agent = null;
+        }
 
         return $this->render('RbsSalesBundle:Laser:laser.html.twig', array(
             'agentLaser' => $agentLaser,

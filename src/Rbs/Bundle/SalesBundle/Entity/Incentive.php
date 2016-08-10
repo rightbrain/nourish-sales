@@ -25,6 +25,8 @@ class Incentive
     const MONTH = 'MONTH';
     const SALE = 'SALE';
     const TRANSPORT = 'TRANSPORT';
+    const TT = 'TT';
+    const DT = 'DT';
 
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
@@ -57,7 +59,7 @@ class Incentive
     /**
      * @var array $type
      *
-     * @ORM\Column(name="type", type="string", length=255, columnDefinition="ENUM('SALE', 'TRANSPORT')", nullable=false)
+     * @ORM\Column(name="type", type="string", length=255, columnDefinition="ENUM('SALE', 'TRANSPORT', 'TT', 'DT')", nullable=false)
      */
     private $type;
     
@@ -73,7 +75,7 @@ class Incentive
      *
      * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'DENIED', 'APPROVED', 'PENDING')", nullable=false)
      */
-    private $status = 'ACTIVE';
+    private $status = 'PENDING';
 
     /**
      * @var float

@@ -33,6 +33,18 @@
                 </div>
             </div>
             <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="btn-group pull-right">
+                                <a class="btn blue" data-target="#ajaxHistory" data-toggle="modal" href="{{ path('incentive_create') }}">
+                                    <i class="fa fa-plus"></i> Add Incentive
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}
                     <div style="clear: both"></div>
