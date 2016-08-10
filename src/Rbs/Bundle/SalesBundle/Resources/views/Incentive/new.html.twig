@@ -7,7 +7,7 @@
 <div class="modal-body">
     <div class="row">
         <div class="col-md-12">
-            <form action="{{ path('incentives_home') }}" method="post">
+            <form action="{{ path('incentive_save') }}" method="post">
             <table class="table">
                 <tr>
                     <td>Agent : </td>
@@ -31,6 +31,8 @@
                         <select name="type" class="form-control select2">
                             <option value="SALE">SALE</option>
                             <option value="TRANSPORT">TRANSPORT</option>
+                            <option value="TT">TT</option>
+                            <option value="DT">DT</option>
                         </select>
                     </td>
                 </tr>
