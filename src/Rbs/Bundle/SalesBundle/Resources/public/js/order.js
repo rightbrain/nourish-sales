@@ -1,21 +1,6 @@
 var Order = function()
 {
     var agent = $("#order_agent").val();
-    // if (agent) {
-    //     $.ajax({
-    //         type: "post",
-    //         url: Routing.generate('find_agent_ajax'),
-    //         data: "agent=" + agent,
-    //         dataType: 'json',
-    //         success: function (response) {
-    //             var creditLimit = response.creditLimit;
-    //             $("div.credit_limit").html(creditLimit);
-    //         },
-    //         error: function(){
-    //             Metronic.unblockUI();
-    //         }
-    //     });
-    // }
 
     function bindItemChangeEvent(collectionHolder) {
         collectionHolder.find('tr').each(function(index, elm){

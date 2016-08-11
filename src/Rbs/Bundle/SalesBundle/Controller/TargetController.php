@@ -23,6 +23,7 @@ class TargetController extends BaseController
      * @Route("/target/list", name="target_list", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_TARGET_MANAGE")
      */
     public function targetListAction(Request $request)
     {
@@ -35,12 +36,11 @@ class TargetController extends BaseController
     }
 
     /**
-     * Lists all Target entities.
-     *
      * @Route("/target_list_ajax", name="target_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_TARGET_MANAGE")
      */
     public function listAjaxAction(Request $request)
     {
@@ -68,6 +68,7 @@ class TargetController extends BaseController
      * @Template("RbsSalesBundle:Target:new.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_TARGET_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -114,6 +115,7 @@ class TargetController extends BaseController
      * @param Request $request
      * @param Target $target
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_TARGET_MANAGE")
      */
     public function updateAction(Request $request, Target $target)
     {
@@ -142,42 +144,10 @@ class TargetController extends BaseController
     }
 
     /**
-     * @Route("/target/sr/update/{id}", name="target_sr_update", options={"expose"=true})
-     * @Template("RbsSalesBundle:Target:update.html.twig")
-     * @param Request $request
-     * @param Target $target
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     */
-    public function updateSrAction(Request $request, Target $target)
-    {
-        $form = $this->createForm(new TargetUpdateForm(), $target);
-
-        if ('POST' === $request->getMethod()) {
-            $form->handleRequest($request);
-
-            if ($form->isValid()) {
-
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->update($target);
-
-                $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'Target Updated Successfully!'
-                );
-
-                return $this->redirect($this->generateUrl('target_my'));
-            }
-        }
-
-        return array(
-            'form' => $form->createView(),
-            'target' => $target
-        );
-    }
-
-    /**
      * @Route("/target/my", name="target_my")
      * @Template("RbsSalesBundle:Target:my.html.twig")
      * @return array|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_RSM_GROUP")
      */
     public function myAction()
     {
@@ -188,69 +158,6 @@ class TargetController extends BaseController
             'targets'       => $targets,
             'srList'       => $srList,
             'user'       => $this->getUser()
-        );
-    }
-
-    /**
-     * @Route("/target/sr/my", name="target_sr_my")
-     * @Template("RbsSalesBundle:Target:sr-my.html.twig")
-     * @return array|\Symfony\Component\HttpFoundation\Response
-     */
-    public function srMyAction()
-    {
-        $target = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->findOneBy(array('user' => $this->getUser()));
-        $myTargets = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->myTarget($this->getUser()->getId());
-
-        return array(
-            'target'       => $target,
-            'myTargets'       => $myTargets,
-        );
-    }
-
-    /**
-     * @Route("/target/sr/{id}", name="target_sr")
-     * @Template("RbsSalesBundle:Target:sr-new.html.twig")
-     * @param Request $request
-     * @param User $user
-     * @return array|\Symfony\Component\HttpFoundation\Response
-     */
-    public function srTargetAction(Request $request, User $user)
-    {
-        $em = $this->getDoctrine()->getManager();
-        $subCategories = $em->getRepository('RbsCoreBundle:SubCategory')->findAll();
-
-        $target = new Target();
-
-        $target->setUser($user);
-
-        foreach ($subCategories as $subCategory) {
-            $subCategoryWiseField = new Target();
-            $subCategoryWiseField->setQuantity(0);
-            $subCategoryWiseField->setSubCategory($subCategory);
-            $targets[] = $subCategoryWiseField;
-            $sc[] = $subCategory->getSubCategoryName();
-        }
-
-        $form = $this->createForm(new TargetForm(), $target, array(
-            'method' => 'POST',
-            'attr' => array('novalidate' => 'novalidate')
-        ));
-
-        $form->get('child_entities')->setData($targets);
-
-        if ('POST' === $request->getMethod()) {
-
-            $form->handleRequest($request);
-
-            if ($form->isValid()) {
-                $em->getRepository('RbsSalesBundle:Target')->create($target);
-                $this->flashMessage('success', 'Target Add Successfully!');
-                return $this->redirect($this->generateUrl('target_my'));
-            }
-        }
-        return array(
-            'form' => $form->createView(),
-            'subCategories' => $sc
         );
     }
 }

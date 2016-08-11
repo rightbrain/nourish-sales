@@ -30,6 +30,10 @@ class SecurityPermissionProvider implements ProviderInterface
                 'ROLE_DELIVERY_MANAGE'
             ),
 
+            'TARGET' => array(
+                'ROLE_TARGET_MANAGE'
+            ),
+
             'DEPO' => array(
                 'ROLE_DEPO_USER'
             )
