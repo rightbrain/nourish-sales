@@ -277,11 +277,11 @@ class OrderController extends BaseController
 
     protected function checkViewOrderAccess(Order $order)
     {
-        if ($this->isGranted('AGENT_INDIVIDUAL') && $order->getAgent()->getUser()->getId() != $this->getUser()->getId()) {
+        if ($this->isGranted('ROLE_AGENT') && $order->getAgent()->getUser()->getId() != $this->getUser()->getId()) {
             throw new AccessDeniedException('Access Denied');
         }
 
-        if ($this->isGranted('AGENT_INDIVIDUAL')) {
+        if ($this->isGranted('ROLE_AGENT')) {
             $isOwnAgent = $this->agentRepository()->findOneBy(array(
                 'agent' => $this->getUser(),
                 'id' => $order->getAgent()->getId(),

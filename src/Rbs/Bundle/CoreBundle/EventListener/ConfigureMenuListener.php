@@ -8,13 +8,14 @@ class ConfigureMenuListener extends ContextAwareListener
 {
     /**
      * @param ConfigureMenuEvent $event
+     * @return MenuItem
      */
     public function onMenuConfigureMain(ConfigureMenuEvent $event)
     {
         /** @var MenuItem $menu */
         $menu = $event->getMenu();
 
-        if ($this->authorizationChecker->isGranted(array('AGENT_INDIVIDUAL'))) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_AGENT'))) {
             return $menu;
         }
 
