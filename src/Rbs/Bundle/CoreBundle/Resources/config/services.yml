@@ -28,15 +28,6 @@ services:
         class: Rbs\Bundle\CoreBundle\Datatables\AuditLogDatatable
         tags:
             - { name: sg.datatable.view }
-
-    rbs_erp.core.datatable.area:
-        class: Rbs\Bundle\CoreBundle\Datatables\AreaDatatable
-        tags:
-            - { name: sg.datatable.view }
-    rbs_erp.core.datatable.cost_header:
-        class: Rbs\Bundle\CoreBundle\Datatables\CostHeaderDatatable
-        tags:
-            - { name: sg.datatable.view }
     rbs_erp.core.datatable.sub_category:
         class: Rbs\Bundle\CoreBundle\Datatables\SubCategoryDatatable
         tags:

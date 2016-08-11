@@ -112,14 +112,6 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-        if ($this->authorizationChecker->isGranted('ROLE_COST_HEADER_MANAGE')) {
-            $menu['Manage System']->addChild('Cost Header', array('route' => 'cost_header'))
-                ->setAttribute('icon', 'fa fa-th-list');
-            if ($this->isMatch('cost_header')) {
-                $menu['Manage System']->getChild('Cost Header')->setCurrent(true);
-            }
-        }
-
         if ($this->authorizationChecker->isGranted('ROLE_VENDOR_MANAGE')) {
             $menu['Manage System']->addChild('Vendors', array('route' => 'vendor'))
                 ->setAttribute('icon', 'fa fa-th-list');

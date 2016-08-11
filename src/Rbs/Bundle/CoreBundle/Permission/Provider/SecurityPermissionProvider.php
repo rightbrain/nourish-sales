@@ -34,8 +34,8 @@ class SecurityPermissionProvider implements ProviderInterface
         if (array_key_exists('RbsPurchaseBundle', $this->bundles)) {
             $roles = array_merge($roles, array(
                 'ROLE_LOCATION_MANAGE', 'ROLE_AUDIT_LOG_VIEW', 'ROLE_CATEGORY_MANAGE',
-                'ROLE_ITEM_MANAGE', 'ROLE_ITEM_TYPE_MANAGE', 'ROLE_COST_HEADER_MANAGE',
-                'ROLE_PROJECT_MANAGE', 'ROLE_PROJECT_TYPE_MANAGE', 'ROLE_VENDOR_MANAGE'
+                'ROLE_ITEM_MANAGE', 'ROLE_ITEM_TYPE_MANAGE', 'ROLE_PROJECT_MANAGE',
+                'ROLE_PROJECT_TYPE_MANAGE', 'ROLE_VENDOR_MANAGE'
             ));
         }
 

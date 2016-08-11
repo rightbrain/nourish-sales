@@ -53,13 +53,6 @@ class SubCategory
     private $category;
 
     /**
-     * @var ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\CostHeader", mappedBy="subCategory")
-     */
-    private $costHeader;
-
-    /**
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
@@ -150,14 +143,6 @@ class SubCategory
     }
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getCostHeader()
-    {
-        return $this->costHeader;
-    }
-
-    /**
      * Get id
      *
      * @return integer
@@ -168,26 +153,19 @@ class SubCategory
     }
 
     /**
-     * Set subCategoryName
-     *
-     * @param string $subCategoryName
-     * @return Category
-     */
-    public function setSubCategoryName($subCategoryName)
-    {
-        $this->subCategoryName = $subCategoryName;
-
-        return $this;
-    }
-
-    /**
-     * Get subCategoryName
-     *
      * @return string
      */
     public function getSubCategoryName()
     {
         return $this->subCategoryName;
+    }
+
+    /**
+     * @param string $subCategoryName
+     */
+    public function setSubCategoryName($subCategoryName)
+    {
+        $this->subCategoryName = $subCategoryName;
     }
 
     /**
