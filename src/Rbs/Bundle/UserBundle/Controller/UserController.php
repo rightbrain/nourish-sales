@@ -153,7 +153,7 @@ class UserController extends Controller
      * @Template("RbsUserBundle:User:update.password.html.twig")
      * @param Request $request
      * @param User $user
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_USER_CREATE, ROLE_ADMIN")
      */
     public function updatePasswordAction(Request $request, User $user)

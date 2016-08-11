@@ -19,10 +19,6 @@ class SecurityPermissionProvider implements ProviderInterface
                 'ROLE_RSM_GROUP', 'ROLE_SR_GROUP'
             ),
 
-            'HEAD_OFFICE' => array(
-                'ROLE_HEAD_OFFICE', 'ROLE_HEAD_OFFICE'
-            ),
-
             'DAMAGE_GOODS' => array(
                 'ROLE_DAMAGE_GOODS_VERIFY', 'ROLE_DAMAGE_GOODS_APPROVE'
             ),
