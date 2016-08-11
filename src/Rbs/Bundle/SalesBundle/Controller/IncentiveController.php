@@ -21,7 +21,7 @@ class IncentiveController extends BaseController
      * @Route("/incentives", name="incentives_home")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_INCENTIVE_MANAGE")
      */
     public function indexAction(Request $request)
     {
@@ -34,11 +34,9 @@ class IncentiveController extends BaseController
     }
     
     /**
-     * Lists all Incentive entities.
-     *
      * @Route("/incentives_list_ajax", name="incentives_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_INCENTIVE_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -63,7 +61,7 @@ class IncentiveController extends BaseController
      * @Route("/incentive/details/{id}", name="incentive_details", options={"expose"=true})
      * @param Incentive $incentive
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_INCENTIVE_MANAGE")
      */
     public function detailsAction(Incentive $incentive)
     {
@@ -76,7 +74,7 @@ class IncentiveController extends BaseController
      * @Route("/incentive/create", name="incentive_create", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_INCENTIVE_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -91,7 +89,7 @@ class IncentiveController extends BaseController
      * @Route("/incentive/save", name="incentive_save", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_INCENTIVE_MANAGE")
      */
     public function saveAction(Request $request)
     {
@@ -121,7 +119,7 @@ class IncentiveController extends BaseController
      * @Route("/incentive/approve/{id}", name="incentive_approve", options={"expose"=true})
      * @param Incentive $incentive
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_INCENTIVE_MANAGE")
      */
     public function orderApproveAction(Incentive $incentive)
     {
@@ -152,7 +150,7 @@ class IncentiveController extends BaseController
      * @Route("/incentive/cancel/{id}", name="incentive_cancel", options={"expose"=true})
      * @param Incentive $incentive
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_INCENTIVE_MANAGE")
      */
     public function orderCancelAction(Incentive $incentive)
     {
