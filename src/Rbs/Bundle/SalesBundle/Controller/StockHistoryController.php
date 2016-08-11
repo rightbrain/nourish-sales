@@ -4,7 +4,6 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\StockHistory;
-use Rbs\Bundle\SalesBundle\Form\Type\StockHistoryForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -41,8 +40,6 @@ class StockHistoryController extends Controller
     }
 
     /**
-     * Lists all Category entities.
-     *
      * @Route("/stock_history_list_ajax/{stock}", name="stock_history_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @param Request $request
