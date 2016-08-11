@@ -25,6 +25,7 @@ class DamageGoodController extends BaseController
      * @Route("/damage/good/list", name="damage_good_list")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_SR_GROUP")
      */
     public function indexAction()
     {
@@ -35,26 +36,11 @@ class DamageGoodController extends BaseController
             'datatable' => $datatable
         ));
     }
-    /**
-     * @Route("/damage/good/admin/list", name="damage_good_admin_list")
-     * @Method("GET")
-     * @Template()
-     */
-    public function indexAdminAction()
-    {
-        $datatable = $this->get('rbs_erp.sales.datatable.damage.good.admin');
-        $datatable->buildDatatable();
-
-        return $this->render('RbsSalesBundle:DamageGood:index.html.twig', array(
-            'datatable' => $datatable
-        ));
-    }
 
     /**
-     * Lists all AgentsBankInfo entities.
-     *
      * @Route("/damage_good_list_ajax", name="damage_good_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_SR_GROUP")
      */
     public function listAjaxAction()
     {
@@ -71,38 +57,6 @@ class DamageGoodController extends BaseController
             $qb->setParameter('user', $this->getUser());
         };
         $query->addWhereAll($function);
-        
-        return $query->getResponse();
-    }
-
-    /**
-     * Lists all AgentsBankInfo entities.
-     *
-     * @Route("/damage_good_admin_list_ajax", name="damage_good_admin_list_ajax", options={"expose"=true})
-     * @Method("GET")
-     */
-    public function listAjaxAdminAction()
-    {
-        $user = $this->getUser();
-        $datatable = $this->get('rbs_erp.sales.datatable.damage.good.admin');
-        $datatable->buildDatatable();
-
-        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
-        /** @var QueryBuilder $qb */
-        $function = function ($qb) use ($user){
-            $qb->join('damage_goods.agent', 'a');
-            $qb->join('damage_goods.user', 'u');
-            if($user->hasRole("ROLE_DAMAGE_GOODS_VERIFY")) {
-                $qb->andWhere('damage_goods.status = :ACTIVE');
-                $qb->setParameter('ACTIVE', DamageGood::ACTIVE);
-            }elseif($user->hasRole("ROLE_DAMAGE_GOODS_APPROVE")){
-                $qb->andWhere('damage_goods.status = :ACTIVE');
-                $qb->setParameter('ACTIVE', DamageGood::VERIFIED);
-            }
-            $qb->orderBy('damage_goods.createdAt', 'DESC');
-        };
-
-        $query->addWhereAll($function);
 
         return $query->getResponse();
     }
@@ -112,6 +66,7 @@ class DamageGoodController extends BaseController
      * @Template("RbsSalesBundle:DamageGood:form.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @JMS\Secure(roles="ROLE_SR_GROUP")
      */
     public function agentBankInfoCreateAction(Request $request)
     {
@@ -140,10 +95,57 @@ class DamageGoodController extends BaseController
     }
 
     /**
+     * @Route("/damage/good/admin/list", name="damage_good_admin_list")
+     * @Method("GET")
+     * @Template()
+     * @JMS\Secure(roles="ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
+     */
+    public function indexAdminAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.damage.good.admin');
+        $datatable->buildDatatable();
+
+        return $this->render('RbsSalesBundle:DamageGood:index.html.twig', array(
+            'datatable' => $datatable
+        ));
+    }
+
+    /**
+     * @Route("/damage_good_admin_list_ajax", name="damage_good_admin_list_ajax", options={"expose"=true})
+     * @Method("GET")
+     * @JMS\Secure(roles="ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
+     */
+    public function listAjaxAdminAction()
+    {
+        $user = $this->getUser();
+        $datatable = $this->get('rbs_erp.sales.datatable.damage.good.admin');
+        $datatable->buildDatatable();
+
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb */
+        $function = function ($qb) use ($user){
+            $qb->join('damage_goods.agent', 'a');
+            $qb->join('damage_goods.user', 'u');
+            if($user->hasRole("ROLE_DAMAGE_GOODS_VERIFY")) {
+                $qb->andWhere('damage_goods.status = :ACTIVE');
+                $qb->setParameter('ACTIVE', DamageGood::ACTIVE);
+            }elseif($user->hasRole("ROLE_DAMAGE_GOODS_APPROVE")){
+                $qb->andWhere('damage_goods.status = :ACTIVE');
+                $qb->setParameter('ACTIVE', DamageGood::VERIFIED);
+            }
+            $qb->orderBy('damage_goods.createdAt', 'DESC');
+        };
+
+        $query->addWhereAll($function);
+
+        return $query->getResponse();
+    }
+
+    /**
      * @Route("/damage/good/verify/{id}", name="damage_goods_verify", options={"expose"=true})
      * @param DamageGood $damageGood
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_ADMIN, ROLE_DAMAGE_GOODS_VERIFY")
+     * @JMS\Secure(roles="ROLE_DAMAGE_GOODS_VERIFY")
      */
     public function verifyAction(DamageGood $damageGood)
     {
@@ -165,7 +167,7 @@ class DamageGoodController extends BaseController
      * @param Request $request
      * @param DamageGood $damageGood
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_ADMIN, ROLE_DAMAGE_GOODS_APPROVE")
+     * @JMS\Secure(roles="ROLE_DAMAGE_GOODS_APPROVE")
      */
     public function approveAction(Request $request, DamageGood $damageGood)
     {
@@ -200,7 +202,7 @@ class DamageGoodController extends BaseController
      * @Route("/damage/good/view/{id}", name="damage_goods_view", options={"expose"=true})
      * @param DamageGood $damageGood
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_ADMIN, ROLE_DAMAGE_GOODS_APPROVE")
+     * @JMS\Secure(roles="ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
      */
     public function viewAction(DamageGood $damageGood)
     {
@@ -213,6 +215,7 @@ class DamageGoodController extends BaseController
      * @Route("/damage/good/doc/view/{id}", name="damage_good_doc_view")
      * @param DamageGood $damageGood
      * @return Response
+     * @JMS\Secure(roles="ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
      */
     public function viewDocAction(DamageGood $damageGood)
     {
