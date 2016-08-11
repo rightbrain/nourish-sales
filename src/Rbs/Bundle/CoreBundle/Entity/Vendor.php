@@ -453,27 +453,6 @@ class Vendor
     }
 
     /**
-     * Get area
-     *
-     * @return Area
-     */
-    public function getArea()
-    {
-        return $this->area;
-    }
-
-    /**
-     * Set area
-     *
-     * @param Area $area
-     * @return Vendor
-     */
-    public function setArea($area)
-    {
-        $this->area = $area;
-    }
-
-    /**
      * @return ArrayCollection
      */
     public function getItemTypes()

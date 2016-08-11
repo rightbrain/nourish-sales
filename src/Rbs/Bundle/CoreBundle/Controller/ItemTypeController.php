@@ -39,7 +39,7 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Lists all Area entities.
+     * Lists all ItemType entities.
      *
      * @Route("/item_type_list_ajax", name="item_type_list_ajax", options={"expose"=true})
      * @Method("GET")

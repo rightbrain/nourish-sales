@@ -64,14 +64,6 @@ class ConfigureMenuListener extends ContextAwareListener
 //            }
 //        }
 
-//        if ($this->authorizationChecker->isGranted('ROLE_AREA_MANAGE')) {
-//            $menu['Manage System']->addChild('Areas', array('route' => 'area'))
-//                ->setAttribute('icon', 'fa fa-map-marker');
-//            if ($this->isMatch('area')) {
-//                $menu['Manage System']->getChild('Areas')->setCurrent(true);
-//            }
-//        }
-
 //        if ($this->authorizationChecker->isGranted(array('ROLE_FACTORY_MANAGE', 'ROLE_PROJECT_MANAGE'))) {
 //            $menu['Manage System']->addChild('Factories', array('route' => 'project'))
 //                ->setAttribute('icon', 'fa fa-th-list');
@@ -109,14 +101,6 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
             if ($this->isMatch('transport_incentive_list')) {
                 $menu['Manage System']->getChild('Transport Incentive')->setCurrent(true);
-            }
-        }
-
-        if ($this->authorizationChecker->isGranted('ROLE_VENDOR_MANAGE')) {
-            $menu['Manage System']->addChild('Vendors', array('route' => 'vendor'))
-                ->setAttribute('icon', 'fa fa-th-list');
-            if ($this->isMatch('vendor')) {
-                $menu['Manage System']->getChild('Vendors')->setCurrent(true);
             }
         }
 

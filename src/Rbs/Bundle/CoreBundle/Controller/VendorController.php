@@ -39,7 +39,7 @@ class VendorController extends Controller
     }
 
     /**
-     * Lists all Area entities.
+     * Lists all Vendor entities.
      *
      * @Route("/vendor_list_ajax", name="vendor_list_ajax", options={"expose"=true})
      * @Method("GET")

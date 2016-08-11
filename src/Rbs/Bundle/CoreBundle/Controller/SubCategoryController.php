@@ -38,7 +38,7 @@ class SubCategoryController extends BaseController
     }
 
     /**
-     * Lists all Area entities.
+     * Lists all SubCategory entities.
      *
      * @Route("/sub_category_list_ajax", name="sub_category_list_ajax", options={"expose"=true})
      * @Method("GET")

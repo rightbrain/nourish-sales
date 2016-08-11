@@ -2,11 +2,9 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
-use Rbs\Bundle\CoreBundle\Repository\AreaRepository;
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\CoreBundle\Repository\ItemTypeRepository;
 use Rbs\Bundle\SalesBundle\Repository\AgentGroupRepository;
-use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

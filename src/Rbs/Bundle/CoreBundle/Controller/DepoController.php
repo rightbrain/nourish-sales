@@ -40,7 +40,7 @@ class DepoController extends BaseController
     }
 
     /**
-     * Lists all Area entities.
+     * Lists all Depo entities.
      *
      * @Route("/depo_list_ajax", name="depo_list_ajax", options={"expose"=true})
      * @Method("GET")

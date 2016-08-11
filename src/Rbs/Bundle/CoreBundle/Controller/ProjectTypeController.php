@@ -39,7 +39,7 @@ class ProjectTypeController extends BaseController
     }
 
     /**
-     * Lists all Area entities.
+     * Lists all ProjectType entities.
      *
      * @Route("/project_type_list_ajax", name="project_type_list_ajax", options={"expose"=true})
      * @Method("GET")

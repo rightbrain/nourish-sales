@@ -196,29 +196,6 @@ class Project
     }
 
     /**
-     * Set projectArea
-     *
-     * @param Area $projectArea
-     * @return Project
-     */
-    public function setProjectArea($projectArea)
-    {
-        $this->projectArea = $projectArea;
-
-        return $this;
-    }
-
-    /**
-     * Get projectArea
-     *
-     * @return Area
-     */
-    public function getProjectArea()
-    {
-        return $this->projectArea;
-    }
-
-    /**
      * Set projectCategory
      *
      * @param ProjectType $projectCategory
