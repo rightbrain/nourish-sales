@@ -34,6 +34,10 @@ class SecurityPermissionProvider implements ProviderInterface
                 'ROLE_TARGET_MANAGE'
             ),
 
+            'SWAPPING' => array(
+                'ROLE_SWAPPING_MANAGE'
+            ),
+
             'DEPO' => array(
                 'ROLE_DEPO_USER'
             )

@@ -2,7 +2,6 @@
 
 namespace Rbs\Bundle\SalesBundle\Controller;
 
-use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Entity\Location;
 use Rbs\Bundle\SalesBundle\Form\Type\SwappingRsmForm;
 use Rbs\Bundle\SalesBundle\Form\Type\SwappingSrForm;
@@ -26,6 +25,7 @@ class SwappingController extends Controller
      * @Route("/swapping/rsm/list", name="swapping_rsm_list", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SWAPPING_MANAGE")
      */
     public function swappingRsmListAction(Request $request)
     {
@@ -43,6 +43,7 @@ class SwappingController extends Controller
      * @param Request $request
      * @param User $user
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SWAPPING_MANAGE")
      */
     public function swappingRsmCreateAction(Request $request, User $user)
     {
@@ -74,6 +75,7 @@ class SwappingController extends Controller
      * @Route("/get_users_by_location/{id}", name="get_users_by_location", options={"expose"=true})
      * @param Location $location
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SWAPPING_MANAGE")
      */
     public function getUsersByLocation(Location $location)
     {
@@ -91,6 +93,7 @@ class SwappingController extends Controller
      * @Route("/swapping/sr/list", name="swapping_sr_list", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SWAPPING_MANAGE")
      */
     public function swappingSrListAction(Request $request)
     {
@@ -108,6 +111,7 @@ class SwappingController extends Controller
      * @param Request $request
      * @param User $user
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @JMS\Secure(roles="ROLE_SWAPPING_MANAGE")
      */
     public function swappingSrCreateAction(Request $request, User $user)
     {
