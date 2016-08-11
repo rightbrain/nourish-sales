@@ -16,11 +16,10 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class LocationController extends BaseController
 {
-
-    //     * @JMS\Secure(roles="ROLE_LOCATION_MANAGE")
     /**
-     *
      * @Route("/filter-location/", name="location_filter", options={"expose"=true})
+     * @param Request $request
+     * @return Response
      */
     public function areaFilterAction(Request $request)
     {
@@ -40,9 +39,12 @@ class LocationController extends BaseController
 
         return new Response($html);
     }
+
     /**
-     *
      * @Route("/filter-location-update/{id}", name="location_filter_update", options={"expose"=true})
+     * @param Request $request
+     * @param User $user
+     * @return Response
      */
     public function areaUpdateFilterAction(Request $request, User $user)
     {
@@ -72,12 +74,10 @@ class LocationController extends BaseController
     }
 
     /**
-     * Lists all Location entities.
-     *
      * @Route("", name="locations")
      * @Template("RbsCoreBundle:Location:index.html.twig")
-     * @JMS\Secure(roles="ROLE_ADMIN, ROLE_SUPER_ADMIN")
      * @return array
+     * @JMS\Secure(roles="ROLE_LOCATION_MANAGE")
      */
     public function indexAction()
     {

@@ -20,10 +20,7 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
  */
 class ItemController extends BaseController
 {
-
     /**
-     * Lists all Item entities.
-     *
      * @Route("", name="item")
      * @Method("GET")
      * @Template()
@@ -41,8 +38,6 @@ class ItemController extends BaseController
     }
 
     /**
-     * Lists all Item entities.
-     *
      * @Route("/item_list_ajax", name="item_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
@@ -64,11 +59,11 @@ class ItemController extends BaseController
     }
 
     /**
-     * Creates a new Item entity.
-     *
      * @Route("/new", name="item_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:Item:new.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function createAction(Request $request)
@@ -95,11 +90,9 @@ class ItemController extends BaseController
     }
 
     /**
-     * Creates a form to create a Item entity.
-     *
      * @param Item $entity The entity
-     *
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     private function createCreateForm(Item $entity)
     {
@@ -117,8 +110,6 @@ class ItemController extends BaseController
     }
 
     /**
-     * Displays a form to create a new Item entity.
-     *
      * @Route("/new", name="item_new")
      * @Method("GET")
      * @Template()
@@ -136,11 +127,11 @@ class ItemController extends BaseController
     }
 
     /**
-     * Finds and displays a Item entity.
-     *
      * @Route("/{id}", name="item_show")
      * @Method("GET")
      * @Template()
+     * @param $id
+     * @return array
      * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function showAction($id)
@@ -162,11 +153,11 @@ class ItemController extends BaseController
     }
 
     /**
-     * Displays a form to edit an existing Item entity.
-     *
      * @Route("/{id}/edit", name="item_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @param $id
+     * @return array
      * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function editAction($id)
@@ -190,11 +181,9 @@ class ItemController extends BaseController
     }
 
     /**
-    * Creates a form to edit a Item entity.
-    *
     * @param Item $entity The entity
-    *
     * @return \Symfony\Component\Form\Form The form
+    * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
     */
     private function createEditForm(Item $entity)
     {
@@ -210,12 +199,14 @@ class ItemController extends BaseController
 
         return $form;
     }
+
     /**
-     * Edits an existing Item entity.
-     *
      * @Route("/{id}/edit", name="item_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:Item:edit.html.twig")
+     * @param Request $request
+     * @param $id
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function updateAction(Request $request, $id)
@@ -253,10 +244,11 @@ class ItemController extends BaseController
     }
 
     /**
-     * Deletes a Item entity.
-     *
      * @Route("/{id}", name="item_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function deleteAction(Request $request, $id)
@@ -280,11 +272,9 @@ class ItemController extends BaseController
     }
 
     /**
-     * Creates a form to delete a Item entity by id.
-     *
      * @param mixed $id The entity id
-     *
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     private function createDeleteForm($id)
     {
@@ -296,10 +286,10 @@ class ItemController extends BaseController
     }
 
     /**
-     * Status Change
-     *
      * @Route("/status-change/{id}", name="item_statue_change", options={"expose"=true})
      * @Method("GET")
+     * @param Item $item
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function statusChangeAction(Item $item)
@@ -319,11 +309,9 @@ class ItemController extends BaseController
     }
 
     /**
-     * find item ajax
      * @Route("find_item_ajax", name="find_item_ajax", options={"expose"=true})
      * @param Request $request
      * @return Response
-     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
      */
     public function findItemAction(Request $request)
     {

@@ -18,13 +18,11 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
  */
 class SubCategoryController extends BaseController
 {
-
     /**
-     * Lists all SubCategory entities.
-     *
      * @Route("", name="subcategory")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_SUB_CATEGORY_MANAGE")
      */
     public function indexAction()
     {
@@ -38,10 +36,9 @@ class SubCategoryController extends BaseController
     }
 
     /**
-     * Lists all SubCategory entities.
-     *
      * @Route("/sub_category_list_ajax", name="sub_category_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_SUB_CATEGORY_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -60,11 +57,12 @@ class SubCategoryController extends BaseController
     }
 
     /**
-     * Creates a new SubCategory entity.
-     *
      * @Route("/", name="subcategory_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:SubCategory:new.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_SUB_CATEGORY_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -87,11 +85,9 @@ class SubCategoryController extends BaseController
     }
 
     /**
-     * Creates a form to create a SubCategory entity.
-     *
      * @param SubCategory $entity The entity
-     *
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_SUB_CATEGORY_MANAGE")
      */
     private function createCreateForm(SubCategory $entity)
     {
@@ -106,11 +102,10 @@ class SubCategoryController extends BaseController
     }
 
     /**
-     * Displays a form to create a new SubCategory entity.
-     *
      * @Route("/new", name="subcategory_new")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_SUB_CATEGORY_MANAGE")
      */
     public function newAction()
     {
@@ -124,11 +119,12 @@ class SubCategoryController extends BaseController
     }
 
     /**
-     * Finds and displays a SubCategory entity.
-     *
      * @Route("/{id}", name="subcategory_show")
      * @Method("GET")
      * @Template()
+     * @param $id
+     * @return array
+     * @JMS\Secure(roles="ROLE_SUB_CATEGORY_MANAGE")
      */
     public function showAction($id)
     {
@@ -149,11 +145,12 @@ class SubCategoryController extends BaseController
     }
 
     /**
-     * Displays a form to edit an existing SubCategory entity.
-     *
      * @Route("/{id}/edit", name="subcategory_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @param $id
+     * @return array
+     * @JMS\Secure(roles="ROLE_SUB_CATEGORY_MANAGE")
      */
     public function editAction($id)
     {
@@ -176,11 +173,9 @@ class SubCategoryController extends BaseController
     }
 
     /**
-    * Creates a form to edit a SubCategory entity.
-    *
     * @param SubCategory $entity The entity
-    *
     * @return \Symfony\Component\Form\Form The form
+    * @JMS\Secure(roles="ROLE_SUB_CATEGORY_MANAGE")
     */
     private function createEditForm(SubCategory $entity)
     {
@@ -195,11 +190,13 @@ class SubCategoryController extends BaseController
     }
 
     /**
-     * Edits an existing SubCategory entity.
-     *
      * @Route("/{id}", name="subcategory_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:SubCategory:edit.html.twig")
+     * @param Request $request
+     * @param $id
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_SUB_CATEGORY_MANAGE")
      */
     public function updateAction(Request $request, $id)
     {
@@ -229,10 +226,12 @@ class SubCategoryController extends BaseController
     }
 
     /**
-     * Deletes a SubCategory entity.
-     *
      * @Route("/{id}", name="subcategory_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_SUB_CATEGORY_MANAGE")
      */
     public function deleteAction(Request $request, $id)
     {
@@ -255,11 +254,9 @@ class SubCategoryController extends BaseController
     }
 
     /**
-     * Creates a form to delete a SubCategory entity by id.
-     *
-     * @param mixed $id The entity id
-     *
+     * @param $id
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_SUB_CATEGORY_MANAGE")
      */
     private function createDeleteForm($id)
     {

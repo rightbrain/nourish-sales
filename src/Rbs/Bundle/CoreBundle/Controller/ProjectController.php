@@ -18,14 +18,11 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
  */
 class ProjectController extends BaseController
 {
-
     /**
-     * Lists all Project entities.
-     *
      * @Route("", name="project")
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE, ROLE_FACTORY_MANAGE")
+     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE")
      */
     public function indexAction()
     {
@@ -39,11 +36,9 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Lists all Project entities.
-     *
      * @Route("/project_list_ajax", name="project_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE, ROLE_FACTORY_MANAGE")
+     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -62,12 +57,12 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Creates a new Project entity.
-     *
      * @Route("/", name="project_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:Project:new.html.twig")
-     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE, ROLE_FACTORY_MANAGE")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -90,11 +85,9 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Creates a form to create a Project entity.
-     *
      * @param Project $entity The entity
-     *
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE")
      */
     private function createCreateForm(Project $entity)
     {
@@ -110,12 +103,10 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Displays a form to create a new Project entity.
-     *
      * @Route("/new", name="project_new")
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE, ROLE_FACTORY_MANAGE")
+     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE")
      */
     public function newAction()
     {
@@ -129,12 +120,12 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Finds and displays a Project entity.
-     *
      * @Route("/{id}", name="project_show")
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE, ROLE_FACTORY_MANAGE")
+     * @param $id
+     * @return array
+     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE")
      */
     public function showAction($id)
     {
@@ -155,12 +146,12 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Displays a form to edit an existing Project entity.
-     *
      * @Route("/{id}/edit", name="project_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE, ROLE_FACTORY_MANAGE")
+     * @param $id
+     * @return array
+     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE")
      */
     public function editAction($id)
     {
@@ -183,11 +174,9 @@ class ProjectController extends BaseController
     }
 
     /**
-    * Creates a form to edit a Project entity.
-    *
     * @param Project $entity The entity
-    *
     * @return \Symfony\Component\Form\Form The form
+    * @JMS\Secure(roles="ROLE_PROJECT_MANAGE")
     */
     private function createEditForm(Project $entity)
     {
@@ -203,12 +192,13 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Edits an existing Project entity.
-     *
      * @Route("/{id}", name="project_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:Project:edit.html.twig")
-     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE, ROLE_FACTORY_MANAGE")
+     * @param Request $request
+     * @param $id
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE")
      */
     public function updateAction(Request $request, $id)
     {
@@ -238,11 +228,12 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Deletes a Project entity.
-     *
      * @Route("/{id}", name="project_delete", options={"expose"=true})
      * @Method("DELETE")
-     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE, ROLE_FACTORY_MANAGE")
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE")
      */
     public function deleteAction(Request $request, $id)
     {
@@ -265,11 +256,9 @@ class ProjectController extends BaseController
     }
 
     /**
-     * Creates a form to delete a Project entity by id.
-     *
      * @param mixed $id The entity id
-     *
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_PROJECT_MANAGE")
      */
     private function createDeleteForm($id)
     {

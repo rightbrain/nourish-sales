@@ -19,13 +19,11 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
  */
 class VendorController extends Controller
 {
-
     /**
-     * Lists all Vendor entities.
-     *
      * @Route("", name="vendor")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_VENDOR_MANAGE")
      */
     public function indexAction()
     {
@@ -39,10 +37,9 @@ class VendorController extends Controller
     }
 
     /**
-     * Lists all Vendor entities.
-     *
      * @Route("/vendor_list_ajax", name="vendor_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_VENDOR_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -61,11 +58,12 @@ class VendorController extends Controller
     }
 
     /**
-     * Creates a new Vendor entity.
-     *
      * @Route("/", name="vendor_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:Vendor:new.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_VENDOR_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -88,11 +86,9 @@ class VendorController extends Controller
     }
 
     /**
-     * Creates a form to create a Vendor entity.
-     *
-     * @param Vendor $entity The entity
-     *
+     * @param Vendor $entity
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_VENDOR_MANAGE")
      */
     private function createCreateForm(Vendor $entity)
     {
@@ -107,11 +103,10 @@ class VendorController extends Controller
     }
 
     /**
-     * Displays a form to create a new Vendor entity.
-     *
      * @Route("/new", name="vendor_new")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_VENDOR_MANAGE")
      */
     public function newAction()
     {
@@ -125,11 +120,12 @@ class VendorController extends Controller
     }
 
     /**
-     * Finds and displays a Vendor entity.
-     *
      * @Route("/{id}", name="vendor_show")
      * @Method("GET")
      * @Template()
+     * @param $id
+     * @return array
+     * @JMS\Secure(roles="ROLE_VENDOR_MANAGE")
      */
     public function showAction($id)
     {
@@ -150,11 +146,12 @@ class VendorController extends Controller
     }
 
     /**
-     * Displays a form to edit an existing Vendor entity.
-     *
      * @Route("/{id}/edit", name="vendor_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @param $id
+     * @return array
+     * @JMS\Secure(roles="ROLE_VENDOR_MANAGE")
      */
     public function editAction($id)
     {
@@ -177,12 +174,10 @@ class VendorController extends Controller
     }
 
     /**
-    * Creates a form to edit a Vendor entity.
-    *
-    * @param Vendor $entity The entity
-    *
-    * @return \Symfony\Component\Form\Form The form
-    */
+     * @param Vendor $entity
+     * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_VENDOR_MANAGE")
+     */
     private function createEditForm(Vendor $entity)
     {
         $form = $this->createForm(new VendorForm(), $entity, array(
@@ -194,12 +189,15 @@ class VendorController extends Controller
 
         return $form;
     }
+
     /**
-     * Edits an existing Vendor entity.
-     *
      * @Route("/{id}", name="vendor_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:Vendor:edit.html.twig")
+     * @param Request $request
+     * @param $id
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_VENDOR_MANAGE")
      */
     public function updateAction(Request $request, $id)
     {
@@ -227,11 +225,14 @@ class VendorController extends Controller
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
-     * Deletes a Vendor entity.
-     *
      * @Route("/{id}", name="vendor_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_VENDOR_MANAGE")
      */
     public function deleteAction(Request $request, $id)
     {
@@ -254,11 +255,9 @@ class VendorController extends Controller
     }
 
     /**
-     * Creates a form to delete a Vendor entity by id.
-     *
-     * @param mixed $id The entity id
-     *
+     * @param $id
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_VENDOR_MANAGE")
      */
     private function createDeleteForm($id)
     {

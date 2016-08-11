@@ -2,10 +2,7 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
-use Doctrine\ORM\QueryBuilder;
-use Rbs\Bundle\CoreBundle\Entity\SaleIncentive;
 use Rbs\Bundle\CoreBundle\Entity\TransportIncentive;
-use Rbs\Bundle\CoreBundle\Form\Type\SaleIncentiveForm;
 use Rbs\Bundle\CoreBundle\Form\Type\TransportIncentiveForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -23,6 +20,7 @@ class TransportIncentiveController extends BaseController
     /**
      * @Route("/transport/incentive/list", name="transport_incentive_list")
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_TRANSPORT_INCENTIVE_MANAGE")
      */
     public function listAction()
     {
@@ -44,9 +42,6 @@ class TransportIncentiveController extends BaseController
             ksort($transportIncentivesArr[$transportIncentive['district']][$transportIncentive['station']]['data'][$transportIncentive['depo']]);
         }
 
-//        print_r('<pre>');
-//        print_r($transportIncentivesArr); exit;
-
         return $this->render('RbsCoreBundle:TransportIncentive:index.html.twig', array(
                 'transportIncentivesArr' => $transportIncentivesArr,
                 'depos' => $depos,
@@ -60,6 +55,7 @@ class TransportIncentiveController extends BaseController
      * @Template("RbsCoreBundle:TransportIncentive:form.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_TRANSPORT_INCENTIVE_MANAGE")
      */
     public function createAction(Request $request)
     {

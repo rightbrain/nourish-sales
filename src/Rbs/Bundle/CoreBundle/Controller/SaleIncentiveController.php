@@ -20,6 +20,7 @@ class SaleIncentiveController extends BaseController
     /**
      * @Route("/sale/incentive/list", name="sale_incentive_list")
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SALE_INCENTIVE_MANAGE")
      */
     public function listAction()
     {
@@ -71,6 +72,7 @@ class SaleIncentiveController extends BaseController
      * @Template("RbsCoreBundle:SaleIncentive:form.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SALE_INCENTIVE_MANAGE")
      */
     public function createAction(Request $request)
     {

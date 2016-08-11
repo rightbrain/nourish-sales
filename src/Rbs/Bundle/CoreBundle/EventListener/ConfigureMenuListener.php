@@ -56,24 +56,6 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
-//            $menu['Manage System']->addChild('Sub Categories', array('route' => 'subcategory'))
-//                ->setAttribute('icon', 'fa fa-th-list');
-//            if ($this->isMatch('subcategory')) {
-//                $menu['Manage System']->getChild('Sub Categories')->setCurrent(true);
-//            }
-
-//            $menu['Manage System']->addChild('Factories', array('route' => 'project'))
-//                ->setAttribute('icon', 'fa fa-th-list');
-//            if ($this->isMatch('project') && !$this->isMatch('projecttype')) {
-//                $menu['Manage System']->getChild('Factories')->setCurrent(true);
-//            }
-
-//            $menu['Manage System']->addChild('Factory Types', array('route' => 'projecttype'))
-//                ->setAttribute('icon', 'fa fa-th-list');
-//            if ($this->isMatch('projecttype')) {
-//                $menu['Manage System']->getChild('Factory Types')->setCurrent(true);
-//            }
-
         if ($this->authorizationChecker->isGranted('ROLE_DEPO_MANAGE')) {
             $menu['Manage System']->addChild('Depos', array('route' => 'depo'))
                 ->setAttribute('icon', 'fa fa-th-list');

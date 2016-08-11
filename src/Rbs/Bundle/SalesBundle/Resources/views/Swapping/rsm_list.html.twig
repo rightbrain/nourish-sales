@@ -28,7 +28,7 @@
                         <tr>
                             <td>{{ loop.index }}</td>
                             <td>{{ rsm.profile.fullname }}</td>
-                            <td>{{ rsm.location.name | default('') }}</td>
+                            <td>{{ rsm.zilla.name }}</td>
                             <td><a href="{{ path('swapping_rsm_create', {'id': rsm.id }) }}"> Swap </a></td>
                         </tr>
                     {% endfor %}

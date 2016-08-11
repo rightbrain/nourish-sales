@@ -19,10 +19,7 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
  */
 class DepoController extends BaseController
 {
-
     /**
-     * Lists all Depo entities.
-     *
      * @Route("", name="depo")
      * @Method("GET")
      * @Template()
@@ -40,8 +37,6 @@ class DepoController extends BaseController
     }
 
     /**
-     * Lists all Depo entities.
-     *
      * @Route("/depo_list_ajax", name="depo_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @JMS\Secure(roles="ROLE_DEPO_MANAGE")
@@ -63,14 +58,12 @@ class DepoController extends BaseController
     }
 
     /**
-     * Creates a new Depo entity.
-     *
      * @Route("/", name="depo_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:Depo:new.html.twig")
-     * @JMS\Secure(roles="ROLE_DEPO_MANAGE")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_DEPO_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -93,11 +86,9 @@ class DepoController extends BaseController
     }
 
     /**
-     * Creates a form to create a Depo entity.
-     *
      * @param Depo $entity The entity
-     *
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_DEPO_MANAGE")
      */
     private function createCreateForm(Depo $entity)
     {
@@ -112,8 +103,6 @@ class DepoController extends BaseController
     }
 
     /**
-     * Displays a form to create a new Depo entity.
-     *
      * @Route("/new", name="depo_new")
      * @Method("GET")
      * @Template()
@@ -131,11 +120,11 @@ class DepoController extends BaseController
     }
 
     /**
-     * Finds and displays a Depo entity.
-     *
      * @Route("/{id}", name="depo_show")
      * @Method("GET")
      * @Template()
+     * @param $id
+     * @return array
      * @JMS\Secure(roles="ROLE_DEPO_MANAGE")
      */
     public function showAction($id)
@@ -157,11 +146,11 @@ class DepoController extends BaseController
     }
 
     /**
-     * Displays a form to edit an existing Depo entity.
-     *
      * @Route("/{id}/edit", name="depo_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @param $id
+     * @return array
      * @JMS\Secure(roles="ROLE_DEPO_MANAGE")
      */
     public function editAction($id)
@@ -185,11 +174,9 @@ class DepoController extends BaseController
     }
 
     /**
-     * Creates a form to edit a Depo entity.
-     *
      * @param Depo $entity The entity
-     *
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_DEPO_MANAGE")
      */
     private function createEditForm(Depo $entity)
     {
@@ -204,11 +191,12 @@ class DepoController extends BaseController
     }
 
     /**
-     * Edits an existing Depo entity.
-     *
      * @Route("/{id}", name="depo_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:Depo:edit.html.twig")
+     * @param Request $request
+     * @param $id
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_DEPO_MANAGE")
      */
     public function updateAction(Request $request, $id)
@@ -239,10 +227,11 @@ class DepoController extends BaseController
     }
 
     /**
-     * Deletes a Depo entity.
-     *
      * @Route("/{id}", name="depo_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_DEPO_MANAGE")
      */
     public function deleteAction(Request $request, $id)
@@ -266,11 +255,9 @@ class DepoController extends BaseController
     }
 
     /**
-     * Creates a form to delete a Depo entity by id.
-     *
      * @param mixed $id The entity id
-     *
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_DEPO_MANAGE")
      */
     private function createDeleteForm($id)
     {

@@ -17,7 +17,6 @@ class AuditLogController extends BaseController
 {
 
     /**
-     *
      * @Route("", name="audit_log")
      * @Method("GET")
      * @Template()
@@ -34,7 +33,6 @@ class AuditLogController extends BaseController
     }
 
     /**
-     *
      * @Route("/audit_log_list_ajax", name="audit_log_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @JMS\Secure(roles="ROLE_AUDIT_LOG_VIEW")

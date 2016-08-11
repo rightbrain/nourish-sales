@@ -18,10 +18,7 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
  */
 class CategoryController extends BaseController
 {
-
     /**
-     * Lists all Category entities.
-     *
      * @Route("", name="category")
      * @Method("GET")
      * @Template()
@@ -39,8 +36,6 @@ class CategoryController extends BaseController
     }
 
     /**
-     * Lists all Category entities.
-     *
      * @Route("/category_list_ajax", name="category_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
@@ -61,14 +56,12 @@ class CategoryController extends BaseController
         return $query->getResponse();
     }
 
-
-
     /**
-     * Creates a new Category entity.
-     *
      * @Route("/", name="category_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:Category:new.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function createAction(Request $request)
@@ -93,11 +86,9 @@ class CategoryController extends BaseController
     }
 
     /**
-     * Creates a form to create a Category entity.
-     *
      * @param Category $entity The entity
-     *
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     private function createCreateForm(Category $entity)
     {
@@ -115,8 +106,6 @@ class CategoryController extends BaseController
     }
 
     /**
-     * Displays a form to create a new Category entity.
-     *
      * @Route("/new", name="category_new")
      * @Method("GET")
      * @Template()
@@ -134,11 +123,11 @@ class CategoryController extends BaseController
     }
 
     /**
-     * Finds and displays a Category entity.
-     *
      * @Route("/{id}", name="category_show")
      * @Method("GET")
      * @Template()
+     * @param $id
+     * @return array
      * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function showAction($id)
@@ -160,11 +149,11 @@ class CategoryController extends BaseController
     }
 
     /**
-     * Displays a form to edit an existing Category entity.
-     *
      * @Route("/{id}/edit", name="category_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @param $id
+     * @return array
      * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function editAction($id)
@@ -188,11 +177,9 @@ class CategoryController extends BaseController
     }
 
     /**
-    * Creates a form to edit a Category entity.
-    *
     * @param Category $entity The entity
-    *
     * @return \Symfony\Component\Form\Form The form
+    * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
     */
     private function createEditForm(Category $entity)
     {
@@ -208,12 +195,14 @@ class CategoryController extends BaseController
 
         return $form;
     }
+
     /**
-     * Edits an existing Category entity.
-     *
      * @Route("/{id}", name="category_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:Category:edit.html.twig")
+     * @param Request $request
+     * @param $id
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function updateAction(Request $request, $id)
@@ -242,11 +231,13 @@ class CategoryController extends BaseController
             'delete_form' => $deleteForm->createView(),
         );
     }
+
     /**
-     * Deletes a Category entity.
-     *
      * @Route("/{id}", name="category_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     public function deleteAction(Request $request, $id)
@@ -271,11 +262,9 @@ class CategoryController extends BaseController
     }
 
     /**
-     * Creates a form to delete a Category entity by id.
-     *
      * @param mixed $id The entity id
-     *
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_CATEGORY_MANAGE")
      */
     private function createDeleteForm($id)
     {

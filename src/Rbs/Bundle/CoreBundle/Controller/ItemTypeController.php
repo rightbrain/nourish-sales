@@ -20,8 +20,6 @@ class ItemTypeController extends BaseController
 {
 
     /**
-     * Lists all ItemType entities.
-     *
      * @Route("", name="itemtype")
      * @Method("GET")
      * @Template()
@@ -39,8 +37,6 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Lists all ItemType entities.
-     *
      * @Route("/item_type_list_ajax", name="item_type_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
@@ -62,11 +58,11 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Creates a new ItemType entity.
-     *
      * @Route("/", name="itemtype_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:ItemType:new.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function createAction(Request $request)
@@ -90,11 +86,9 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Creates a form to create a ItemType entity.
-     *
      * @param ItemType $entity The entity
-     *
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     private function createCreateForm(ItemType $entity)
     {
@@ -112,8 +106,6 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Displays a form to create a new ItemType entity.
-     *
      * @Route("/new", name="itemtype_new")
      * @Method("GET")
      * @Template()
@@ -131,11 +123,11 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Finds and displays a ItemType entity.
-     *
      * @Route("/{id}", name="itemtype_show")
      * @Method("GET")
      * @Template()
+     * @param $id
+     * @return array
      * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function showAction($id)
@@ -157,11 +149,11 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Displays a form to edit an existing ItemType entity.
-     *
      * @Route("/{id}/edit", name="itemtype_edit", options={"expose"=true})
      * @Method("GET")
      * @Template()
+     * @param $id
+     * @return array
      * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function editAction($id)
@@ -185,11 +177,9 @@ class ItemTypeController extends BaseController
     }
 
     /**
-    * Creates a form to edit a ItemType entity.
-    *
     * @param ItemType $entity The entity
-    *
     * @return \Symfony\Component\Form\Form The form
+    * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
     */
     private function createEditForm(ItemType $entity)
     {
@@ -207,11 +197,12 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Edits an existing ItemType entity.
-     *
      * @Route("/{id}", name="itemtype_update")
      * @Method("PUT")
      * @Template("RbsCoreBundle:ItemType:edit.html.twig")
+     * @param Request $request
+     * @param $id
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function updateAction(Request $request, $id)
@@ -242,10 +233,11 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Deletes a ItemType entity.
-     *
      * @Route("/{id}", name="itemtype_delete", options={"expose"=true})
      * @Method("DELETE")
+     * @param Request $request
+     * @param $id
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     public function deleteAction(Request $request, $id)
@@ -269,11 +261,9 @@ class ItemTypeController extends BaseController
     }
 
     /**
-     * Creates a form to delete a ItemType entity by id.
-     *
      * @param mixed $id The entity id
-     *
      * @return \Symfony\Component\Form\Form The form
+     * @JMS\Secure(roles="ROLE_ITEM_TYPE_MANAGE")
      */
     private function createDeleteForm($id)
     {

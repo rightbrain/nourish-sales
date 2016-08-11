@@ -50,11 +50,11 @@ class SwappingController extends Controller
         $form = $this->createForm(new SwappingRsmForm($user), $user);
 
         if ('POST' === $request->getMethod()) {
-            $user->setLocation($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('rsm_swap')['areaNew']));
+            $user->setZilla($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('rsm_swap')['areaNew']));
             $em->getRepository('RbsUserBundle:User')->update($user);
 
             $userSwapping = $em->getRepository('RbsUserBundle:User')->find($request->request->get('rsm_swap')['userChange']);
-            $userSwapping->setLocation($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('rsm_swap')['areaOld']));
+            $userSwapping->setZilla($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('rsm_swap')['areaOld']));
             $em->getRepository('RbsUserBundle:User')->update($userSwapping);
 
             $this->get('session')->getFlashBag()->add(
@@ -115,7 +115,7 @@ class SwappingController extends Controller
         $form = $this->createForm(new SwappingSrForm($user), $user);
 
         if ('POST' === $request->getMethod()) {
-            $user->setLocation($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('sr_swap')['location']));
+            $user->setZilla($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('sr_swap')['location']));
             $em->getRepository('RbsUserBundle:User')->update($user);
 
             $this->get('session')->getFlashBag()->add(
