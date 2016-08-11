@@ -3,14 +3,10 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
-use Rbs\Bundle\CoreBundle\Entity\Item;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
-use Rbs\Bundle\SalesBundle\Entity\AgentsBankInfo;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
-use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
-use Rbs\Bundle\SalesBundle\Form\Type\AgentsBankInfoForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -31,7 +27,7 @@ class OrderController extends BaseController
      * @Route("/orders", name="orders_home")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function indexAction(Request $request)
     {
@@ -47,6 +43,7 @@ class OrderController extends BaseController
      * @Route("/orders/my", name="orders_my_home")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_AGENT")
      */
     public function myOrdersAction(Request $request)
     {
@@ -58,10 +55,9 @@ class OrderController extends BaseController
         ));
     }
     /**
-     * Lists all Category entities.
-     *
      * @Route("/orders_list_my_ajax", name="orders_list_my_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_AGENT")
      */
     public function listAjaxMyAction()
     {
@@ -87,11 +83,9 @@ class OrderController extends BaseController
     }
     
     /**
-     * Lists all Category entities.
-     *
      * @Route("/orders_list_ajax", name="orders_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function listAjaxAction()
     {
@@ -123,7 +117,7 @@ class OrderController extends BaseController
      * @Route("/order/readable/sms", name="order_readable_sms")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function indexOrderReadableSmsAction(Request $request)
     {
@@ -136,11 +130,9 @@ class OrderController extends BaseController
     }
     
     /**
-     * Lists all Order entities.
-     *
      * @Route("/order_readable_sms_list_ajax", name="order_readable_sms_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function listAjaxOrderReadableSmsAction()
     {
@@ -252,7 +244,7 @@ class OrderController extends BaseController
      * @Route("/order/details/{id}", name="order_details", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function detailsAction(Order $order)
     {
@@ -293,10 +285,10 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_ORDER_APPROVE")
      * @Route("/order/approve/{id}", name="order_approve", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ORDER_APPROVE")
      */
     public function orderApproveAction(Order $order)
     {
@@ -319,10 +311,10 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL, ROLE_ORDER_EDIT")
      * @Route("/order/cancel/{id}", name="order_cancel", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL, ROLE_ORDER_EDIT")
      */
     public function orderCancelAction(Order $order)
     {
@@ -340,10 +332,10 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_ORDER_APPROVE")
      * @Route("/order/hold/{id}", name="order_hold", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ORDER_APPROVE")
      */
     public function orderHoldAction(Order $order)
     {
@@ -366,10 +358,10 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      * @Route("/order/summery/view/{id}", name="order_summery_view", options={"expose"=true})
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function summeryViewAction(Order $order)
     {
@@ -407,10 +399,10 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_PAYMENT_APPROVE")
      * @Route("/order/{id}/payment-review", name="review_payment")
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_PAYMENT_APPROVE")
      */
     public function paymentReviewAction(Order $order)
     {
@@ -428,10 +420,10 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_ORDER_VERIFY")
      * @Route("/order/{id}/order-review", name="order_review")
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ORDER_VERIFY")
      */
     public function orderReviewAction(Order $order)
     {
@@ -444,10 +436,10 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_PAYMENT_APPROVE")
      * @Route("/order/{id}/approve-payment", name="approve_payment")
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_PAYMENT_APPROVE")
      */
     public function paymentApproveAction(Order $order)
     {
@@ -476,10 +468,10 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      * @Route("/order/{id}/approve-credit-payment", name="approve_credit_payment")
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function paymentOverCreditApproveAction(Order $order)
     {
@@ -501,10 +493,10 @@ class OrderController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_ORDER_VERIFY")
      * @Route("/order/{id}/verify", name="order_verify")
      * @param Order $order
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ORDER_VERIFY")
      */
     public function orderVerifyAction(Order $order)
     {
