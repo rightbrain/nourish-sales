@@ -31,8 +31,6 @@ class SmsController extends Controller
     }
 
     /**
-     * Lists all Sms entities.
-     *
      * @Route("/sms_list_ajax", name="sms_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @JMS\Secure(roles="ROLE_ORDER_VIEW")
@@ -68,8 +66,6 @@ class SmsController extends Controller
     }
     
     /**
-     * Lists all Sms entities.
-     *
      * @Route("/readable_sms_list_ajax", name="readable_sms_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @JMS\Secure(roles="ROLE_ORDER_VIEW")
