@@ -25,6 +25,7 @@ class AgentsBankInfoController extends BaseController
      * @Route("/bank/info/list", name="bank_info_list")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_AGENT")
      */
     public function indexAction()
     {
@@ -37,10 +38,9 @@ class AgentsBankInfoController extends BaseController
     }
 
     /**
-     * Lists all AgentsBankInfo entities.
-     *
      * @Route("/bank_info_list_ajax", name="bank_info_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_AGENT")
      */
     public function listAjaxAction()
     {
@@ -67,6 +67,7 @@ class AgentsBankInfoController extends BaseController
      * @Template("RbsSalesBundle:Agent:bank_slip_upload.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_AGENT")
      */
     public function agentBankInfoCreateAction(Request $request)
     {

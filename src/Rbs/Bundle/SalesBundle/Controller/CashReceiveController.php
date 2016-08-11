@@ -25,6 +25,7 @@ class CashReceiveController extends BaseController
      * @Route("/cash/receive/list", name="cash_receive_list", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CASH_RECEIVE_MANAGE")
      */
     public function cashReceiveListAction(Request $request)
     {
@@ -37,12 +38,11 @@ class CashReceiveController extends BaseController
     }
 
     /**
-     * Lists all CashReceive entities.
-     *
      * @Route("/cash_receive_list_ajax", name="cash_receive_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CASH_RECEIVE_MANAGE")
      */
     public function listAjaxAction(Request $request)
     {
@@ -70,6 +70,7 @@ class CashReceiveController extends BaseController
      * @Template("RbsSalesBundle:CashReceive:form.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CASH_RECEIVE_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -130,6 +131,7 @@ class CashReceiveController extends BaseController
      * @Route("/cash/receive/from/depo/list", name="cash_receive_from_depo_list", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CASH_RECEIVE_MANAGE")
      */
     public function cashReceiveFromDepoListAction(Request $request)
     {
@@ -152,6 +154,7 @@ class CashReceiveController extends BaseController
      * @Route("/cash/receive/from/depo/details/{id}", name="cash_receive_from_depo_details", options={"expose"=true})
      * @param Depo $depo
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CASH_RECEIVE_MANAGE")
      */
     public function cashReceiveFromDepoDetailsListAction(Depo $depo)
     {
@@ -168,6 +171,7 @@ class CashReceiveController extends BaseController
      * @Route("/cash/receive/from/depo/receive/details/{id}", name="cash_receive_from_depo_receive_details", options={"expose"=true})
      * @param Depo $depo
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CASH_RECEIVE_MANAGE")
      */
     public function cashReceiveFromDepoReceiveDetailsListAction(Depo $depo)
     {

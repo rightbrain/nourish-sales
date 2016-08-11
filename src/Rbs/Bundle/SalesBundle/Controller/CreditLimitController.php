@@ -25,6 +25,7 @@ class CreditLimitController extends BaseController
      * @Route("/credit/limit/list", name="credit_limit_list", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CREDIT_LIMIT_MANAGE")
      */
     public function creditLimitListAction(Request $request)
     {
@@ -37,12 +38,11 @@ class CreditLimitController extends BaseController
     }
 
     /**
-     * Lists all CreditLimit entities.
-     *
      * @Route("/credit_limit_list_ajax", name="credit_limit_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CREDIT_LIMIT_MANAGE")
      */
     public function listAjaxAction(Request $request)
     {
@@ -67,6 +67,7 @@ class CreditLimitController extends BaseController
      * @Template("RbsSalesBundle:CreditLimit:new.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CREDIT_LIMIT_MANAGE")
      */
     public function createAction(Request $request)
     {
@@ -127,6 +128,7 @@ class CreditLimitController extends BaseController
     /**
      * @Route("/credit/limit/notification/list", name="credit_limit_notification_list")
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CREDIT_LIMIT_MANAGE")
      */
     public function creditLimitNotificationListAction()
     {
@@ -142,6 +144,7 @@ class CreditLimitController extends BaseController
      * @Template("RbsSalesBundle:CreditLimit:new_form.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_CREDIT_LIMIT_MANAGE")
      */
     public function addAction(Request $request)
     {

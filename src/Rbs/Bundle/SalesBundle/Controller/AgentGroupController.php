@@ -21,6 +21,7 @@ class AgentGroupController extends Controller
      * @Route("/agent/groups", name="agent_groups_home")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
      */
     public function indexAction()
     {
@@ -35,10 +36,9 @@ class AgentGroupController extends Controller
     }
 
     /**
-     * Lists all AgentGroup entities.
-     *
      * @Route("/agent_groups_list_ajax", name="agent_groups_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
      */
     public function listAjaxAction()
     {
@@ -59,7 +59,8 @@ class AgentGroupController extends Controller
      * @Route("/agent/group/create", name="agent_group_create")
      * @Template("RbsSalesBundle:AgentGroup:new.html.twig")
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
      */
     public function createAction(Request $request)
     {
@@ -93,7 +94,8 @@ class AgentGroupController extends Controller
      * @Template("RbsSalesBundle:AgentGroup:new.html.twig")
      * @param Request $request
      * @param AgentGroup $agentGroup
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
      */
     public function updateAction(Request $request, AgentGroup $agentGroup)
     {
@@ -124,6 +126,7 @@ class AgentGroupController extends Controller
      * @Route("/agent/group/delete/{id}", name="agent_group_delete", options={"expose"=true})
      * @param AgentGroup $agentGroup
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
      */
     public function deleteAction(AgentGroup $agentGroup)
     {

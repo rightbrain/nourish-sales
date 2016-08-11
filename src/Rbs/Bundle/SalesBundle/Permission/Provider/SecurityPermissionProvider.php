@@ -19,7 +19,7 @@ class SecurityPermissionProvider implements ProviderInterface
             ),
 
             'AGENT' => array(
-                'ROLE_AGENT', 'ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE', 'ROLE_AGENT_TRUCK_INFO_ADD'
+                'ROLE_AGENT', 'ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE'
             ),
 
             'STOCK' => array(
@@ -36,6 +36,14 @@ class SecurityPermissionProvider implements ProviderInterface
 
             'INCENTIVE' => array(
                 'ROLE_INCENTIVE_MANAGE'
+            ),
+
+            'CREDIT' => array(
+                'ROLE_CREDIT_LIMIT_MANAGE'
+            ),
+
+            'CASH' => array(
+                'ROLE_CASH_RECEIVE_MANAGE', 'ROLE_CASH_DEPOSIT_MANAGE'
             ),
 
             'SWAPPING' => array(

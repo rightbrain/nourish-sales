@@ -24,6 +24,7 @@ class AgentsTruckInfoController extends BaseController
      * @Route("/truck/info/list", name="truck_info_list")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_AGENT")
      */
     public function indexAction()
     {
@@ -36,10 +37,9 @@ class AgentsTruckInfoController extends BaseController
     }
 
     /**
-     * Lists all AgentsTruckInfo entities.
-     *
      * @Route("/truck_info_list_ajax", name="truck_info_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_AGENT")
      */
     public function listAjaxAction()
     {
@@ -60,6 +60,7 @@ class AgentsTruckInfoController extends BaseController
      * @Route("/truck/info/my/list", name="truck_info_my_list")
      * @Method("GET")
      * @Template()
+     * @JMS\Secure(roles="ROLE_AGENT")
      */
     public function myIndexAction()
     {
@@ -72,10 +73,9 @@ class AgentsTruckInfoController extends BaseController
     }
 
     /**
-     * Lists all AgentsTruckInfo entities.
-     *
      * @Route("/truck_info_my_list_ajax", name="truck_info_my_list_ajax", options={"expose"=true})
      * @Method("GET")
+     * @JMS\Secure(roles="ROLE_AGENT")
      */
     public function myListAjaxAction()
     {
@@ -100,6 +100,7 @@ class AgentsTruckInfoController extends BaseController
      * @Template("RbsSalesBundle:AgentTruck:form.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @JMS\Secure(roles="ROLE_AGENT")
      */
     public function addAction(Request $request)
     {

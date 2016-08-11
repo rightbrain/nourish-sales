@@ -20,6 +20,7 @@ class AchievementController extends Controller
      * @Route("/achievement/list", name="achievement_list", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ADMIN")
      */
     public function listAction(Request $request)
     {
@@ -32,12 +33,11 @@ class AchievementController extends Controller
     }
 
     /**
-     * Lists all Achievement entities.
-     *
      * @Route("/achievement_list_ajax", name="achievement_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ADMIN")
      */
     public function listAjaxAction(Request $request)
     {

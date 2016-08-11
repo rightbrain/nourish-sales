@@ -5,7 +5,6 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\CashDeposit;
 use Rbs\Bundle\SalesBundle\Form\Type\CashDepositForm;
-use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -22,6 +21,7 @@ class CashDepositController extends BaseController
      * @Route("/cash/deposit/list", name="cash_deposit_list", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CASH_DEPOSIT_MANAGE")
      */
     public function cashDepositListAction(Request $request)
     {
@@ -34,12 +34,11 @@ class CashDepositController extends BaseController
     }
 
     /**
-     * Lists all CashDeposit entities.
-     *
      * @Route("/cash_deposit_list_ajax", name="cash_deposit_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CASH_DEPOSIT_MANAGE")
      */
     public function listAjaxAction(Request $request)
     {
@@ -64,6 +63,7 @@ class CashDepositController extends BaseController
      * @Template("RbsSalesBundle:CashDeposit:form.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CASH_DEPOSIT_MANAGE")
      */
     public function createAction(Request $request)
     {
