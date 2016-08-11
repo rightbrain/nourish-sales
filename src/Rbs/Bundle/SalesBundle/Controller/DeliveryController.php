@@ -39,8 +39,6 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * Lists all Category entities.
-     *
      * @Route("/delivery_list_ajax", name="delivery_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
@@ -52,7 +50,6 @@ class DeliveryController extends BaseController
 
         $dateFilter = $request->query->get('columns[1][search][value]', null, true);
 
-        // Reset Date Column search's value to Skip DataTable native search functionality for Date Column
         $columns = $request->query->get('columns');
         $columns[1]['search']['value'] = '';
         $request->query->set('columns', $columns);
@@ -76,10 +73,10 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      * @Route("/delivery/{id}", name="delivery_view", options={"expose"=true})
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      */
     public function view(Delivery $delivery)
     {
@@ -94,10 +91,10 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      * @Route("/delivery/{id}/vehicle-in", name="delivery_vehicle_in")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      */
     public function vehicleInAction(Delivery $delivery)
     {
@@ -113,10 +110,10 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      * @Route("/delivery/{id}/start-loading", name="delivery_start_loading")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      */
     public function startLoadingAction(Delivery $delivery)
     {
@@ -132,10 +129,10 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      * @Route("/delivery/{id}/finish-loading", name="delivery_finish_loading")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      */
     public function finishLoadingAction(Delivery $delivery)
     {
@@ -151,10 +148,10 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      * @Route("/delivery/{id}/vehicle-out", name="delivery_vehicle_out")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      */
     public function vehicleOutAction(Delivery $delivery)
     {
@@ -170,10 +167,10 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      * @Route("/delivery/{id}/save", name="delivery_save", options={"expose"=true})
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      */
     public function saveAction(Delivery $delivery)
     {
@@ -196,6 +193,7 @@ class DeliveryController extends BaseController
      * @Template("RbsSalesBundle:Delivery:_edit.html.twig")
      * @param Request $request
      * @param Delivery $delivery
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_ORDER_EDIT")
      */
     public function updateDeliveryAction(Request $request, Delivery $delivery)
