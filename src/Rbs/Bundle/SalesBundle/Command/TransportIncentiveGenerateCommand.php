@@ -53,7 +53,7 @@ class TransportIncentiveGenerateCommand extends ContainerAwareCommand
         $incentive = new Incentive();
         $incentive->setAgent($agent);
         $incentive->setType(Incentive::TRANSPORT);
-        $incentive->setAmount($deliveryIncentives[0]['quantity'] . $amount[0]['amount']);
+        $incentive->setAmount($deliveryIncentives[0]['quantity'] * $amount[0]['amount']);
         $incentive->setDuration(Incentive::MONTH);
         $incentive->setDetails($details);
         $incentive->setDate(new \DateTime());
