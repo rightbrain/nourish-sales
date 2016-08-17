@@ -78,4 +78,17 @@ class DeliveryRepository extends EntityRepository
 
         return $output;
     }
+
+    public function getDeliveriesForTransportIncentive($firstDateOfPreviousMonth, $lastDateOfPreviousMonth)
+    {
+        $query = $this->createQueryBuilder('d');
+        $query->join('d.orderRef', 'o');
+        $query->select('d.id');
+        $query->where('d.createdAt >= :startDate');
+        $query->andWhere('d.createdAt <= :endDate');
+        $query->andWhere('o.deliveryState = :SHIPPED OR o.deliveryState = :PARTIALLY_SHIPPED');
+        $query->setParameters(array('startDate'=>$firstDateOfPreviousMonth, 'endDate'=>$lastDateOfPreviousMonth, 'SHIPPED'=>Order::DELIVERY_STATE_SHIPPED, 'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
+
+        return $query->getQuery()->getResult();
+    }
 }

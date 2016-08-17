@@ -53,4 +53,20 @@ class TransportIncentiveRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function getTransportIncentive($station, $dipo, $itemType)
+    {
+        $query = $this->createQueryBuilder('ti');
+        $query->join('ti.itemType', 'it');
+        $query->join('ti.district', 'dis');
+        $query->join('ti.station', 'sta');
+        $query->select('ti.amount');
+        $query->where('ti.deletedAt IS NULL');
+        $query->andWhere('ti.station = :station');
+        $query->andWhere('ti.depo = :dipo');
+        $query->andWhere('ti.itemType = :itemType');
+        $query->setParameters(array('station'=>$station, 'dipo'=>$dipo, 'itemType'=>$itemType));
+
+        return $query->getQuery()->getResult();
+    }
 }

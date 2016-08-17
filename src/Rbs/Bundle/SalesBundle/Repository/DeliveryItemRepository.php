@@ -65,4 +65,25 @@ class DeliveryItemRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function getDeliveryIncentive($deliveryId)
+    {
+        $query = $this->createQueryBuilder('di');
+        $query->join('di.delivery', 'd');
+        $query->join('di.order', 'o');
+        $query->join('o.agent', 'a');
+        $query->join('di.orderItem', 'oi');
+        $query->join('oi.item', 'i');
+        $query->join('i.itemType', 'it');
+        $query->join('d.depo', 'depo');
+        $query->select('di.qty as quantity');
+        $query->addSelect('a.id as agentId');
+        $query->addSelect('it.id as itemTypeId');
+        $query->addSelect('depo.id as depoId');
+        $query->addSelect('it.itemType as itemType');
+        $query->where('d.id = :deliveryId');
+        $query->setParameters(array('deliveryId'=>$deliveryId));
+
+        return $query->getQuery()->getResult();
+    }
 }
