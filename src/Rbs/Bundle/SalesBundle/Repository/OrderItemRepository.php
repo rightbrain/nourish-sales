@@ -175,4 +175,22 @@ class OrderItemRepository extends EntityRepository
 
         return $result;
     }
+
+    public function getOrderIncentive($orderId)
+    {
+        $query = $this->createQueryBuilder('oi');
+        $query->join('oi.order', 'o');
+        $query->join('o.agent', 'a');
+        $query->join('oi.item', 'i');
+        $query->join('i.category', 'c');
+        $query->select('SUM(oi.quantity) as quantity');
+        $query->addSelect('a.id as agentId');
+        $query->addSelect('c.id as categoryId');
+        $query->addSelect('c.name as categoryName');
+        $query->where('o.id = :orderId');
+        $query->groupBy('c.id');
+        $query->setParameters(array('orderId'=>$orderId));
+
+        return $query->getQuery()->getResult();
+    }
 }

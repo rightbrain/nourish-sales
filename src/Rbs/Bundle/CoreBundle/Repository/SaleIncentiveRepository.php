@@ -115,4 +115,21 @@ class SaleIncentiveRepository extends EntityRepository
 
         return $query->getQuery()->getScalarResult();
     }
+
+    public function getSalesIncentive($category, $quantity)
+    {
+        $query = $this->createQueryBuilder('si');
+        $query->join('si.category', 'c');
+        $query->select('si.amount');
+        $query->addSelect('si.quantity');
+        $query->addSelect('c.id as categoryId');
+        $query->where('si.deletedAt IS NULL');
+        $query->andWhere('c.id = :category');
+        $query->andWhere('si.quantity > :quantity');
+        $query->orderBy('si.quantity', 'ASC');
+        $query->setMaxResults('1');
+        $query->setParameters(array('category'=>$category, 'quantity'=>$quantity));
+
+        return $query->getQuery()->getResult();
+    }
 }

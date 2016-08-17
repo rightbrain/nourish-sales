@@ -191,4 +191,18 @@ class OrderRepository extends EntityRepository
 
         $this->update($order);
     }
+
+    public function getOrdersForSalesIncentive($firstDateOfPreviousMonth, $lastDateOfPreviousMonth)
+    {
+        $query = $this->createQueryBuilder('o');
+        $query->join('o.agent', 'a');
+        $query->select('o.id');
+        $query->addSelect('a.id as agentId');
+        $query->where('o.createdAt >= :startDate');
+        $query->andWhere('o.createdAt <= :endDate');
+        $query->andWhere('o.orderState = :COMPLETE OR o.orderState = :PROCESSING');
+        $query->setParameters(array('startDate'=>$firstDateOfPreviousMonth, 'endDate'=>$lastDateOfPreviousMonth, 'COMPLETE'=>Order::ORDER_STATE_COMPLETE, 'PROCESSING'=>Order::ORDER_STATE_PROCESSING));
+
+        return $query->getQuery()->getResult();
+    }
 }

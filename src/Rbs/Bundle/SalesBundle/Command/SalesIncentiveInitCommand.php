@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Command;
 
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -11,6 +12,9 @@ class SalesIncentiveInitCommand extends ContainerAwareCommand
 {
     protected $startDate;
     protected $endDate;
+
+    /** @var  EntityManager */
+    protected $em;
 
     protected function configure()
     {
@@ -30,6 +34,8 @@ class SalesIncentiveInitCommand extends ContainerAwareCommand
     {
         parent::initialize($input, $output);
 
+        $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
+
         $durationType = $input->getOption('durationType');
         
         if ($durationType == 'year') {
@@ -47,19 +53,18 @@ class SalesIncentiveInitCommand extends ContainerAwareCommand
         $beanstalkTube = $this->getContainer()->getParameter('beanstalkd_tube');
         $beanstalk = $this->getContainer()->get('leezy.pheanstalk.primary');
 
-        for ($i = 0; $i < 10; $i++) {
-            $agentId = rand(1111, 9999);
-            $beanstalk->useTube($beanstalkTube)->put(
+        $orders= $this->em->getRepository('RbsSalesBundle:Order')->getOrdersForSalesIncentive($this->startDate, $this->endDate);
+
+        foreach ($orders as $order) {
+            $beanstalk->useTube('salas_incentive')->put(
                 json_encode(
                     array(
-                        'agentId'      => $agentId,
-                        'durationType' => $durationType,
-                        'startDate'    => $this->startDate,
-                        'endDate'      => $this->endDate,
+                        'agent_id'      => $order['agentId']
                     )
                 )
             );
-            $output->writeln('Added Queue of Agent: ' . $agentId);
+
+            $output->writeln('Added Queue of Agent: ' . $order['agentId']);
         }
 
         $output->writeln('DONE');
