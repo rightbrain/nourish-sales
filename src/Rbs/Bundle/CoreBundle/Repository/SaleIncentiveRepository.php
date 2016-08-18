@@ -116,7 +116,7 @@ class SaleIncentiveRepository extends EntityRepository
         return $query->getQuery()->getScalarResult();
     }
 
-    public function getSalesIncentive($category, $quantity)
+    public function getSalesIncentive($category, $quantity, $durationType)
     {
         $query = $this->createQueryBuilder('si');
         $query->join('si.category', 'c');
@@ -125,10 +125,11 @@ class SaleIncentiveRepository extends EntityRepository
         $query->addSelect('c.id as categoryId');
         $query->where('si.deletedAt IS NULL');
         $query->andWhere('c.id = :category');
+        $query->andWhere('si.durationType = :durationType');
         $query->andWhere('si.quantity > :quantity');
         $query->orderBy('si.quantity', 'ASC');
         $query->setMaxResults('1');
-        $query->setParameters(array('category'=>$category, 'quantity'=>$quantity));
+        $query->setParameters(array('category'=>$category, 'quantity'=>$quantity, 'durationType'=>$durationType));
 
         return $query->getQuery()->getResult();
     }
