@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManager;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Entity\OrderIncentiveFlag;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Entity\Sms;
@@ -26,6 +27,9 @@ class SmsParse
 
     /** @var Order */
     protected $order ;
+
+    /** @var Order */
+    protected $orderIncentiveFlag;
 
     /** @var Payment */
     protected $payment;
@@ -51,6 +55,7 @@ class SmsParse
     {
         $this->sms = $sms;
         $this->order = null;
+        $this->orderIncentiveFlag = null;
         $this->orderItems = array();
         $this->payment = null;
         $this->error;
@@ -87,6 +92,7 @@ class SmsParse
         }
 
         $this->order = new Order();
+        $this->orderIncentiveFlag = new OrderIncentiveFlag();
 
         $this->sms->setStatus('READ');
         $this->sms->setAgent($this->agent);
@@ -107,6 +113,9 @@ class SmsParse
         $this->order->setOrderVia('SMS');
         $this->order->setRefSMS($this->sms);
         $this->em->persist($this->order);
+
+        $this->orderIncentiveFlag->setOrder($this->order);
+        $this->em->persist($this->orderIncentiveFlag);
 
         if ($this->payment) {
             $this->payment->addOrder($this->order);

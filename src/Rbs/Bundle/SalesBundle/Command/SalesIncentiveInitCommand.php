@@ -12,6 +12,7 @@ class SalesIncentiveInitCommand extends ContainerAwareCommand
 {
     protected $startDate;
     protected $endDate;
+    protected $durationType;
 
     /** @var  EntityManager */
     protected $em;
@@ -35,36 +36,27 @@ class SalesIncentiveInitCommand extends ContainerAwareCommand
         parent::initialize($input, $output);
 
         $this->em = $this->getContainer()->get('doctrine.orm.entity_manager');
-
-        $durationType = $input->getOption('durationType');
-        
-        if ($durationType == 'year') {
-            $this->startDate = date('Y-01-01', strtotime(date('Y-m') . " -1 year"));
-            $this->endDate = date('Y-12-31', strtotime(date('Y-m') . " -1 year"));
-        } else {
-            $this->startDate = date('Y-m-d', strtotime(date('Y-m') . " -1 month"));
-            $this->endDate = date('Y-m-t', strtotime(date('Y-m') . " -1 month"));
-        }
+        $this->durationType = $input->getOption('durationType');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $durationType = $input->getOption('durationType');
         $beanstalkTube = $this->getContainer()->getParameter('beanstalkd_tube');
         $beanstalk = $this->getContainer()->get('leezy.pheanstalk.primary');
 
-        $orders= $this->em->getRepository('RbsSalesBundle:Order')->getOrdersForSalesIncentive($this->startDate, $this->endDate);
+        $orders= $this->em->getRepository('RbsSalesBundle:Order')->getOrdersForSalesIncentive($this->durationType);
 
         foreach ($orders as $order) {
             $beanstalk->useTube('salas_incentive')->put(
                 json_encode(
                     array(
-                        'agent_id'      => $order['agentId']
+                        'orderId'      => $order['orderId'],
+                        'durationType' => $order['durationType']
                     )
                 )
             );
 
-            $output->writeln('Added Queue of Agent: ' . $order['agentId']);
+            $output->writeln('Added Queue of Order: ' . $order['orderId']);
         }
 
         $output->writeln('DONE');

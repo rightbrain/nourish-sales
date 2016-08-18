@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\Incentive;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
@@ -192,16 +193,22 @@ class OrderRepository extends EntityRepository
         $this->update($order);
     }
 
-    public function getOrdersForSalesIncentive($firstDateOfPreviousMonth, $lastDateOfPreviousMonth)
+    public function getOrdersForSalesIncentive($durationType)
     {
         $query = $this->createQueryBuilder('o');
         $query->join('o.agent', 'a');
-        $query->select('o.id');
+        $query->join('o.orderIncentiveFlag', 'oif');
+        $query->select('o.id as orderId');
         $query->addSelect('a.id as agentId');
-        $query->where('o.createdAt >= :startDate');
-        $query->andWhere('o.createdAt <= :endDate');
-        $query->andWhere('o.orderState = :COMPLETE OR o.orderState = :PROCESSING');
-        $query->setParameters(array('startDate'=>$firstDateOfPreviousMonth, 'endDate'=>$lastDateOfPreviousMonth, 'COMPLETE'=>Order::ORDER_STATE_COMPLETE, 'PROCESSING'=>Order::ORDER_STATE_PROCESSING));
+
+        if($durationType == Incentive::YEAR){
+            $query->andWhere('oif.yearFlag = false');
+        }else{
+            $query->andWhere('oif.monthFlag = false');
+        }
+
+        $query->andWhere('o.orderState = :COMPLETE');
+        $query->setParameters(array('COMPLETE'=>Order::ORDER_STATE_COMPLETE));
 
         return $query->getQuery()->getResult();
     }

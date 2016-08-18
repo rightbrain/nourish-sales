@@ -5,6 +5,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Entity\OrderIncentiveFlag;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
@@ -161,6 +162,7 @@ class OrderController extends BaseController
     public function createAction(Request $request)
     {
         $order = new Order();
+        $orderIncentiveFlag = new OrderIncentiveFlag();
 
         if ($request->query->get('sms')) {
             $refSms = $request->query->get('sms');
@@ -176,7 +178,9 @@ class OrderController extends BaseController
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $order->setLocation($order->getAgent()->getUser()->getUpozilla());
+                $orderIncentiveFlag->setOrder($order);
                 $this->orderRepository()->create($order);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
                 $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getAgent()->getDepo());
 
                 $this->deliveryRepository()->createDelivery($order, $order->getAgent()->getDepo());

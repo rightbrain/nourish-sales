@@ -2,7 +2,7 @@
 require_once 'worker-config.php';
 
 // Set which queues to bind to
-$queue->watch('salas_incentive');
+$queue->watch('transport_commission');
 
 // pick a job and process it
 while ($job = $queue->reserve()) {
@@ -10,7 +10,6 @@ while ($job = $queue->reserve()) {
     $data = json_decode($data, true);
 
     sleep(1);
-    exec('php ' . $console . ' nsm:generate:sales-incentive ' . $data['orderId'] . ' ' . $data['durationType']);
-    echo $data['agentId'].PHP_EOL;
+    exec('php ' . $console . ' nsm:initiate:transport-commission ' . $data['deliveryId']);
     $queue->delete($job);
 }

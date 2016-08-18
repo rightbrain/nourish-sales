@@ -19,7 +19,7 @@ class TransportIncentiveInitCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this
-            ->setName('nsm:initiate:transport-incentive')
+            ->setName('nsm:initiate:transport-commission')
             ->setDescription('Create Transport Incentive Job Queue');
     }
 
@@ -44,7 +44,7 @@ class TransportIncentiveInitCommand extends ContainerAwareCommand
             $beanstalk->useTube('transport_commission')->put(
                 json_encode(
                     array(
-                        'delivery_id'      => $delivery['id']
+                        'deliveryId'      => $delivery['id']
                     )
                 )
             );

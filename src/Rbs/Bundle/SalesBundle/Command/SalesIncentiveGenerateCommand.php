@@ -44,16 +44,17 @@ class SalesIncentiveGenerateCommand extends ContainerAwareCommand
         $orderId = $input->getArgument('orderId');
         $durationType = $input->getArgument('durationType');
 
-        $this->generateCommission($orderId, $durationType);
+        $this->generateIncentive($orderId, $durationType);
 
         $output->writeln('Done : ' . $orderId);
     }
 
-    protected function generateCommission($orderId, $durationType)
+    protected function generateIncentive($orderId, $durationType)
     {
         $order = $this->em->getRepository('RbsSalesBundle:Order')->find($orderId);
         $agent = $this->em->getRepository('RbsSalesBundle:Agent')->find($order->getAgent()->getId());
         $orderIncentive = $this->em->getRepository('RbsSalesBundle:OrderItem')->getOrderIncentive($orderId);
+        $orderIncentiveFlag = $this->em->getRepository('RbsSalesBundle:OrderIncentiveFlag')->findOneBy(array('order'=>$orderId));
 
         $incentive = new Incentive();
         $incentive->setAgent($agent);
@@ -62,16 +63,21 @@ class SalesIncentiveGenerateCommand extends ContainerAwareCommand
         if($durationType == 'year') {
             $amount = $this->em->getRepository('RbsCoreBundle:SaleIncentive')->getSalesIncentive($orderIncentive[0]['categoryId'], $orderIncentive[0]['quantity'], SaleIncentive::YEAR);
             $incentive->setDuration(Incentive::YEAR);
+            $orderIncentiveFlag->setYearFlag(true);
         }else{
             $amount = $this->em->getRepository('RbsCoreBundle:SaleIncentive')->getSalesIncentive($orderIncentive[0]['categoryId'], $orderIncentive[0]['quantity'], SaleIncentive::MONTH);
             $incentive->setDuration(Incentive::MONTH);
+            $orderIncentiveFlag->setMonthFlag(true);
         }
+
         $incentive->setAmount(floatval($orderIncentive[0]['quantity']) * floatval($amount[0]['amount']));
         $details = "Total quantity ".$orderIncentive[0]['quantity'].", item type ".$orderIncentive[0]['categoryName'];
         $incentive->setDetails($details);
-
         $incentive->setDate(new \DateTime());
-
         $this->em->getRepository('RbsSalesBundle:Incentive')->create($incentive);
+
+        $orderIncentiveFlag->setIncentiveDate(new \DateTime());
+        $orderIncentiveFlag->setIncentiveId($incentive->getId());
+        $this->em->getRepository('RbsSalesBundle:OrderIncentiveFlag')->update($orderIncentiveFlag);
     }
 }

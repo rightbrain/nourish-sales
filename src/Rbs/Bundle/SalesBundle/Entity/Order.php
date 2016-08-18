@@ -49,6 +49,11 @@ class Order
     private $id;
 
     /**
+     * @ORM\OneToOne(targetEntity="OrderIncentiveFlag", mappedBy="order", cascade={"persist"})
+     */
+    protected $orderIncentiveFlag;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Payment", mappedBy="orders")
      **/
     protected $payments;
@@ -453,5 +458,21 @@ class Order
         }
         
         return $data;
+    }
+
+    /**
+     * @return OrderIncentiveFlag
+     */
+    public function getOrderIncentiveFlag()
+    {
+        return $this->orderIncentiveFlag;
+    }
+
+    /**
+     * @param mixed $orderIncentiveFlag
+     */
+    public function setOrderIncentiveFlag($orderIncentiveFlag)
+    {
+        $this->orderIncentiveFlag = $orderIncentiveFlag;
     }
 }
