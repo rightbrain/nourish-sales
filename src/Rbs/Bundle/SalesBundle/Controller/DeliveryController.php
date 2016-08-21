@@ -59,6 +59,11 @@ class DeliveryController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb) use ($dateFilter)
         {
+            $qb->join('deliveries.depo', 'd');
+            $qb->join('d.users', 'u');
+            $qb->andWhere('u =:user');
+            $qb->setParameter('user', $this->getUser());
+
             $qb->andWhere('orderRef.deliveryState IN (:deliveryState)')
                 ->setParameter('deliveryState', array(Order::DELIVERY_STATE_READY));
             if ($dateFilter) {
