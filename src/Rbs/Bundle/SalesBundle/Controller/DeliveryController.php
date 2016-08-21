@@ -62,10 +62,9 @@ class DeliveryController extends BaseController
             $qb->join('deliveries.depo', 'd');
             $qb->join('d.users', 'u');
             $qb->andWhere('u =:user');
-            $qb->setParameter('user', $this->getUser());
+            $qb->andWhere('orderRef.deliveryState IN (:READY) OR orderRef.deliveryState IN (:PARTIALLY_SHIPPED)');
+            $qb->setParameters(array('user'=>$this->getUser(), 'READY'=>Order::DELIVERY_STATE_READY, 'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
 
-            $qb->andWhere('orderRef.deliveryState IN (:deliveryState)')
-                ->setParameter('deliveryState', array(Order::DELIVERY_STATE_READY));
             if ($dateFilter) {
                 $qb->andWhere('orderRef.createdAt BETWEEN :fromDate AND :toDate')
                     ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($dateFilter)))

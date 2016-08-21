@@ -60,6 +60,7 @@ class DeliveryDatatable extends BaseDatatable
             ->add('contactName', 'column', array('title' => 'Contact Name'))
             ->add('contactNo', 'column', array('title' => 'Contact No.'))
             ->add('depo.name', 'column', array('title' => 'Depo'))
+            ->add('orderRef.deliveryState', 'column', array('title' => 'deliveryState'))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Action',
