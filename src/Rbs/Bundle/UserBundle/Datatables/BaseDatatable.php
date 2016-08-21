@@ -42,7 +42,7 @@ class BaseDatatable extends AbstractDatatableView
             'order_classes' => true,
             'order' => [[0, 'asc']],
             'order_multi' => true,
-            'page_length' => 10,
+            'page_length' => 15,
             'paging_type' => Style::FULL_NUMBERS_PAGINATION,
             'renderer' => '',
             'scroll_collapse' => false,
