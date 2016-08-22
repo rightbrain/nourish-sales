@@ -76,7 +76,7 @@ class AgentController extends BaseController
      * @param Request $request
      * @param Agent $agent
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function updateAction(Request $request, Agent $agent)
     {
@@ -111,7 +111,7 @@ class AgentController extends BaseController
      * @param Request $request
      * @param User $user
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function updatePasswordAction(Request $request, User $user)
     {
@@ -147,7 +147,7 @@ class AgentController extends BaseController
      * @Template()
      * @param Agent $agent
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function detailsAction(Agent $agent)
     {
@@ -175,7 +175,7 @@ class AgentController extends BaseController
      * @Route("/agent/delete/{id}", name="agent_delete", options={"expose"=true})
      * @param Agent $agent
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function deleteAction(Agent $agent)
     {
