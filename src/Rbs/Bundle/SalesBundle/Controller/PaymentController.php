@@ -144,7 +144,7 @@ class PaymentController extends BaseController
     }
 
     /**
-     * @Route("/agents/laser", name="agents_laser")
+     * @Route("/agents/ledger", name="agents_laser")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
@@ -189,7 +189,7 @@ class PaymentController extends BaseController
     }
 
     /**
-     * @Route("/my/laser", name="my_laser")
+     * @Route("/my/ledger", name="my_laser")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_AGENT")
