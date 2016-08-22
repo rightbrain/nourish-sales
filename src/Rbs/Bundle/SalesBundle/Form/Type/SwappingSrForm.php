@@ -42,7 +42,7 @@ class SwappingSrForm extends AbstractType
                         ->where('a.level = :level')
                         ->andWhere('a.id != :oldLocation')
                         ->setParameter('level', 4)
-                        ->setParameter('oldLocation', $this->user->getLocation()->getId())
+                        ->setParameter('oldLocation', $this->user->getZilla()->getId())
                         ->orderBy('a.name');
                 },
                 'attr' => array(
