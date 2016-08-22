@@ -24,7 +24,7 @@ class ConfigureMenuListener extends ContextAwareListener
         if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
             $menu['Sales']->addChild('Orders', array('route' => 'orders_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
-            if ($this->isMatch('orders')) {
+            if ($this->isMatch('orders') or $this->isMatch('order_details') or $this->isMatch('order_create') or $this->isMatch('order_update')) {
                 $menu['Sales']->getChild('Orders')->setCurrent(true);
             }
         }
@@ -78,6 +78,9 @@ class ConfigureMenuListener extends ContextAwareListener
         if ($this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN', 'ROLE_ADMIN'))) {
             $menu['Sales']->addChild('Target', array('route' => 'target_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('targets') or $this->isMatch('target_create') or $this->isMatch('target_update')) {
+                $menu['Sales']->getChild('Target')->setCurrent(true);
+            }
         }
 
         if ($this->authorizationChecker->isGranted(array('ROLE_REPORT', 'ROLE_ADMIN'))) {
@@ -90,33 +93,40 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
-//        if ($this->user->getUserType() == User::SR) {
-//            $menu['Sales']->addChild('SR', array('route' => 'target_sr_my'))
-//                ->setAttribute('icon', 'fa fa-th-list');
-//        }
-
         if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
             $menu['Sales']->addChild('Cash Receive', array('route' => 'cash_receive_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('cash_receive_create') or $this->isMatch('cash_receive_list')) {
+                $menu['Sales']->getChild('Cash Receive')->setCurrent(true);
+            }
         }
 
         if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
             $menu['Sales']->addChild('RSM Swapping', array('route' => 'swapping_rsm_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('swapping_rsm_create') or $this->isMatch('swapping_rsm_list')) {
+                $menu['Sales']->getChild('RSM Swapping')->setCurrent(true);
+            }
         }
 
         if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
             $menu['Sales']->addChild('SR Swapping', array('route' => 'swapping_sr_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('swapping_sr_create') or $this->isMatch('swapping_sr_list')) {
+                $menu['Sales']->getChild('SR Swapping')->setCurrent(true);
+            }
         }
 
         if ($this->authorizationChecker->isGranted(array('ROLE_DEPO_USER'))) {
             $menu['Sales']->addChild('Cash Deposit', array('route' => 'cash_deposit_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('cash_deposit_list') or $this->isMatch('cash_deposit_create')) {
+                $menu['Sales']->getChild('Cash Deposit')->setCurrent(true);
+            }
         }
 
         if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
-            $menu['Sales']->addChild('Agents Laser', array('route' => 'agents_laser'))
+            $menu['Sales']->addChild('Agents Ledger', array('route' => 'agents_laser'))
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
@@ -130,7 +140,7 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
+        if ($this->authorizationChecker->isGranted(array('ROLE_AGENT'))) {
             $menu['Sales']->addChild('Truck List', array('route' => 'truck_info_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
         }
@@ -138,11 +148,17 @@ class ConfigureMenuListener extends ContextAwareListener
         if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
             $menu['Sales']->addChild('Credit Limit', array('route' => 'credit_limit_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('credit_limit_list') or $this->isMatch('credit_limit_create') or $this->isMatch('credit_limit_notification_list')) {
+                $menu['Sales']->getChild('Credit Limit')->setCurrent(true);
+            }
         }
 
         if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
             $menu['Sales']->addChild('Damage Good', array('route' => 'damage_good_admin_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('damage_good_form') or $this->isMatch('damage_good_list')) {
+                $menu['Sales']->getChild('Damage Good')->setCurrent(true);
+            }
         }
 
         if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
