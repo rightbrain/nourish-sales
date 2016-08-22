@@ -49,7 +49,7 @@ class SubCategoryController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("sub_categories.deletedAt IS NULL");
+            $qb->andWhere("core_sub_categories.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 

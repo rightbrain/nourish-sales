@@ -10,7 +10,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * AgentsTruckInfo
  *
- * @ORM\Table(name="agents_truck_info")
+ * @ORM\Table(name="sales_agents_truck_info")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\AgentsTruckInfoRepository")
  * @ORMSubscribedEvents()
  * @ORM\HasLifecycleCallbacks

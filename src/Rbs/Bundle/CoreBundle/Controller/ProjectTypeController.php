@@ -50,7 +50,7 @@ class ProjectTypeController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("project_types.deletedAt IS NULL");
+            $qb->andWhere("core_project_types.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 

@@ -51,8 +51,8 @@ class DamageGoodController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->join('damage_goods.agent', 'a');
-            $qb->join('damage_goods.user', 'u');
+            $qb->join('sales_damage_goods.agent', 'a');
+            $qb->join('sales_damage_goods.user', 'u');
             $qb->andWhere('u =:user');
             $qb->setParameter('user', $this->getUser());
         };
@@ -124,16 +124,16 @@ class DamageGoodController extends BaseController
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
         $function = function ($qb) use ($user){
-            $qb->join('damage_goods.agent', 'a');
-            $qb->join('damage_goods.user', 'u');
+            $qb->join('sales_damage_goods.agent', 'a');
+            $qb->join('sales_damage_goods.user', 'u');
             if($user->hasRole("ROLE_DAMAGE_GOODS_VERIFY")) {
-                $qb->andWhere('damage_goods.status = :ACTIVE');
+                $qb->andWhere('sales_damage_goods.status = :ACTIVE');
                 $qb->setParameter('ACTIVE', DamageGood::ACTIVE);
             }elseif($user->hasRole("ROLE_DAMAGE_GOODS_APPROVE")){
-                $qb->andWhere('damage_goods.status = :ACTIVE');
+                $qb->andWhere('sales_damage_goods.status = :ACTIVE');
                 $qb->setParameter('ACTIVE', DamageGood::VERIFIED);
             }
-            $qb->orderBy('damage_goods.createdAt', 'DESC');
+            $qb->orderBy('sales_damage_goods.createdAt', 'DESC');
         };
 
         $query->addWhereAll($function);

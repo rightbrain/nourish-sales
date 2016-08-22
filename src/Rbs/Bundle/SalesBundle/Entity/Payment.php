@@ -10,7 +10,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * Payment
  *
- * @ORM\Table(name="payments")
+ * @ORM\Table(name="sales_payments")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\PaymentRepository")
  * @ORMSubscribedEvents()
  */
@@ -40,7 +40,7 @@ class Payment
 
     /**
      * @ORM\ManyToMany(targetEntity="Order", inversedBy="payments")
-     * @ORM\JoinTable(name="join_payments_orders",
+     * @ORM\JoinTable(name="sales_join_payments_orders",
      *      joinColumns={@ORM\JoinColumn(name="payment_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="order_id", referencedColumnName="id")}
      * )

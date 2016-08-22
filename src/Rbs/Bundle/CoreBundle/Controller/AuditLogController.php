@@ -46,7 +46,7 @@ class AuditLogController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->orderBy("audit_log.eventTime", "DESC");
+            $qb->orderBy("core_audit_log.eventTime", "DESC");
         };
         $query->addWhereAll($function);
 

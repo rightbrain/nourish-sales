@@ -73,7 +73,7 @@ class OrderController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb) use ($user, $agentRepository)
         {
-            $qb->join('orders.agent', 'a');
+            $qb->join('sales_orders.agent', 'a');
             $qb->join('a.user', 'u');
             $qb->andWhere('u.id =:user');
             $qb->setParameter('user', $this->getUser()->getId());
@@ -103,10 +103,10 @@ class OrderController extends BaseController
         {
             if ($user->getUserType() == User::AGENT) {
                 $agent = $agentRepository->findOneBy(array('user' => $user->getId()));
-                $qb->andWhere('orders.agent = :agent')->setParameter('agent', array($agent));
+                $qb->andWhere('sales_orders.agent = :agent')->setParameter('agent', array($agent));
             } else if ($user->getUserType() == User::AGENT) {
                 $agents = $agentRepository->findBy(array('agent' => $user->getId()));
-                $qb->andWhere('orders.agent IN(:agents)')->setParameter('agents', $agents);
+                $qb->andWhere('sales_orders.agent IN(:agents)')->setParameter('agents', $agents);
             }
         };
         $query->addWhereAll($function);
@@ -144,7 +144,7 @@ class OrderController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->join('orders.refSMS', 's');
+            $qb->join('sales_orders.refSMS', 's');
             $qb->andWhere('s is not null');
         };
         $query->addWhereAll($function);

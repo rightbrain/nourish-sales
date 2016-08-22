@@ -55,11 +55,11 @@ class CashReceiveController extends BaseController
          */
         $function = function($qb)
         {
-            $qb->join('cash_receives.depo', 'd');
+            $qb->join('sales_cash_receives.depo', 'd');
             $qb->join('d.users', 'u');
             $qb->andWhere('u.id =:user');
             $qb->setParameter('user', $this->getUser()->getId());
-            $qb->orderBy('cash_receives.receivedAt', 'desc');
+            $qb->orderBy('sales_cash_receives.receivedAt', 'desc');
         };
         $query->addWhereAll($function);
         return $query->getResponse();

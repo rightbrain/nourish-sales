@@ -53,11 +53,11 @@ class TargetController extends BaseController
          */
         $function = function($qb)
         {
-            $qb->join('targets.location', 'l');
-            $qb->andWhere('targets.quantity > 0');
-            $qb->andWhere('targets.startDate is not null');
-            $qb->andWhere('targets.endDate is not null');
-            $qb->orderBy('targets.createdAt', 'desc');
+            $qb->join('sales_targets.location', 'l');
+            $qb->andWhere('sales_targets.quantity > 0');
+            $qb->andWhere('sales_targets.startDate is not null');
+            $qb->andWhere('sales_targets.endDate is not null');
+            $qb->orderBy('sales_targets.createdAt', 'desc');
         };
         $query->addWhereAll($function);
         return $query->getResponse();

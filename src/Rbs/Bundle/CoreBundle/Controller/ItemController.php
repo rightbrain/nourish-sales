@@ -51,7 +51,7 @@ class ItemController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("items.deletedAt IS NULL");
+            $qb->andWhere("core_items.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 

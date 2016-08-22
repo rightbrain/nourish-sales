@@ -11,7 +11,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * Target
  *
- * @ORM\Table(name="targets")
+ * @ORM\Table(name="sales_targets")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\TargetRepository")
  * @ORMSubscribedEvents()
  */

@@ -51,7 +51,7 @@ class AgentGroupController extends Controller
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("agent_groups.deletedAt IS NULL");
+            $qb->andWhere("sales_agent_groups.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
         return $query->getResponse();

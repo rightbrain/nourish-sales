@@ -60,7 +60,7 @@ class ItemPriceLogController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb) use ($itemId)
         {
-            $qb->andWhere("items_price_log.item = :item");
+            $qb->andWhere("core_items_price_log.item = :item");
             $qb->setParameter("item", $itemId);
         };
 

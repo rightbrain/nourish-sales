@@ -10,7 +10,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * CreditLimit
  *
- * @ORM\Table(name="credit_limits")
+ * @ORM\Table(name="sales_credit_limits")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\CreditLimitRepository")
  * @ORMSubscribedEvents()
  */

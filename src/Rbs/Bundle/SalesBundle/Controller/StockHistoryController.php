@@ -58,7 +58,7 @@ class StockHistoryController extends Controller
          */
         $function = function($qb) use ($stock)
         {
-            $qb->andWhere("stock_histories.stock = :stock");
+            $qb->andWhere("sales_stock_histories.stock = :stock");
             $qb->setParameter("stock", $stock);
         };
         $query->addWhereAll($function);

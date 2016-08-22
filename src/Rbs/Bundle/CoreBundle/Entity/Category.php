@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Category
  *
- * @ORM\Table(name="categories")
+ * @ORM\Table(name="core_categories")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\CategoryRepository")
  * @UniqueEntity("name")
  * @ORMSubscribedEvents()
@@ -60,7 +60,7 @@ class Category
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
-     * @ORM\JoinTable(name="join_categories_bundles")
+     * @ORM\JoinTable(name="core_join_categories_bundles")
      * @Assert\NotBlank()
      * @Assert\Count(min = 1, minMessage = "Please select at least {{ limit }} module")
      **/

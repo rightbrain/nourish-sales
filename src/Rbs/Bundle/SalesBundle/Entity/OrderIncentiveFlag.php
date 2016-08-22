@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * OrderIncentiveFlag
  *
- * @ORM\Table(name="order_incentive_flag")
+ * @ORM\Table(name="sales_order_incentive_flag")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\OrderIncentiveFlagRepository")
  */
 class OrderIncentiveFlag

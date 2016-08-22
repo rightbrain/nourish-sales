@@ -54,8 +54,7 @@ class UserController extends Controller
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-//            $qb->where("users.userType NOT IN('AGENT')");
-            $qb->andWhere("users.deletedAt IS NULL");
+            $qb->andWhere("user_users.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 

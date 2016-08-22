@@ -53,7 +53,7 @@ class AgentsBankInfoController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb) use ($user)
         {
-            $qb->join('agents_bank_info.agent', 'u');
+            $qb->join('sales_agents_bank_info.agent', 'u');
             $qb->andWhere('u =:user');
             $qb->setParameter('user', $user);
         };

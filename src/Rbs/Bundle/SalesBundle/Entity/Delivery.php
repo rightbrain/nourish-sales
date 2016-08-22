@@ -11,7 +11,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 /**
  * Delivery
  *
- * @ORM\Table(name="deliveries")
+ * @ORM\Table(name="sales_deliveries")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\DeliveryRepository")
  * @ORMSubscribedEvents()
  */

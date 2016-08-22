@@ -10,7 +10,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * StockHistory
  *
- * @ORM\Table(name="stock_histories")
+ * @ORM\Table(name="sales_stock_histories")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\StockHistoryRepository")
  * @ORMSubscribedEvents()
  */

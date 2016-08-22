@@ -12,7 +12,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * CashDeposit
  *
- * @ORM\Table(name="cash_deposits")
+ * @ORM\Table(name="sales_cash_deposits")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\CashDepositRepository")
  * @ORM\HasLifecycleCallbacks
  * @ORMSubscribedEvents()

@@ -59,7 +59,7 @@ class AgentController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("agents.deletedAt IS NULL");
+            $qb->andWhere("sales_agents.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 

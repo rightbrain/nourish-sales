@@ -50,7 +50,7 @@ class DepoController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("depos.deletedAt IS NULL");
+            $qb->andWhere("core_depos.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 

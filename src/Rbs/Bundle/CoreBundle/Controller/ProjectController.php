@@ -49,7 +49,7 @@ class ProjectController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("projects.deletedAt IS NULL");
+            $qb->andWhere("core_projects.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 

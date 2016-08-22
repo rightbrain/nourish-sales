@@ -67,11 +67,11 @@ class PaymentController extends BaseController
                 list($fromDate, $toDate) = explode('--', $dateFilter);
 
                 if (!empty($fromDate) && !empty($toDate)) {
-                    $qb->andWhere('payments.createdAt BETWEEN :fromDate AND :toDate')
+                    $qb->andWhere('sales_payments.createdAt BETWEEN :fromDate AND :toDate')
                         ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($fromDate)))
                         ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($toDate)));
                 } else if (!empty($fromDate) && empty($toDate)) {
-                    $qb->andWhere('payments.createdAt BETWEEN :fromDate AND :toDate')
+                    $qb->andWhere('sales_payments.createdAt BETWEEN :fromDate AND :toDate')
                         ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($fromDate)))
                         ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($fromDate)));
                 }
@@ -79,10 +79,10 @@ class PaymentController extends BaseController
 
             if ($user->getUserType() == User::AGENT) {
                 $agent = $agentRepository->findOneBy(array('user' => $user->getId()));
-                $qb->andWhere('payments.agent = :agent')->setParameter('agent', array($agent));
+                $qb->andWhere('sales_payments.agent = :agent')->setParameter('agent', array($agent));
             } else if ($user->getUserType() == User::AGENT) {
                 $agents = $agentRepository->findBy(array('agent' => $user->getId()));
-                $qb->andWhere('payments.agent IN(:agents)')->setParameter('agents', $agents);
+                $qb->andWhere('sales_payments.agent IN(:agents)')->setParameter('agents', $agents);
             }
         };
         $query->addWhereAll($function);

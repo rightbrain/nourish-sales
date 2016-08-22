@@ -50,7 +50,7 @@ class VendorController extends Controller
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("vendors.deletedAt IS NULL");
+            $qb->andWhere("core_vendors.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 
