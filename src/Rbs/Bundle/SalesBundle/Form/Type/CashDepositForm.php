@@ -32,6 +32,9 @@ class CashDepositForm extends AbstractType
             ))
             ->add('depositedBy', 'entity', array(
                 'class' => 'Rbs\Bundle\UserBundle\Entity\User',
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
                 'query_builder' => function(UserRepository $userRepository) {
                     return $userRepository->createQueryBuilder('u')
                         ->andWhere("u.userType = :USER")

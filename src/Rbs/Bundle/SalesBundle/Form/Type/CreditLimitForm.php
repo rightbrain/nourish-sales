@@ -20,6 +20,9 @@ class CreditLimitForm extends AbstractType
                 'class' => 'RbsSalesBundle:Agent',
                 'property' => 'user.profile.fullName',
                 'required' => false,
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
                 'empty_value' => 'Select Agent',
                 'empty_data' => null,
                 'query_builder' => function (AgentRepository $repository)

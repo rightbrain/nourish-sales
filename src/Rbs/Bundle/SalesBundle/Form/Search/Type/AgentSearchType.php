@@ -18,6 +18,9 @@ class AgentSearchType extends AbstractType
         $builder
             ->add('agent', 'entity', array(
                 'class' => 'RbsSalesBundle:Agent',
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
                 'property' => 'user.profile.fullName',
                 'required' => false,
                 'empty_value' => 'Select Agent',

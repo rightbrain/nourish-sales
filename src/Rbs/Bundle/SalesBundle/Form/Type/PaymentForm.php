@@ -45,6 +45,9 @@ class PaymentForm extends AbstractType
             ))
             ->add('agent', 'entity', array(
                 'class' => 'RbsSalesBundle:Agent',
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
                 'property' => 'user.profile.fullName',
                 'empty_value' => 'Select Agent',
                 'empty_data' => null,

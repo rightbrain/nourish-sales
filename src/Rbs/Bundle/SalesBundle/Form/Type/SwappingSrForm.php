@@ -28,6 +28,9 @@ class SwappingSrForm extends AbstractType
         $builder
             ->add('username', 'entity', array(
                 'class' => 'Rbs\Bundle\UserBundle\Entity\User',
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
                 'property' => 'username',
                 'query_builder' => function(UserRepository $userRepository) {
                     return $userRepository->createQueryBuilder('u')

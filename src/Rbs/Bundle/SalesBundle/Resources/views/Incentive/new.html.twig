@@ -12,7 +12,7 @@
                 <tr>
                     <td>Agent : </td>
                     <td>
-                        <select class="form-control select2" name="agent">
+                        <select class="form-control select2me" name="agent">
                             {% for agent in agents %}
                             <option value="{{ agent.id }}">{{ agent.user.profile.fullName | default('') }}</option>
                             {% endfor %}
