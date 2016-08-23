@@ -59,7 +59,7 @@ class SecurityPermissionProvider implements ProviderInterface
             ),
 
             'TRUCK' => array(
-                'ROLE_TRUCK_MANAGE'
+                'ROLE_TRUCK_MANAGE', 'ROLE_TRUCK_IN', 'ROLE_TRUCK_OUT', 'ROLE_TRUCK_START', 'ROLE_TRUCK_FINISH'
             )
 
         );
