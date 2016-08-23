@@ -21,8 +21,14 @@ class ConfigureMenuListener extends ContextAwareListener
             ->setAttribute('icon', 'fa fa-bar-chart-o')
             ->setLinkAttribute('data-hover', 'dropdown');
 
+        $sp1 = false;
+        $sp2 = false;
+        $sp3 = false;
+        $sp4 = false;
+
         if ($this->user->getUserType() != User::AGENT) {
             if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
+                $sp1 = true;
                 $menu['Sales']->addChild('Orders', array('route' => 'orders_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('orders') or $this->isMatch('order_details') or $this->isMatch('order_create') or $this->isMatch('order_update')) {
@@ -30,20 +36,27 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
+                $sp1 = true;
                 $menu['Sales']->addChild('Orders From SMS', array('route' => 'order_readable_sms'))
                     ->setAttribute('icon', 'fa fa-th-list');
 
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW'))) {
+                $sp1 = true;
                 $menu['Sales']->addChild('Unread SMS', array('route' => 'sms_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('sms')) {
                     $menu['Sales']->getChild('Unread SMS')->setCurrent(true);
                 }
             }
+            if ($sp1) {
+                $menu['Sales']->addChild('', ['divider' => true]);
+            }
+
         }
         if ($this->user->getUserType() == User::USER or $this->user->getUserType() == User::ZM) {
             if ($this->authorizationChecker->isGranted(array('ROLE_HEAD_OFFICE_USER', 'ROLE_PAYMENT_VIEW', 'ROLE_PAYMENT_CREATE', 'ROLE_PAYMENT_APPROVE', 'ROLE_PAYMENT_OVER_CREDIT_APPROVE'))) {
+                $sp2 = true;
                 $menu['Sales']->addChild('Payments', array('route' => 'payments_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('payment')) {
@@ -51,6 +64,7 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_CASH_RECEIVE_MANAGE'))) {
+                $sp2 = true;
                 $menu['Sales']->addChild('Cash Receive', array('route' => 'cash_receive_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('cash_receive_list') or $this->isMatch('cash_receive_create')) {
@@ -58,6 +72,7 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_CASH_DEPOSIT_MANAGE'))) {
+                $sp2 = true;
                 $menu['Sales']->addChild('Cash Deposit', array('route' => 'cash_deposit_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('cash_deposit_list') or $this->isMatch('cash_deposit_create')) {
@@ -65,6 +80,7 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_HEAD_OFFICE_USER'))) {
+                $sp2 = true;
                 $menu['Sales']->addChild('Cash Receive From Depo', array('route' => 'cash_receive_from_depo_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('cash_receive_from_depo_list') or $this->isMatch('cash_receive_from_depo_details') or $this->isMatch('cash_receive_from_depo_receive_details')) {
@@ -72,10 +88,17 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_INCENTIVE_MANAGE'))) {
+                $sp2 = true;
                 $menu['Sales']->addChild('Incentive', array('route' => 'incentives_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
             }
+
+            if ($sp2) {
+                $menu['Sales']->addChild(str_repeat(' ', 2), ['divider' => true]);
+            }
+
             if ($this->authorizationChecker->isGranted(array('ROLE_DELIVERY_MANAGE'))) {
+                $sp3 = true;
                 $menu['Sales']->addChild('Deliveries', array('route' => 'deliveries_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('deliver')) {
@@ -83,14 +106,21 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_STOCK_VIEW', 'ROLE_STOCK_CREATE'))) {
+                $sp3 = true;
                 $menu['Sales']->addChild('Stocks', array('route' => 'stocks_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('stock')) {
                     $menu['Sales']->getChild('Stocks')->setCurrent(true);
                 }
             }
+
+            if ($sp3) {
+                $menu['Sales']->addChild(str_repeat(' ', 3), ['divider' => true]);
+            }
         }
+
         if ($this->user->getUserType() != User::AGENT) {
+            $sp4 = true;
             if ($this->authorizationChecker->isGranted(array('ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE'))) {
                 $menu['Sales']->addChild('Agents', array('route' => 'agents_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
@@ -101,6 +131,7 @@ class ConfigureMenuListener extends ContextAwareListener
         }
         if ($this->user->getUserType() == User::USER or $this->user->getUserType() == User::ZM) {
             if ($this->authorizationChecker->isGranted(array('ROLE_HEAD_OFFICE_USER'))) {
+                $sp4 = true;
                 $menu['Sales']->addChild('Agents Ledger', array('route' => 'agents_laser'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('agents_laser')) {
@@ -108,10 +139,12 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_TRUCK_MANAGE'))) {
+                $sp4 = true;
                 $menu['Sales']->addChild('Truck List', array('route' => 'truck_info_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_HEAD_OFFICE_USER', 'ROLE_DAMAGE_GOODS_VERIFY', 'ROLE_DAMAGE_GOODS_APPROVE'))) {
+                $sp4 = true;
                 $menu['Sales']->addChild('Damage Good', array('route' => 'damage_good_admin_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('damage_good_admin_list')) {
@@ -119,12 +152,18 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_CREDIT_LIMIT_MANAGE'))) {
+                $sp4 = true;
                 $menu['Sales']->addChild('Credit Limit', array('route' => 'credit_limit_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('credit_limit_list') or $this->isMatch('credit_limit_create') or $this->isMatch('credit_limit_notification_list')) {
                     $menu['Sales']->getChild('Credit Limit')->setCurrent(true);
                 }
             }
+
+            if ($sp4) {
+                $menu['Sales']->addChild(str_repeat(' ', 4), ['divider' => true]);
+            }
+
             if ($this->authorizationChecker->isGranted(array('ROLE_SWAPPING_MANAGE'))) {
                 $menu['Sales']->addChild('RSM Swapping', array('route' => 'swapping_rsm_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
