@@ -88,6 +88,7 @@ class UserController extends Controller
                     $agent->setUser($this->getDoctrine()->getRepository('RbsUserBundle:User')->find($user->getId()));
                     $agent->setAgentID($user->getId());
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
+                    return $this->redirect($this->generateUrl('agent_update', array('id' => $agent->getId())));
                 }
 
                 $this->get('session')->getFlashBag()->add(
