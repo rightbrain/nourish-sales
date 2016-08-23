@@ -59,7 +59,7 @@ class CashReceiveController extends BaseController
             $qb->join('d.users', 'u');
             $qb->andWhere('u.id =:user');
             $qb->setParameter('user', $this->getUser()->getId());
-            $qb->orderBy('sales_cash_receives.receivedAt', 'desc');
+            $qb->orderBy('sales_cash_receives.receivedAt', 'DESC');
         };
         $query->addWhereAll($function);
         return $query->getResponse();

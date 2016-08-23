@@ -25,7 +25,7 @@ class AgentsTruckInfoForm extends AbstractType
         $builder
             ->add('driverName', 'text')
             ->add('driverPhone', 'text')
-            ->add('order', 'entity', array(
+            ->add('orderRef', 'entity', array(
                 'class' => 'RbsSalesBundle:Order',
                 'property' => 'id',
                 'required' => false,

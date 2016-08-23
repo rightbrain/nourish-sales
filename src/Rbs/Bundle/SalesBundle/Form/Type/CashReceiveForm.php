@@ -18,7 +18,7 @@ class CashReceiveForm extends AbstractType
     {
         $builder
             ->add('amount')
-            ->add('order', 'entity', array(
+            ->add('orderRef', 'entity', array(
                 'class' => 'RbsSalesBundle:Order',
                 'attr' => array(
                     'class' => 'select2me'
