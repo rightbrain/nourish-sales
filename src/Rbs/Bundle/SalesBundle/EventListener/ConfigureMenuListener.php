@@ -130,7 +130,7 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
         if ($this->user->getUserType() == User::USER or $this->user->getUserType() == User::ZM) {
-            if ($this->authorizationChecker->isGranted(array('ROLE_HEAD_OFFICE_USER'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_HEAD_OFFICE_USER', 'ROLE_AGENT_LEDGER_VIEW'))) {
                 $sp4 = true;
                 $menu['Sales']->addChild('Agents Ledger', array('route' => 'agents_laser'))
                     ->setAttribute('icon', 'fa fa-th-list');
