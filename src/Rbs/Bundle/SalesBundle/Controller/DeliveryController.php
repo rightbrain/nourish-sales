@@ -98,7 +98,7 @@ class DeliveryController extends BaseController
      * @Route("/delivery/{id}/vehicle-in", name="delivery_vehicle_in")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN")
      */
     public function vehicleInAction(Delivery $delivery)
     {
@@ -117,7 +117,7 @@ class DeliveryController extends BaseController
      * @Route("/delivery/{id}/start-loading", name="delivery_start_loading")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_START")
      */
     public function startLoadingAction(Delivery $delivery)
     {
@@ -136,7 +136,7 @@ class DeliveryController extends BaseController
      * @Route("/delivery/{id}/finish-loading", name="delivery_finish_loading")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_FINISH")
      */
     public function finishLoadingAction(Delivery $delivery)
     {
@@ -155,7 +155,7 @@ class DeliveryController extends BaseController
      * @Route("/delivery/{id}/vehicle-out", name="delivery_vehicle_out")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_OUT")
      */
     public function vehicleOutAction(Delivery $delivery)
     {

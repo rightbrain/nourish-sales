@@ -52,7 +52,9 @@
                                         {%- if delivery.vehicleIn is not null %}
                                             <span data-original-title="{{ delivery.vehicleIn|date(php_date_format) }}">{{ delivery.vehicleIn|date("h:i a") }}</span>
                                         {%- else %}
+                                            {%- if is_granted("ROLE_TRUCK_IN") %}
                                             <button type="button" class="btn green" data-route="{{ path('delivery_vehicle_in', {id: delivery.id}) }}">In</button>
+                                            {%- endif %}
                                         {%- endif %}
                                     </td>
 
@@ -60,7 +62,9 @@
                                         {%- if delivery.startLoad is not null %}
                                             <span data-original-title="{{ delivery.vehicleIn|date(php_date_format) }}">{{ delivery.startLoad|date("h:i a") }}</span>
                                         {%- else %}
+                                            {%- if is_granted("ROLE_TRUCK_START") %}
                                             <button type="button" class="btn green" data-route="{{ path('delivery_start_loading', {id: delivery.id}) }}" {%- if delivery.vehicleIn is null %} disabled="disabled" {% endif %}>Start</button>
+                                            {%- endif %}
                                         {%- endif %}
                                     </td>
 
@@ -68,7 +72,9 @@
                                         {%- if delivery.finishLoad is not null %}
                                             <span data-original-title="{{ delivery.vehicleIn|date(php_date_format) }}">{{ delivery.finishLoad|date("h:i a") }}</span>
                                         {%- else %}
+                                            {%- if is_granted("ROLE_TRUCK_FINISH") %}
                                             <button type="button" data-action="finish-loading" data-route="{{ path('delivery_finish_loading', {id: delivery.id}) }}" class="btn green" {%- if delivery.startLoad is null %} disabled="disabled" {% endif %}>Finish</button>
+                                            {%- endif %}
                                         {% endif %}
                                     </td>
 
@@ -76,7 +82,9 @@
                                         {%- if delivery.vehicleOut is not null %}
                                             <span data-original-title="{{ delivery.vehicleIn|date(php_date_format) }}">{{ delivery.vehicleOut|date("h:i a") }}</span>
                                         {%- else %}
+                                            {%- if is_granted("ROLE_TRUCK_OUT") %}
                                             <button type="button" data-route="{{ path('delivery_vehicle_out', {id: delivery.id}) }}" class="btn green"  {%- if delivery.finishLoad is null %} disabled="disabled" {% endif %}>Out</button>
+                                            {%- endif %}
                                         {%- endif %}
                                     </td>
                                 </tr>
