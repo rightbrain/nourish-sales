@@ -98,7 +98,7 @@ class DamageGoodController extends BaseController
      * @Route("/damage/good/admin/list", name="damage_good_admin_list")
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
      */
     public function indexAdminAction()
     {
@@ -113,7 +113,7 @@ class DamageGoodController extends BaseController
     /**
      * @Route("/damage_good_admin_list_ajax", name="damage_good_admin_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
      */
     public function listAjaxAdminAction()
     {
@@ -202,7 +202,7 @@ class DamageGoodController extends BaseController
      * @Route("/damage/good/view/{id}", name="damage_goods_view", options={"expose"=true})
      * @param DamageGood $damageGood
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
      */
     public function viewAction(DamageGood $damageGood)
     {
@@ -215,7 +215,7 @@ class DamageGoodController extends BaseController
      * @Route("/damage/good/doc/view/{id}", name="damage_good_doc_view")
      * @param DamageGood $damageGood
      * @return Response
-     * @JMS\Secure(roles="ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
      */
     public function viewDocAction(DamageGood $damageGood)
     {

@@ -24,7 +24,7 @@ class AgentsTruckInfoController extends BaseController
      * @Route("/truck/info/list", name="truck_info_list")
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_TRUCK_MANAGE")
      */
     public function indexAction()
     {
@@ -39,7 +39,7 @@ class AgentsTruckInfoController extends BaseController
     /**
      * @Route("/truck_info_list_ajax", name="truck_info_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_TRUCK_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -56,6 +56,7 @@ class AgentsTruckInfoController extends BaseController
         
         return $query->getResponse();
     }
+
     /**
      * @Route("/truck/info/my/list", name="truck_info_my_list")
      * @Method("GET")

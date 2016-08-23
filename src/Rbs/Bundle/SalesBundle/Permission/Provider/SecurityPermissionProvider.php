@@ -52,6 +52,14 @@ class SecurityPermissionProvider implements ProviderInterface
 
             'DEPO' => array(
                 'ROLE_DEPO_USER'
+            ),
+
+            'HEAD_OFFICE' => array(
+                'ROLE_HEAD_OFFICE_USER'
+            ),
+
+            'TRUCK' => array(
+                'ROLE_TRUCK_MANAGE'
             )
 
         );
