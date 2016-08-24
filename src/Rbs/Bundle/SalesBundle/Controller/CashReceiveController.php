@@ -98,7 +98,7 @@ class CashReceiveController extends BaseController
                 $form->handleRequest($request);
 
                 if ($form->isValid()) {
-                    $od = $em->getRepository('RbsSalesBundle:Order')->find($request->request->get('cash_receive')['order']);
+                    $od = $em->getRepository('RbsSalesBundle:Order')->find($request->request->get('cash_receive')['orderRef']);
 
                     $payment->setAgent($od->getAgent());
                     $payment->setAmount($request->request->get('cash_receive')['amount']);
