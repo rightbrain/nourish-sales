@@ -36,6 +36,9 @@ class OrderForm extends AbstractType
             $builder
                 ->add('agent', 'entity', array(
                     'class' => 'RbsSalesBundle:Agent',
+                    'attr' => array(
+                        'class' => 'select2me'
+                    ),
                     'property' => 'user.profile.fullName',
                     'required' => false,
                     'empty_value' => 'Select Agent',
@@ -64,6 +67,9 @@ class OrderForm extends AbstractType
             $builder
                 ->add('refSMS', 'entity', array(
                     'class' => 'RbsSalesBundle:Sms',
+                    'attr' => array(
+                        'class' => 'select2me'
+                    ),
                     'property' => 'mobileNoAndMsg',
                     'query_builder' => function (SmsRepository $repository) use ($refSMS) {
                         $query = $repository->createQueryBuilder('sms')
@@ -84,6 +90,9 @@ class OrderForm extends AbstractType
             $builder
                 ->add('refSMS', 'entity', array(
                     'class' => 'RbsSalesBundle:Sms',
+                    'attr' => array(
+                        'class' => 'select2me'
+                    ),
                     'property' => 'mobileNoAndMsg',
                     'required' => false,
                     'empty_value' => 'Select SMS',

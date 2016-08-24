@@ -9,7 +9,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * TransportIncentive
  *
- * @ORM\Table(name="transport_incentives")
+ * @ORM\Table(name="core_transport_incentives")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\TransportIncentiveRepository")
  * @ORMSubscribedEvents()
  */

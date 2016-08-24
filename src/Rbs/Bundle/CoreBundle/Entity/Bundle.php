@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Bundle
  *
- * @ORM\Table(name="bundles")
+ * @ORM\Table(name="core_bundles")
  * @ORM\Entity
  */
 class Bundle

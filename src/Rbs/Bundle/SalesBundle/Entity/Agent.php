@@ -13,7 +13,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * Agent
  *
- * @ORM\Table(name="agents")
+ * @ORM\Table(name="sales_agents")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\AgentRepository")
  * @ORMSubscribedEvents()
  * @UniqueEntity("agentID")

@@ -59,7 +59,7 @@ class DeliveryController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb) use ($dateFilter)
         {
-            $qb->join('deliveries.depo', 'd');
+            $qb->join('sales_deliveries.depo', 'd');
             $qb->join('d.users', 'u');
             $qb->andWhere('u =:user');
             $qb->andWhere('orderRef.deliveryState IN (:READY) OR orderRef.deliveryState IN (:PARTIALLY_SHIPPED)');
@@ -116,7 +116,7 @@ class DeliveryController extends BaseController
      * @Route("/delivery/{id}/vehicle-in", name="delivery_vehicle_in")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN")
      */
     public function vehicleInAction(Delivery $delivery)
     {
@@ -135,7 +135,7 @@ class DeliveryController extends BaseController
      * @Route("/delivery/{id}/start-loading", name="delivery_start_loading")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_START")
      */
     public function startLoadingAction(Delivery $delivery)
     {
@@ -154,7 +154,7 @@ class DeliveryController extends BaseController
      * @Route("/delivery/{id}/finish-loading", name="delivery_finish_loading")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_FINISH")
      */
     public function finishLoadingAction(Delivery $delivery)
     {
@@ -173,7 +173,7 @@ class DeliveryController extends BaseController
      * @Route("/delivery/{id}/vehicle-out", name="delivery_vehicle_out")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_OUT")
      */
     public function vehicleOutAction(Delivery $delivery)
     {

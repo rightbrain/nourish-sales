@@ -8,7 +8,7 @@ use Xiidea\EasyAuditBundle\Entity\BaseAuditLog;
 /**
  * @ORM\Entity
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\AuditLogRepository")
- * @ORM\Table(name="audit_log", indexes={
+ * @ORM\Table(name="core_audit_log", indexes={
  *   @ORM\Index(name="object_idx", columns={"object_id"}),
  *   @ORM\Index(name="type_idx", columns={"type_id"})
  * })

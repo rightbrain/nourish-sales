@@ -12,7 +12,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * Item
  *
- * @ORM\Table(name="items")
+ * @ORM\Table(name="core_items")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\ItemRepository")
  * @UniqueEntity("name")
  * @ORMSubscribedEvents()
@@ -36,7 +36,7 @@ class Item
      * @var Category
      *
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Category", inversedBy="item")
-     * @ORM\JoinTable(name="join_items_categories",
+     * @ORM\JoinTable(name="core_join_items_categories",
      *      joinColumns={@ORM\JoinColumn(name="item_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="categories_id", referencedColumnName="id")}
      * )
@@ -100,7 +100,7 @@ class Item
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
-     * @ORM\JoinTable(name="join_items_bundles")
+     * @ORM\JoinTable(name="core_join_items_bundles")
      * @Assert\NotBlank()
      * @Assert\Count(min = 1, minMessage = "Please select at least {{ limit }} module")
      **/

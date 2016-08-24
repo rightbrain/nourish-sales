@@ -51,8 +51,8 @@ class CashDepositController extends BaseController
          */
         $function = function($qb)
         {
-            $qb->join('cash_deposits.depo', 'd');
-            $qb->orderBy('cash_deposits.depositedAt', 'desc');
+            $qb->join('sales_cash_deposits.depo', 'd');
+            $qb->orderBy('sales_cash_deposits.depositedAt', 'desc');
         };
         $query->addWhereAll($function);
         return $query->getResponse();

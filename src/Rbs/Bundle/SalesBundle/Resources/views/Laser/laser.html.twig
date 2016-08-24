@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 
-{% block title %}{{ parent() }} : Agent Laser {% endblock %}
+{% block title %}{{ parent() }} : Agent Ledger {% endblock %}
 
 {% block body %}
 
@@ -8,7 +8,7 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-list"></i>Agent Laser
+                    <i class="fa fa-list"></i>Agent Ledger
                 </div>
             </div>
             <div class="portlet-body">
@@ -20,7 +20,7 @@
                             <div class="form-group">
                                 <div class="col-md-3">
                                     <div class="input-icon right">
-                                        {{ form_widget(formSearch.agent, { 'attr': {'class': 'form-control select2', 'placeholder': ' Select Agent'} }) }}
+                                        {{ form_widget(formSearch.agent) }}
                                     </div>
                                 </div>
                             </div>
@@ -67,14 +67,13 @@
                                 <tr>
                                     <th>Transaction Date</th>
                                     <th>Details</th>
-                                    <th>DR/CR</th>
                                     <th>Debit Amount</th>
                                     <th>Credit Amount</th>
                                 </tr>
                             </thead>
                             <tbody>
                             <tr>
-                                <td colspan="3" style="text-align: right">Previous Balance: </td>
+                                <td colspan="2" style="text-align: right">Previous Balance: </td>
                                 <td>{{ agentPreviousDebitLaserTotal | default(0) }}</td>
                                 <td>{{ agentPreviousCreditLaserTotal | default(0) }}</td>
                             </tr>
@@ -82,18 +81,17 @@
                                 <tr>
                                     <td class="col-md-1">{{ laser['depositDate'] | date('d F y') }}</td>
                                     <td class="col-md-1">{{ laser['remark'] | default('') }}</td>
-                                    <td class="col-md-1">{{ laser['transactionType'] | default('') }}</td>
                                     <td class="col-md-1">{% if laser['transactionType'] == 'DR' %}{{ laser['amount'] | number_format }}{% endif %}</td>
                                     <td class="col-md-1">{% if laser['transactionType'] == 'CR' %}{{ laser['amount'] | number_format }}{% endif %}</td>
                                 </tr>
                             {% endfor %}
                             <tr>
-                                <td class="bold" colspan="3" style="text-align: right">Total: </td>
+                                <td class="bold" colspan="2" style="text-align: right">Total: </td>
                                 <td class="bold">{{ agentDebitLaserTotal | default(0) }}</td>
                                 <td class="bold">{{ agentCreditLaserTotal | default(0) }}</td>
                             </tr>
                             <tr>
-                                <td colspan="5">
+                                <td colspan="4">
                                     Current Balance {{ currentBalance|number_format }}tk
                                 </td>
                             </tr>

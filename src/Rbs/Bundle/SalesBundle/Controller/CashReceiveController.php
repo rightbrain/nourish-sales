@@ -55,11 +55,11 @@ class CashReceiveController extends BaseController
          */
         $function = function($qb)
         {
-            $qb->join('cash_receives.depo', 'd');
+            $qb->join('sales_cash_receives.depo', 'd');
             $qb->join('d.users', 'u');
             $qb->andWhere('u.id =:user');
             $qb->setParameter('user', $this->getUser()->getId());
-            $qb->orderBy('cash_receives.receivedAt', 'desc');
+            $qb->orderBy('sales_cash_receives.receivedAt', 'DESC');
         };
         $query->addWhereAll($function);
         return $query->getResponse();
@@ -131,7 +131,7 @@ class CashReceiveController extends BaseController
      * @Route("/cash/receive/from/depo/list", name="cash_receive_from_depo_list", options={"expose"=true})
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_CASH_RECEIVE_MANAGE")
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_CASH_RECEIVE_MANAGE")
      */
     public function cashReceiveFromDepoListAction(Request $request)
     {
@@ -154,7 +154,7 @@ class CashReceiveController extends BaseController
      * @Route("/cash/receive/from/depo/details/{id}", name="cash_receive_from_depo_details", options={"expose"=true})
      * @param Depo $depo
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_CASH_RECEIVE_MANAGE")
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_CASH_RECEIVE_MANAGE")
      */
     public function cashReceiveFromDepoDetailsListAction(Depo $depo)
     {
@@ -171,7 +171,7 @@ class CashReceiveController extends BaseController
      * @Route("/cash/receive/from/depo/receive/details/{id}", name="cash_receive_from_depo_receive_details", options={"expose"=true})
      * @param Depo $depo
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_CASH_RECEIVE_MANAGE")
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_CASH_RECEIVE_MANAGE")
      */
     public function cashReceiveFromDepoReceiveDetailsListAction(Depo $depo)
     {

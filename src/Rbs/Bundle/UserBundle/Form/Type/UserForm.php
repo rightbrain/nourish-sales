@@ -111,7 +111,8 @@ class UserForm extends AbstractType
                         ->setParameter('group', 'Super Administrator');
                 },
                 'property' => 'name',
-                'multiple' => true
+                'multiple' => true,
+                'required' => false
             ))
         ;
 

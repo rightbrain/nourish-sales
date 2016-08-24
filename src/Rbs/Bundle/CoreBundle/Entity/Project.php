@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints AS Assert;
 /**
  * Project
  *
- * @ORM\Table(name="projects")
+ * @ORM\Table(name="core_projects")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\ProjectRepository")
  * @ORMSubscribedEvents()
  * @UniqueEntity("projectName")
@@ -101,7 +101,7 @@ class Project
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
-     * @ORM\JoinTable(name="join_projects_bundles")
+     * @ORM\JoinTable(name="core_join_projects_bundles")
      * @Assert\NotBlank()
      * @Assert\Count(min = 1, minMessage = "Please select at least {{ limit }} module")
      **/

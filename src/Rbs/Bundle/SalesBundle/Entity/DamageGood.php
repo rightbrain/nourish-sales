@@ -11,7 +11,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * DamageGood
  *
- * @ORM\Table(name="damage_goods")
+ * @ORM\Table(name="sales_damage_goods")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\DamageGoodRepository")
  * @ORMSubscribedEvents()
  * @ORM\HasLifecycleCallbacks

@@ -73,9 +73,9 @@ class StockController extends Controller
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
         $function = function ($qb) {
-            $qb->join("stocks.item", 'i');
+            $qb->join("sales_stocks.item", 'i');
             $qb->join("i.bundles", 'bundles');
-            $qb->andWhere("stocks.deletedAt IS NULL");
+            $qb->andWhere("sales_stocks.deletedAt IS NULL");
             // Show only Sales Bundle
             $qb->andWhere("bundles.id = :bundle")->setParameter('bundle', RbsSalesBundle::ID);
         };

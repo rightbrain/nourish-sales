@@ -12,7 +12,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * ItemType
  *
- * @ORM\Table(name="item_types")
+ * @ORM\Table(name="core_item_types")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\ItemTypeRepository")
  * @UniqueEntity("itemType")
  * @ORMSubscribedEvents()
@@ -63,7 +63,7 @@ class ItemType
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bundle")
-     * @ORM\JoinTable(name="join_item_types_bundles")
+     * @ORM\JoinTable(name="core_join_item_types_bundles")
      * @Assert\NotBlank()
      * @Assert\Count(min = 1, minMessage = "Please select at least {{ limit }} module")
      **/

@@ -55,8 +55,8 @@ class CreditLimitController extends BaseController
          */
         $function = function($qb)
         {
-            $qb->orderBy('credit_limits.createdAt', 'desc');
-            $qb->orderBy('credit_limits.status', 'asc');
+            $qb->orderBy('sales_credit_limits.createdAt', 'desc');
+            $qb->orderBy('sales_credit_limits.status', 'asc');
         };
         $query->addWhereAll($function);
         return $query->getResponse();

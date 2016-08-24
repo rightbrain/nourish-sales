@@ -12,8 +12,9 @@
                 </div>
             </div>
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('damage_good_form'), label: 'Damage Goods Add', 'icon': 'plus'}) }}
-
+                {%- if is_granted("ROLE_SR_GROUP") %}
+                    {{ include('_elements/_back_to_list_button.html.twig', {url: path('damage_good_form'), label: 'Damage Goods Add', 'icon': 'plus'}) }}
+                {%- endif %}
                     <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}
                     <div style="clear: both"></div>

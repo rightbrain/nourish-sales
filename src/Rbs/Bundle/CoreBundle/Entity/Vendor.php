@@ -10,7 +10,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * Vendor
  *
- * @ORM\Table(name="vendors")
+ * @ORM\Table(name="core_vendors")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\VendorRepository")
  * @ORMSubscribedEvents()
  */
@@ -124,7 +124,7 @@ class Vendor
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\ItemType", inversedBy="vendors", cascade={"persist"})
-     * @ORM\JoinTable(name="join_vendors_item_types")
+     * @ORM\JoinTable(name="core_join_vendors_item_types")
      */
     protected $itemTypes;
 

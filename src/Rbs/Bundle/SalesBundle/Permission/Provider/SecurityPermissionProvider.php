@@ -19,7 +19,7 @@ class SecurityPermissionProvider implements ProviderInterface
             ),
 
             'AGENT' => array(
-                'ROLE_AGENT', 'ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE'
+                'ROLE_AGENT', 'ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE', 'ROLE_AGENT_LEDGER_VIEW'
             ),
 
             'STOCK' => array(
@@ -52,6 +52,14 @@ class SecurityPermissionProvider implements ProviderInterface
 
             'DEPO' => array(
                 'ROLE_DEPO_USER'
+            ),
+
+            'HEAD_OFFICE' => array(
+                'ROLE_HEAD_OFFICE_USER'
+            ),
+
+            'TRUCK' => array(
+                'ROLE_TRUCK_MANAGE', 'ROLE_TRUCK_IN', 'ROLE_TRUCK_OUT', 'ROLE_TRUCK_START', 'ROLE_TRUCK_FINISH'
             )
 
         );

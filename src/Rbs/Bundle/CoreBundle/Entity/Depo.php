@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints AS Assert;
 /**
  * Depo
  *
- * @ORM\Table(name="depos")
+ * @ORM\Table(name="core_depos")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\DepoRepository")
  * @ORMSubscribedEvents()
  * @UniqueEntity("name")
@@ -56,7 +56,7 @@ class Depo
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
-     * @ORM\JoinTable(name="users_depos")
+     * @ORM\JoinTable(name="core_join_users_depos")
      **/
     private $users;
 

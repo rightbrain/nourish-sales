@@ -16,7 +16,7 @@
 
                         <div class="col-md-12">
                             <div class="portlet-title">
-                                <div class="caption" style="font-weight: bolder;">Month</div>
+                                <div class="caption bold"><u>Month</u></div>
                             </div>
                         </div>
                         {% if saleIncentiveA|length > 0  %}
@@ -26,7 +26,7 @@
 
                             <div class="col-md-12">
                                 <div class="portlet-title">
-                                    <div class="caption">
+                                    <div class="caption bold">
 
                                         {% for groupName in groupMonth[i] %}
                                             {{ groupName }} /
@@ -38,12 +38,12 @@
                                     <tbody>
                                         <tr>
                                             {% for group in saleIncentives %}
-                                                <td class="col-md-1 bold">{{ group['quantity'] }}</td>
+                                                <td class="col-md-1">{{ group['quantity']/1000 }}</td>
                                             {% endfor %}
                                         </tr>
                                         <tr>
                                             {% for group in saleIncentives %}
-                                                <td class="col-md-1 bold">{{ group['amount'] }}</td>
+                                                <td class="col-md-1">{{ group['amount'] }}</td>
                                             {% endfor %}
                                         </tr>
                                     </tbody>
@@ -56,7 +56,7 @@
 
                         <div class="col-md-12">
                             <div class="portlet-title">
-                                <div class="caption" style="font-weight: bolder;">Year</div>
+                                <div class="caption" style="font-weight: bolder;"><u>Year</u></div>
                             </div>
                         </div>
 
@@ -67,7 +67,7 @@
 
                             <div class="col-md-12">
                                 <div class="portlet-title">
-                                    <div class="caption">
+                                    <div class="caption bold">
 
                                         {% for groupName in groupYear[j] %}
                                             {{ groupName }} /
@@ -79,12 +79,12 @@
                                     <tbody>
                                         <tr>
                                             {% for group in saleIncentives %}
-                                                <td class="col-md-1 bold">{{ group['quantity'] }}</td>
+                                                <td class="col-md-1">{{ group['quantity']/1000 }}</td>
                                             {% endfor %}
                                         </tr>
                                         <tr>
                                             {% for group in saleIncentives %}
-                                                <td class="col-md-1 bold">{{ group['amount'] }}</td>
+                                                <td class="col-md-1">{{ group['amount'] }}</td>
                                             {% endfor %}
                                         </tr>
                                     </tbody>

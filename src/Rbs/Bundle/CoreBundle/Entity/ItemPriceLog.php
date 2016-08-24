@@ -11,7 +11,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * ItemPriceLog
  *
- * @ORM\Table(name="items_price_log")
+ * @ORM\Table(name="core_items_price_log")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\ItemPriceLogRepository")
  * @ORMSubscribedEvents()
  */

@@ -45,6 +45,9 @@ class CreditLimitWithAgentForm extends AbstractType
             ))
             ->add('agent', 'entity', array(
                 'class' => 'RbsSalesBundle:Agent',
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
                 'property' => 'user.profile.fullName',
                 'empty_data' => null,
                 'query_builder' => function (AgentRepository $repository)
@@ -56,6 +59,9 @@ class CreditLimitWithAgentForm extends AbstractType
             ))
             ->add('category', 'entity', array(
                 'class' => 'RbsCoreBundle:Category',
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
                 'property' => 'categoryName',
                 'empty_data' => null,
                 'query_builder' => function (CategoryRepository $repository)

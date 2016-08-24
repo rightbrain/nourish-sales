@@ -16,7 +16,7 @@ class SecurityPermissionProvider implements ProviderInterface
             ),
             
             'SALES' => array(
-                'ROLE_RSM_GROUP', 'ROLE_SR_GROUP'
+                'ROLE_RSM_GROUP', 'ROLE_SR_GROUP', 'ROLE_ZM_GROUP'
             ),
 
             'DAMAGE_GOODS' => array(

@@ -9,7 +9,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * Sms
  *
- * @ORM\Table(name="sms")
+ * @ORM\Table(name="sales_sms")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\SmsRepository")
  * @ORMSubscribedEvents()
  */

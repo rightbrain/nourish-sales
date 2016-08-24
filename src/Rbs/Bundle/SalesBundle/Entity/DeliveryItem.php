@@ -9,7 +9,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 /**
  * DeliveryItem
  *
- * @ORM\Table(name="delivery_items")
+ * @ORM\Table(name="sales_delivery_items")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\DeliveryItemRepository")
  */
 class DeliveryItem

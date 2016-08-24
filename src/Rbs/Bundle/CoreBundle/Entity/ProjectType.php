@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Constraints AS Assert;
 /**
  * Project
  *
- * @ORM\Table(name="project_types")
+ * @ORM\Table(name="core_project_types")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\ProjectTypeRepository")
  * @ORMSubscribedEvents()
  * @UniqueEntity("name")

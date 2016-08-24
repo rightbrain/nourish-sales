@@ -14,7 +14,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
- * @ORM\Table(name="users")
+ * @ORM\Table(name="user_users")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\UserBundle\Repository\UserRepository")
  * @ORMSubscribedEvents()
  * @UniqueEntity(
@@ -59,7 +59,7 @@ class User extends BaseUser
 
     /**
      * @ORM\ManyToMany(targetEntity="Group", inversedBy="users")
-     * @ORM\JoinTable(name="join_users_groups",
+     * @ORM\JoinTable(name="user_join_users_groups",
      *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="group_id", referencedColumnName="id")}
      * )
@@ -68,7 +68,7 @@ class User extends BaseUser
 
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Project", inversedBy="users")
-     * @ORM\JoinTable(name="users_projects")
+     * @ORM\JoinTable(name="user_join_users_projects")
      **/
     private $projects;
 

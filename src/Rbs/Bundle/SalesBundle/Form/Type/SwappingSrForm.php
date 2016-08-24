@@ -28,6 +28,9 @@ class SwappingSrForm extends AbstractType
         $builder
             ->add('username', 'entity', array(
                 'class' => 'Rbs\Bundle\UserBundle\Entity\User',
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
                 'property' => 'username',
                 'query_builder' => function(UserRepository $userRepository) {
                     return $userRepository->createQueryBuilder('u')
@@ -42,7 +45,7 @@ class SwappingSrForm extends AbstractType
                         ->where('a.level = :level')
                         ->andWhere('a.id != :oldLocation')
                         ->setParameter('level', 4)
-                        ->setParameter('oldLocation', $this->user->getLocation()->getId())
+                        ->setParameter('oldLocation', $this->user->getZilla()->getId())
                         ->orderBy('a.name');
                 },
                 'attr' => array(

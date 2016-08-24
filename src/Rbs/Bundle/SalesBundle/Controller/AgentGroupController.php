@@ -23,7 +23,7 @@ class AgentGroupController extends Controller
      * @Route("/agent/groups", name="agent_groups_home")
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function indexAction()
     {
@@ -40,7 +40,7 @@ class AgentGroupController extends Controller
     /**
      * @Route("/agent_groups_list_ajax", name="agent_groups_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function listAjaxAction()
     {
@@ -51,7 +51,7 @@ class AgentGroupController extends Controller
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("agent_groups.deletedAt IS NULL");
+            $qb->andWhere("sales_agent_groups.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
         return $query->getResponse();
@@ -62,7 +62,7 @@ class AgentGroupController extends Controller
      * @Template("RbsSalesBundle:AgentGroup:new.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function createAction(Request $request)
     {
@@ -97,7 +97,7 @@ class AgentGroupController extends Controller
      * @param Request $request
      * @param AgentGroup $agentGroup
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function updateAction(Request $request, AgentGroup $agentGroup)
     {
@@ -128,7 +128,7 @@ class AgentGroupController extends Controller
      * @Route("/agent/group/delete/{id}", name="agent_group_delete", options={"expose"=true})
      * @param AgentGroup $agentGroup
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function deleteAction(AgentGroup $agentGroup)
     {

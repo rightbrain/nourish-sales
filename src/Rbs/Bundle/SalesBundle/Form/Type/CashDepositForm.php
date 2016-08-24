@@ -30,16 +30,11 @@ class CashDepositForm extends AbstractType
                     'class' => 'date-picker'
                 )
             ))
-//            ->add($builder->create('depositedAt', 'text', array(
-//                'label' => 'Date',
-//                'attr' => array(
-//                    'class' => 'date-picker'
-//                ),
-//                'empty_data' => new \DateTime(),
-//                'required' => false
-//            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'Y-m-d')))
             ->add('depositedBy', 'entity', array(
                 'class' => 'Rbs\Bundle\UserBundle\Entity\User',
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
                 'query_builder' => function(UserRepository $userRepository) {
                     return $userRepository->createQueryBuilder('u')
                         ->andWhere("u.userType = :USER")

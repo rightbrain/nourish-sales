@@ -57,6 +57,9 @@ class SwappingRsmForm extends AbstractType
             ->add('userChange', 'entity', array(
                 'class' => 'Rbs\Bundle\UserBundle\Entity\User',
                 'property' => 'username',
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
                 'required' => false,
                 'empty_value' => 'Select User',
                 'empty_data' => null,

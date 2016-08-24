@@ -9,7 +9,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * VendorAttach
  *
- * @ORM\Table(name="vendor_attaches")
+ * @ORM\Table(name="core_vendor_attaches")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\VendorAttachRepository")
  * @ORMSubscribedEvents()
  * @ORM\HasLifecycleCallbacks

@@ -11,7 +11,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * AgentDoc
  *
- * @ORM\Table(name="agent_doc")
+ * @ORM\Table(name="sales_agent_doc")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\AgentDocRepository")
  * @ORMSubscribedEvents()
  * @ORM\HasLifecycleCallbacks

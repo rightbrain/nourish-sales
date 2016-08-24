@@ -38,7 +38,6 @@ class TargetDatatable extends BaseDatatable
         $this->columnBuilder
             ->add('location.name', 'column', array('title' => 'District'))
             ->add('quantity', 'column', array('title' => 'Quantity'))
-            ->add('remaining', 'column', array('title' => 'Remaining'))
             ->add('category.name', 'column', array('title' => 'Category'))
             ->add('startDate', 'datetime', array('title' => 'startDate', 'date_format' => $dateFormat))
             ->add('endDate', 'datetime', array('title' => 'endDate', 'date_format' => $dateFormat))

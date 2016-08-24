@@ -128,3 +128,9 @@ Change Quick Sidebar Width
 div.dataTables_scroll{
     clear: both;
 }
+
+ul.sub-menu span span.title{
+    border-bottom: 1px solid #bdbdbd;
+    margin: 0 0 7px 45px;
+    display: block;
+}

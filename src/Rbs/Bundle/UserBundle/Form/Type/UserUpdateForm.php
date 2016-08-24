@@ -89,6 +89,7 @@ class UserUpdateForm extends AbstractType
                 },
                 'property' => 'name',
                 'multiple' => true,
+                'required' => false
             ))
         ;
 

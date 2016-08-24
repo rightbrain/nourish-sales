@@ -47,10 +47,10 @@ class IncentiveController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->join('incentives.agent', 'a');
+            $qb->join('sales_incentives.agent', 'a');
             $qb->join('a.user', 'u');
             $qb->join('u.profile', 'p');
-            $qb->orderBy('incentives.createdAt', 'DESC');
+            $qb->orderBy('sales_incentives.createdAt', 'DESC');
         };
         $query->addWhereAll($function);
 

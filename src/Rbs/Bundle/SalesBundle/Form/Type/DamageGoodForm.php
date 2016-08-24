@@ -29,6 +29,9 @@ class DamageGoodForm extends AbstractType
             ->add('remark')
             ->add('order', 'entity', array(
                 'class' => 'RbsSalesBundle:Order',
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
                 'property' => 'id',
                 'required' => false,
                 'empty_value' => 'Select Order',
@@ -37,9 +40,6 @@ class DamageGoodForm extends AbstractType
                 {
                     return $repository->createQueryBuilder('o')
                         ->join('o.agent', 'a');
-//                        ->join('a.user', 'u')
-//                        ->andWhere('u.id =:user')
-//                        ->setParameter('user', $this->user->getId());
                 }
             ))
             ->add('file')

@@ -44,7 +44,7 @@ class SmsController extends Controller
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("sms.status = 'UNREAD'");
+            $qb->andWhere("sales_sms.status = 'UNREAD'");
         };
         $query->addWhereAll($function);
         return $query->getResponse();
@@ -79,7 +79,7 @@ class SmsController extends Controller
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("sms.status = 'READ'");
+            $qb->andWhere("sales_sms.status = 'READ'");
         };
         $query->addWhereAll($function);
         return $query->getResponse();

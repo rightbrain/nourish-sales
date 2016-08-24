@@ -24,7 +24,7 @@ class CashReceiveDatatable extends BaseDatatable
 
         $this->columnBuilder
             ->add('receivedAt', 'datetime', array('title' => 'Date', 'date_format' => 'LLL' ))
-            ->add('order.id', 'column', array('title' => 'Order Number'))
+            ->add('orderRef.id', 'column', array('title' => 'Order Number'))
             ->add('depo.name', 'column', array('title' => 'Depo'))
             ->add('receivedBy.username', 'column', array('title' => 'Depositor'))
             ->add('amount', 'column', array('title' => 'Amount'))

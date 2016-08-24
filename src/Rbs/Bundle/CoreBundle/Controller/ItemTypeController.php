@@ -50,7 +50,7 @@ class ItemTypeController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("item_types.deletedAt IS NULL");
+            $qb->andWhere("core_item_types.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 

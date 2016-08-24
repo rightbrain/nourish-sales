@@ -10,7 +10,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * Incentive
  *
- * @ORM\Table(name="incentives")
+ * @ORM\Table(name="sales_incentives")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\IncentiveRepository")
  * @ORMSubscribedEvents()
  */

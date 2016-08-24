@@ -25,7 +25,7 @@ class PaymentController extends BaseController
     /**
      * @Route("/payments", name="payments_home")
      * @Template()
-     * @JMS\Secure(roles="ROLE_PAYMENT_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_PAYMENT_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function indexAction()
     {
@@ -40,7 +40,7 @@ class PaymentController extends BaseController
     /**
      * @Route("/payment_list_ajax", name="payment_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_PAYMENT_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_PAYMENT_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -67,11 +67,11 @@ class PaymentController extends BaseController
                 list($fromDate, $toDate) = explode('--', $dateFilter);
 
                 if (!empty($fromDate) && !empty($toDate)) {
-                    $qb->andWhere('payments.createdAt BETWEEN :fromDate AND :toDate')
+                    $qb->andWhere('sales_payments.createdAt BETWEEN :fromDate AND :toDate')
                         ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($fromDate)))
                         ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($toDate)));
                 } else if (!empty($fromDate) && empty($toDate)) {
-                    $qb->andWhere('payments.createdAt BETWEEN :fromDate AND :toDate')
+                    $qb->andWhere('sales_payments.createdAt BETWEEN :fromDate AND :toDate')
                         ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($fromDate)))
                         ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($fromDate)));
                 }
@@ -79,10 +79,10 @@ class PaymentController extends BaseController
 
             if ($user->getUserType() == User::AGENT) {
                 $agent = $agentRepository->findOneBy(array('user' => $user->getId()));
-                $qb->andWhere('payments.agent = :agent')->setParameter('agent', array($agent));
+                $qb->andWhere('sales_payments.agent = :agent')->setParameter('agent', array($agent));
             } else if ($user->getUserType() == User::AGENT) {
                 $agents = $agentRepository->findBy(array('agent' => $user->getId()));
-                $qb->andWhere('payments.agent IN(:agents)')->setParameter('agents', $agents);
+                $qb->andWhere('sales_payments.agent IN(:agents)')->setParameter('agents', $agents);
             }
         };
         $query->addWhereAll($function);
@@ -95,7 +95,7 @@ class PaymentController extends BaseController
      * @Template("RbsSalesBundle:Payment:new.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function createAction(Request $request)
     {
@@ -129,7 +129,7 @@ class PaymentController extends BaseController
      * @Route("/payment/partial_payment_orders/{id}", name="partial_payment_orders", options={"expose"=true})
      * @param Agent $agent
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function getAgentPartialOrder(Agent $agent)
     {
@@ -144,10 +144,10 @@ class PaymentController extends BaseController
     }
 
     /**
-     * @Route("/agents/laser", name="agents_laser")
+     * @Route("/agents/ledger", name="agents_laser")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
     public function laserAction(Request $request)
     {
@@ -189,7 +189,7 @@ class PaymentController extends BaseController
     }
 
     /**
-     * @Route("/my/laser", name="my_laser")
+     * @Route("/my/ledger", name="my_laser")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_AGENT")

@@ -24,7 +24,7 @@ class AgentsTruckInfoController extends BaseController
      * @Route("/truck/info/list", name="truck_info_list")
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_AGENT")
+     * @JMS\Secure(roles="ROLE_TRUCK_MANAGE")
      */
     public function indexAction()
     {
@@ -39,7 +39,7 @@ class AgentsTruckInfoController extends BaseController
     /**
      * @Route("/truck_info_list_ajax", name="truck_info_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_AGENT")
+     * @JMS\Secure(roles="ROLE_TRUCK_MANAGE")
      */
     public function listAjaxAction()
     {
@@ -50,12 +50,13 @@ class AgentsTruckInfoController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->join('agents_truck_info.agent', 'u');
+            $qb->join('sales_agents_truck_info.agent', 'u');
         };
         $query->addWhereAll($function);
         
         return $query->getResponse();
     }
+
     /**
      * @Route("/truck/info/my/list", name="truck_info_my_list")
      * @Method("GET")
@@ -86,7 +87,7 @@ class AgentsTruckInfoController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->join('agents_truck_info.agent', 'u');
+            $qb->join('sales_agents_truck_info.agent', 'u');
             $qb->andWhere('u =:user');
             $qb->setParameter('user', $this->getUser());
         };

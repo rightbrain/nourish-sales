@@ -11,7 +11,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * SubCategory
  *
- * @ORM\Table(name="sub_categories")
+ * @ORM\Table(name="core_sub_categories")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\CoreBundle\Repository\SubCategoryRepository")
  * @ORMSubscribedEvents()
  */

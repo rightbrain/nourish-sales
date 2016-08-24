@@ -49,7 +49,7 @@ class CategoryController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("categories.deletedAt IS NULL");
+            $qb->andWhere("core_categories.deletedAt IS NULL");
         };
         $query->addWhereAll($function);
 
