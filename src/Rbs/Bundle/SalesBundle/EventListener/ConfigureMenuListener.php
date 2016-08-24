@@ -124,7 +124,7 @@ class ConfigureMenuListener extends ContextAwareListener
             if ($this->authorizationChecker->isGranted(array('ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE'))) {
                 $menu['Sales']->addChild('Agents', array('route' => 'agents_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
-                if ($this->isMatch('agents_home')) {
+                if ($this->isMatch('agents_home') or $this->isMatch('agent_update')) {
                     $menu['Sales']->getChild('Agents')->setCurrent(true);
                 }
             }
