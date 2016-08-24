@@ -83,13 +83,23 @@ class UserController extends Controller
             if ($form->isValid()) {
 
                 $user->setEnabled(true);
-                $this->getDoctrine()->getRepository('RbsUserBundle:User')->create($user);
+
                 if($request->request->get('user')['userType'] == User::AGENT){
+                    $user->setRoles(array("ROLE_AGENT"));
+                    $this->getDoctrine()->getRepository('RbsUserBundle:User')->create($user);
                     $agent->setUser($this->getDoctrine()->getRepository('RbsUserBundle:User')->find($user->getId()));
                     $agent->setAgentID($user->getId());
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
                     return $this->redirect($this->generateUrl('agent_update', array('id' => $agent->getId())));
+                }elseif ($request->request->get('user')['userType'] == User::RSM){
+                    $user->setRoles(array("ROLE_RSM_GROUP"));
+                }elseif ($request->request->get('user')['userType'] == User::SR){
+                    $user->setRoles(array("ROLE_SR_GROUP"));
+                }elseif($request->request->get('user')['userType'] == User::ZM){
+                    $user->setRoles(array("ROLE_ZM_GROUP"));
                 }
+
+                $this->getDoctrine()->getRepository('RbsUserBundle:User')->create($user);
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
@@ -122,8 +132,9 @@ class UserController extends Controller
 
             if ($form->isValid()) {
 
-                $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
                 if($request->request->get('user')['userType'] == User::AGENT){
+                    $user->setRoles(array("ROLE_AGENT"));
+                    $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
                     $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array('user'=>$user->getId()));
                     if($agent == false){
                         $agent = new Agent();
@@ -131,8 +142,17 @@ class UserController extends Controller
                         $agent->setAgentID($user->getId());
                         $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
                     }
+                    return $this->redirect($this->generateUrl('agent_update', array('id' => $agent->getId())));
+                }elseif ($request->request->get('user')['userType'] == User::RSM){
+                    $user->setRoles(array("ROLE_RSM_GROUP"));
+                }elseif ($request->request->get('user')['userType'] == User::SR){
+                    $user->setRoles(array("ROLE_SR_GROUP"));
+                }elseif($request->request->get('user')['userType'] == User::ZM){
+                    $user->setRoles(array("ROLE_ZM_GROUP"));
                 }
-                
+
+                $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
+
                 $this->get('session')->getFlashBag()->add(
                     'success',
                     'User Updated Successfully!'
