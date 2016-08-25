@@ -10,6 +10,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation as JMS;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Cash Deposit Controller.
@@ -97,5 +98,19 @@ class CashDepositController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @Route("/cash/deposit/doc/view/{id}", name="cash_deposit_doc_view", options={"expose"=true})
+     * @param CashDeposit $cashDeposit
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @JMS\Secure(roles="ROLE_CASH_DEPOSIT_MANAGE")
+     */
+    public function fileViewAction(CashDeposit $cashDeposit)
+    {
+        return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
+            'path' => $cashDeposit->getPath(),
+            'location' => '/uploads/sales/cash-deposit-slip/',
+        ));
     }
 }

@@ -390,4 +390,12 @@ class CashDeposit
             ? null
             : $this->getUploadDir() . '/' . $this->path;
     }
+
+    public function isPathExist()
+    {
+        if($this->path != null){
+            return false;
+        }
+        return true;
+    }
 }

@@ -224,4 +224,18 @@ class DamageGoodController extends BaseController
             'location' => '/uploads/sales/damage-goods/',
         ));
     }
+
+    /**
+     * @Route("/damage/good/doc/view/{id}", name="damage_good_doc_view", options={"expose"=true})
+     * @param DamageGood $damageGood
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
+     */
+    public function fileViewAction(DamageGood $damageGood)
+    {
+        return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
+            'path' => $damageGood->getPath(),
+            'location' => '/uploads/sales/damage-goods/',
+        ));
+    }
 }

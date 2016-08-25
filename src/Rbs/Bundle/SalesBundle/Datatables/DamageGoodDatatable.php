@@ -1,6 +1,7 @@
 <?php
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
+use Rbs\Bundle\SalesBundle\Entity\DamageGood;
 
 /**
  * Class DamageGoodDatatable
@@ -9,6 +10,21 @@ namespace Rbs\Bundle\SalesBundle\Datatables;
  */
 class DamageGoodDatatable extends BaseDatatable
 {
+    public function getLineFormatter()
+    {
+        /** @var DamageGood $damageGood
+         * @return mixed
+         */
+        $formatter = function($line){
+            $damageGood = $this->em->getRepository('RbsSalesBundle:DamageGood')->find($line['id']);
+            $line['isPathExist'] = !$damageGood->isPathExist();
+
+            return $line;
+        };
+
+        return $formatter;
+    }
+    
     /**
      * {@inheritdoc}
      */
@@ -31,6 +47,31 @@ class DamageGoodDatatable extends BaseDatatable
             ->add('agent.user.username', 'column', array('title' => 'Agent'))
             ->add('remark', 'column', array('title' => 'Remark'))
             ->add('amount', 'column', array('title' => 'Amount'))
+            ->add('isPathExist', 'virtual', array('visible' => false))
+            ->add(null, 'action', array(
+                'width' => '200px',
+                'title' => 'File',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'damage_good_doc_view',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'View',
+                        'icon' => 'fa fa-file',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'view',
+                            'class' => 'btn btn-xs',
+                            'role' => 'button',
+                            'target'=> '_blank'
+                        ),
+                        'render_if' => array('isPathExist')
+                    )
+                )
+            ))
         ;
     }
 

@@ -1,6 +1,7 @@
 <?php
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
+use Rbs\Bundle\SalesBundle\Entity\CashDeposit;
 
 /**
  * Class CashDepositDatatable
@@ -9,6 +10,21 @@ namespace Rbs\Bundle\SalesBundle\Datatables;
  */
 class CashDepositDatatable extends BaseDatatable
 {
+    public function getLineFormatter()
+    {
+        /** @var CashDeposit $cashDeposit
+         * @return mixed
+         */
+        $formatter = function($line){
+            $cashDeposit = $this->em->getRepository('RbsSalesBundle:CashDeposit')->find($line['id']);
+            $line['isPathExist'] = !$cashDeposit->isPathExist();
+
+            return $line;
+        };
+
+        return $formatter;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -30,6 +46,31 @@ class CashDepositDatatable extends BaseDatatable
             ->add('bankName', 'column', array('title' => 'Bank Name'))
             ->add('branchName', 'column', array('title' => 'Branch Name'))
             ->add('remark', 'column', array('title' => 'Remark'))
+            ->add('isPathExist', 'virtual', array('visible' => false))
+            ->add(null, 'action', array(
+                'width' => '200px',
+                'title' => 'File',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'cash_deposit_doc_view',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'View',
+                        'icon' => 'fa fa-file',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'view',
+                            'class' => 'btn btn-xs',
+                            'role' => 'button',
+                            'target'=> '_blank'
+                        ),
+                        'render_if' => array('isPathExist')
+                    )
+                )
+            ))
         ;
     }
 

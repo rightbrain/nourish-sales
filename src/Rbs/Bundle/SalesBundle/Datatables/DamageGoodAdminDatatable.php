@@ -1,6 +1,7 @@
 <?php
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
+use Rbs\Bundle\SalesBundle\Entity\DamageGood;
 
 /**
  * Class DamageGoodDatatable
@@ -9,6 +10,21 @@ namespace Rbs\Bundle\SalesBundle\Datatables;
  */
 class DamageGoodAdminDatatable extends BaseDatatable
 {
+    public function getLineFormatter()
+    {
+        /** @var DamageGood $damageGood
+         * @return mixed
+         */
+        $formatter = function($line){
+            $damageGood = $this->em->getRepository('RbsSalesBundle:DamageGood')->find($line['id']);
+            $line['isPathExist'] = !$damageGood->isPathExist();
+
+            return $line;
+        };
+
+        return $formatter;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -39,6 +55,30 @@ class DamageGoodAdminDatatable extends BaseDatatable
                 'actions' => array(
                     $this->makeActionButton('damage_goods_verify', array('id' => 'id'), 'ROLE_DAMAGE_GOODS_VERIFY', 'Verify', 'Verify', 'fa fa-pencil-square-o'),
                     $this->makeActionButton('damage_goods_view', array('id' => 'id'), 'ROLE_DAMAGE_GOODS_APPROVE', 'View', 'View', 'fa fa-eye'),
+                )
+            ))
+            ->add(null, 'action', array(
+                'width' => '200px',
+                'title' => 'File',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'damage_good_doc_view',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'View',
+                        'icon' => 'fa fa-file',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'view',
+                            'class' => 'btn btn-xs',
+                            'role' => 'button',
+                            'target'=> '_blank'
+                        ),
+                        'render_if' => array('isPathExist')
+                    )
                 )
             ))
         ;
