@@ -19,6 +19,7 @@ class UserDatatable extends BaseDatatable
             $line["isSuperAdmin"] = !$user->isSuperAdmin();
             $line['enabled'] = $user->isEnabled();
             $line['disabled'] = !$user->isEnabled();
+            $line['sl'] = 0;
 
             return $line;
         };
@@ -39,7 +40,21 @@ class UserDatatable extends BaseDatatable
             'type' => 'GET'
         ));
 
+        $this->callbacks->setCallbacks(array
+            (
+                'init_complete' => "function(settings) {
+                    var t = $('#'+settings.sInstance).DataTable();
+                    t.on( 'order.dt search.dt', function () {
+                        t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                            cell.innerHTML = i+1;
+                        } );
+                    } ).draw();
+                }"
+            )
+        );
+
         $this->columnBuilder
+                ->add('sl', 'virtual', array('title' => 'Sl', 'orderable' => false))
                 ->add('username', 'column', array('title' => 'User name',))
                 ->add('profile.fullName', 'column', array('title' => 'FullName',))
                 ->add('userType', 'column', array('title' => 'User Type',))

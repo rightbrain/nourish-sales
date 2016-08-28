@@ -40,7 +40,7 @@ class BaseDatatable extends AbstractDatatableView
             'dom' => 'lfrtip',
             'length_menu' => array(10, 25, 50, 100),
             'order_classes' => true,
-            'order' => [[0, 'asc']],
+            'order' => [[1, 'asc']],
             'order_multi' => true,
             'page_length' => 15,
             'paging_type' => Style::FULL_NUMBERS_PAGINATION,
