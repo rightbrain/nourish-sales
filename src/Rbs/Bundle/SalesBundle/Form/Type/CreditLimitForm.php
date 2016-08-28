@@ -6,6 +6,7 @@ use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class CreditLimitForm extends AbstractType
 {
@@ -23,8 +24,12 @@ class CreditLimitForm extends AbstractType
                 'attr' => array(
                     'class' => 'select2me'
                 ),
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Agent should not be blank'
+                    )),
+                ),
                 'empty_value' => 'Select Agent',
-                'empty_data' => null,
                 'query_builder' => function (AgentRepository $repository)
                 {
                     return $repository->createQueryBuilder('c')

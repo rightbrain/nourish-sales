@@ -44,7 +44,7 @@ class CreditLimit
      * @var Category
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Category")
-     * @ORM\JoinColumn(name="categories", nullable=true)
+     * @ORM\JoinColumn(name="categories")
      */
     private $category;
 
