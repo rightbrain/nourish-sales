@@ -55,6 +55,9 @@ class CreditLimitController extends BaseController
          */
         $function = function($qb)
         {
+            $qb->join('sales_credit_limits.agent', 'a');
+            $qb->join('a.user', 'u');
+            $qb->join('u.profile', 'p');
             $qb->orderBy('sales_credit_limits.createdAt', 'desc');
             $qb->orderBy('sales_credit_limits.status', 'asc');
         };

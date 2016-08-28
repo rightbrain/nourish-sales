@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
 use Rbs\Bundle\SalesBundle\Entity\CreditLimit;
+use Rbs\Bundle\UserBundle\Entity\User;
 
 /**
  * Class CreditLimitDatatable
@@ -11,6 +12,21 @@ use Rbs\Bundle\SalesBundle\Entity\CreditLimit;
  */
 class CreditLimitDatatable extends BaseDatatable
 {
+    public function getLineFormatter()
+    {
+        /** @var CreditLimit $creditLimit
+         * @return mixed
+         */
+        $formatter = function($line){
+            $creditLimit = $this->em->getRepository('RbsSalesBundle:CreditLimit')->find($line['id']);
+            $line['fullName'] = $creditLimit->getAgent()->getUser()->getProfile()->getFullName();
+
+            return $line;
+        };
+
+        return $formatter;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -25,7 +41,8 @@ class CreditLimitDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-            ->add('agent.user.username', 'column', array('title' => 'Agent'))
+            ->add('id', 'column', array('visible' => false))
+            ->add('fullName', 'virtual', array('title' => 'Agent'))
             ->add('category.name', 'column', array('title' => 'Category'))
             ->add('startDate', 'datetime', array('title' => 'Start Date', 'date_format' => 'LL' ))
             ->add('endDate', 'datetime', array('title' => 'End Date', 'date_format' => 'LL' ))
