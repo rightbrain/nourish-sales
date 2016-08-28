@@ -210,7 +210,7 @@ class ConfigureMenuListener extends ContextAwareListener
             $menu['Sales']->addChild('Bank Slip', array('route' => 'bank_info_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
 
-            $menu['Sales']->addChild('My Laser', array('route' => 'my_laser'))
+            $menu['Sales']->addChild('My Ledger', array('route' => 'my_laser'))
                 ->setAttribute('icon', 'fa fa-th-list');
 
             $menu['Sales']->addChild('My Doc', array('route' => 'my_doc'))
