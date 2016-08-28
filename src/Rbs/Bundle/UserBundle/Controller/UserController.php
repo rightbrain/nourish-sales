@@ -254,10 +254,10 @@ class UserController extends Controller
         $user->setEnabled($enabled);
 
         $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
-
+        $enabled==0 ? $msg = "Disabled" : $msg = "Enabled";
         $this->get('session')->getFlashBag()->add(
             'success',
-            'User Successfully Enabled'
+            'User Successfully '.$msg
         );
 
         return $this->redirect($this->generateUrl('users_home'));
