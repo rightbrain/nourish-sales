@@ -32,8 +32,22 @@ class PaymentForm extends AbstractType
 
         $builder
             ->add('amount')
-            ->add('bankName', 'text')
-            ->add('branchName', 'text')
+            ->add('bankName', 'text', array(
+                'required' => true,
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Bank Name should not be blank'
+                    )),
+                )
+            ))
+            ->add('branchName', 'text', array(
+                'required' => true,
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Branch Name should not be blank'
+                    )),
+                )
+            ))
             ->add('paymentMethod', 'choice', array(
                 'empty_value' => 'Select Payment Method',
                 'choices'  => array(
