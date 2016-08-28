@@ -25,10 +25,7 @@ class GroupForm extends AbstractType
     {
         $builder->add('name', null, array(
             'label' => 'Name',
-            'attr'  => array('class' => 'span5'),
-            'constraints' => array(
-                new NotBlank(array('message'=>'Name should not be blank'))
-            ),
+            'attr'  => array('class' => 'span5')
         ));
 
         $builder->add('description', 'textarea', array(
