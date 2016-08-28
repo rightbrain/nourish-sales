@@ -206,6 +206,42 @@ class UserController extends Controller
     }
 
     /**
+     * @Route("/my/password/update", name="my_password_update", options={"expose"=true})
+     * @Template("RbsUserBundle:User:update.password.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function myPasswordUpdateAction(Request $request)
+    {
+        $user = $this->getUser();
+        $form = $this->createForm(new UserUpdatePasswordForm(), $user);
+
+        if ($request->getMethod() == 'POST') {
+
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+
+                $user->setPassword($form->get('plainPassword')->getData());
+                $user->setPlainPassword($form->get('plainPassword')->getData());
+
+                $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
+
+                $this->get('session')->getFlashBag()->add(
+                    'notice',
+                    'Password Successfully Change'
+                );
+
+                return $this->redirect($this->generateUrl('fos_user_profile_show'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
+    }
+
+    /**
      * @Route("/user/enabled/{id}", name="user_enabled", options={"expose"=true})
      * @param User $user
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
