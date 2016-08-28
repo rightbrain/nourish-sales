@@ -35,6 +35,7 @@ class SwappingSrForm extends AbstractType
                 'query_builder' => function(UserRepository $userRepository) {
                     return $userRepository->createQueryBuilder('u')
                         ->andWhere("u.id = :userId")
+                        ->andWhere("u.deletedAt IS NULL")
                         ->setParameters(array('userId' => $this->user->getId()));
                 }
             ))

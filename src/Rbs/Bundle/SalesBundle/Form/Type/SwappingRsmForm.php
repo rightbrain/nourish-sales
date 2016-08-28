@@ -33,6 +33,7 @@ class SwappingRsmForm extends AbstractType
                 'query_builder' => function(UserRepository $userRepository) {
                     return $userRepository->createQueryBuilder('u')
                         ->andWhere("u.id = :userId")
+                        ->andWhere("u.deletedAt IS NULL")
                         ->setParameters(array('userId' => $this->user->getId()));
                 }
             ))
@@ -67,6 +68,7 @@ class SwappingRsmForm extends AbstractType
                 'query_builder' => function(UserRepository $userRepository) {
                     return $userRepository->createQueryBuilder('u')
                         ->andWhere("u.userType = :userType")
+                        ->andWhere("u.deletedAt IS NULL")
                         ->andWhere("u.id != :userId")
                         ->setParameters(array('userType' => User::RSM, 'userId' => $this->user->getId()));
                 }

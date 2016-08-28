@@ -61,6 +61,7 @@ class UserRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('u');
         $query->where('u.userType = :RSM');
+        $query->andWhere("u.deletedAt IS NULL");
         $query->setParameter('RSM', User::RSM);
 
         return $query->getQuery()->getResult();
@@ -70,6 +71,7 @@ class UserRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('u');
         $query->where('u.userType = :SR');
+        $query->andWhere("u.deletedAt IS NULL");
         $query->setParameter('SR', User::SR);
 
         return $query->getQuery()->getResult();
