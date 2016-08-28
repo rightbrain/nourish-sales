@@ -74,8 +74,10 @@ class StockController extends Controller
         /** @var QueryBuilder $qb */
         $function = function ($qb) {
             $qb->join("sales_stocks.item", 'i');
+            $qb->join("sales_stocks.depo", 'd');
             $qb->join("i.bundles", 'bundles');
             $qb->andWhere("sales_stocks.deletedAt IS NULL");
+            $qb->andWhere("d.deletedAt IS NULL");
             // Show only Sales Bundle
             $qb->andWhere("bundles.id = :bundle")->setParameter('bundle', RbsSalesBundle::ID);
         };
