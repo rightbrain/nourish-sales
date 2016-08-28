@@ -2,9 +2,13 @@
 
 namespace Rbs\Bundle\CoreBundle\Form\Type;
 
+use Proxies\__CG__\Rbs\Bundle\CoreBundle\Entity\ItemType;
+use Rbs\Bundle\CoreBundle\Repository\CategoryRepository;
+use Rbs\Bundle\CoreBundle\Repository\ItemTypeRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class ItemForm extends AbstractType
 {
@@ -27,10 +31,37 @@ class ItemForm extends AbstractType
             ))
             ->add('itemUnit')
             ->add('price')
-            ->add('itemType', null, array(
-                'attr' => array('class' => 'select2me')
+            ->add('itemType', 'entity', array(
+                'attr' => array('class' => 'select2me'),
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\ItemType',
+                'query_builder' => function(ItemTypeRepository $itemTypeRepository) {
+                    return $itemTypeRepository->createQueryBuilder('it')
+                        ->andWhere("it.deletedAt IS NULL");
+                },
+                'empty_value' => 'Select itemType',
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'ItemType should not be blank'
+                    )),
+                ),
+                'property' => 'itemType',
+                'required' => true
             ))
-            ->add('category')
+            ->add('category', 'entity', array(
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\Category',
+                'query_builder' => function(CategoryRepository $categoryRepository) {
+                    return $categoryRepository->createQueryBuilder('c')
+                        ->andWhere("c.deletedAt IS NULL");
+                },
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Category should not be blank'
+                    )),
+                ),
+                'property' => 'name',
+                'multiple' => true,
+                'required' => true
+            ))
             ->add('bundles', null, array(
                 'label' => 'Modules'
             ))
