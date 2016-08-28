@@ -61,7 +61,12 @@ class UserUpdateForm extends AbstractType
                     'class' => 'zilla-selector select2me',
                     'id' => 'user_level1'
                 ),
-                'required' => false
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Zilla should not be blank'
+                    )),
+                ),
+                'required' => true
             ))
             ->add('upozilla', 'entity', array(
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
