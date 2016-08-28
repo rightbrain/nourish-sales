@@ -10,6 +10,7 @@ class CategoryRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('c');
         $query->where('c.status = 1');
+        $query->andWhere('c.deletedAt IS NULL');
 
         return $query->getQuery()->getResult();
     }

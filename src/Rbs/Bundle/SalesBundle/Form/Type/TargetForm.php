@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class TargetForm extends AbstractType
 {
@@ -25,7 +26,13 @@ class TargetForm extends AbstractType
                 'attr' => array(
                     'class' => 'zilla-selector select2me'
                 ),
-                'required' => false,
+                'required' => true,
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Location should not be blank'
+                    )),
+                ),
+                'empty_value' => 'Select Location',
             ))
             ->add('child_entities', 'collection', array(
                 'type' => new TargetSubForm(),
