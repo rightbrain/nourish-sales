@@ -42,7 +42,7 @@ class AgentUpdateForm extends AbstractType
             ->add('depo', 'entity', array(
                 'class' => 'RbsCoreBundle:Depo',
                 'property' => 'name',
-                'required' => false,
+                'required' => true,
                 'empty_value' => 'Select Depo',
                 'empty_data' => null,
                 'query_builder' => function (DepoRepository $repository)
