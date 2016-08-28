@@ -33,7 +33,7 @@ class UserDatatable extends BaseDatatable
     public function buildDatatable()
     {
         $this->features->setFeatures($this->defaultFeatures());
-        $this->options->setOptions($this->defaultOptions());
+        $this->options->setOptions(array_merge($this->defaultOptions(), array('order' => [[0, 'asc']])));
 
         $this->ajax->setOptions(array(
             'url' => $this->router->generate('users_list_ajax'),
@@ -42,19 +42,18 @@ class UserDatatable extends BaseDatatable
 
         $this->callbacks->setCallbacks(array
             (
-                'init_complete' => "function(settings) {
-                    var t = $('#'+settings.sInstance).DataTable();
-                    t.on( 'order.dt search.dt', function () {
-                        t.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
-                            cell.innerHTML = i+1;
-                        } );
-                    } ).draw();
+                'pre_draw_callback' => "function(settings){
+                    dataTableSetting = settings;
+                }",
+                'row_callback' => "function(nRow, aData, iDisplayIndex){
+                    $('td:first', nRow).html(dataTableSetting._iDisplayStart + iDisplayIndex + 1);
+                    return nRow;
                 }"
             )
         );
 
         $this->columnBuilder
-                ->add('sl', 'virtual', array('title' => 'Sl', 'orderable' => false))
+                ->add('sl', 'virtual', array('title' => 'Sl',))
                 ->add('username', 'column', array('title' => 'User name',))
                 ->add('profile.fullName', 'column', array('title' => 'FullName',))
                 ->add('userType', 'column', array('title' => 'User Type',))
