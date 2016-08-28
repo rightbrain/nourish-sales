@@ -35,9 +35,6 @@ class GroupForm extends AbstractType
             'label'    => 'Description',
             'required' => false,
             'attr'     => array('class' => 'span5', 'rows' => 3),
-            'constraints' => array(
-                new NotBlank(array('message'=>'Description should not be blank'))
-            ),
         ));
 
         $builder->add('roles', 'choice', array(
