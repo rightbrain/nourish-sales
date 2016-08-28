@@ -16,7 +16,7 @@
                 {% endif %}
                 {% if is_granted('ROLE_AGENT') %}
                     <li>
-                        <a href="{{ path('agent_update_password', {'id': app.user.id} ) }}">
+                        <a href="{{ path('my_password_update') }}">
                             <i class="icon-user"></i> Password Change </a>
                     </li>
                 {% endif %}
