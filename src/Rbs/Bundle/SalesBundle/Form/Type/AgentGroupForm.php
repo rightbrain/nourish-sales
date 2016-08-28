@@ -17,7 +17,14 @@ class AgentGroupForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('label')
+            ->add('label', 'text', array(
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Label should not be blank'
+                    )),
+                ),
+                'required' => true,
+            ))
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')
             ))
