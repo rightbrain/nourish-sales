@@ -33,9 +33,8 @@ class OrderItemForm extends AbstractType
             ->add('item', 'entity', array(
                 'class' => 'RbsCoreBundle:Item',
                 'property' => 'name',
-                'required' => false,
+                'required' => true,
                 'empty_value' => 'Select Item',
-                'empty_data' => null,
                 'query_builder' => function (ItemRepository $repository) use ($itemTypeId)
                 {
                     $qb = $repository->createQueryBuilder('i')
@@ -49,7 +48,12 @@ class OrderItemForm extends AbstractType
                     }
 
                     return $qb;
-                }
+                },
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Item should not be blank'
+                    )),
+                ),
             ))
             ->add('quantity', 'text', array(
                 'empty_data' => 0,

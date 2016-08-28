@@ -35,7 +35,8 @@ class OrderItem
      * @var Item
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item")
-     * @ORM\JoinColumn(name="item_id", nullable=true)
+     * @ORM\JoinColumn(name="item_id", nullable=false)
+     * @Assert\NotBlank()
      */
     private $item;
 

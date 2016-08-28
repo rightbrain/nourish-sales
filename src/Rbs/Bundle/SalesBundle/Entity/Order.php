@@ -69,7 +69,7 @@ class Order
      * @var Agent
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent")
-     * @ORM\JoinColumn(name="agent_id", nullable=false)
+     * @ORM\JoinColumn(name="agent_id")
      */
     private $agent;
 
@@ -125,6 +125,7 @@ class Order
 
     /**
      * @ORM\OneToOne(targetEntity="Sms", mappedBy="order", cascade={"persist"})
+     * @Assert\NotBlank()
      */
     protected $refSMS;
 

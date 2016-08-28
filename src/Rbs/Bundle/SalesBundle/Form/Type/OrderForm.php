@@ -40,9 +40,8 @@ class OrderForm extends AbstractType
                         'class' => 'select2me'
                     ),
                     'property' => 'user.profile.fullName',
-                    'required' => false,
+                    'required' => true,
                     'empty_value' => 'Select Agent',
-                    'empty_data' => null,
                     'query_builder' => function (AgentRepository $repository)
                     {
                         return $repository->createQueryBuilder('c')
@@ -53,7 +52,12 @@ class OrderForm extends AbstractType
                             ->andWhere('u.userType = :AGENT')
                             ->setParameter('AGENT', User::AGENT)
                             ->orderBy('p.fullName','ASC');
-                    }
+                    },
+                    'constraints' => array(
+                        new NotBlank(array(
+                            'message'=>'Agent should not be blank'
+                        )),
+                    ),
                 ));
         }
 
@@ -70,6 +74,7 @@ class OrderForm extends AbstractType
                     'attr' => array(
                         'class' => 'select2me'
                     ),
+                    'required' => true,
                     'property' => 'mobileNoAndMsg',
                     'query_builder' => function (SmsRepository $repository) use ($refSMS) {
                         $query = $repository->createQueryBuilder('sms')
