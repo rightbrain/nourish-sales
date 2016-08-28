@@ -60,7 +60,7 @@ class StockHistoryDatatable extends BaseDatatable
         $this->columnBuilder
             ->add('createdAt', 'datetime', array(
                 'title' => 'Date',
-                'date_format' => 'LLL' // default = "lll"
+                'date_format' => 'LL' // default = "lll"
             ))
             ->add('createdBy.username', 'column', array('title' => 'CreatedBy'))
             ->add('stock.depo.name', 'column', array('title' => 'Depo'))
