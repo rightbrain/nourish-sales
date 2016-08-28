@@ -44,6 +44,7 @@ class UserUpdateForm extends AbstractType
                     return $userRepository->createQueryBuilder('u')
                         ->join("u.profile", "p")
                         ->where("u.userType != :AGENT")
+                        ->andWhere('u.deletedAt IS NULL')
                         ->andWhere("u.userType != :SR")
                         ->setParameters(array('AGENT'=> User::AGENT, 'SR' => User::SR));
                 },
