@@ -58,7 +58,7 @@ class DepoController extends BaseController
     }
 
     /**
-     * @Route("/", name="depo_create")
+     * @Route("/new", name="depo_create")
      * @Method("POST")
      * @Template("RbsCoreBundle:Depo:new.html.twig")
      * @param Request $request

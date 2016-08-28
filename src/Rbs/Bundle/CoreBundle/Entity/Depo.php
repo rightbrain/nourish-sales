@@ -45,7 +45,6 @@ class Depo
      * @var string
      *
      * @ORM\Column(name="description", type="text")
-     * @Assert\NotBlank()
      */
     private $description;
 
@@ -57,6 +56,7 @@ class Depo
     /**
      * @ORM\ManyToMany(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
      * @ORM\JoinTable(name="core_join_users_depos")
+     * @Assert\NotBlank()
      **/
     private $users;
 

@@ -8,6 +8,7 @@ use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DepoForm extends AbstractType
 {
@@ -19,7 +20,9 @@ class DepoForm extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('description')
+            ->add('description', 'textarea', array(
+                'required' => false
+            ))
             ->add('users', 'entity', array(
                 'class' => 'Rbs\Bundle\UserBundle\Entity\User',
                 'query_builder' => function(UserRepository $userRepository) {
@@ -29,6 +32,7 @@ class DepoForm extends AbstractType
                 },
                 'property' => 'username',
                 'multiple' => true,
+                'required' => false
             ))
             ->add('location', 'entity', array(
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
@@ -40,7 +44,13 @@ class DepoForm extends AbstractType
                     'class' => 'zilla-selector select2me',
                     'id' => 'user_level1'
                 ),
-                'required' => false
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Zilla should not be blank'
+                    )),
+                ),
+                'empty_value' => 'Select Zilla',
+                'required' => true
             ))
         ;
     }
