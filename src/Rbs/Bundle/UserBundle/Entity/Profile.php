@@ -48,7 +48,7 @@ class Profile
     /**
      * @var string
      *
-     * @ORM\Column(name="cellphone", type="string", length=15, nullable=true, unique=true)
+     * @ORM\Column(name="cellphone", type="string", length=15, unique=true)
      * @Assert\NotBlank()
      */
     private $cellphone;
@@ -64,7 +64,6 @@ class Profile
      * @var string
      *
      * @ORM\Column(name="address", type="text", nullable=true)
-     * @Assert\NotBlank()
      */
     private $address;
 

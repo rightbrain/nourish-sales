@@ -136,7 +136,8 @@ class UserForm extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Rbs\Bundle\UserBundle\Entity\User'
+            'data_class' => 'Rbs\Bundle\UserBundle\Entity\User',
+            'cascade_validation' => true
         ));
     }
 
