@@ -2,8 +2,11 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
+use Rbs\Bundle\SalesBundle\Entity\Sms;
+use Rbs\Bundle\SalesBundle\Helper\SmsParse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends BaseController
 {
@@ -21,12 +24,45 @@ class DefaultController extends BaseController
     }
 
     /**
-     * @Route("/hello2", name="homepage2")
-     * @Template("RbsCoreBundle:Default:index.html.twig")
+     * @Route("/order-generate", name="order_via_sms")
+     * @Template("RbsCoreBundle:Default:order-generate.html.twig")
      */
-    public function index2Action()
+    public function index2Action(Request $request)
     {
-        return array();
+        $data = array();
+        $form = $this->createFormBuilder($data);
+        $form->add('mobile', 'text');
+        $form->add('msg', 'textarea');
+        $form->add('Submit', 'submit');
+
+        $formView = $form->getForm();
+        if ($request->isMethod('POST')) {
+            $formView->handleRequest($request);
+
+            $smsParse = new SmsParse($this->get('doctrine.orm.entity_manager'));
+
+            $sms = new Sms();
+            $sms->setMobileNo($formView->get('mobile')->getData());
+            $sms->setMsg($formView->get('msg')->getData());
+            $sms->setDate(new \DateTime());
+            $sms->setSl(rand());
+            $sms->setStatus('NEW');
+
+            $response = $smsParse->parse($sms);
+
+            if ($response) {
+                $this->flashMessage('success', 'Order Create Successfully, Order ID: ' . $response['orderId']);
+            } else {
+                $this->flashMessage('error', $smsParse->error);
+            }
+
+            return $this->redirectToRoute('order_via_sms');
+        }
+
+        return array(
+            'form' => $formView->createView()
+        );
+
     }
 
 }
