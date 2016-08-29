@@ -173,7 +173,7 @@
             <h4 class="modal-title">Order No <span class="badge badge-primary">{{ order.id }}</span></h4>
         </div>
 
-        <form id="delivery-item-form-partially-shipped" action="{{ path('delivery_item_form_partially_shipped', {id:delivery.id}) }}" method="post">
+        <form id="delivery-item-form-partially-shipped" action="{{ path('delivery_partially_shipped') }}" method="post">
         <div class="modal-body">
 
                 <div class="row">
@@ -216,28 +216,28 @@
                                         <th class="text-center col-md-3">Finish Loading</th>
                                         <th class="text-center col-md-3">Vehicle Out</th>
                                     </tr>
-                                    <tr id="process-actions">
+                                    <tr id="process-actions-partially-shipped">
                                         <td class="text-center">
                                             <button type="button" id="in-button" class="btn green" onclick="inFunction()">IN</button>
-                                            <input type="hidden" id="in" />
+                                            <input name="in" type="hidden" id="in" />
                                             <p id="in-view"></p>
                                         </td>
 
                                         <td class="text-center">
-                                            <button type="button" id="start-button" class="btn green" onclick="startFunction()">START</button>
-                                            <input type="hidden" id="start" />
+                                            <button type="button" id="start-button" class="btn green" onclick="startFunction()" disabled="disabled">START</button>
+                                            <input name="start" type="hidden" id="start" />
                                             <p id="start-view"></p>
                                         </td>
 
                                         <td class="text-center">
-                                            <button type="button" id="finish-button" class="btn green" onclick="finishFunction()">FINISH</button>
-                                            <input type="hidden" id="finish" />
+                                            <button type="button" id="finish-button" class="btn green" onclick="finishFunction()" disabled="disabled">FINISH</button>
+                                            <input name="finish" type="hidden" id="finish" />
                                             <p id="finish-view"></p>
                                         </td>
 
                                         <td class="text-center">
-                                            <button type="button" id="out-button" class="btn green" onclick="outFunction()">OUT</button>
-                                            <input type="hidden" id="out" />
+                                            <button type="button" id="out-button" class="btn green" onclick="outFunction()" disabled="disabled">OUT</button>
+                                            <input name="out" type="hidden" id="out" />
                                             <p id="out-view"></p>
                                         </td>
                                     </tr>
@@ -255,9 +255,8 @@
                                         <th>Order Id</th>
                                         <th>Item</th>
                                         <th>Total</th>
-                                        <th>Delivered</th>
-                                        <th>Quantity</th>
                                         <th>Remain</th>
+                                        <th>Quantity</th>
                                     </tr>
                                     </thead>
                                     <tbody class="orderItemsPartiallyShipped">
@@ -268,68 +267,104 @@
                                             <td>{{ item.itemName }}</td>
                                             <td class="item-qtyPartiallyShipped">{{ item.quantity }}</td>
                                             <td class="deliveredPartiallyShipped">{{ item.quantity - item.delivered }}</td>
-                                            <td class="deliverPartiallyShipped"><input name="qty[{{ item.orderId }}][{{ item.id }}]" class="form-control input-xsmall deliver-qtyPartiallyShipped" value="0"></td>
-                                            <td class="remainPartiallyShipped"></td>
+                                            <td class="deliverPartiallyShipped">
+                                                <input name="qty[{{ item.id }}]" class="form-control input-xsmall deliver-qtyPartiallyShipped" value="{{ item.quantity - item.delivered }}">
+                                                <input type="hidden" name="orderId" value="{{ order.id }}"/>
+                                            </td>
                                         </tr>
                                         {% endif %}
                                     {% endfor %}
                                     <tbody>
                                 </table>
                             </div>
-                            <input type="hidden" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">
+                            <input type="hidden" name="deliveryId" value="{{ delivery.id }}">
                         </div>
 
                     </div>
                 </div>
         </div>
         <div class="modal-footer">
-            <input type="submit" value="Complete Deliveryaa" class="btn blue green"/>
+            <input type="submit" id="partial-shipped-complete-delivery" value="Complete Delivery" class="btn blue green" disabled="disabled"/>
             <a class="btn default" data-dismiss="modal"> Close </a>
         </div>
         </form>
     </div>
 
     <script>
+        function partialShipped(loadingDiv) {
+            Metronic.blockUI({
+                target: loadingDiv,
+                animate: true,
+                overlayColor: 'black'
+            });
+            var d = new Date();
+            var hours = d.getHours();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            return {d: d, hours: hours, ampm: ampm};
+        }
+
         function inFunction() {
-            var d = new Date();
-            var hours = d.getHours();
-            var ampm = hours >= 12 ? 'pm' : 'am';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            document.getElementById("in-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
-            document.getElementById("in").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
-            document.getElementById('in-button').classList.add('hide');
+            var loadingDiv = $('.modal-body').find('.portlet');
+                bootbox.confirm('Are you sure?', function() {
+                    var __ret = partialShipped(loadingDiv);
+                    var d = __ret.d;
+                    var hours = __ret.hours;
+                    var ampm = __ret.ampm;
+                    document.getElementById("in-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
+                    document.getElementById("in").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
+                    document.getElementById('in-button').classList.add('hide');
+                    document.getElementById("start-button").disabled = false;
+                    Metronic.unblockUI(loadingDiv);
+                })
         }
+
         function startFunction() {
-            var d = new Date();
-            var hours = d.getHours();
-            var ampm = hours >= 12 ? 'pm' : 'am';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            document.getElementById("start-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
-            document.getElementById("start").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
-            document.getElementById('start-button').classList.add('hide');
+            var loadingDiv = $('.modal-body').find('.portlet');
+            bootbox.confirm('Are you sure?', function() {
+                var __ret = partialShipped(loadingDiv);
+                var d = __ret.d;
+                var hours = __ret.hours;
+                var ampm = __ret.ampm;
+                document.getElementById("start-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
+                document.getElementById("start").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
+                document.getElementById('start-button').classList.add('hide');
+                document.getElementById("finish-button").disabled = false;
+                Metronic.unblockUI(loadingDiv);
+            })
         }
+
         function finishFunction() {
-            var d = new Date();
-            var hours = d.getHours();
-            var ampm = hours >= 12 ? 'pm' : 'am';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            document.getElementById("finish-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
-            document.getElementById("finish").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
-            document.getElementById('finish-button').classList.add('hide');
+            var loadingDiv = $('.modal-body').find('.portlet');
+            bootbox.confirm('Are you sure?', function() {
+                var __ret = partialShipped(loadingDiv);
+                var d = __ret.d;
+                var hours = __ret.hours;
+                var ampm = __ret.ampm;
+                document.getElementById("finish-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
+                document.getElementById("finish").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
+                document.getElementById('finish-button').classList.add('hide');
+                document.getElementById("out-button").disabled = false;
+                Metronic.unblockUI(loadingDiv);
+            })
         }
+
         function outFunction() {
-            var d = new Date();
-            var hours = d.getHours();
-            var ampm = hours >= 12 ? 'pm' : 'am';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            document.getElementById("out-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
-            document.getElementById("out").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
-            document.getElementById('out-button').classList.add('hide');
+            var loadingDiv = $('.modal-body').find('.portlet');
+            bootbox.confirm('Are you sure?', function() {
+                var __ret = partialShipped(loadingDiv);
+                var d = __ret.d;
+                var hours = __ret.hours;
+                var ampm = __ret.ampm;
+                document.getElementById("out-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
+                document.getElementById("out").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
+                document.getElementById('out-button').classList.add('hide');
+                document.getElementById("partial-shipped-complete-delivery").disabled = false;
+                Metronic.unblockUI(loadingDiv);
+            })
         }
+
     </script>
 
 {% endif %}

@@ -95,21 +95,27 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @Route("/delivery/item/form/partially/shipped/{id}", name="delivery_item_form_partially_shipped", options={"expose"=true})
+     * @Route("/delivery/partially/shipped", name="delivery_partially_shipped", options={"expose"=true})
      * @param Request $request
-     * @param Delivery $delivery
      * @return Response
      * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      */
-    public function delivery_item_form_partially_shipped(Request $request, Delivery $delivery)
+    public function delivery_item_form_partially_shipped(Request $request)
     {
-        var_dump($request->request->all());die;
+        $order = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($request->request->get('orderId'));
+        $previousDelivery = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->find($request->request->get('deliveryId'));
+        $delivery = $this->deliveryRepository()->create($order, $previousDelivery->getDepo(), $request->request->all());
 
-        return $this->render('RbsSalesBundle:Delivery:view.html.twig', array(
-            'delivery'  => $delivery,
-            'order'     => $delivery->getOrderRef(),
-            'agent'  => $delivery->getOrderRef()->getAgent(),
-        ));
+        $data = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->savePartial($delivery, $request->request->all());
+
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryStatePartialShipped($data['orders']);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStockFromOnHold($delivery);
+
+        $this->dispatch('delivery.delivered', new DeliveryEvent($delivery));
+
+        $this->flashMessage('success', 'Delivery Successfully Complete!');
+
+        return $this->redirect($this->generateUrl('deliveries_home'));
     }
 
     /**
