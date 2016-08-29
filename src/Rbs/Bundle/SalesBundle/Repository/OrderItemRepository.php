@@ -154,9 +154,22 @@ class OrderItemRepository extends EntityRepository
                     'agent'    => $orderItem->getOrder()->getAgent(),
                     'status'   => 'ACTIVE',
                     'category' => $orderItem->getItem()->getCategory()[0],
-                )
+                ), array('createdAt' => 'DESC')
             );
 
+        if (!$creditInfo) {
+            return array(
+                'totalAmount' => 0,
+                'paidAmount' => 0,
+                'creditRemain' => 0
+            );
+        }
+        
+        /*$creditAmount = $creditInfo ? $creditInfo->getAmount() : 0;
+        $creditStartDate = $creditInfo ? $creditInfo->getStartDate() : new \DateTime();
+        $creditEndDate = $creditInfo ? $creditInfo->getEndDate() : new \DateTime();
+        $creditCategory = $creditInfo ? $creditInfo->getCategory()->getId() : 0;*/
+        
         $qb = $this->createQueryBuilder('oi');
 
         $qb->select('SUM(oi.totalAmount) AS totalAmount');
