@@ -17,6 +17,9 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
  */
 class Delivery
 {
+    const NOURISH = "NOURISH";
+    const AGENT = "AGENT";
+    
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
@@ -101,6 +104,13 @@ class Delivery
      * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\DeliveryItem", mappedBy="delivery")
      **/
     private $deliveryItems;
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="transport_given", type="string", length=255, columnDefinition="ENUM('NOURISH', 'AGENT')", nullable=false)
+     */
+    private $transportGiven = 'NOURISH';
 
     public function __construct()
     {
@@ -339,5 +349,21 @@ class Delivery
         $this->deliveryItems = $deliveryItems;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTransportGiven()
+    {
+        return $this->transportGiven;
+    }
+
+    /**
+     * @param array $transportGiven
+     */
+    public function setTransportGiven($transportGiven)
+    {
+        $this->transportGiven = $transportGiven;
     }
 }

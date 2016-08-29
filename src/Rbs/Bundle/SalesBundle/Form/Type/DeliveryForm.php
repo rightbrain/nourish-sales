@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
+use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\SmsRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
@@ -24,6 +25,13 @@ class DeliveryForm extends AbstractType
             ->add('contactName')
             ->add('contactNo')
             ->add('otherInfo')
+            ->add('transportGiven', 'choice', array(
+                'choices'  => array(
+                    'NOURISH' => Delivery::NOURISH,
+                    'AGENT' => Delivery::AGENT,
+                ),
+                'data' => Delivery::NOURISH
+            ))
             ->add('depo', 'entity', array(
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\Depo',
                 'property' => 'name',
