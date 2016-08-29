@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Repository;
 
+use DateTime;
 use Doctrine\Common\Util\Debug;
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
@@ -27,6 +28,42 @@ class DeliveryRepository extends EntityRepository
             $this->_em->persist($delivery);
             $this->_em->flush();
         }
+    }
+    
+    public function create(Order $order, Depo $depo, $request)
+    {
+        $delivery = new Delivery();
+        $delivery->setOrderRef($order);
+        $delivery->setDepo($depo);
+        $delivery->setVehicleIn(new DateTime($request['in']));
+        $delivery->setStartLoad(new DateTime($request['start']));
+        $delivery->setFinishLoad(new DateTime($request['finish']));
+        $delivery->setVehicleOut(new DateTime($request['out']));
+        $this->_em->persist($delivery);
+        $this->_em->flush();
+        
+        return $delivery;
+    }
+
+    public function savePartial($delivery, $data)
+    {
+        $output = array('orders' => array());
+        foreach ($data['qty'] as $itemId => $qty) {
+            $item = $this->_em->getRepository('RbsSalesBundle:OrderItem')->find($itemId);
+
+            $deliveryItem = new DeliveryItem();
+            $deliveryItem->setOrder($item->getOrder());
+            $deliveryItem->setDelivery($delivery);
+            $deliveryItem->setOrderItem($item);
+            $deliveryItem->setQty($qty);
+            $this->_em->persist($deliveryItem);
+
+            $output['orders'][$item->getOrder()->getId()] = $item->getOrder()->getId();
+        }
+
+        $this->_em->flush();
+
+        return $output;
     }
 
     public function save($delivery, $data)

@@ -156,6 +156,26 @@ class OrderRepository extends EntityRepository
         $this->_em->flush();
     }
 
+    public function updateDeliveryStatePartialShipped($orders)
+    {
+        $orderItemRepo = $this->_em->getRepository('RbsSalesBundle:OrderItem');
+        $deliveryItemRepo = $this->_em->getRepository('RbsSalesBundle:DeliveryItem');
+        /** @var Order $order */
+        foreach ($orders as $orderId) {
+            $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
+            if ((int)$deliveryItemRepo->getTotalDeliveryItemByOrder($order) < (int)$orderItemRepo->getTotalOrderItemByOrder($order)) {
+                $order->setDeliveryState(Order::DELIVERY_STATE_PARTIALLY_SHIPPED);
+            } else {
+                $order->setDeliveryState(Order::DELIVERY_STATE_SHIPPED);
+            }
+
+            $order->setOrderState(Order::ORDER_STATE_COMPLETE);
+            $this->_em->persist($order);
+        }
+
+        $this->_em->flush();
+    }
+
     public function newOrderBySms(Sms $sms)
     {
 
