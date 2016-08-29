@@ -369,11 +369,12 @@ class OrderController extends BaseController
      */
     public function summeryViewAction(Order $order)
     {
+        $delivery = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->findOneBy(array('orderRef' => $order->getId()));
         $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
         /** @var OrderItem $item */
         foreach ($order->getOrderItems() as $item) {
             $stockItem = $stockRepo->findOneBy(
-                array('item' => $item->getItem()->getId(), 'depo' => $order->getAgent()->getDepo()->getId())
+                array('item' => $item->getItem()->getId(), 'depo' => $delivery->getDepo()->getId())
             );
             $item->isAvailable = $stockItem->isStockAvailable($item->getQuantity());
         }
