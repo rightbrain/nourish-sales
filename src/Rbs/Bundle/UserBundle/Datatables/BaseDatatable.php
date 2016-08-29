@@ -27,7 +27,7 @@ class BaseDatatable extends AbstractDatatableView
             'scroll_y' => '',
             'searching' => true,
             'server_side' => true,
-            'state_save' => false,
+            'state_save' => true,
             'delay' => 0
         );
     }
@@ -42,7 +42,7 @@ class BaseDatatable extends AbstractDatatableView
             'order_classes' => true,
             'order' => [[0, 'asc']],
             'order_multi' => true,
-            'page_length' => 15,
+            'page_length' => 10,
             'paging_type' => Style::FULL_NUMBERS_PAGINATION,
             'renderer' => '',
             'scroll_collapse' => false,
