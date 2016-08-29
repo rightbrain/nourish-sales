@@ -1,3 +1,4 @@
+{% if order.deliveryState == 'READY' %}
 <div class="action-content-cancel">
     <div class="modal-header portlet-title blue">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
@@ -165,3 +166,170 @@
         <a class="btn default" data-dismiss="modal"> Close </a>
     </div>
 </div>
+{% else %}
+    <div class="action-content-cancel">
+        <div class="modal-header portlet-title blue">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+            <h4 class="modal-title">Order No <span class="badge badge-primary">{{ order.id }}</span></h4>
+        </div>
+
+        <form id="delivery-item-form-partially-shipped" action="{{ path('delivery_item_form_partially_shipped', {id:delivery.id}) }}" method="post">
+        <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="portlet">
+
+                            <div class="portlet-body">
+
+                                <table class="table">
+                                    <tr>
+                                        <th>Agent Name</th>
+                                        <td>{{ agent.user.profile.fullName }}</td>
+                                        <th>Order Date</th>
+                                        <td>{{ order.createdAt|date(php_date_format) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Delivery Contact Name</th>
+                                        <td>{{ delivery.contactName }}</td>
+                                        <th>Delivery Contact No</th>
+                                        <td>{{ delivery.contactNo }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Other Info</th>
+                                        <td>{{ delivery.otherInfo }}</td>
+                                        <th>Delivery From (Depo)</th>
+                                        <td>{{ delivery.depo.name }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="portlet">
+                            <div class="portlet-title">
+                                <div class="caption"> Delivery Progress </div>
+                            </div>
+                            <div class="portlet-body">
+                                <table class="table">
+                                    <tr>
+                                        <th class="text-center col-md-3">Vehicle In</th>
+                                        <th class="text-center col-md-3">Start Loading</th>
+                                        <th class="text-center col-md-3">Finish Loading</th>
+                                        <th class="text-center col-md-3">Vehicle Out</th>
+                                    </tr>
+                                    <tr id="process-actions">
+                                        <td class="text-center">
+                                            <button type="button" id="in-button" class="btn green" onclick="inFunction()">IN</button>
+                                            <input type="hidden" id="in" />
+                                            <p id="in-view"></p>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <button type="button" id="start-button" class="btn green" onclick="startFunction()">START</button>
+                                            <input type="hidden" id="start" />
+                                            <p id="start-view"></p>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <button type="button" id="finish-button" class="btn green" onclick="finishFunction()">FINISH</button>
+                                            <input type="hidden" id="finish" />
+                                            <p id="finish-view"></p>
+                                        </td>
+
+                                        <td class="text-center">
+                                            <button type="button" id="out-button" class="btn green" onclick="outFunction()">OUT</button>
+                                            <input type="hidden" id="out" />
+                                            <p id="out-view"></p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="portlet">
+                            <div class="portlet-title">
+                                <div class="caption"> Order Items </div>
+                            </div>
+                            <div class="portlet-body">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>Order Id</th>
+                                        <th>Item</th>
+                                        <th>Total</th>
+                                        <th>Delivered</th>
+                                        <th>Quantity</th>
+                                        <th>Remain</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="orderItemsPartiallyShipped">
+                                    {% for index, item in partialItems %}
+                                        {% if item.orderId == order.id %}
+                                        <tr>
+                                            <td>{{ item.orderId }}</td>
+                                            <td>{{ item.itemName }}</td>
+                                            <td class="item-qtyPartiallyShipped">{{ item.quantity }}</td>
+                                            <td class="deliveredPartiallyShipped">{{ item.quantity - item.delivered }}</td>
+                                            <td class="deliverPartiallyShipped"><input name="qty[{{ item.orderId }}][{{ item.id }}]" class="form-control input-xsmall deliver-qtyPartiallyShipped" value="0"></td>
+                                            <td class="remainPartiallyShipped"></td>
+                                        </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <tbody>
+                                </table>
+                            </div>
+                            <input type="hidden" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">
+                        </div>
+
+                    </div>
+                </div>
+        </div>
+        <div class="modal-footer">
+            <input type="submit" value="Complete Deliveryaa" class="btn blue green"/>
+            <a class="btn default" data-dismiss="modal"> Close </a>
+        </div>
+        </form>
+    </div>
+
+    <script>
+        function inFunction() {
+            var d = new Date();
+            var hours = d.getHours();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            document.getElementById("in-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
+            document.getElementById("in").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
+            document.getElementById('in-button').classList.add('hide');
+        }
+        function startFunction() {
+            var d = new Date();
+            var hours = d.getHours();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            document.getElementById("start-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
+            document.getElementById("start").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
+            document.getElementById('start-button').classList.add('hide');
+        }
+        function finishFunction() {
+            var d = new Date();
+            var hours = d.getHours();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            document.getElementById("finish-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
+            document.getElementById("finish").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
+            document.getElementById('finish-button').classList.add('hide');
+        }
+        function outFunction() {
+            var d = new Date();
+            var hours = d.getHours();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12;
+            document.getElementById("out-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
+            document.getElementById("out").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
+            document.getElementById('out-button').classList.add('hide');
+        }
+    </script>
+
+{% endif %}

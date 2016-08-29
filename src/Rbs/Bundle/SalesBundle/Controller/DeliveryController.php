@@ -95,6 +95,24 @@ class DeliveryController extends BaseController
     }
 
     /**
+     * @Route("/delivery/item/form/partially/shipped/{id}", name="delivery_item_form_partially_shipped", options={"expose"=true})
+     * @param Request $request
+     * @param Delivery $delivery
+     * @return Response
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     */
+    public function delivery_item_form_partially_shipped(Request $request, Delivery $delivery)
+    {
+        var_dump($request->request->all());die;
+
+        return $this->render('RbsSalesBundle:Delivery:view.html.twig', array(
+            'delivery'  => $delivery,
+            'order'     => $delivery->getOrderRef(),
+            'agent'  => $delivery->getOrderRef()->getAgent(),
+        ));
+    }
+
+    /**
      * @Route("/delivery/{id}/vehicle-in", name="delivery_vehicle_in")
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
