@@ -42,7 +42,7 @@ class CreditLimitDatatable extends BaseDatatable
 
         $this->columnBuilder
             ->add('id', 'column', array('visible' => false))
-            ->add('createdAt', 'datetime', array('title' => 'Created Date', 'date_format' => 'LL' ))
+            ->add('createdAt', 'datetime', array('title' => 'Created Date', 'date_format' => 'LLL' ))
             ->add('fullName', 'virtual', array('title' => 'Agent'))
             ->add('category.name', 'column', array('title' => 'Category'))
             ->add('startDate', 'datetime', array('title' => 'Start Date', 'date_format' => 'LL' ))
