@@ -127,4 +127,21 @@ class CreditLimitRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+    
+    public function getCreditLimitByDate($orderItem)
+    {
+        $query = $this->createQueryBuilder('cl');
+        $query->join('cl.agent', 'a');
+        $query->join('cl.category', 'c');
+        $query->where('cl.startDate > :orderDate');
+        $query->andWhere('cl.endDate < :orderDate');
+        $query->andWhere('cl.agent = :agent');
+        $query->andWhere('cl.category = :category');
+        $query->setMaxResults(1);
+        $query->orderBy('cl.startDate', 'DESC');
+        $query->setParameters(array('agent'=> $orderItem->getOrder()->getAgent(), 
+            'orderDate'=> $orderItem->getOrder()->getCreatedAt(), 'category'=>$orderItem->getItem()->getCategory()[0]));
+        
+        return $query->getQuery()->getOneOrNullResult();
+    }
 }

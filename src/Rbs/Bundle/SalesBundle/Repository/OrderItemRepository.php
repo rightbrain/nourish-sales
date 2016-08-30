@@ -148,14 +148,7 @@ class OrderItemRepository extends EntityRepository
 
     public function getCreditStatus(OrderItem $orderItem)
     {
-        $creditInfo = $this->_em->getRepository('RbsSalesBundle:CreditLimit')
-            ->findOneBy(
-                array(
-                    'agent'    => $orderItem->getOrder()->getAgent(),
-                    'status'   => 'ACTIVE',
-                    'category' => $orderItem->getItem()->getCategory()[0],
-                ), array('createdAt' => 'DESC')
-            );
+        $creditInfo = $this->_em->getRepository('RbsSalesBundle:CreditLimit')->getCreditLimitByDate($orderItem);
 
         if (!$creditInfo) {
             return array(
@@ -164,11 +157,6 @@ class OrderItemRepository extends EntityRepository
                 'creditRemain' => 0
             );
         }
-        
-        /*$creditAmount = $creditInfo ? $creditInfo->getAmount() : 0;
-        $creditStartDate = $creditInfo ? $creditInfo->getStartDate() : new \DateTime();
-        $creditEndDate = $creditInfo ? $creditInfo->getEndDate() : new \DateTime();
-        $creditCategory = $creditInfo ? $creditInfo->getCategory()->getId() : 0;*/
         
         $qb = $this->createQueryBuilder('oi');
 
@@ -180,12 +168,13 @@ class OrderItemRepository extends EntityRepository
         $qb->join('i.category', 'c');
         $qb->join('oi.order', 'o');
 
-        $qb->where('o.createdAt > :startDate')->setParameter('startDate', $creditInfo->getStartDate());
+        $qb->where('o.agent = :agent')->setParameter('agent', $orderItem->getOrder()->getAgent());
+        $qb->andWhere('o.createdAt > :startDate')->setParameter('startDate', $creditInfo->getStartDate());
         $qb->andWhere('o.createdAt < :eneDate')->setParameter('eneDate', $creditInfo->getEndDate());
         $qb->andWhere($qb->expr()->eq('c.id', ':categoryId'))->setParameter('categoryId', $creditInfo->getCategory()->getId());
         $qb->groupBy('c.id');
-        $result = $qb->getQuery()->getSingleResult();
-
+        $result = $qb->getQuery()->getResult();
+        print_r($result);
         return $result;
     }
 
