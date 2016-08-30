@@ -169,13 +169,12 @@ class OrderItemRepository extends EntityRepository
         $qb->join('oi.order', 'o');
 
         $qb->where('o.agent = :agent')->setParameter('agent', $orderItem->getOrder()->getAgent());
-        $qb->andWhere('o.createdAt > :startDate')->setParameter('startDate', $creditInfo->getStartDate());
-        $qb->andWhere('o.createdAt < :eneDate')->setParameter('eneDate', $creditInfo->getEndDate());
+        $qb->andWhere('o.createdAt >= :startDate')->setParameter('startDate', $creditInfo->getStartDate());
+        $qb->andWhere('o.createdAt <= :eneDate')->setParameter('eneDate', $creditInfo->getEndDate());
         $qb->andWhere($qb->expr()->eq('c.id', ':categoryId'))->setParameter('categoryId', $creditInfo->getCategory()->getId());
         $qb->groupBy('c.id');
-        $result = $qb->getQuery()->getResult();
-        print_r($result);
-        return $result;
+        
+        return $qb->getQuery()->getResult();
     }
 
     public function getOrderIncentive($orderId)

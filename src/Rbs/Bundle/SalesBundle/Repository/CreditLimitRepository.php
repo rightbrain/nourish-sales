@@ -95,9 +95,9 @@ class CreditLimitRepository extends EntityRepository
             
             $data = $this->_em->getRepository('RbsSalesBundle:OrderItem')->getCreditStatus($orderItem);
             $data['name'] = $category->getName();
-            $data['totalAmount'] = (float)$data['totalAmount'];
-            $data['paidAmount'] = (float)$data['paidAmount'];
-            $data['creditRemain'] = (float)$data['creditRemain'];
+            $data['totalAmount'] = (float)$data[0]['totalAmount'];
+            $data['paidAmount'] = (float)$data[0]['paidAmount'];
+            $data['creditRemain'] = (float)$data[0]['creditRemain'];
             $categoryCredit[$category->getId()] = $data;
         }
 
@@ -133,8 +133,8 @@ class CreditLimitRepository extends EntityRepository
         $query = $this->createQueryBuilder('cl');
         $query->join('cl.agent', 'a');
         $query->join('cl.category', 'c');
-        $query->where('cl.startDate > :orderDate');
-        $query->andWhere('cl.endDate < :orderDate');
+        $query->where('cl.startDate < :orderDate');
+        $query->andWhere('cl.endDate > :orderDate');
         $query->andWhere('cl.agent = :agent');
         $query->andWhere('cl.category = :category');
         $query->setMaxResults(1);
