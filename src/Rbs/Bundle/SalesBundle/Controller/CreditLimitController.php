@@ -100,6 +100,13 @@ class CreditLimitController extends BaseController
             if ($form->isValid()) {
                 $i = 0;
                 foreach ($request->request->get('credit_limit')['child_entities'] as $entity){
+                    $creditLimitPrevious = $this->getDoctrine()->getRepository('RbsSalesBundle:CreditLimit')->getAllPreviousCreditLimit(
+                        $request->request->get('credit_limit')['agent'], $ca[$i]);
+
+                    foreach ($creditLimitPrevious as $clPrevious){
+                        $clPrevious->setStatus(CreditLimit::INACTIVE);
+                        $this->getDoctrine()->getRepository('RbsSalesBundle:CreditLimit')->update($clPrevious);
+                    }
                     $creditLimit = new CreditLimit();
                     $creditLimit->setCategory($this->getDoctrine()->getRepository('RbsCoreBundle:Category')->find($ca[$i]));
                     $creditLimit->setCreatedAt(new \DateTime());

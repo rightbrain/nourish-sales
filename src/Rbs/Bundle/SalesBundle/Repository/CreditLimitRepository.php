@@ -117,4 +117,14 @@ class CreditLimitRepository extends EntityRepository
         
         return $isOverCredit;
     }
+    
+    public function getAllPreviousCreditLimit($agent, $category)
+    {
+        $query = $this->createQueryBuilder('cl');
+        $query->where('cl.agent = :agent');
+        $query->andWhere('cl.category = :category');
+        $query->setParameters(array('agent'=>$agent, 'category'=>$category));
+
+        return $query->getQuery()->getResult();
+    }
 }

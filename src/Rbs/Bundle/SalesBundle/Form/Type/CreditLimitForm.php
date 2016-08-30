@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -38,7 +39,7 @@ class CreditLimitForm extends AbstractType
                         ->where('u.deletedAt IS NULL')
                         ->andWhere('u.enabled = 1')
                         ->andWhere('u.userType = :AGENT')
-                        ->setParameter('AGENT', 'AGENT')
+                        ->setParameter('AGENT', User::AGENT)
                         ->orderBy('p.fullName','ASC');
                 }
             ))
