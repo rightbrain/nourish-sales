@@ -155,7 +155,7 @@ class ConfigureMenuListener extends ContextAwareListener
                 $sp4 = true;
                 $menu['Sales']->addChild('Credit Limit', array('route' => 'credit_limit_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
-                if ($this->isMatch('credit_limit_list') or $this->isMatch('credit_limit_create') or $this->isMatch('credit_limit_notification_list')) {
+                if ($this->isMatch('credit_limit_list') or $this->isMatch('credit_limit_add') or $this->isMatch('credit_limit_create') or $this->isMatch('credit_limit_notification_list')) {
                     $menu['Sales']->getChild('Credit Limit')->setCurrent(true);
                 }
             }
