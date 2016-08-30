@@ -120,8 +120,8 @@ class ConfigureMenuListener extends ContextAwareListener
         }
 
         if ($this->user->getUserType() != User::AGENT) {
-            $sp4 = true;
             if ($this->authorizationChecker->isGranted(array('ROLE_AGENT_VIEW', 'ROLE_AGENT_CREATE'))) {
+                $sp4 = true;
                 $menu['Sales']->addChild('Agents', array('route' => 'agents_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('agents_home') or $this->isMatch('agent_update')) {
