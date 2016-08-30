@@ -33,11 +33,11 @@ class StockHistoryForm extends AbstractType
             ->add($builder->create('created_at', 'text', array(
                 'label' => 'Date',
                 'attr' => array(
-                    'class' => 'date-picker'
+                    'class' => 'date-picker',
+                    'placeholder' => 'Year-month-date'
                 ),
                 'empty_data' => new \DateTime(),
-                'read_only' => true,
-                'required' => false
+                'required' => true
             ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'Y-m-d')))
             ->add('description')
             ->add('submit', 'submit', array(
