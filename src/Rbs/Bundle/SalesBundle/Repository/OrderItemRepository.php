@@ -171,7 +171,7 @@ class OrderItemRepository extends EntityRepository
         $qb->where('o.agent = :agent')->setParameter('agent', $orderItem->getOrder()->getAgent());
         $qb->andWhere('o.createdAt >= :startDate')->setParameter('startDate', $creditInfo->getStartDate());
         $qb->andWhere('o.createdAt <= :eneDate')->setParameter('eneDate', $creditInfo->getEndDate());
-        $qb->andWhere('o.orderState != :PENDING')->setParameter('PENDING', Order::ORDER_STATE_PENDING);
+        $qb->andWhere('o.orderState NOT IN(:orderState)')->setParameter('orderState', array(Order::ORDER_STATE_PENDING, Order::ORDER_STATE_CANCEL));
         $qb->andWhere($qb->expr()->eq('c.id', ':categoryId'))->setParameter('categoryId', $creditInfo->getCategory()->getId());
         $qb->groupBy('c.id');
         
