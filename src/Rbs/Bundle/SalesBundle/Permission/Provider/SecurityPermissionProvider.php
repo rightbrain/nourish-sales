@@ -58,6 +58,10 @@ class SecurityPermissionProvider implements ProviderInterface
                 'ROLE_HEAD_OFFICE_USER'
             ),
 
+            'REPORT' => array(
+                'ROLE_SALES_REPORT'
+            ),
+
             'TRUCK' => array(
                 'ROLE_TRUCK_MANAGE', 'ROLE_TRUCK_IN', 'ROLE_TRUCK_OUT', 'ROLE_TRUCK_START', 'ROLE_TRUCK_FINISH'
             )
