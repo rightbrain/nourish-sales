@@ -138,7 +138,7 @@ class CreditLimitRepository extends EntityRepository
         $query->andWhere('cl.agent = :agent');
         $query->andWhere('cl.category = :category');
         $query->setMaxResults(1);
-        $query->orderBy('cl.startDate', 'DESC');
+        $query->orderBy('cl.createdAt', 'DESC');
         $query->setParameters(array('agent'=> $orderItem->getOrder()->getAgent(), 
             'orderDate'=> $orderItem->getOrder()->getCreatedAt(), 'category'=>$orderItem->getItem()->getCategory()[0]));
         
