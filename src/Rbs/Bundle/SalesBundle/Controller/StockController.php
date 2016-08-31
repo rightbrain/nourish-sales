@@ -70,16 +70,23 @@ class StockController extends Controller
         $datatable = $this->get('rbs_erp.sales.datatable.stock');
         $datatable->buildDatatable();
 
+        $user = $this->getUser()->getId();
+
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
-        $function = function ($qb) {
+        $function = function ($qb)  use ($user)
+        {
             $qb->join("sales_stocks.item", 'i');
             $qb->join("sales_stocks.depo", 'd');
             $qb->join("i.bundles", 'bundles');
+            $qb->join('d.users', 'u');
             $qb->andWhere("sales_stocks.deletedAt IS NULL");
             $qb->andWhere("d.deletedAt IS NULL");
             // Show only Sales Bundle
             $qb->andWhere("bundles.id = :bundle")->setParameter('bundle', RbsSalesBundle::ID);
+            $qb->andWhere("u.id = :user");
+            $qb->setParameter('user', $user);
+
         };
         $query->addWhereAll($function);
 
