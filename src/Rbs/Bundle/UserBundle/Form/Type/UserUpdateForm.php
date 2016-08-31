@@ -45,8 +45,7 @@ class UserUpdateForm extends AbstractType
                         ->join("u.profile", "p")
                         ->where("u.userType != :AGENT")
                         ->andWhere('u.deletedAt IS NULL')
-                        ->andWhere("u.userType != :SR")
-                        ->setParameters(array('AGENT'=> User::AGENT, 'SR' => User::SR));
+                        ->setParameters(array('AGENT'=> User::AGENT));
                 },
                 'property' => 'profile.fullname',
                 'required' => false,
