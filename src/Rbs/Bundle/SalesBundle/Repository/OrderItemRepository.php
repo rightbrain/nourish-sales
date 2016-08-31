@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Repository;
 
+use DateTime;
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
@@ -192,6 +193,38 @@ class OrderItemRepository extends EntityRepository
         $query->where('o.id = :orderId');
         $query->groupBy('c.id');
         $query->setParameters(array('orderId'=>$orderId));
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getCompleteOrderItemByMonth($data)
+    {
+        $date = new DateTime($data['year'].'-'.$data['month']);
+
+        $query = $this->createQueryBuilder('oi');
+        $query->join('oi.order', 'o');
+        $query->join('oi.item', 'i');
+        $query->join('o.location', 'l');
+        $query->where('o.orderState = :COMPLETE');
+        $query->setParameter('COMPLETE', Order::ORDER_STATE_COMPLETE);
+        if($data['item']){
+            foreach ($data['item'] as $item) {
+                $query->andWhere('i.id = :item');
+                $query->setParameter('item', $item);
+            }
+        }
+        if($data['zilla']){
+            foreach ($data['zilla'] as $zilla){
+                $query->andWhere('l.parentId = :zilla');
+                $query->setParameter('zilla', $zilla);
+            }
+        }
+        if($data['month']){
+            $query->andWhere('o.createdAt >= :startDate');
+            $query->setParameter('startDate', $date->format('Y-m-01'));
+            $query->andWhere('o.createdAt <= :endDate');
+            $query->setParameter('endDate', $date->format('Y-m-t'));
+        }
 
         return $query->getQuery()->getResult();
     }

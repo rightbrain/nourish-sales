@@ -27,4 +27,18 @@ class ItemRepository extends EntityRepository
 
         return $data;
     }
+    
+    public function getItemName()
+    {
+        $query = $this->createQueryBuilder('l');
+        $query->select('l.name');
+        $query->where('l.level = 5');
+
+        foreach ($data['zilla'] as $zilla){
+            $query->andWhere('l.parentId = :zilla');
+            $query->setParameter('zilla', $zilla);
+        }
+
+        return $query->getQuery()->getResult();
+    }
 }

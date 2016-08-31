@@ -25,6 +25,7 @@ class ConfigureMenuListener extends ContextAwareListener
         $sp2 = false;
         $sp3 = false;
         $sp4 = false;
+        $sp5 = false;
 
         if ($this->user->getUserType() != User::AGENT) {
             if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
@@ -165,6 +166,7 @@ class ConfigureMenuListener extends ContextAwareListener
             }
 
             if ($this->authorizationChecker->isGranted(array('ROLE_SWAPPING_MANAGE'))) {
+                $sp5 = true;
                 $menu['Sales']->addChild('RSM Swapping', array('route' => 'swapping_rsm_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('swapping_rsm_create') or $this->isMatch('swapping_rsm_list')) {
@@ -172,6 +174,7 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_SWAPPING_MANAGE'))) {
+                $sp5 = true;
                 $menu['Sales']->addChild('SR Swapping', array('route' => 'swapping_sr_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('swapping_sr_create') or $this->isMatch('swapping_sr_list')) {
@@ -179,6 +182,7 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_TARGET_MANAGE'))) {
+                $sp5 = true;
                 $menu['Sales']->addChild('Target', array('route' => 'target_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('targets') or $this->isMatch('target_create') or $this->isMatch('target_update')) {
@@ -187,6 +191,15 @@ class ConfigureMenuListener extends ContextAwareListener
             }
         }
 
+        if ($sp5) {
+            $menu['Sales']->addChild(str_repeat(' ', 5), ['divider' => true]);
+        }
+
+        if ($this->authorizationChecker->isGranted(array('ROLE_SALES_REPORT'))) {
+            $menu['Sales']->addChild('District wise Item Report', array('route' => 'district_wise_item_monthly_report'))
+                ->setAttribute('icon', 'fa fa-th-list');
+        }
+        
         if ($this->user->getUserType() == User::RSM and $this->authorizationChecker->isGranted(array('ROLE_RSM_GROUP'))){
             $menu['Sales']->addChild('RSM', array('route' => 'target_my'))
                 ->setAttribute('icon', 'fa fa-th-list');
@@ -214,11 +227,6 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
 
             $menu['Sales']->addChild('My Doc', array('route' => 'my_doc'))
-                ->setAttribute('icon', 'fa fa-th-list');
-        }
-
-        if ($this->authorizationChecker->isGranted(array('ROLE_REPORT'))) {
-            $menu['Sales']->addChild('Report', array('route' => 'reports_home'))
                 ->setAttribute('icon', 'fa fa-th-list');
         }
 

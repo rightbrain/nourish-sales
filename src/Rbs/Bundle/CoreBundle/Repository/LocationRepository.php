@@ -85,6 +85,19 @@ class LocationRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function getZillaByParentId($data)
+    {
+        $query = $this->createQueryBuilder('i');
+        $query->select('i.name');
+
+        foreach ($data['item'] as $item) {
+            $query->andWhere('i.id = :item');
+            $query->setParameter('item', $item);
+        }
+
+        return $query->getQuery()->getResult();
+    }
+
     public function getAllFromSectorToUpozilla()
     {
         $query = $this->createQueryBuilder('l');
