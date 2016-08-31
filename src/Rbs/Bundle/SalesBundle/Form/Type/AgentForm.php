@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\CoreBundle\Repository\ItemTypeRepository;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Repository\AgentGroupRepository;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -33,6 +34,12 @@ class AgentForm extends AbstractType
                 )
             ))
             ->add('openingBalance')
+            ->add('openingBalanceType', 'choice', array(
+                'choices'  => array(
+                    'CR' => Agent::CR,
+                    'DR' => Agent::DR
+                )
+            ))
             ->add('sr', 'entity', array(
                 'class' => 'RbsUserBundle:User',
                 'property' => 'username',

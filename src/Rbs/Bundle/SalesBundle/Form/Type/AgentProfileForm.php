@@ -26,11 +26,7 @@ class AgentProfileForm extends AbstractType
                     new NotBlank()
                 )
             ))
-            ->add('address', null, array(
-                'constraints' => array(
-                    new NotBlank()
-                )
-            ))
+            ->add('address', 'textarea')
             ->add('file')
         ;
     }

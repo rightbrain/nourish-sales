@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\CoreBundle\Repository\ItemTypeRepository;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Repository\AgentGroupRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -11,6 +12,13 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AgentUpdateForm extends AbstractType
 {
+    private $openingBalanceFlag;
+
+    public function __construct($openingBalanceFlag)
+    {
+        $this->openingBalanceFlag = $openingBalanceFlag;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -37,8 +45,20 @@ class AgentUpdateForm extends AbstractType
                         ->orderBy('it.itemType','ASC');
                 }
             ))
-            ->add('agentID')
+            ->add('agentID');
+
+    if(!$this->openingBalanceFlag){
+        $builder
             ->add('openingBalance')
+            ->add('openingBalanceType', 'choice', array(
+                'choices'  => array(
+                    'CR' => Agent::CR,
+                    'DR' => Agent::DR
+                )
+            ));
+    }
+
+        $builder
             ->add('depo', 'entity', array(
                 'class' => 'RbsCoreBundle:Depo',
                 'property' => 'name',

@@ -23,7 +23,10 @@
         {{ form_row(form.itemType, { 'attr': {'class': ''} }) }}
 
         {{ form_row(form.user.profile.fullName, { 'attr': {'class': ''} }) }}
+    {% if agent.openingBalanceFlag != 1 %}
         {{ form_row(form.openingBalance, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.openingBalanceType, { 'attr': {'class': ''} }) }}
+    {% endif %}
         {{ form_row(form.depo, { 'attr': {'class': ''} }) }}
         {{ form_row(form.user.profile.cellphone, { 'attr': {'class': ''} }) }}
         {{ form_row(form.user.profile.address, { 'attr': {'class': ''} }) }}

@@ -21,6 +21,7 @@ class Payment
     const PAYMENT_METHOD_CHEQUE = 'CHEQUE';
     const PAYMENT_METHOD_BANK = 'BANK';
     const PAYMENT_METHOD_INCENTIVE = 'INCENTIVE';
+    const PAYMENT_METHOD_OPENING_BALANCE = 'OPENING_BALANCE';
 
     const DR = 'DR';
     const CR = 'CR';
@@ -60,7 +61,7 @@ class Payment
     /**
      * @var array $type
      *
-     * @ORM\Column(name="payment_method", type="string", length=255, columnDefinition="ENUM('CASH', 'CHEQUE', 'BANK', 'REFUND', 'INCENTIVE')", nullable=false)
+     * @ORM\Column(name="payment_method", type="string", length=255, columnDefinition="ENUM('CASH', 'CHEQUE', 'BANK', 'REFUND', 'INCENTIVE', 'OPENING_BALANCE')", nullable=false)
      */
     private $paymentMethod = 'BANK';
 

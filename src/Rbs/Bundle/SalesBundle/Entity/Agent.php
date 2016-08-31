@@ -20,6 +20,9 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  */
 class Agent
 {
+    const DR = 'DR';
+    const CR = 'CR';
+
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
@@ -73,6 +76,20 @@ class Agent
      */
     private $openingBalance = 0;
 
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="opening_balance_type", type="string", length=255, columnDefinition="ENUM('DR', 'CR')", nullable=true)
+     */
+    private $openingBalanceType;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="opening_balance_flag", type="boolean", nullable=true)
+     */
+    private $openingBalanceFlag = false;
+    
     /**
      * @var string
      *
@@ -302,6 +319,38 @@ class Agent
     public function setAgentsBankInfo($agentsBankInfo)
     {
         $this->agentsBankInfo = $agentsBankInfo;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOpeningBalanceType()
+    {
+        return $this->openingBalanceType;
+    }
+
+    /**
+     * @param array $openingBalanceType
+     */
+    public function setOpeningBalanceType($openingBalanceType)
+    {
+        $this->openingBalanceType = $openingBalanceType;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isOpeningBalanceFlag()
+    {
+        return $this->openingBalanceFlag;
+    }
+
+    /**
+     * @param boolean $openingBalanceFlag
+     */
+    public function setOpeningBalanceFlag($openingBalanceFlag)
+    {
+        $this->openingBalanceFlag = $openingBalanceFlag;
     }
 
     protected function getCurrentCreditLimit()

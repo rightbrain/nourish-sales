@@ -6,6 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentDoc;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Entity\Stock;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentDocForm;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentUpdateForm;
@@ -83,7 +84,7 @@ class AgentController extends BaseController
      */
     public function updateAction(Request $request, Agent $agent)
     {
-        $form = $this->createForm(new AgentUpdateForm(), $agent, array(
+        $form = $this->createForm(new AgentUpdateForm($agent->isOpeningBalanceFlag()), $agent, array(
             'attr' => array('novalidate' => 'novalidate')
         ));
 
@@ -91,6 +92,20 @@ class AgentController extends BaseController
             $form->handleRequest($request);
 
             if ($form->isValid()) {
+
+                if(!$agent->isOpeningBalanceFlag()){
+                    $em = $this->getDoctrine()->getManager();
+                    $payment = new Payment();
+
+                    $payment->setAgent($agent);
+                    $payment->setAmount($agent->getOpeningBalance());
+                    $payment->setPaymentMethod(Payment::PAYMENT_METHOD_OPENING_BALANCE);
+                    $payment->setRemark('Agents opening balance.');
+                    $payment->setDepositDate(new \DateTime());
+                    $payment->setTransactionType($agent->getOpeningBalanceType());
+                    $em->getRepository('RbsSalesBundle:Payment')->create($payment);
+                    $agent->setOpeningBalanceFlag(true);
+                }
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->update($agent);
 
@@ -104,7 +119,8 @@ class AgentController extends BaseController
         }
 
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'agent' => $agent
         );
     }
 
@@ -210,11 +226,9 @@ class AgentController extends BaseController
         $agentRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
         $agent = $agentRepo->find($agentId);
 
-
         $order = new Order();
         $order->setAgent($agent);
         $form = $this->createForm(new OrderForm(0), $order);
-        //$form->get('agent')->setData($agent);
         $prototype = $this->renderView('@RbsSales/Order/_itemTypePrototype.html.twig', array('form' => $form->createView()));
 
         return new JsonResponse(array('item_type_prototype' => $prototype));
