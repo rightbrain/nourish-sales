@@ -300,8 +300,7 @@ class AgentController extends BaseController
     public function fileViewAction(AgentDoc $agentDoc)
     {
         return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
-            'path' => $agentDoc->getPath(),
-            'location' => '/uploads/sales/agent-documents/',
+            'location' => $this->getRequest()->getUriForPath('/uploads/sales/agent-documents/'.$agentDoc->getPath()),
         ));
     }
 }

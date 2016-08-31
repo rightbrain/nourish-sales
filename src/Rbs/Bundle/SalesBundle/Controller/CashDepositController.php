@@ -109,8 +109,7 @@ class CashDepositController extends BaseController
     public function fileViewAction(CashDeposit $cashDeposit)
     {
         return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
-            'path' => $cashDeposit->getPath(),
-            'location' => '/uploads/sales/cash-deposit-slip/',
+            'location' => $this->getRequest()->getUriForPath('/uploads/sales/cash-deposit-slip/'.$cashDeposit->getPath()),
         ));
     }
 }

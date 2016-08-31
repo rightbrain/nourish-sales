@@ -220,8 +220,7 @@ class DamageGoodController extends BaseController
     public function viewDocAction(DamageGood $damageGood)
     {
         return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
-            'path' => $damageGood->getPath(),
-            'location' => '/uploads/sales/damage-goods/',
+            'location' => $this->getRequest()->getUriForPath('/uploads/sales/damage-goods/'.$damageGood->getPath()),
         ));
     }
 
@@ -234,8 +233,7 @@ class DamageGoodController extends BaseController
     public function fileViewAction(DamageGood $damageGood)
     {
         return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
-            'path' => $damageGood->getPath(),
-            'location' => '/uploads/sales/damage-goods/',
+            'location' => $this->getRequest()->getUriForPath('/uploads/sales/damage-goods/'.$damageGood->getPath()),
         ));
     }
 }
