@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
@@ -39,7 +40,9 @@ class DamageGoodForm extends AbstractType
                 'query_builder' => function (OrderRepository $repository)
                 {
                     return $repository->createQueryBuilder('o')
-                        ->join('o.agent', 'a');
+                        ->join('o.agent', 'a')
+                        ->andWhere('o.orderState = :COMPLETE')
+                        ->setParameter('COMPLETE', Order::ORDER_STATE_COMPLETE);
                 }
             ))
             ->add('file')

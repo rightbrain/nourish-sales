@@ -27,6 +27,7 @@ class AgentsBankInfoDatatable extends BaseDatatable
 
         $this->columnBuilder
             ->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
+            ->add('orderRef.id', 'column', array('title' => 'Order Number'))
             ->add('bankName', 'column', array('title' => 'Bank Name'))
             ->add('branchName', 'column', array('title' => 'Branch Name'))
             ->add('remark', 'column', array('title' => 'Remark'))

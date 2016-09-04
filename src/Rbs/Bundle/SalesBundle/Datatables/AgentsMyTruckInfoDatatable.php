@@ -27,7 +27,7 @@ class AgentsMyTruckInfoDatatable extends BaseDatatable
 
         $this->columnBuilder
             ->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
-            ->add('order.id', 'column', array('title' => 'Order Number'))
+            ->add('orderRef.id', 'column', array('title' => 'Order Number'))
             ->add('driverName', 'column', array('title' => 'Driver Name'))
             ->add('driverPhone', 'column', array('title' => 'Driver Phone'))
             ->add('remark', 'column', array('title' => 'Remark'))

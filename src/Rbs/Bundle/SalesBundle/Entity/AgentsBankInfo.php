@@ -47,7 +47,7 @@ class AgentsBankInfo
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order")
      * @ORM\JoinColumn(name="order_id", nullable=true, onDelete="CASCADE")
      */
-    private $order;
+    private $orderRef;
 
     /**
      * @var array $type
@@ -111,17 +111,17 @@ class AgentsBankInfo
     /**
      * @return Order
      */
-    public function getOrder()
+    public function getOrderRef()
     {
-        return $this->order;
+        return $this->orderRef;
     }
 
     /**
      * @param Order $order
      */
-    public function setOrder($order)
+    public function setOrderRef($order)
     {
-        $this->order = $order;
+        $this->orderRef = $order;
     }
 
     /**

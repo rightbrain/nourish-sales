@@ -45,6 +45,7 @@ class DamageGoodDatatable extends BaseDatatable
             ->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
             ->add('user.username', 'column', array('title' => 'User'))
             ->add('agent.user.username', 'column', array('title' => 'Agent'))
+            ->add('orderRef.id', 'column', array('title' => 'Order Number'))
             ->add('remark', 'column', array('title' => 'Remark'))
             ->add('amount', 'column', array('title' => 'Amount'))
             ->add('isPathExist', 'virtual', array('visible' => false))
