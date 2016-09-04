@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 
-{% block title %}{{ parent() }} : My Ledger {% endblock %}
+{% block title %}{{ parent() }} : Agent Ledger {% endblock %}
 
 {% block body %}
 
@@ -8,7 +8,7 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-list"></i>My Ledger
+                    <i class="fa fa-list"></i>Agent Ledger
                 </div>
             </div>
             <div class="portlet-body">
@@ -16,6 +16,14 @@
 
                     <div class="col-md-12" style="margin-top: 25px;">
                         <form method="get" novalidate="novalidate">
+
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="input-icon right">
+                                        {{ form_widget(formSearch.agent) }}
+                                    </div>
+                                </div>
+                            </div>
 
                             <div class="form-group">
                                 <div class="col-md-3">
@@ -45,7 +53,9 @@
                         <div class="form-group">
                             <div class="col-md-3">
                                 <div class="input-icon right">
-                                    Agent Name: {{ agent.user.username | default('') }}
+                                    {% if agent != null %}
+                                        Agent Name: {{ agent.user.username | default('') }}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -64,25 +74,25 @@
                             <tbody>
                             <tr>
                                 <td colspan="2" style="text-align: right">Previous Balance: </td>
-                                <td>{{ agentPreviousDebitLaserTotal | default(0) }}</td>
-                                <td>{{ agentPreviousCreditLaserTotal | default(0) }}</td>
+                                <td style="text-align: right">{{ agentPreviousDebitLaserTotal|number_format(2, '.', ',') }}</td>
+                                <td style="text-align: right">{{ agentPreviousCreditLaserTotal|number_format(2, '.', ',') }}</td>
                             </tr>
                             {% for laser in agentLaser %}
                                 <tr>
                                     <td class="col-md-1">{{ laser['depositDate'] | date('d F y') }}</td>
                                     <td class="col-md-1">{{ laser['remark'] | default('') }}</td>
-                                    <td class="col-md-1">{% if laser['transactionType'] == 'DR' %}{{ laser['amount'] | number_format }}{% endif %}</td>
-                                    <td class="col-md-1">{% if laser['transactionType'] == 'CR' %}{{ laser['amount'] | number_format }}{% endif %}</td>
+                                    <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
+                                    <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'CR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
                                 </tr>
                             {% endfor %}
                             <tr>
                                 <td class="bold" colspan="2" style="text-align: right">Total: </td>
-                                <td class="bold">{{ agentDebitLaserTotal | default(0) }}</td>
-                                <td class="bold">{{ agentCreditLaserTotal | default(0) }}</td>
+                                <td class="bold" style="text-align: right">{{ agentDebitLaserTotal|number_format(2, '.', ',') }}</td>
+                                <td class="bold" style="text-align: right">{{ agentCreditLaserTotal|number_format(2, '.', ',') }}</td>
                             </tr>
                             <tr>
                                 <td colspan="4">
-                                    Current Balance {{ currentBalance|number_format }}tk
+                                    Current Balance:  {{ currentBalance|number_format(2, '.', ',') }} tk
                                 </td>
                             </tr>
                             </tbody>

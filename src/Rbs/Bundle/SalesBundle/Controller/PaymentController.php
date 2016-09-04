@@ -175,7 +175,7 @@ class PaymentController extends BaseController
             $agent = null;
         }
 
-        return $this->render('RbsSalesBundle:Laser:laser.html.twig', array(
+        return $this->render('RbsSalesBundle:Ledger:ledger.html.twig', array(
             'agentLaser' => $agentLaser,
             'formSearch' => $formSearch->createView(),
             'agentPreviousDebitLaserTotal' => $agentPreviousDebitLaserTotal,
@@ -218,7 +218,7 @@ class PaymentController extends BaseController
 
         $agentLaser = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getMyLaser($agent->getId(), $data);
 
-        return $this->render('RbsSalesBundle:Laser:my-laser.html.twig', array(
+        return $this->render('RbsSalesBundle:Ledger:my-ledger.html.twig', array(
             'agentLaser' => $agentLaser,
             'formSearch' => $formSearch->createView(),
             'agentPreviousDebitLaserTotal' => $agentPreviousDebitLaserTotal,
