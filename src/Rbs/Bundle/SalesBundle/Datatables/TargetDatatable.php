@@ -36,7 +36,8 @@ class TargetDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-            ->add('location.name', 'column', array('title' => 'District'))
+            ->add('zilla.name', 'column', array('title' => 'Zilla'))
+            ->add('upozilla.name', 'column', array('title' => 'Upozilla'))
             ->add('quantity', 'column', array('title' => 'Quantity'))
             ->add('category.name', 'column', array('title' => 'Category'))
             ->add('startDate', 'datetime', array('title' => 'startDate', 'date_format' => $dateFormat))

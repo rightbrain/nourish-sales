@@ -23,7 +23,8 @@ class TargetRepository extends EntityRepository
     {
         /** @var Target $target */
         foreach ($data->getChildEntities() as $target) {
-            $target->setLocation($data->getLocation());
+            $target->setZilla($data->getZilla());
+            $target->setUpozilla($data->getUpozilla());
             if($target->getStartDate() == null or $target->getEndDate() == null){
                 $target->setStartDate(null);
                 $target->setEndDate(null);

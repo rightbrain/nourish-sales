@@ -17,22 +17,34 @@ class TargetForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('location', 'entity', array(
+            ->add('zilla', 'entity', array(
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('a')
                         ->where('a.level = :level')->setParameter('level', 4)->orderBy('a.name');
                 },
                 'attr' => array(
-                    'class' => 'zilla-selector select2me'
+                    'class' => 'zilla-selector select2me',
+                    'id' => 'user_level1'
                 ),
-                'required' => true,
                 'constraints' => array(
                     new NotBlank(array(
-                        'message'=>'Location should not be blank'
+                        'message'=>'Zilla should not be blank'
                     )),
                 ),
-                'empty_value' => 'Select Location',
+                'required' => true
+            ))
+            ->add('upozilla', 'entity', array(
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('a')
+                        ->where('a.level = :level')->setParameter('level', 5)->orderBy('a.name');
+                },
+                'attr' => array(
+                    'class' => 'thana-selector select2me',
+                    'id' => 'user_level2'
+                ),
+                'required' => false
             ))
             ->add('child_entities', 'collection', array(
                 'type' => new TargetSubForm(),

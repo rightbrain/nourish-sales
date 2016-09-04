@@ -16,11 +16,19 @@
                 {{ form_start(form) }}
 
                 <div class="form-group" style="margin-bottom: 30px;">
+                    <label class="col-md-2 control-label" style="font-weight:bolder;margin-left: 10px;">Zilla:</label>
+                    <div class="col-md-4" style="margin-top: 5px;">
+                        {{ form_widget(form.zilla, { 'attr': {'class': 'zilla-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'ZillaZilla'} }) }}
+                    </div>
+                    <span class="help-inline">{{ form_errors(form.zilla) }}</span>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 30px;">
                     <label class="col-md-2 control-label" style="font-weight:bolder;margin-left: 10px;">Location:</label>
                     <div class="col-md-4" style="margin-top: 5px;">
-                        {{ form_widget(form.location) }}
+                        {{ form_widget(form.upozilla, { 'attr': {'class': 'thana-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'Thana/UpoZilla'} }) }}
                     </div>
-                    <span class="help-inline">{{ form_errors(form.location) }}</span>
+                    <span class="help-inline">{{ form_errors(form.upozilla) }}</span>
                 </div>
 
                 <div class="row col-md-11 right" style="float: right;">
@@ -74,6 +82,7 @@
     "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
     "assets/admin/pages/scripts/form-validation.js"
     "bundles/rbssales/js/order.js"
+    'bundles/rbsuser/js/user.js'
     %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}

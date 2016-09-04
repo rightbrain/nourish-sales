@@ -53,7 +53,7 @@ class TargetController extends BaseController
          */
         $function = function($qb)
         {
-            $qb->join('sales_targets.location', 'l');
+            $qb->join('sales_targets.zilla', 'l');
             $qb->andWhere('sales_targets.quantity > 0');
             $qb->andWhere('sales_targets.startDate is not null');
             $qb->andWhere('sales_targets.endDate is not null');

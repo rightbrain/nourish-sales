@@ -54,9 +54,17 @@ class Target
      * @var Location
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Location")
-     * @ORM\JoinColumn(name="location_id")
+     * @ORM\JoinColumn(name="zilla_id", nullable=true)
      */
-    private $location;
+    private $zilla;
+
+    /**
+     * @var Location
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Location")
+     * @ORM\JoinColumn(name="upozilla_id", nullable=true)
+     */
+    private $upozilla;
 
     /**
      * @var Category
@@ -166,17 +174,33 @@ class Target
     /**
      * @return Location
      */
-    public function getLocation()
+    public function getZilla()
     {
-        return $this->location;
+        return $this->zilla;
     }
 
     /**
-     * @param Location $location
+     * @param Location $zilla
      */
-    public function setLocation($location)
+    public function setZilla($zilla)
     {
-        $this->location = $location;
+        $this->zilla = $zilla;
+    }
+
+    /**
+     * @return Location
+     */
+    public function getUpozilla()
+    {
+        return $this->upozilla;
+    }
+
+    /**
+     * @param Location $upozilla
+     */
+    public function setUpozilla($upozilla)
+    {
+        $this->upozilla = $upozilla;
     }
 
     /**
