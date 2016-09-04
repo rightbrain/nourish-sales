@@ -19,6 +19,8 @@ class AgentsBankInfo
 {
     const ACTIVE = 'ACTIVE';
     const INACTIVE = 'INACTIVE';
+    const VERIFIED = 'VERIFIED';
+    const APPROVED = 'APPROVED';
 
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
@@ -52,7 +54,7 @@ class AgentsBankInfo
     /**
      * @var array $type
      *
-     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE')", nullable=false)
+     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE', 'VERIFIED', 'APPROVED')", nullable=false)
      */
     private $status = 'ACTIVE';
 
