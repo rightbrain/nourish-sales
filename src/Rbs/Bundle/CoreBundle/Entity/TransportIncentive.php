@@ -88,7 +88,7 @@ class TransportIncentive
      *
      * @ORM\Column(name="type", type="string", length=255, columnDefinition="ENUM('SALE', 'TRANSPORT')", nullable=false)
      */
-    private $type;
+    private $type = 'TRANSPORT';
 
     /**
      * Get id
