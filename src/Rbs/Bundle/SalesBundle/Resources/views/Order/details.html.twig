@@ -174,9 +174,11 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            {% for index, payment in order.payments %}
+                                            {% set index = 1 %}
+                                            {% for payment in order.payments %}
+                                                {% if payment.paymentMethod == 'BANK' %}
                                                 <tr>
-                                                    <td>{{ index + 1 }}.</td>
+                                                    <td>{{ index }}.</td>
                                                     <td>{{ payment.depositDate | date(php_date_format) }}</td>
                                                     <td>{{ payment.id | default('') }}</td>
                                                     <td>{{ payment.paymentMethod | default('') }}</td>
@@ -185,6 +187,8 @@
                                                     <td>{{ payment.amount | default('') }}</td>
                                                     <td>{{ payment.remark | default('') }}</td>
                                                 </tr>
+                                                {% set index = index + 1 %}
+                                                {% endif %}
                                             {% endfor %}
                                             </tbody>
                                         </table>
