@@ -4,6 +4,7 @@ namespace Rbs\Bundle\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\CoreBundle\Entity\SaleIncentive;
+use Rbs\Bundle\CoreBundle\Entity\TransportIncentive;
 
 /**
  * SaleIncentiveRepository
@@ -47,7 +48,8 @@ class SaleIncentiveRepository extends EntityRepository
         $query->addSelect('si.group');
         $query->where('si.deletedAt IS NULL');
         $query->andWhere('si.durationType = :month');
-        $query->setParameter('month', SaleIncentive::MONTH);
+        $query->andWhere('si.status = :CURRENT');
+        $query->setParameters(array('month'=>SaleIncentive::MONTH, 'CURRENT'=>SaleIncentive::CURRENT));
 
         return $query->getQuery()->getResult();
     }
@@ -61,7 +63,8 @@ class SaleIncentiveRepository extends EntityRepository
         $query->addSelect('si.group');
         $query->where('si.deletedAt IS NULL');
         $query->andWhere('si.durationType = :year');
-        $query->setParameter('year', SaleIncentive::YEAR);
+        $query->andWhere('si.status = :CURRENT');
+        $query->setParameters(array('year', SaleIncentive::YEAR, 'CURRENT'=>SaleIncentive::CURRENT));
 
         return $query->getQuery()->getResult();
     }
@@ -74,7 +77,8 @@ class SaleIncentiveRepository extends EntityRepository
         $query->addSelect('si.group');
         $query->where('si.deletedAt IS NULL');
         $query->andWhere('si.durationType = :month');
-        $query->setParameter('month', SaleIncentive::MONTH);
+        $query->andWhere('si.status = :CURRENT');
+        $query->setParameters(array('month'=>SaleIncentive::MONTH, 'CURRENT'=>SaleIncentive::CURRENT));
 
         return $query->getQuery()->getResult();
     }
@@ -85,7 +89,8 @@ class SaleIncentiveRepository extends EntityRepository
         $query->select('si.group');
         $query->where('si.deletedAt IS NULL');
         $query->andWhere('si.durationType = :month');
-        $query->setParameter('month', SaleIncentive::MONTH);
+        $query->andWhere('si.status = :CURRENT');
+        $query->setParameters(array('month'=>SaleIncentive::MONTH, 'CURRENT'=>SaleIncentive::CURRENT));
         $query->groupBy('si.group');
 
         return $query->getQuery()->getScalarResult();
@@ -99,7 +104,8 @@ class SaleIncentiveRepository extends EntityRepository
         $query->addSelect('si.group');
         $query->where('si.deletedAt IS NULL');
         $query->andWhere('si.durationType = :YEAR');
-        $query->setParameter('YEAR', SaleIncentive::YEAR);
+        $query->andWhere('si.status = :CURRENT');
+        $query->setParameters(array('YEAR', SaleIncentive::YEAR, 'CURRENT'=>SaleIncentive::CURRENT));
 
         return $query->getQuery()->getResult();
     }
@@ -110,7 +116,8 @@ class SaleIncentiveRepository extends EntityRepository
         $query->select('si.group');
         $query->where('si.deletedAt IS NULL');
         $query->andWhere('si.durationType = :YEAR');
-        $query->setParameter('YEAR', SaleIncentive::YEAR);
+        $query->andWhere('si.status = :CURRENT');
+        $query->setParameters(array('YEAR', SaleIncentive::YEAR, 'CURRENT'=>SaleIncentive::CURRENT));
         $query->groupBy('si.group');
 
         return $query->getQuery()->getScalarResult();
@@ -127,9 +134,27 @@ class SaleIncentiveRepository extends EntityRepository
         $query->andWhere('c.id = :category');
         $query->andWhere('si.durationType = :durationType');
         $query->andWhere('si.quantity > :quantity');
+        $query->andWhere('si.status = :CURRENT');
         $query->orderBy('si.quantity', 'ASC');
         $query->setMaxResults('1');
-        $query->setParameters(array('category'=>$category, 'quantity'=>$quantity, 'durationType'=>$durationType));
+        $query->setParameters(array('category'=>$category,
+            'quantity'=>$quantity, 'durationType'=>$durationType, 'CURRENT'=>SaleIncentive::CURRENT));
+
+        return $query->getQuery()->getResult();
+    }
+    
+    public function getSalesIncentiveForStatusChange($category, $quantity, $durationType, $group)
+    {
+        $query = $this->createQueryBuilder('si');
+        $query->join('si.category', 'c');
+        $query->where('si.deletedAt IS NULL');
+        $query->andWhere('c.id = :category');
+        $query->andWhere('si.durationType = :durationType');
+        $query->andWhere('si.quantity > :quantity');
+        $query->andWhere('si.status = :CURRENT');
+        $query->andWhere('si.group = :group');
+        $query->setParameters(array('category'=>$category, 'quantity'=>$quantity, 
+            'durationType'=>$durationType, 'group'=>$group, 'CURRENT'=>SaleIncentive::CURRENT));
 
         return $query->getQuery()->getResult();
     }

@@ -20,6 +20,9 @@ class SaleIncentive
     const SALE = 'SALE';
     const TRANSPORT = 'TRANSPORT';
     
+    const CURRENT = 'CURRENT';
+    const ARCHIVED = 'ARCHIVED';
+    
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;

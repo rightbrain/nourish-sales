@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\CoreBundle\Entity\TransportIncentive;
 
 /**
  * TransportIncentiveRepository
@@ -49,7 +50,9 @@ class TransportIncentiveRepository extends EntityRepository
         $query->addSelect('dis.name as district');
         $query->addSelect('sta.name as station');
         $query->where('ti.deletedAt IS NULL');
+        $query->andWhere('ti.status = :CURRENT');
         $query->orderBy('dis.name', 'ASC');
+        $query->setParameters(array('CURRENT'=>TransportIncentive::CURRENT));
 
         return $query->getQuery()->getResult();
     }
@@ -65,7 +68,24 @@ class TransportIncentiveRepository extends EntityRepository
         $query->andWhere('ti.station = :station');
         $query->andWhere('ti.depo = :dipo');
         $query->andWhere('ti.itemType = :itemType');
-        $query->setParameters(array('station'=>$station, 'dipo'=>$dipo, 'itemType'=>$itemType));
+        $query->andWhere('ti.status = :CURRENT');
+        $query->setParameters(array('station'=>$station, 'dipo'=>$dipo, 
+            'itemType'=>$itemType, 'CURRENT'=>TransportIncentive::CURRENT));
+
+        return $query->getQuery()->getResult();
+    }
+    
+    public function getTransportIncentiveForStatusChange($district, $station, $dipo, $itemType)
+    {
+        $query = $this->createQueryBuilder('ti');
+        $query->where('ti.deletedAt IS NULL');
+        $query->andWhere('ti.station = :station');
+        $query->andWhere('ti.district = :district');
+        $query->andWhere('ti.depo = :dipo');
+        $query->andWhere('ti.itemType = :itemType');
+        $query->andWhere('ti.status = :CURRENT');
+        $query->setParameters(array('district'=>$district, 'station'=>$station, 'dipo'=>$dipo,
+            'itemType'=>$itemType, 'CURRENT'=>TransportIncentive::CURRENT));
 
         return $query->getQuery()->getResult();
     }

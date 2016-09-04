@@ -70,9 +70,17 @@ class TransportIncentiveController extends BaseController
             $form->handleRequest($request);
             if ($form->isValid()) {
 
+                $preTIs = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentiveForStatusChange($request->request->get('transport_incentive')['level1'], $request->request->get('transport_incentive')['level2'],
+                    $request->request->get('transport_incentive')['depo'], $request->request->get('transport_incentive')['itemType']);
+                foreach ($preTIs as $preTI){
+                    $preTI->setStatus(TransportIncentive::ARCHIVED);
+                    $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->update($preTI);
+                }
+                
                 $transportIncentive->setDistrict($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('transport_incentive')['level1']));
                 $transportIncentive->setStation($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->request->get('transport_incentive')['level2']));
-
+                $transportIncentive->setStatus(TransportIncentive::CURRENT);
+                
                 $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->create($transportIncentive);
 
                 $this->flashMessage('success', 'Transport Incentive Add Successfully!');

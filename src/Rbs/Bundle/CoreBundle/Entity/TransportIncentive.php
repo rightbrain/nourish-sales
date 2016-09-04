@@ -17,6 +17,9 @@ class TransportIncentive
 {
     const PER_DELIVERY = 'PER_DELIVERY';
 
+    const CURRENT = 'CURRENT';
+    const ARCHIVED = 'ARCHIVED';
+
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;

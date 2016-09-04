@@ -87,6 +87,14 @@ class SaleIncentiveController extends BaseController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 foreach($request->request->get('sale_incentive')['category'] as $value){
+
+                    $preSIs = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getSalesIncentiveForStatusChange($value, $request->request->get('sale_incentive')['quantity'],
+                        $request->request->get('sale_incentive')['durationType'], $request->request->get('sale_incentive')['group']);
+                    foreach ($preSIs as $preSI){
+                        $preSI->setStatus(SaleIncentive::ARCHIVED);
+                        $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->update($preSI);
+                    }
+                    
                     $saleIncentive = new SaleIncentive();
                     $saleIncentive->setAmount($request->request->get('sale_incentive')['amount']);
                     $saleIncentive->setCategory($this->getDoctrine()->getRepository('RbsCoreBundle:Category')->find($value));
@@ -94,6 +102,7 @@ class SaleIncentiveController extends BaseController
                     $saleIncentive->setDurationType($request->request->get('sale_incentive')['durationType']);
                     $saleIncentive->setGroup($request->request->get('sale_incentive')['group']);
                     $saleIncentive->setType(SaleIncentive::SALE);
+                    $saleIncentive->setStatus(SaleIncentive::CURRENT);
                     $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->create($saleIncentive);
                 }
 
