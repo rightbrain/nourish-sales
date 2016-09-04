@@ -91,6 +91,13 @@ class TransportIncentive
     private $type = 'TRANSPORT';
 
     /**
+     * @var array $type
+     *
+     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('CURRENT', 'ARCHIVED')", nullable=false)
+     */
+    private $status = 'CURRENT';
+    
+    /**
      * Get id
      *
      * @return integer
@@ -226,5 +233,21 @@ class TransportIncentive
     public function setType($type)
     {
         $this->type = $type;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param array $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 }

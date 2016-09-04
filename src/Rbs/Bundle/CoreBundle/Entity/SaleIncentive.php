@@ -75,6 +75,13 @@ class SaleIncentive
      * @ORM\Column(name="type", type="string", length=255, columnDefinition="ENUM('SALE', 'TRANSPORT')", nullable=false)
      */
     private $type = 'SALE';
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('CURRENT', 'ARCHIVED')", nullable=false)
+     */
+    private $status = 'CURRENT';
     
     /**
      * Get id
@@ -180,5 +187,21 @@ class SaleIncentive
     public function setType($type)
     {
         $this->type = $type;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param array $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 }
