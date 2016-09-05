@@ -212,7 +212,7 @@ class DamageGoodController extends BaseController
     }
 
     /**
-     * @Route("/damage/good/doc/view/{id}", name="damage_good_doc_view")
+     * @Route("/damage/good/doc/view/{id}", name="damage_good_doc_view", options={"expose"=true})
      * @param DamageGood $damageGood
      * @return Response
      * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
