@@ -179,7 +179,7 @@ class DamageGoodController extends BaseController
         $payment->setRemark('Refund for damage goods.');
         $payment->setDepositDate(new \DateTime());
         $payment->setTransactionType(Payment::CR);
-        $payment->addOrder($damageGood->getOrder());
+        $payment->addOrder($damageGood->getOrderRef());
 
         $damageGood->setRefundAmount($request->request->get('refund'));
         $damageGood->setStatus(DamageGood::APPROVED);
@@ -218,19 +218,6 @@ class DamageGoodController extends BaseController
      * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
      */
     public function viewDocAction(DamageGood $damageGood)
-    {
-        return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
-            'location' => $this->getRequest()->getUriForPath('/uploads/sales/damage-goods/'.$damageGood->getPath()),
-        ));
-    }
-
-    /**
-     * @Route("/damage/good/doc/view/{id}", name="damage_good_doc_view", options={"expose"=true})
-     * @param DamageGood $damageGood
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
-     */
-    public function fileViewAction(DamageGood $damageGood)
     {
         return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
             'location' => $this->getRequest()->getUriForPath('/uploads/sales/damage-goods/'.$damageGood->getPath()),

@@ -21,12 +21,12 @@
                                 <tbody>
                                     <tr>
                                         <td class="col-md-1 bold">Verified By:</td>
-                                        <td class="col-md-1 bold">{{ damageGood.verifiedBy.user.username | default('') }}</td>
+                                        <td class="col-md-1 bold">{{ damageGood.verifiedBy.username | default('') }}</td>
                                     </tr>
                                     {% if damageGood.approvedBy != null %}
                                     <tr>
                                         <td class="col-md-1 bold">Approved By:</td>
-                                        <td class="col-md-1 bold">{{ damageGood.approvedBy.user.username | default('') }}</td>
+                                        <td class="col-md-1 bold">{{ damageGood.approvedBy.username | default('') }}</td>
                                     </tr>
                                     {% endif %}
                                     <tr>
@@ -35,7 +35,7 @@
                                     </tr>
                                     <tr>
                                         <td class="col-md-1 bold">Order Number:</td>
-                                        <td class="col-md-1 bold">{{ damageGood.order.id }}</td>
+                                        <td class="col-md-1 bold">{{ damageGood.orderRef.id }}</td>
                                     </tr>
                                     <tr>
                                         <td class="col-md-1 bold">Amount:</td>
