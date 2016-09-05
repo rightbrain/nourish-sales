@@ -44,7 +44,7 @@ class TargetForm extends AbstractType
                     'class' => 'thana-selector select2me',
                     'id' => 'user_level2'
                 ),
-                'required' => false
+                'required' => true
             ))
             ->add('child_entities', 'collection', array(
                 'type' => new TargetSubForm(),
