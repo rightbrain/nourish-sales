@@ -42,6 +42,8 @@ class DeliveryController extends BaseController
      * @Route("/delivery_list_ajax", name="delivery_list_ajax", options={"expose"=true})
      * @Method("GET")
      * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     * @param Request $request
+     * @return Response
      */
     public function listAjaxAction(Request $request)
     {
@@ -49,22 +51,29 @@ class DeliveryController extends BaseController
         $datatable->buildDatatable();
 
         $dateFilter = $request->query->get('columns[1][search][value]', null, true);
+        $orderFilter = $request->query->get('columns')[0]['search']['value'];
 
         $columns = $request->query->get('columns');
+        $columns[0]['search']['value'] = '';
         $columns[1]['search']['value'] = '';
         $request->query->set('columns', $columns);
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
 
         /** @var QueryBuilder $qb */
-        $function = function($qb) use ($dateFilter)
+        $function = function($qb) use ($dateFilter, $orderFilter)
         {
             $qb->join('sales_deliveries.depo', 'd');
+            $qb->join('sales_deliveries.orderRef', 'o');
             $qb->join('d.users', 'u');
             $qb->andWhere('u =:user');
             $qb->andWhere('orderRef.deliveryState IN (:READY) OR orderRef.deliveryState IN (:PARTIALLY_SHIPPED)');
             $qb->setParameters(array('user'=>$this->getUser(), 'READY'=>Order::DELIVERY_STATE_READY, 'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
 
+            if ($orderFilter) {
+                $qb->andWhere('o.id =:orderRef');
+                $qb->setParameter('orderRef', $orderFilter);
+            }
             if ($dateFilter) {
                 $qb->andWhere('orderRef.createdAt BETWEEN :fromDate AND :toDate')
                     ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($dateFilter)))
