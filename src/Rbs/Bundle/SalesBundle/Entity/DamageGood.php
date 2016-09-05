@@ -87,7 +87,7 @@ class DamageGood
      * @var Order
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order")
-     * @ORM\JoinColumn(name="order_id", nullable=true, onDelete="CASCADE")
+     * @ORM\JoinColumn(name="order_id", nullable=false, onDelete="CASCADE")
      */
     private $orderRef;
 

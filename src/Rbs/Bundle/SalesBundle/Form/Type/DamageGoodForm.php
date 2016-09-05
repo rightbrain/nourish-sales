@@ -34,7 +34,7 @@ class DamageGoodForm extends AbstractType
                     'class' => 'select2me'
                 ),
                 'property' => 'id',
-                'required' => false,
+                'required' => true,
                 'empty_value' => 'Select Order',
                 'empty_data' => null,
                 'query_builder' => function (OrderRepository $repository)
