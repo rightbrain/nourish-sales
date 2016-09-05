@@ -18,12 +18,16 @@ class PaymentDatatable extends BaseDatatable
 
     public function getLineFormatter()
     {
-        /** @var Profile $profile */
+        /** @var Profile $profile
+        /** @var Payment $payment
+         * @return mixed
+         */
         $formatter = function($line){
-            $line['bankInfo'] = 'Payment Method:'.$line['paymentMethod'].', Bank Name:'.$line['bankName'].', Branch Name:'.$line['branchName'];
-            $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
+            $payment = $this->em->getRepository('RbsSalesBundle:Payment')->find($line['id']);
+            $line['bankInfo'] = 'Payment Method:'.$payment->getPaymentMethod().', Bank Name:'.$payment->getBankName().', Branch Name:'.$payment->getBranchName();
+            $line['totalAmount'] = '<div style="text-align: right;">'. number_format($payment->getAmount(), 2) .'</div>';
             if ($this->allowAgentSearch) {
-                $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $line['agent']['user']['id']));
+                $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $payment->getAgent()->getUser()->getId()));
                 $line["fullName"] = $profile->getFullName();
             }
 
