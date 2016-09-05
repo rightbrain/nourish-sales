@@ -28,7 +28,7 @@ class DamageGoodForm extends AbstractType
         $builder
             ->add('amount')
             ->add('remark')
-            ->add('order', 'entity', array(
+            ->add('orderRef', 'entity', array(
                 'class' => 'RbsSalesBundle:Order',
                 'attr' => array(
                     'class' => 'select2me'

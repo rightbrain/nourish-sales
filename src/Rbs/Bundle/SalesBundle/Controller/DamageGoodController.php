@@ -81,7 +81,7 @@ class DamageGoodController extends BaseController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $damageGood->setUser($this->getUser());
-                $od = $em->getRepository('RbsSalesBundle:Order')->find($request->request->get('damage_good')['order']);
+                $od = $em->getRepository('RbsSalesBundle:Order')->find($request->request->get('damage_good')['orderRef']);
                 $damageGood->setAgent($od->getAgent());
                 $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:DamageGood')->create($damageGood);
                 $this->flashMessage('success', 'Damage Goods add Successfully!');
