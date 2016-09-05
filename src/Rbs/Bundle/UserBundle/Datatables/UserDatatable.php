@@ -11,9 +11,12 @@ use FOS\UserBundle\Model\User;
  */
 class UserDatatable extends BaseDatatable
 {
+    
     public function getLineFormatter()
     {
-        /** @var User $user */
+        /** @var User $user
+         * @return mixed
+         */
         $formatter = function($line){
             $user = $this->em->getRepository('RbsUserBundle:User')->find($line['id']);
             $line["isSuperAdmin"] = !$user->isSuperAdmin();
