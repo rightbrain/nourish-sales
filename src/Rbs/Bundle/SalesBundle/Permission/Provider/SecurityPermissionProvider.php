@@ -62,6 +62,10 @@ class SecurityPermissionProvider implements ProviderInterface
                 'ROLE_SALES_REPORT'
             ),
 
+            'BANK_SLIP' => array(
+                'ROLE_BANK_SLIP_VERIFIER', 'ROLE_BANK_SLIP_APPROVAL'
+            ),
+
             'TRUCK' => array(
                 'ROLE_TRUCK_MANAGE', 'ROLE_TRUCK_IN', 'ROLE_TRUCK_OUT', 'ROLE_TRUCK_START', 'ROLE_TRUCK_FINISH'
             )

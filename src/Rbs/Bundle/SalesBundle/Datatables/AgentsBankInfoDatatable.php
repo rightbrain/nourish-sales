@@ -2,6 +2,8 @@
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
+use Rbs\Bundle\SalesBundle\Entity\AgentsBankInfo;
+
 /**
  * Class AgentsBankInfoDatatable
  *
@@ -9,6 +11,21 @@ namespace Rbs\Bundle\SalesBundle\Datatables;
  */
 class AgentsBankInfoDatatable extends BaseDatatable
 {
+    public function getLineFormatter()
+    {
+        /** @var AgentsBankInfo $agentsBankInfo
+         * @return mixed
+         */
+        $formatter = function($line){
+            $agentsBankInfo = $this->em->getRepository('RbsSalesBundle:AgentsBankInfo')->find($line['id']);
+            $line['isPathExist'] = !$agentsBankInfo->isPathExist();
+
+            return $line;
+        };
+
+        return $formatter;
+    }
+    
     /**
      * {@inheritdoc}
      */
@@ -32,6 +49,32 @@ class AgentsBankInfoDatatable extends BaseDatatable
             ->add('branchName', 'column', array('title' => 'Branch Name'))
             ->add('remark', 'column', array('title' => 'Remark'))
             ->add('amount', 'column', array('title' => 'Amount'))
+            ->add('status', 'column', array('title' => 'Status'))
+            ->add('isPathExist', 'virtual', array('visible' => false))
+            ->add(null, 'action', array(
+                'width' => '200px',
+                'title' => 'File',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'agent_bank_info_doc_view',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'View',
+                        'icon' => 'fa fa-file',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'view',
+                            'class' => 'btn btn-xs',
+                            'role' => 'button',
+                            'target'=> '_blank'
+                        ),
+                        'render_if' => array('isPathExist')
+                    )
+                )
+            ))
         ;
     }
 

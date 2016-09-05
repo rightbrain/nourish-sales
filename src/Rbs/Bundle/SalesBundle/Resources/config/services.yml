@@ -78,6 +78,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.agent.bank.info.admin:
+        class: Rbs\Bundle\SalesBundle\Datatables\AgentsBankInfoAdminDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.agent.truck.info:
         class: Rbs\Bundle\SalesBundle\Datatables\AgentsTruckInfoDatatable
         tags:

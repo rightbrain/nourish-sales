@@ -160,6 +160,14 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Sales']->getChild('Credit Limit')->setCurrent(true);
                 }
             }
+            if ($this->authorizationChecker->isGranted(array('ROLE_BANK_SLIP_VERIFIER', 'ROLE_BANK_SLIP_APPROVAL'))) {
+                $sp4 = true;
+                $menu['Sales']->addChild('Bank Slip', array('route' => 'bank_info_list'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('bank_info_list')) {
+                    $menu['Sales']->getChild('Bank Slip')->setCurrent(true);
+                }
+            }
 
             if ($sp4) {
                 $menu['Sales']->addChild(str_repeat(' ', 4), ['divider' => true]);
@@ -222,6 +230,9 @@ class ConfigureMenuListener extends ContextAwareListener
 
             $menu['Sales']->addChild('Bank Slip', array('route' => 'bank_info_list'))
                 ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('bank_info_list') or $this->isMatch('orders_my_bank_info')) {
+                $menu['Sales']->getChild('Bank Slip')->setCurrent(true);
+            }
 
             $menu['Sales']->addChild('My Ledger', array('route' => 'my_laser'))
                 ->setAttribute('icon', 'fa fa-th-list');

@@ -5,14 +5,14 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentsBankInfo;
+use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentsBankInfoForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use JMS\SecurityExtraBundle\Annotation as JMS;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
@@ -25,11 +25,17 @@ class AgentsBankInfoController extends BaseController
      * @Route("/bank/info/list", name="bank_info_list")
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_AGENT")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_BANK_SLIP_VERIFIER, ROLE_BANK_SLIP_APPROVAL")
      */
     public function indexAction()
     {
-        $datatable = $this->get('rbs_erp.sales.datatable.agent.bank.info');
+        $user = $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:Agent')->findOneBy(array('user' => $this->getUser()));
+
+        if($user){
+            $datatable = $this->get('rbs_erp.sales.datatable.agent.bank.info');
+        }else{
+            $datatable = $this->get('rbs_erp.sales.datatable.agent.bank.info.admin');
+        }
         $datatable->buildDatatable();
 
         return $this->render('RbsSalesBundle:Agent:my_bank_slip_list.html.twig', array(
@@ -40,22 +46,29 @@ class AgentsBankInfoController extends BaseController
     /**
      * @Route("/bank_info_list_ajax", name="bank_info_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_AGENT")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_BANK_SLIP_VERIFIER, ROLE_BANK_SLIP_APPROVAL")
      */
     public function listAjaxAction()
     {
-        $datatable = $this->get('rbs_erp.sales.datatable.agent.bank.info');
+        $user = $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:Agent')->findOneBy(array('user' => $this->getUser()));
+       
+        if($user){
+            $datatable = $this->get('rbs_erp.sales.datatable.agent.bank.info');
+        }else{
+            $datatable = $this->get('rbs_erp.sales.datatable.agent.bank.info.admin');
+        }
         $datatable->buildDatatable();
 
-        $user = $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:Agent')->findOneBy(array('user' => $this->getUser()));
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
         $function = function($qb) use ($user)
         {
             $qb->join('sales_agents_bank_info.agent', 'u');
-            $qb->andWhere('u =:user');
-            $qb->setParameter('user', $user);
+            if($user){
+                $qb->andWhere('u =:user');
+                $qb->setParameter('user', $user);
+            }
         };
         $query->addWhereAll($function);
         
@@ -92,5 +105,107 @@ class AgentsBankInfoController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @Route("/agent/bank/info/cancel/{id}", name="agent_bank_info_cancel", options={"expose"=true})
+     * @param AgentsBankInfo $agentsBankInfo
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_BANK_SLIP_VERIFIER, ROLE_BANK_SLIP_APPROVAL")
+     */
+    public function cancelAction(AgentsBankInfo $agentsBankInfo)
+    {
+        $agentsBankInfo->setStatus(AgentsBankInfo::CANCEL);
+        $agentsBankInfo->setCancelAt(new \DateTime());
+        $agentsBankInfo->setCancelBy($this->getUser());
+        $this->getDoctrine()->getRepository('RbsSalesBundle:AgentsBankInfo')->update($agentsBankInfo);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Agents Bank Info Successfully Cancel'
+        );
+
+        return $this->redirect($this->generateUrl('bank_info_list'));
+    }
+
+    /**
+     * @Route("/agent/bank/info/verify/{id}", name="agent_bank_info_verify", options={"expose"=true})
+     * @param AgentsBankInfo $agentsBankInfo
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_BANK_SLIP_VERIFIER")
+     */
+    public function verifyAction(AgentsBankInfo $agentsBankInfo)
+    {
+        $agentsBankInfo->setStatus(AgentsBankInfo::VERIFIED);
+        $agentsBankInfo->setVerifiedAt(new \DateTime());
+        $agentsBankInfo->setVerifiedBy($this->getUser());
+        $this->getDoctrine()->getRepository('RbsSalesBundle:AgentsBankInfo')->update($agentsBankInfo);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Agents Bank Info Successfully Verified'
+        );
+
+        return $this->redirect($this->generateUrl('bank_info_list'));
+    }
+
+    /**
+     * @Route("/agent/bank/info/approve/{id}", name="agent_bank_info_approve", options={"expose"=true})
+     * @param AgentsBankInfo $agentsBankInfo
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_BANK_SLIP_APPROVAL")
+     */
+    public function approveAction(AgentsBankInfo $agentsBankInfo)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $payment = new Payment();
+        $payment->setAgent($agentsBankInfo->getAgent());
+        $payment->setAmount($agentsBankInfo->getAmount());
+        $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+        $payment->setRemark('Bank Deposit By Agent.');
+        $payment->setDepositDate(new \DateTime());
+        $payment->setTransactionType(Payment::CR);
+        $payment->addOrder($agentsBankInfo->getOrderRef());
+
+        $agentsBankInfo->setStatus(AgentsBankInfo::APPROVED);
+        $agentsBankInfo->setApprovedAt(new \DateTime());
+        $agentsBankInfo->setApprovedBy($this->getUser());
+        $this->getDoctrine()->getRepository('RbsSalesBundle:DamageGood')->update($agentsBankInfo);
+
+        $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
+        $em->getRepository('RbsSalesBundle:Payment')->create($payment);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Agents Bank Info Successfully Verified'
+        );
+
+        return $this->redirect($this->generateUrl('bank_info_list'));
+    }
+
+    /**
+     * @Route("/agent/bank/info/view/{id}", name="agent_bank_info_view", options={"expose"=true})
+     * @param AgentsBankInfo $agentsBankInfo
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_BANK_SLIP_VERIFIER, ROLE_BANK_SLIP_APPROVAL")
+     */
+    public function viewAction(AgentsBankInfo $agentsBankInfo)
+    {
+        return $this->render('RbsSalesBundle:Agent:bank-info-view.html.twig', array(
+            'agentsBankInfo' => $agentsBankInfo
+        ));
+    }
+
+    /**
+     * @Route("/agent/bank/info/doc/view/{id}", name="agent_bank_info_doc_view", options={"expose"=true})
+     * @param AgentsBankInfo $agentsBankInfo
+     * @return Response
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_BANK_SLIP_VERIFIER, ROLE_BANK_SLIP_APPROVAL")
+     */
+    public function viewDocAction(AgentsBankInfo $agentsBankInfo)
+    {
+        return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
+            'location' => $this->getRequest()->getUriForPath('/uploads/sales/agent-bank-slip/'.$agentsBankInfo->getPath()),
+        ));
     }
 }

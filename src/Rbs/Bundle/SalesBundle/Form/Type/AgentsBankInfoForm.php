@@ -27,8 +27,11 @@ class AgentsBankInfoForm extends AbstractType
             ->add('bankName')
             ->add('branchName')
             ->add('remark')
-            ->add('order', 'entity', array(
+            ->add('orderRef', 'entity', array(
                 'class' => 'RbsSalesBundle:Order',
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
                 'property' => 'id',
                 'required' => false,
                 'empty_value' => 'Select Order',

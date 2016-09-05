@@ -2,6 +2,7 @@
 namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -21,6 +22,7 @@ class AgentsBankInfo
     const INACTIVE = 'INACTIVE';
     const VERIFIED = 'VERIFIED';
     const APPROVED = 'APPROVED';
+    const CANCEL = 'CANCEL';
 
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
@@ -54,7 +56,7 @@ class AgentsBankInfo
     /**
      * @var array $type
      *
-     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE', 'VERIFIED', 'APPROVED')", nullable=false)
+     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE', 'VERIFIED', 'APPROVED', 'CANCEL')", nullable=false)
      */
     private $status = 'ACTIVE';
 
@@ -64,6 +66,51 @@ class AgentsBankInfo
      * @ORM\Column(name="amount", type="float")
      */
     private $amount = 0 ;
+    
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="approved_by", nullable=true)
+     */
+    private $approvedBy;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="verified_by", nullable=true)
+     */
+    private $verifiedBy;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="cancel_by", nullable=true)
+     */
+    private $cancelBy;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="approved_at", type="datetime", nullable=true)
+     */
+    private $approvedAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="verified_at", type="datetime", nullable=true)
+     */
+    private $verifiedAt;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="cancel_at", type="datetime", nullable=true)
+     */
+    private $cancelAt;
     
     /**
      * @var string
@@ -221,6 +268,102 @@ class AgentsBankInfo
     {
         $this->agent = $agent;
     }
+
+    /**
+     * @return User
+     */
+    public function getApprovedBy()
+    {
+        return $this->approvedBy;
+    }
+
+    /**
+     * @param User $approvedBy
+     */
+    public function setApprovedBy($approvedBy)
+    {
+        $this->approvedBy = $approvedBy;
+    }
+
+    /**
+     * @return User
+     */
+    public function getVerifiedBy()
+    {
+        return $this->verifiedBy;
+    }
+
+    /**
+     * @param User $verifiedBy
+     */
+    public function setVerifiedBy($verifiedBy)
+    {
+        $this->verifiedBy = $verifiedBy;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getApprovedAt()
+    {
+        return $this->approvedAt;
+    }
+
+    /**
+     * @param \DateTime $approvedAt
+     */
+    public function setApprovedAt($approvedAt)
+    {
+        $this->approvedAt = $approvedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVerifiedAt()
+    {
+        return $this->verifiedAt;
+    }
+
+    /**
+     * @param mixed $verifiedAt
+     */
+    public function setVerifiedAt($verifiedAt)
+    {
+        $this->verifiedAt = $verifiedAt;
+    }
+
+    /**
+     * @return User
+     */
+    public function getCancelBy()
+    {
+        return $this->cancelBy;
+    }
+
+    /**
+     * @param User $cancelBy
+     */
+    public function setCancelBy($cancelBy)
+    {
+        $this->cancelBy = $cancelBy;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getCancelAt()
+    {
+        return $this->cancelAt;
+    }
+
+    /**
+     * @param \DateTime $cancelAt
+     */
+    public function setCancelAt($cancelAt)
+    {
+        $this->cancelAt = $cancelAt;
+    }
     
     /**
      * Get path
@@ -341,5 +484,37 @@ class AgentsBankInfo
         return null === $this->path
             ? null
             : $this->getUploadDir() . '/' . $this->path;
+    }
+
+    public function isPathExist()
+    {
+        if($this->path != null){
+            return false;
+        }
+        return true;
+    }
+
+    public function isApproved()
+    {
+        if($this->approvedBy != null and $this->approvedAt != null){
+            return true;
+        }
+        return false;
+    }
+
+    public function isVerified()
+    {
+        if($this->verifiedBy != null and $this->verifiedAt != null){
+            return true;
+        }
+        return false;
+    }
+
+    public function isCancel()
+    {
+        if($this->cancelBy != null and $this->cancelAt != null){
+            return true;
+        }
+        return false;
     }
 }
