@@ -444,4 +444,12 @@ class DamageGood
         }
         return true;
     }
+
+    public function isApproved()
+    {
+        if($this->approvedBy != null and $this->approvedAt != null){
+            return true;
+        }
+        return false;
+    }
 }

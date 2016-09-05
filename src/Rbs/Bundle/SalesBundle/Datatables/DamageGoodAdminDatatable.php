@@ -18,6 +18,7 @@ class DamageGoodAdminDatatable extends BaseDatatable
         $formatter = function($line){
             $damageGood = $this->em->getRepository('RbsSalesBundle:DamageGood')->find($line['id']);
             $line['isPathExist'] = !$damageGood->isPathExist();
+            $line['isApproved'] = $damageGood->isApproved();
 
             return $line;
         };
@@ -47,9 +48,10 @@ class DamageGoodAdminDatatable extends BaseDatatable
             ->add('agent.user.username', 'column', array('title' => 'Agent'))
             ->add('orderRef.id', 'column', array('title' => 'Order Number'))
             ->add('remark', 'column', array('title' => 'Remark'))
-            ->add('amount', 'column', array('title' => 'Amount'))
-            ->add('refundAmount', 'column', array('title' => 'Refund'))
             ->add('status', 'column', array('title' => 'Status'))
+            ->add('amount', 'column', array('title' => 'Claim'))
+            ->add('refundAmount', 'column', array('title' => 'Refund'))
+            ->add('isPathExist', 'virtual', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '180px',
                 'title' => 'Action',
