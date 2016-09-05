@@ -139,7 +139,26 @@ class AgentsBankInfoAdminDatatable extends BaseDatatable
                         ),
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_BANK_SLIP_APPROVAL',
                         'render_if' => array('isCancel', 'isApproved')
+                    ),
+                    array(
+                        'route' => 'agent_bank_info_cancel',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Cancel',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'disable-action',
+                            'class' => 'btn btn-primary btn-xs delete-list-btn',
+                            'role' => 'button'
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_BANK_SLIP_VERIFIER',
+                        'render_if' => array('isCancel', 'isVerified')
                     )
                 )
             ))
