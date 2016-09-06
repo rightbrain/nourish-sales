@@ -99,6 +99,55 @@ class TruckInfoController extends BaseController
         
         return $query->getResponse();
     }
+
+    /**
+     * @Route("/truck/info/in/out/list", name="truck_info_in_out_list", options={"expose"=true})
+     * @Method("GET")
+     * @Template()
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
+     */
+    public function inOutIndexAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.in.out.truck.info');
+        $datatable->buildDatatable();
+
+        return $this->render('RbsSalesBundle:Delivery:truck-in-out.html.twig', array(
+            'datatable' => $datatable
+        ));
+    }
+    
+    /**
+     * @Route("/truck_info_in_out_list_ajax", name="truck_info_in_out_list_ajax", options={"expose"=true})
+     * @Method("GET")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
+     */
+    public function inOutListAjaxAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $datatable = $this->get('rbs_erp.sales.datatable.in.out.truck.info');
+        $datatable->buildDatatable();
+
+        $getDepoId = $em->getRepository('RbsCoreBundle:Depo')->getDepoId($this->getUser()->getId());
+        $getDepoId ? $depoId = $getDepoId[0]['id'] : $depoId = 0;
+        
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb */
+        $function = function($qb) use ($depoId)
+        {
+            if($depoId == 0){
+                $qb->join('sales_truck_info.depo', 'd');
+                $qb->andWhere('sales_truck_info.vehicleOut IS NULL');
+            }else{
+                $qb->join('sales_truck_info.depo', 'd');
+                $qb->andWhere('d.id =:depoId');
+                $qb->andWhere('sales_truck_info.vehicleOut IS NULL');
+                $qb->setParameters(array('depoId'=>$depoId));
+            }
+        };
+        $query->addWhereAll($function);
+
+        return $query->getResponse();
+    }
     
     /**
      * @Route("/truck/info/add", name="truck_info_add")
@@ -124,6 +173,7 @@ class TruckInfoController extends BaseController
                     ));
                     $truckInfo->setAgent($agent);
                     $truckInfo->setTransportGiven(TruckInfo::AGENT);
+                    $truckInfo->setDepo($agent->getDepo());
                 }else{
                     $truckInfo->setTransportGiven(TruckInfo::NOURISH);
                 }

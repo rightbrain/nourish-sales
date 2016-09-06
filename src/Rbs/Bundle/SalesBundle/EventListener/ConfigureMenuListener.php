@@ -106,6 +106,14 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Sales']->getChild('Deliveries')->setCurrent(true);
                 }
             }
+            if ($this->authorizationChecker->isGranted(array('ROLE_DELIVERY_MANAGE'))) {
+                $sp3 = true;
+                $menu['Sales']->addChild('Truck IN/OUT', array('route' => 'truck_info_in_out_list'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('truck_info_in_out_list')) {
+                    $menu['Sales']->getChild('Truck IN/OUT')->setCurrent(true);
+                }
+            }
             if ($this->authorizationChecker->isGranted(array('ROLE_STOCK_VIEW', 'ROLE_STOCK_CREATE'))) {
                 $sp3 = true;
                 $menu['Sales']->addChild('Stocks', array('route' => 'stocks_home'))
@@ -125,7 +133,7 @@ class ConfigureMenuListener extends ContextAwareListener
                 $sp4 = true;
                 $menu['Sales']->addChild('Agents', array('route' => 'agents_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
-                if ($this->isMatch('agents_home') or $this->isMatch('agent_update')) {
+                if ($this->isMatch('agents_home') or $this->isMatch('agent_update') or $this->isMatch('agent_details')) {
                     $menu['Sales']->getChild('Agents')->setCurrent(true);
                 }
             }

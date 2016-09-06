@@ -3,6 +3,7 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -44,6 +45,14 @@ class TruckInfo
      * @ORM\JoinColumn(name="agent_id", nullable=true)
      */
     private $agent;
+
+    /**
+     * @var Depo
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Depo")
+     * @ORM\JoinColumn(name="depo_id", nullable=true)
+     */
+    private $depo;
     
     /**
      * @ORM\ManyToMany(targetEntity="Order", inversedBy="truckInfos")
@@ -96,6 +105,34 @@ class TruckInfo
      */
     private $remark;
 
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="vehicle_in", type="datetime", nullable=true)
+     */
+    private $vehicleIn;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="vehicle_out", type="datetime", nullable=true)
+     */
+    private $vehicleOut;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="start_load", type="datetime", nullable=true)
+     */
+    private $startLoad;
+
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="finish_load", type="datetime", nullable=true)
+     */
+    private $finishLoad;
+    
     public function __construct()
     {
         $this->orders = new ArrayCollection();
@@ -255,5 +292,85 @@ class TruckInfo
     public function removeOrder($order)
     {
         $this->orders->removeElement($order);
+    }
+
+    /**
+     * @return Depo
+     */
+    public function getDepo()
+    {
+        return $this->depo;
+    }
+
+    /**
+     * @param Depo $depo
+     */
+    public function setDepo($depo)
+    {
+        $this->depo = $depo;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getVehicleIn()
+    {
+        return $this->vehicleIn;
+    }
+
+    /**
+     * @param \DateTime $vehicleIn
+     */
+    public function setVehicleIn($vehicleIn)
+    {
+        $this->vehicleIn = $vehicleIn;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getVehicleOut()
+    {
+        return $this->vehicleOut;
+    }
+
+    /**
+     * @param \DateTime $vehicleOut
+     */
+    public function setVehicleOut($vehicleOut)
+    {
+        $this->vehicleOut = $vehicleOut;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getStartLoad()
+    {
+        return $this->startLoad;
+    }
+
+    /**
+     * @param \DateTime $startLoad
+     */
+    public function setStartLoad($startLoad)
+    {
+        $this->startLoad = $startLoad;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getFinishLoad()
+    {
+        return $this->finishLoad;
+    }
+
+    /**
+     * @param \DateTime $finishLoad
+     */
+    public function setFinishLoad($finishLoad)
+    {
+        $this->finishLoad = $finishLoad;
     }
 }

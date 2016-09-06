@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
@@ -39,6 +40,19 @@ class TruckInfoForm extends AbstractType
                             ->where('o.deliveryState != :COMPLETE')
                             ->andWhere('o.orderState != :CANCEL')
                             ->setParameters(array('COMPLETE'=>Order::DELIVERY_STATE_SHIPPED, 'CANCEL'=>Order::ORDER_STATE_CANCEL));
+                    }
+                ))
+                ->add('depo', 'entity', array(
+                    'class' => 'Rbs\Bundle\CoreBundle\Entity\Depo',
+                    'property' => 'name',
+                    'required' => false,
+                    'empty_value' => 'Select Depo',
+                    'empty_data' => null,
+                    'query_builder' => function (DepoRepository $repository)
+                    {
+                        return $repository->createQueryBuilder('d')
+                            ->andWhere('d.deletedAt IS NULL')
+                            ;
                     }
                 ));
         }else{

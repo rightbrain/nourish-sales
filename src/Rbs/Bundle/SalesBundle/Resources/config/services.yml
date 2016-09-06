@@ -93,6 +93,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.in.out.truck.info:
+        class: Rbs\Bundle\SalesBundle\Datatables\InOutTruckInfoDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.damage.good:
         class: Rbs\Bundle\SalesBundle\Datatables\DamageGoodDatatable
         tags:
