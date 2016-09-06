@@ -19,23 +19,6 @@
                     <div class="row">
                         <div class="col-md-12">
 
-                            {#<div class="col-md-3">#}
-                                {#<div class="portlet">#}
-                                    {#<div class="portlet-body">#}
-                                        {#<table class="table">#}
-                                            {#<tr><th><h4>Agent Photo</h4></th></tr>#}
-                                            {#<tr>#}
-                                               {#<td>#}
-                                                   {#<div class="profile-userpic">#}
-                                                       {#<img src="{{ asset('../uploads/user/'~agent.user.profile.path) }}" class="img-responsive" alt="{{ agent.user.profile.fullname }}">#}
-                                                   {#</div>#}
-                                               {#</td>#}
-                                            {#</tr>#}
-                                        {#</table>#}
-                                    {#</div>#}
-                                {#</div>#}
-                            {#</div>#}
-
                             <div class="portlet">
                                 <div class="portlet-body">
                                     <table class="table">
@@ -47,9 +30,9 @@
                                         </tr>
                                         <tr>
                                             <th>Agent Name</th>
-                                            <td>{{ agent.user.profile.fullname }}</td>
+                                            <td>{{ agent.user.profile.fullname | default('') }}</td>
                                             <th>Cellphone</th>
-                                            <td>{{ agent.user.profile.cellphone }}</td>
+                                            <td>{{ agent.user.profile.cellphone | default('') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Created By</th>
@@ -59,31 +42,25 @@
                                         </tr>
                                         <tr>
                                             <th>Current Balance</th>
-                                            <td>{{ agentCurrentBalance }}</td>
+                                            <td>{{ agentCurrentBalance | default('') }}</td>
                                             <th>VIP</th>
                                             <td>{% if agent.vIP %} Yes {% else %} Not {% endif %}</td>
                                         </tr>
                                         <tr>
-                                            <th>Credit limit</th>
-                                            <td>{{ agent.creditLimit }}</td>
-                                            <th>Agent</th>
-                                            <td>{{ agent.user.profile.fullname }}</td>
-                                        </tr>
-                                        <tr>
                                             <th>Opening balance</th>
-                                            <td>{{ agent.openingBalance }}</td>
+                                            <td>{{ agent.openingBalance | default('0') }}</td>
                                             <th>Location</th>
-                                            <td>{{ agent.user.location.name }}</td>
+                                            <td>{{ agent.user.upozilla.name | default('') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Depo</th>
-                                            <td>{{ agent.depo }}</td>
+                                            <td>{{ agent.depo.name | default('') }}</td>
                                             <th>Group</th>
                                             <td>{{ agent.agentGroup.label|default('') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Address</th>
-                                            <td>{{ agent.user.profile.address }}</td>
+                                            <td>{{ agent.user.profile.address | default('') }}</td>
                                             <th></th>
                                             <td></td>
                                         </tr>
@@ -101,11 +78,11 @@
                                         </tr>
                                         <tr>
                                             <th>Agent Username</th>
-                                            <td>{{ agent.user.username }}</td>
+                                            <td>{{ agent.user.username | default('') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Email</th>
-                                            <td>{{ agent.user.email }}</td>
+                                            <td>{{ agent.user.email | default('') }}</td>
                                         </tr>
                                     </table>
                                 </div>
