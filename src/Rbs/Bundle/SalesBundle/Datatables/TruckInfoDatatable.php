@@ -3,11 +3,11 @@
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
 /**
- * Class AgentsTruckInfoDatatable
+ * Class TruckInfoDatatable
  *
  * @package Rbs\Bundle\SalesBundle\Datatables
  */
-class AgentsMyTruckInfoDatatable extends BaseDatatable
+class TruckInfoDatatable extends BaseDatatable
 {
     /**
      * {@inheritdoc}
@@ -18,7 +18,7 @@ class AgentsMyTruckInfoDatatable extends BaseDatatable
         $this->options->setOptions($this->defaultOptions());
 
         $this->ajax->setOptions(array(
-            'url' => $this->router->generate('truck_info_my_list_ajax'),
+            'url' => $this->router->generate('truck_info_list_ajax'),
             'type' => 'GET'
         ));
 
@@ -27,9 +27,14 @@ class AgentsMyTruckInfoDatatable extends BaseDatatable
 
         $this->columnBuilder
             ->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
-            ->add('orderRef.id', 'column', array('title' => 'Order Number'))
+            ->add('agent.user.username', 'column', array('title' => 'Agent Name'))
             ->add('driverName', 'column', array('title' => 'Driver Name'))
             ->add('driverPhone', 'column', array('title' => 'Driver Phone'))
+            ->add('truckNumber', 'column', array('title' => 'Truck Number'))
+            ->add('orders.id', 'array', array(
+                'title' => 'Orders',
+                'data' => 'orders[, ].id'
+            ))
             ->add('remark', 'column', array('title' => 'Remark'))
         ;
     }
@@ -39,7 +44,7 @@ class AgentsMyTruckInfoDatatable extends BaseDatatable
      */
     public function getEntity()
     {
-        return 'Rbs\Bundle\SalesBundle\Entity\AgentsTruckInfo';
+        return 'Rbs\Bundle\SalesBundle\Entity\TruckInfo';
     }
 
     /**
@@ -47,6 +52,6 @@ class AgentsMyTruckInfoDatatable extends BaseDatatable
      */
     public function getName()
     {
-        return 'agents_truck_info_datatable';
+        return 'truck_info_datatable';
     }
 }

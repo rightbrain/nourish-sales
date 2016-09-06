@@ -33,9 +33,7 @@
                 </div>
             </div>
             <div class="portlet-body">
-                {% if is_granted("ROLE_AGENT_TRUCK_INFO_ADD") %}
-                    {{ include('_elements/_back_to_list_button.html.twig', {url: path('agent_truck_info_add'), label: 'Add Truck Info', 'icon': 'plus'}) }}
-                {% endif %}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('truck_info_add'), label: 'Add Truck Info', 'icon': 'plus'}) }}
 
                 <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}

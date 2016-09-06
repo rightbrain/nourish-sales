@@ -1,6 +1,7 @@
 <?php
 namespace Rbs\Bundle\SalesBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -8,17 +9,20 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
- * AgentsTruckInfo
+ * TruckInfo
  *
- * @ORM\Table(name="sales_agents_truck_info")
- * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\AgentsTruckInfoRepository")
+ * @ORM\Table(name="sales_truck_info")
+ * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\TruckInfoRepository")
  * @ORMSubscribedEvents()
  * @ORM\HasLifecycleCallbacks
  */
-class AgentsTruckInfo
+class TruckInfo
 {
     const ACTIVE = 'ACTIVE';
     const INACTIVE = 'INACTIVE';
+    
+    const NOURISH = 'NOURISH';
+    const AGENT = 'AGENT';
 
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
@@ -34,20 +38,21 @@ class AgentsTruckInfo
     private $id;
 
     /**
-     * @var User
+     * @var Agent
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="agent_id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent")
+     * @ORM\JoinColumn(name="agent_id", nullable=true)
      */
     private $agent;
-
+    
     /**
-     * @var Order
-     *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order")
-     * @ORM\JoinColumn(name="order_id", nullable=true, onDelete="CASCADE")
+     * @ORM\ManyToMany(targetEntity="Order", inversedBy="truckInfos")
+     * @ORM\JoinTable(name="sales_join_truckInfos_orders",
+     *      joinColumns={@ORM\JoinColumn(name="truckInfo_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="order_id", referencedColumnName="id")}
+     * )
      */
-    private $orderRef;
+    private $orders;
 
     /**
      * @var array $type
@@ -55,6 +60,13 @@ class AgentsTruckInfo
      * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE')", nullable=false)
      */
     private $status = 'ACTIVE';
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="transport_given", type="string", length=255, columnDefinition="ENUM('NOURISH', 'AGENT')", nullable=false)
+     */
+    private $transportGiven = 'NOURISH';
     
     /**
      * @var string
@@ -83,6 +95,11 @@ class AgentsTruckInfo
      * @ORM\Column(name="remarks", type="text", nullable=true)
      */
     private $remark;
+
+    public function __construct()
+    {
+        $this->orders = new ArrayCollection();
+    }
     
     /**
      * Get id
@@ -109,23 +126,7 @@ class AgentsTruckInfo
     {
         $this->agent = $agent;
     }
-
-    /**
-     * @return Order
-     */
-    public function getOrderRef()
-    {
-        return $this->orderRef;
-    }
-
-    /**
-     * @param Order $order
-     */
-    public function setOrderRef($order)
-    {
-        $this->orderRef = $order;
-    }
-
+    
     /**
      * @return array
      */
@@ -204,5 +205,55 @@ class AgentsTruckInfo
     public function setRemark($remark)
     {
         $this->remark = $remark;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTransportGiven()
+    {
+        return $this->transportGiven;
+    }
+
+    /**
+     * @param array $transportGiven
+     */
+    public function setTransportGiven($transportGiven)
+    {
+        $this->transportGiven = $transportGiven;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrders()
+    {
+        return $this->orders;
+    }
+
+    /**
+     * @param mixed $orders
+     */
+    public function setOrders($orders)
+    {
+        $this->orders = $orders;
+    }
+    
+    /**
+     * @param \Rbs\Bundle\SalesBundle\Entity\Order $order
+     */
+    public function addOrder($order)
+    {
+        if (!$this->getOrders()->contains($order)) {
+            $this->orders->add($order);
+        }
+    }
+
+    /**
+     * @param \Rbs\Bundle\SalesBundle\Entity\Order $order
+     */
+    public function removeOrder($order)
+    {
+        $this->orders->removeElement($order);
     }
 }

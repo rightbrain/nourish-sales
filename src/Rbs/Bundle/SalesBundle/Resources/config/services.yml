@@ -83,13 +83,13 @@ services:
         tags:
             - { name: sg.datatable.view }
 
-    rbs_erp.sales.datatable.agent.truck.info:
-        class: Rbs\Bundle\SalesBundle\Datatables\AgentsTruckInfoDatatable
+    rbs_erp.sales.datatable.truck.info:
+        class: Rbs\Bundle\SalesBundle\Datatables\TruckInfoDatatable
         tags:
             - { name: sg.datatable.view }
 
-    rbs_erp.sales.datatable.agent.my.truck.info:
-        class: Rbs\Bundle\SalesBundle\Datatables\AgentsMyTruckInfoDatatable
+    rbs_erp.sales.datatable.my.truck.info:
+        class: Rbs\Bundle\SalesBundle\Datatables\MyTruckInfoDatatable
         tags:
             - { name: sg.datatable.view }
 

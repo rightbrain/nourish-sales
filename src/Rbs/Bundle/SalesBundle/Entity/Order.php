@@ -59,6 +59,11 @@ class Order
     protected $payments;
 
     /**
+     * @ORM\ManyToMany(targetEntity="TruckInfo", mappedBy="orders")
+     **/
+    protected $truckInfos;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\OrderItem", mappedBy="order", cascade={"persist", "remove"}, orphanRemoval=true))
@@ -415,6 +420,11 @@ class Order
         return '#' . ' '. $this->getId() . ' Due amount :' . ($this->getTotalAmount() - $this->getPaidAmount());
     }
 
+    public function getOrderIdAndAgent()
+    {
+        return '#' . ' '. $this->getId() . ' Agent :' . $this->getAgent()->getUser()->getUsername();
+    }
+
     public function getDueAmount()
     {
         return ($this->getTotalAmount() - $this->getPaidAmount());
@@ -442,6 +452,22 @@ class Order
     public function setLocation($location)
     {
         $this->location = $location;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getTruckInfos()
+    {
+        return $this->truckInfos;
+    }
+
+    /**
+     * @param mixed $truckInfos
+     */
+    public function setTruckInfos($truckInfos)
+    {
+        $this->truckInfos = $truckInfos;
     }
     
     public function categorySum()

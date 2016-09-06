@@ -11,7 +11,11 @@
                 </div>
             </div>
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('truck_info_list'), label: 'Back to List', 'icon': 'chevron-left'}) }}
+                {% if user.userType == 'AGENT' %}
+                    {{ include('_elements/_back_to_list_button.html.twig', {url: path('truck_info_my_list'), label: 'Back to List', 'icon': 'chevron-left'}) }}
+                {% else %}
+                    {{ include('_elements/_back_to_list_button.html.twig', {url: path('truck_info_list'), label: 'Back to List', 'icon': 'chevron-left'}) }}
+                {% endif %}
                 {{ form_start(form, {'method': 'POST'}) }}
 
                 {{ form_end(form) }}
