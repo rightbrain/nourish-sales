@@ -197,4 +197,80 @@ class TruckInfoController extends BaseController
             'user' => $this->getUser()
         );
     }
+
+    /**
+     * @Route("/truck/in/{id}", name="truck_in", options={"expose"=true})
+     * @param TruckInfo $truckInfo
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN")
+     */
+    public function truckInAction(TruckInfo $truckInfo)
+    {
+        $truckInfo->setVehicleIn(new \DateTime());
+        $this->getDoctrine()->getRepository('RbsSalesBundle:TruckInfo')->update($truckInfo);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Truck Info Successfully Add'
+        );
+
+        return $this->redirect($this->generateUrl('truck_info_in_out_list'));
+    }
+
+    /**
+     * @Route("/truck/start/{id}", name="truck_start", options={"expose"=true})
+     * @param TruckInfo $truckInfo
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_START")
+     */
+    public function truckStartAction(TruckInfo $truckInfo)
+    {
+        $truckInfo->setStartLoad(new \DateTime());
+        $this->getDoctrine()->getRepository('RbsSalesBundle:TruckInfo')->update($truckInfo);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Truck Info Successfully Add'
+        );
+
+        return $this->redirect($this->generateUrl('truck_info_in_out_list'));
+    }
+
+    /**
+     * @Route("/truck/finish/{id}", name="truck_finish", options={"expose"=true})
+     * @param TruckInfo $truckInfo
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_FINISH")
+     */
+    public function truckFinishAction(TruckInfo $truckInfo)
+    {
+        $truckInfo->setFinishLoad(new \DateTime());
+        $this->getDoctrine()->getRepository('RbsSalesBundle:TruckInfo')->update($truckInfo);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Truck Info Successfully Add'
+        );
+
+        return $this->redirect($this->generateUrl('truck_info_in_out_list'));
+    }
+
+    /**
+     * @Route("/truck/out/{id}", name="truck_out", options={"expose"=true})
+     * @param TruckInfo $truckInfo
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_OUT")
+     */
+    public function truckOutAction(TruckInfo $truckInfo)
+    {
+        $truckInfo->setVehicleOut(new \DateTime());
+        $this->getDoctrine()->getRepository('RbsSalesBundle:TruckInfo')->update($truckInfo);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Truck Info Successfully Add'
+        );
+
+        return $this->redirect($this->generateUrl('truck_info_in_out_list'));
+    }
 }

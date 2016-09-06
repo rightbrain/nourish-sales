@@ -373,4 +373,36 @@ class TruckInfo
     {
         $this->finishLoad = $finishLoad;
     }
+
+    public function isIn()
+    {
+        if($this->vehicleIn == null){
+            return true;
+        }
+        return false;
+    }
+
+    public function isOut()
+    {
+        if($this->vehicleOut == null){
+            return true;
+        }
+        return false;
+    }
+
+    public function isStart()
+    {
+        if($this->startLoad == null){
+            return true;
+        }
+        return false;
+    }
+
+    public function isFinish()
+    {
+        if($this->finishLoad == null){
+            return true;
+        }
+        return false;
+    }
 }
