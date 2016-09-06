@@ -8,12 +8,10 @@
                 <i class="fa fa-angle-down"></i>
             </a>
             <ul class="dropdown-menu dropdown-menu-default">
-                {% if not is_granted('ROLE_AGENT') %}
                     <li>
                         <a href="{{ path('fos_user_profile_show') }}">
                             <i class="icon-user"></i> My Profile </a>
                     </li>
-                {% endif %}
                 {% if is_granted('ROLE_AGENT') %}
                     <li>
                         <a href="{{ path('my_password_update') }}">

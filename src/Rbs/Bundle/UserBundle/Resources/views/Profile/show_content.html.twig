@@ -7,7 +7,7 @@
         </div>
 
         <div class="portlet-body">
-            {{ include('_elements/_back_to_list_button.html.twig', {url: path('users_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}
+            {{ include('_elements/_back_to_list_button.html.twig', {url: path('homepage'), label: 'Back to Home', 'icon': 'chevron-left'}) }}
             <div class="dataTables_wrapper no-footer">
 
                 <div class="row">
@@ -21,26 +21,26 @@
                                     </tr>
                                     <tr>
                                         <th>Name</th>
-                                        <td>{{ user.profile.fullname }}</td>
+                                        <td>{{ user.profile.fullname | default('') }}</td>
                                         <th>Cellphone</th>
-                                        <td>{{ user.profile.cellphone }}</td>
+                                        <td>{{ user.profile.cellphone | default('') }}</td>
                                     </tr>
                                     <tr>
                                         <th>Designation</th>
-                                        <td>{{ user.profile.designation }}</td>
+                                        <td>{{ user.profile.designation | default('') }}</td>
                                         <th>User Type</th>
-                                        <td>{{ user.userType }}</td>
+                                        <td>{{ user.userType | default('') }}</td>
                                     </tr>
                                     <tr>
                                         <th>Address</th>
-                                        <td>{{ user.profile.address }}</td>
+                                        <td>{{ user.profile.address | default('') }}</td>
                                         <th></th>
                                         <td></td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
-
+                        {% if not is_granted('ROLE_AGENT') %}
                         <div class="portlet">
                             <div class="portlet-body">
                                 <table class="table">
@@ -64,7 +64,7 @@
                                 </table>
                             </div>
                         </div>
-
+                        {% endif %}
                     </div>
                 </div>
             </div>
