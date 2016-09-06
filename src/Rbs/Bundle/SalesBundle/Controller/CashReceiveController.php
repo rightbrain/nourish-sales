@@ -79,11 +79,7 @@ class CashReceiveController extends BaseController
         $payment = new Payment();
         
         $getDepoId = $em->getRepository('RbsCoreBundle:Depo')->getDepoId($this->getUser()->getId());
-        if($getDepoId){
-            $depoId = $getDepoId[0]['id'];
-        }else{
-            $depoId = 0;
-        }
+        $getDepoId ? $depoId = $getDepoId[0]['id'] : $depoId = 0;
 
         $form = $this->createForm(new CashReceiveForm($depoId), $cashReceive, array(
             'action' => $this->generateUrl('cash_receive_create'), 'method' => 'POST',
