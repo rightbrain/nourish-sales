@@ -13,7 +13,7 @@
             </div>
 
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('agents_home'), label: 'Back to List', 'icon': 'plus'}) }}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('agents_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}
                 <div class="dataTables_wrapper no-footer">
 
                     <div class="row">
@@ -42,13 +42,13 @@
                                         </tr>
                                         <tr>
                                             <th>Current Balance</th>
-                                            <td>{{ agentCurrentBalance | default('') }}</td>
+                                            <td>{{ agentCurrentBalance | number_format(2, '.', ',') }}</td>
                                             <th>VIP</th>
                                             <td>{% if agent.vIP %} Yes {% else %} Not {% endif %}</td>
                                         </tr>
                                         <tr>
                                             <th>Opening balance</th>
-                                            <td>{{ agent.openingBalance | default('0') }}</td>
+                                            <td>{{ agent.openingBalance | number_format(2, '.', ',') }}</td>
                                             <th>Location</th>
                                             <td>{{ agent.user.upozilla.name | default('') }}</td>
                                         </tr>
