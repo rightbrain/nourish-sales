@@ -76,6 +76,7 @@ class CashReceive
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order")
      * @ORM\JoinColumn(name="order_id")
+     * @Assert\NotBlank()
      */
     private $orderRef;
 
