@@ -31,6 +31,7 @@ class TruckInfoDatatable extends BaseDatatable
             ->add('driverName', 'column', array('title' => 'Driver Name'))
             ->add('driverPhone', 'column', array('title' => 'Driver Phone'))
             ->add('truckNumber', 'column', array('title' => 'Truck Number'))
+            ->add('status', 'column', array('title' => 'Status'))
             ->add('orders.id', 'array', array(
                 'title' => 'Orders',
                 'data' => 'orders[, ].id'
