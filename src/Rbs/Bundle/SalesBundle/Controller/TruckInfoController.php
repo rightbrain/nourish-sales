@@ -5,6 +5,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\TruckInfo;
+use Rbs\Bundle\SalesBundle\Form\Type\TruckDeliveryForm;
 use Rbs\Bundle\SalesBundle\Form\Type\TruckInfoForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -272,5 +273,94 @@ class TruckInfoController extends BaseController
         );
 
         return $this->redirect($this->generateUrl('truck_info_in_out_list'));
+    }
+
+    /**
+     * @Route("/truck/with/delivery/list", name="truck_with_delivery_list")
+     * @Method("GET")
+     * @Template()
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
+     */
+    public function truckWithDeliveryListAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.truck.with.delivery');
+        $datatable->buildDatatable();
+
+        return $this->render('RbsSalesBundle:Truck:truck-with-delivery-index.html.twig', array(
+            'datatable' => $datatable
+        ));
+    }
+
+    /**
+     * @Route("/truck_with_delivery_list_ajax", name="truck_with_delivery_list_ajax", options={"expose"=true})
+     * @Method("GET")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
+     */
+    public function truckWithDeliveryListAjaxAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $datatable = $this->get('rbs_erp.sales.datatable.truck.with.delivery');
+        $datatable->buildDatatable();
+
+        $getDepoId = $em->getRepository('RbsCoreBundle:Depo')->getDepoId($this->getUser()->getId());
+        $getDepoId ? $depoId = $getDepoId[0]['id'] : $depoId = 0;
+
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb */
+        $function = function($qb) use ($depoId)
+        {
+            if($depoId == 0){
+                $qb->join('sales_truck_info.depo', 'd');
+                $qb->andWhere('sales_truck_info.vehicleOut IS NULL');
+                $qb->andWhere('sales_truck_info.vehicleIn IS NOT NULL');
+            }else{
+                $qb->join('sales_truck_info.depo', 'd');
+                $qb->andWhere('d.id =:depoId');
+                $qb->andWhere('sales_truck_info.vehicleOut IS NULL');
+                $qb->andWhere('sales_truck_info.vehicleIn IS NOT NULL');
+                $qb->setParameters(array('depoId'=>$depoId));
+            }
+        };
+        $query->addWhereAll($function);
+
+        return $query->getResponse();
+    }
+    
+    /**
+     * @Route("/truck/{id}/add/with/delivery", name="set_truck_with_delivery", options={"expose"=true})
+     * @Template("RbsSalesBundle:Truck:truck-with-delivery.html.twig")
+     * @param Request $request
+     * @param TruckInfo $truckInfo
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
+     */
+    public function setTruckWithDeliveryAction(Request $request, TruckInfo $truckInfo)
+    {
+        $form = $this->createForm(new TruckDeliveryForm($this->getUser(), $truckInfo), $truckInfo);
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+
+                $delivery = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->find($request->request->get('truck_info')['deliveries']);
+                $truckInfo->addOrder($delivery->getOrderRef());
+                $truckInfo->setTruckInvoiceAttachedBy($this->getUser());
+                $truckInfo->setTruckInvoiceAttachedAt(new \DateTime());
+
+                $this->getDoctrine()->getRepository('RbsSalesBundle:TruckInfo')->update($truckInfo);
+
+                $this->get('session')->getFlashBag()->add(
+                    'success',
+                    'Set Truck With Delivery Successfully!'
+                );
+              
+                return $this->redirect($this->generateUrl('truck_with_delivery_list'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
     }
 }

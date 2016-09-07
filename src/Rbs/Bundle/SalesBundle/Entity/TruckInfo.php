@@ -140,6 +140,21 @@ class TruckInfo
      * @ORM\Column(name="finish_load", type="datetime", nullable=true)
      */
     private $finishLoad;
+
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
+     * @ORM\JoinColumn(name="truck_invoice_attached_By", nullable=true)
+     */
+    private $truckInvoiceAttachedBy;
+    
+    /**
+     * @var \DateTime
+     *
+     * @ORM\Column(name="truck_invoice_attached_at", type="datetime", nullable=true)
+     */
+    private $truckInvoiceAttachedAt;
     
     public function __construct()
     {
@@ -274,6 +289,18 @@ class TruckInfo
     public function getOrders()
     {
         return $this->orders;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrdersId()
+    {
+        $orderArr = array();
+        foreach ($this->orders as $order){
+            $orderArr[] = $order->getId();
+        }
+        return $orderArr;
     }
 
     /**
@@ -414,6 +441,14 @@ class TruckInfo
         return false;
     }
 
+    public function isDeliveryAdd()
+    {
+        if($this->deliveries == null){
+            return true;
+        }
+        return false;
+    }
+
     /**
      * @return mixed
      */
@@ -428,5 +463,42 @@ class TruckInfo
     public function setDeliveries($deliveries)
     {
         $this->deliveries = $deliveries;
+    }
+
+    /**
+     * @return User
+     */
+    public function getTruckInvoiceAttachedBy()
+    {
+        return $this->truckInvoiceAttachedBy;
+    }
+
+    /**
+     * @param User $truckInvoiceAttachedBy
+     */
+    public function setTruckInvoiceAttachedBy($truckInvoiceAttachedBy)
+    {
+        $this->truckInvoiceAttachedBy = $truckInvoiceAttachedBy;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getTruckInvoiceAttachedAt()
+    {
+        return $this->truckInvoiceAttachedAt;
+    }
+
+    /**
+     * @param \DateTime $truckInvoiceAttachedAt
+     */
+    public function setTruckInvoiceAttachedAt($truckInvoiceAttachedAt)
+    {
+        $this->truckInvoiceAttachedAt = $truckInvoiceAttachedAt;
+    }
+    
+    public function getTruckInformation()
+    {
+        return '#' . ' Truck SL :'. $this->getId() . ',' . ' Driver Name :' . $this->getDriverName() . ',' . ' Mobile :' . $this->getDriverPhone();
     }
 }
