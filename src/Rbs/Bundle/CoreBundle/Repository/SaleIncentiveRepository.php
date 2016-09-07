@@ -64,7 +64,7 @@ class SaleIncentiveRepository extends EntityRepository
         $query->where('si.deletedAt IS NULL');
         $query->andWhere('si.durationType = :year');
         $query->andWhere('si.status = :CURRENT');
-        $query->setParameters(array('year', SaleIncentive::YEAR, 'CURRENT'=>SaleIncentive::CURRENT));
+        $query->setParameters(array('year'=>SaleIncentive::YEAR, 'CURRENT'=>SaleIncentive::CURRENT));
 
         return $query->getQuery()->getResult();
     }
@@ -105,7 +105,7 @@ class SaleIncentiveRepository extends EntityRepository
         $query->where('si.deletedAt IS NULL');
         $query->andWhere('si.durationType = :YEAR');
         $query->andWhere('si.status = :CURRENT');
-        $query->setParameters(array('YEAR', SaleIncentive::YEAR, 'CURRENT'=>SaleIncentive::CURRENT));
+        $query->setParameters(array('YEAR'=>SaleIncentive::YEAR, 'CURRENT'=>SaleIncentive::CURRENT));
 
         return $query->getQuery()->getResult();
     }
@@ -117,7 +117,7 @@ class SaleIncentiveRepository extends EntityRepository
         $query->where('si.deletedAt IS NULL');
         $query->andWhere('si.durationType = :YEAR');
         $query->andWhere('si.status = :CURRENT');
-        $query->setParameters(array('YEAR', SaleIncentive::YEAR, 'CURRENT'=>SaleIncentive::CURRENT));
+        $query->setParameters(array('YEAR'=>SaleIncentive::YEAR, 'CURRENT'=>SaleIncentive::CURRENT));
         $query->groupBy('si.group');
 
         return $query->getQuery()->getScalarResult();
