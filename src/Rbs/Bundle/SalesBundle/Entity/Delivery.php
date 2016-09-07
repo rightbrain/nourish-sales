@@ -36,20 +36,6 @@ class Delivery
     /**
      * @var string
      *
-     * @ORM\Column(name="contactName", type="string", length=255, nullable=true)
-     */
-    private $contactName;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="contactNo", type="string", length=255, nullable=true)
-     */
-    private $contactNo;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="otherInfo", type="text", nullable=true)
      */
     private $otherInfo;
@@ -104,52 +90,6 @@ class Delivery
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set contactName
-     *
-     * @param string $contactName
-     * @return Delivery
-     */
-    public function setContactName($contactName)
-    {
-        $this->contactName = $contactName;
-
-        return $this;
-    }
-
-    /**
-     * Get contactName
-     *
-     * @return string 
-     */
-    public function getContactName()
-    {
-        return $this->contactName;
-    }
-
-    /**
-     * Set contactNo
-     *
-     * @param string $contactNo
-     * @return Delivery
-     */
-    public function setContactNo($contactNo)
-    {
-        $this->contactNo = $contactNo;
-
-        return $this;
-    }
-
-    /**
-     * Get contactNo
-     *
-     * @return string 
-     */
-    public function getContactNo()
-    {
-        return $this->contactNo;
     }
 
     /**
