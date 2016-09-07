@@ -106,6 +106,13 @@ class Delivery
     private $deliveryItems;
 
     /**
+     * @var TruckInfo
+     *
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\TruckInfo", mappedBy="deliveries")
+     */
+    private $truckInfos;
+    
+    /**
      * @var array $type
      *
      * @ORM\Column(name="transport_given", type="string", length=255, columnDefinition="ENUM('NOURISH', 'AGENT')", nullable=false)
@@ -365,5 +372,21 @@ class Delivery
     public function setTransportGiven($transportGiven)
     {
         $this->transportGiven = $transportGiven;
+    }
+
+    /**
+     * @return TruckInfo
+     */
+    public function getTruckInfos()
+    {
+        return $this->truckInfos;
+    }
+
+    /**
+     * @param TruckInfo $truckInfos
+     */
+    public function setTruckInfos($truckInfos)
+    {
+        $this->truckInfos = $truckInfos;
     }
 }

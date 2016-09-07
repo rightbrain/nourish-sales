@@ -53,6 +53,14 @@ class TruckInfo
      * @ORM\JoinColumn(name="depo_id", nullable=true)
      */
     private $depo;
+
+    /**
+     * @var Delivery
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Delivery", inversedBy="truckInfos")
+     * @ORM\JoinColumn(name="deliveries_id", nullable=true)
+     */
+    private $deliveries;
     
     /**
      * @ORM\ManyToMany(targetEntity="Order", inversedBy="truckInfos")
@@ -404,5 +412,21 @@ class TruckInfo
             return true;
         }
         return false;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDeliveries()
+    {
+        return $this->deliveries;
+    }
+
+    /**
+     * @param mixed $deliveries
+     */
+    public function setDeliveries($deliveries)
+    {
+        $this->deliveries = $deliveries;
     }
 }
