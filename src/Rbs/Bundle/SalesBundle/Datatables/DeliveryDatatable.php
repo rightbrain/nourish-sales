@@ -56,9 +56,7 @@ class DeliveryDatatable extends BaseDatatable
         $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
         $this->columnBuilder
             ->add('orderRef.id', 'column', array('title' => 'Order ID', 'search_type' => 'eq'))
-            ->add('orderRef.createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
-            ->add('contactName', 'column', array('title' => 'Contact Name'))
-            ->add('contactNo', 'column', array('title' => 'Contact No.'))
+            ->add('orderRef.createdAt', 'datetime', array('title' => 'Order Date', 'date_format' => $dateFormat))
             ->add('depo.name', 'column', array('title' => 'Depo'))
             ->add('orderRef.deliveryState', 'column', array('title' => 'deliveryState'))
             ->add(null, 'action', array(

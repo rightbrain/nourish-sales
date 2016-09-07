@@ -5,8 +5,8 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
-use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
  * Delivery
@@ -53,34 +53,6 @@ class Delivery
      * @ORM\Column(name="otherInfo", type="text", nullable=true)
      */
     private $otherInfo;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="vehicleIn", type="datetime", nullable=true)
-     */
-    private $vehicleIn;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="vehicleOut", type="datetime", nullable=true)
-     */
-    private $vehicleOut;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="startLoad", type="datetime", nullable=true)
-     */
-    private $startLoad;
-
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(name="finishLoad", type="datetime", nullable=true)
-     */
-    private $finishLoad;
 
     /**
      * @var Order
@@ -132,98 +104,6 @@ class Delivery
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set vehicleIn
-     *
-     * @param \DateTime $vehicleIn
-     * @return Delivery
-     */
-    public function setVehicleIn($vehicleIn)
-    {
-        $this->vehicleIn = $vehicleIn;
-
-        return $this;
-    }
-
-    /**
-     * Get vehicleIn
-     *
-     * @return \DateTime 
-     */
-    public function getVehicleIn()
-    {
-        return $this->vehicleIn;
-    }
-
-    /**
-     * Set vehicleOut
-     *
-     * @param \DateTime $vehicleOut
-     * @return Delivery
-     */
-    public function setVehicleOut($vehicleOut)
-    {
-        $this->vehicleOut = $vehicleOut;
-
-        return $this;
-    }
-
-    /**
-     * Get vehicleOut
-     *
-     * @return \DateTime 
-     */
-    public function getVehicleOut()
-    {
-        return $this->vehicleOut;
-    }
-
-    /**
-     * Set startLoad
-     *
-     * @param \DateTime $startLoad
-     * @return Delivery
-     */
-    public function setStartLoad($startLoad)
-    {
-        $this->startLoad = $startLoad;
-
-        return $this;
-    }
-
-    /**
-     * Get startLoad
-     *
-     * @return \DateTime 
-     */
-    public function getStartLoad()
-    {
-        return $this->startLoad;
-    }
-
-    /**
-     * Set finishLoad
-     *
-     * @param \DateTime $finishLoad
-     * @return Delivery
-     */
-    public function setFinishLoad($finishLoad)
-    {
-        $this->finishLoad = $finishLoad;
-
-        return $this;
-    }
-
-    /**
-     * Get finishLoad
-     *
-     * @return \DateTime 
-     */
-    public function getFinishLoad()
-    {
-        return $this->finishLoad;
     }
 
     /**

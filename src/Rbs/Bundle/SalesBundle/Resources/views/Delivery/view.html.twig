@@ -38,62 +38,6 @@
                     </div>
                     <div class="portlet">
                         <div class="portlet-title">
-                            <div class="caption"> Delivery Progress </div>
-                        </div>
-                        <div class="portlet-body">
-                            <table class="table">
-                                <tr>
-                                    <th class="text-center col-md-3">Vehicle In</th>
-                                    <th class="text-center col-md-3">Start Loading</th>
-                                    <th class="text-center col-md-3">Finish Loading</th>
-                                    <th class="text-center col-md-3">Vehicle Out</th>
-                                </tr>
-                                <tr id="process-actions">
-                                    <td class="text-center">
-                                        {%- if delivery.vehicleIn is not null %}
-                                            <span data-original-title="{{ delivery.vehicleIn|date(php_date_format) }}">{{ delivery.vehicleIn|date("h:i a") }}</span>
-                                        {%- else %}
-                                            {%- if is_granted("ROLE_TRUCK_IN") %}
-                                            <button type="button" class="btn green" data-route="{{ path('delivery_vehicle_in', {id: delivery.id}) }}">In</button>
-                                            {%- endif %}
-                                        {%- endif %}
-                                    </td>
-
-                                    <td class="text-center">
-                                        {%- if delivery.startLoad is not null %}
-                                            <span data-original-title="{{ delivery.vehicleIn|date(php_date_format) }}">{{ delivery.startLoad|date("h:i a") }}</span>
-                                        {%- else %}
-                                            {%- if is_granted("ROLE_TRUCK_START") %}
-                                            <button type="button" class="btn green" data-route="{{ path('delivery_start_loading', {id: delivery.id}) }}" {%- if delivery.vehicleIn is null %} disabled="disabled" {% endif %}>Start</button>
-                                            {%- endif %}
-                                        {%- endif %}
-                                    </td>
-
-                                    <td class="text-center">
-                                        {%- if delivery.finishLoad is not null %}
-                                            <span data-original-title="{{ delivery.vehicleIn|date(php_date_format) }}">{{ delivery.finishLoad|date("h:i a") }}</span>
-                                        {%- else %}
-                                            {%- if is_granted("ROLE_TRUCK_FINISH") %}
-                                            <button type="button" data-action="finish-loading" data-route="{{ path('delivery_finish_loading', {id: delivery.id}) }}" class="btn green" {%- if delivery.startLoad is null %} disabled="disabled" {% endif %}>Finish</button>
-                                            {%- endif %}
-                                        {% endif %}
-                                    </td>
-
-                                    <td class="text-center">
-                                        {%- if delivery.vehicleOut is not null %}
-                                            <span data-original-title="{{ delivery.vehicleIn|date(php_date_format) }}">{{ delivery.vehicleOut|date("h:i a") }}</span>
-                                        {%- else %}
-                                            {%- if is_granted("ROLE_TRUCK_OUT") %}
-                                            <button type="button" data-route="{{ path('delivery_vehicle_out', {id: delivery.id}) }}" class="btn green"  {%- if delivery.finishLoad is null %} disabled="disabled" {% endif %}>Out</button>
-                                            {%- endif %}
-                                        {%- endif %}
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="portlet">
-                        <div class="portlet-title">
                             <div class="caption"> Order Items </div>
                         </div>
                         <div class="portlet-body">
@@ -162,7 +106,7 @@
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn blue green" id="save-delivery" {%- if delivery.finishLoad is null %} disabled="disabled" {% endif %}> Complete Delivery </button>
+        <button type="button" class="btn blue green" id="save-delivery"> Complete Delivery </button>
         <a class="btn default" data-dismiss="modal"> Close </a>
     </div>
 </div>
@@ -200,46 +144,6 @@
                                         <td>{{ delivery.otherInfo }}</td>
                                         <th>Delivery From (Depo)</th>
                                         <td>{{ delivery.depo.name }}</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="portlet">
-                            <div class="portlet-title">
-                                <div class="caption"> Delivery Progress </div>
-                            </div>
-                            <div class="portlet-body">
-                                <table class="table">
-                                    <tr>
-                                        <th class="text-center col-md-3">Vehicle In</th>
-                                        <th class="text-center col-md-3">Start Loading</th>
-                                        <th class="text-center col-md-3">Finish Loading</th>
-                                        <th class="text-center col-md-3">Vehicle Out</th>
-                                    </tr>
-                                    <tr id="process-actions-partially-shipped">
-                                        <td class="text-center">
-                                            <button type="button" id="in-button" class="btn green" onclick="inFunction()">IN</button>
-                                            <input name="in" type="hidden" id="in" />
-                                            <p id="in-view"></p>
-                                        </td>
-
-                                        <td class="text-center">
-                                            <button type="button" id="start-button" class="btn green" onclick="startFunction()" disabled="disabled">START</button>
-                                            <input name="start" type="hidden" id="start" />
-                                            <p id="start-view"></p>
-                                        </td>
-
-                                        <td class="text-center">
-                                            <button type="button" id="finish-button" class="btn green" onclick="finishFunction()" disabled="disabled">FINISH</button>
-                                            <input name="finish" type="hidden" id="finish" />
-                                            <p id="finish-view"></p>
-                                        </td>
-
-                                        <td class="text-center">
-                                            <button type="button" id="out-button" class="btn green" onclick="outFunction()" disabled="disabled">OUT</button>
-                                            <input name="out" type="hidden" id="out" />
-                                            <p id="out-view"></p>
-                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -284,87 +188,10 @@
                 </div>
         </div>
         <div class="modal-footer">
-            <input type="submit" id="partial-shipped-complete-delivery" value="Complete Delivery" class="btn blue green" disabled="disabled"/>
+            <input type="submit" id="partial-shipped-complete-delivery" value="Complete Delivery" class="btn blue green"/>
             <a class="btn default" data-dismiss="modal"> Close </a>
         </div>
         </form>
     </div>
-
-    <script>
-        function partialShipped(loadingDiv) {
-            Metronic.blockUI({
-                target: loadingDiv,
-                animate: true,
-                overlayColor: 'black'
-            });
-            var d = new Date();
-            var hours = d.getHours();
-            var ampm = hours >= 12 ? 'pm' : 'am';
-            hours = hours % 12;
-            hours = hours ? hours : 12;
-            return {d: d, hours: hours, ampm: ampm};
-        }
-
-        function inFunction() {
-            var loadingDiv = $('.modal-body').find('.portlet');
-                bootbox.confirm('Are you sure?', function() {
-                    var __ret = partialShipped(loadingDiv);
-                    var d = __ret.d;
-                    var hours = __ret.hours;
-                    var ampm = __ret.ampm;
-                    document.getElementById("in-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
-                    document.getElementById("in").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
-                    document.getElementById('in-button').classList.add('hide');
-                    document.getElementById("start-button").disabled = false;
-                    Metronic.unblockUI(loadingDiv);
-                })
-        }
-
-        function startFunction() {
-            var loadingDiv = $('.modal-body').find('.portlet');
-            bootbox.confirm('Are you sure?', function() {
-                var __ret = partialShipped(loadingDiv);
-                var d = __ret.d;
-                var hours = __ret.hours;
-                var ampm = __ret.ampm;
-                document.getElementById("start-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
-                document.getElementById("start").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
-                document.getElementById('start-button').classList.add('hide');
-                document.getElementById("finish-button").disabled = false;
-                Metronic.unblockUI(loadingDiv);
-            })
-        }
-
-        function finishFunction() {
-            var loadingDiv = $('.modal-body').find('.portlet');
-            bootbox.confirm('Are you sure?', function() {
-                var __ret = partialShipped(loadingDiv);
-                var d = __ret.d;
-                var hours = __ret.hours;
-                var ampm = __ret.ampm;
-                document.getElementById("finish-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
-                document.getElementById("finish").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
-                document.getElementById('finish-button').classList.add('hide');
-                document.getElementById("out-button").disabled = false;
-                Metronic.unblockUI(loadingDiv);
-            })
-        }
-
-        function outFunction() {
-            var loadingDiv = $('.modal-body').find('.portlet');
-            bootbox.confirm('Are you sure?', function() {
-                var __ret = partialShipped(loadingDiv);
-                var d = __ret.d;
-                var hours = __ret.hours;
-                var ampm = __ret.ampm;
-                document.getElementById("out-view").innerHTML = hours+':'+d.getMinutes()+' '+ampm;
-                document.getElementById("out").value = d.getUTCFullYear() + "/" + (d.getUTCMonth() + 1) + "/" + d.getUTCDate()+' '+d.getHours()+':'+d.getMinutes()+':'+d.getSeconds();
-                document.getElementById('out-button').classList.add('hide');
-                document.getElementById("partial-shipped-complete-delivery").disabled = false;
-                Metronic.unblockUI(loadingDiv);
-            })
-        }
-
-    </script>
 
 {% endif %}
