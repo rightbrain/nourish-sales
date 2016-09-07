@@ -12,7 +12,7 @@ class InOutTruckInfoDatatable extends BaseDatatable
 {
     public function getLineFormatter()
     {
-        /** @var TruckInfo $agentsBankInfo
+        /** @var TruckInfo $truckInfo
          * @return mixed
          */
         $formatter = function($line){
