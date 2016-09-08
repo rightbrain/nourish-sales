@@ -13,7 +13,9 @@ class DeliveryDatatable extends BaseDatatable
 {
     public function getLineFormatter()
     {
-        /** @var Order $order */
+        /** @var Order $order
+         * @return mixed
+         */
         $formatter = function($line){
             //$order = $this->em->getRepository('RbsSalesBundle:Order')->find($line['id']);
             //$line["actionButtons"] = $this->generateActionList($order);
@@ -52,13 +54,15 @@ class DeliveryDatatable extends BaseDatatable
             )
         );
 
-        $twigVars = $this->twig->getGlobals();
-        $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
+//        $twigVars = $this->twig->getGlobals();
+//        $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
         $this->columnBuilder
-            ->add('orderRef.id', 'column', array('title' => 'Order ID', 'search_type' => 'eq'))
-            ->add('orderRef.createdAt', 'datetime', array('title' => 'Order Date', 'date_format' => $dateFormat))
+            ->add('orders.id', 'array', array(
+                'title' => 'Orders',
+                'data' => 'orders[, ].id'
+            ))
             ->add('depo.name', 'column', array('title' => 'Depo'))
-            ->add('orderRef.deliveryState', 'column', array('title' => 'deliveryState'))
+//            ->add('orderRef.deliveryState', 'column', array('title' => 'deliveryState'))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Action',

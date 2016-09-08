@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Rbs\Bundle\UserBundle\Entity\User;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
@@ -41,12 +42,13 @@ class Delivery
     private $otherInfo;
 
     /**
-     * @var Order
-     *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order", inversedBy="deliveries")
-     * @ORM\JoinColumn(name="order_id", nullable=false)
+     * @ORM\ManyToMany(targetEntity="Order", inversedBy="deliveries")
+     * @ORM\JoinTable(name="sales_join_deliveries_orders",
+     *      joinColumns={@ORM\JoinColumn(name="delivery_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="order_id", referencedColumnName="id")}
+     * )
      */
-    private $orderRef;
+    protected $orders;
 
     /**
      * @var Depo
@@ -64,21 +66,22 @@ class Delivery
     private $deliveryItems;
 
     /**
-     * @var TruckInfo
+     * @var Vehicle
      *
-     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\TruckInfo", mappedBy="deliveries")
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\Vehicle", mappedBy="deliveries")
      */
-    private $truckInfos;
+    private $vehicles;
     
     /**
      * @var array $type
      *
-     * @ORM\Column(name="transport_given", type="string", length=255, columnDefinition="ENUM('NOURISH', 'AGENT')", nullable=false)
+     * @ORM\Column(name="transport_given", type="string", length=255, columnDefinition="ENUM('NOURISH', 'AGENT')", nullable=true)
      */
-    private $transportGiven = 'NOURISH';
-
+    private $transportGiven;
+    
     public function __construct()
     {
+        $this->orders = new ArrayCollection();
         $this->deliveryItems = new ArrayCollection();
     }
 
@@ -139,23 +142,29 @@ class Delivery
     }
 
     /**
-     * @return Order
+     * @return mixed
      */
-    public function getOrderRef()
+    public function getOrders()
     {
-        return $this->orderRef;
+        return $this->orders;
     }
 
     /**
-     * @param Order $order
-     *
-     * @return Delivery
+     * @param \Rbs\Bundle\SalesBundle\Entity\Order $order
      */
-    public function setOrderRef($order)
+    public function addOrder($order)
     {
-        $this->orderRef = $order;
+        if (!$this->getOrders()->contains($order)) {
+            $this->orders->add($order);
+        }
+    }
 
-        return $this;
+    /**
+     * @param \Rbs\Bundle\SalesBundle\Entity\Order $order
+     */
+    public function removeOrder($order)
+    {
+        $this->orders->removeElement($order);
     }
 
     /**
@@ -195,18 +204,29 @@ class Delivery
     }
 
     /**
-     * @return TruckInfo
+     * @return Vehicle
      */
-    public function getTruckInfos()
+    public function getVehicles()
     {
-        return $this->truckInfos;
+        return $this->vehicles;
     }
 
     /**
-     * @param TruckInfo $truckInfos
+     * @param Vehicle $vehicles
      */
-    public function setTruckInfos($truckInfos)
+    public function setVehicles($vehicles)
     {
-        $this->truckInfos = $truckInfos;
+        $this->vehicles = $vehicles;
+    }
+
+    public function isDeliveryAdd()
+    {
+        $orders = $this->getOrders();
+        foreach ($orders as $order){
+            if($order->getDeliveryState() != Order::DELIVERY_STATE_READY or $order->getDeliveryState() != Order::DELIVERY_STATE_PARTIALLY_SHIPPED){
+               return false; 
+            }
+        }
+        return true;
     }
 }

@@ -1,30 +1,30 @@
 <?php
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
-use Rbs\Bundle\SalesBundle\Entity\TruckInfo;
+use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 
 /**
- * Class InOutTruckInfoDatatable
+ * Class InOutVehicleDatatable
  *
  * @package Rbs\Bundle\SalesBundle\Datatables
  */
-class InOutTruckInfoDatatable extends BaseDatatable
+class InOutVehicleDatatable extends BaseDatatable
 {
     public function getLineFormatter()
     {
-        /** @var TruckInfo $truckInfo
+        /** @var Vehicle $vehicle
          * @return mixed
          */
         $formatter = function($line){
-            $truckInfo = $this->em->getRepository('RbsSalesBundle:TruckInfo')->find($line['id']);
-            $line['isIn'] = $truckInfo->isIn();
-            $line['isInFalse'] = !$truckInfo->isIn();
-            $line['isOut'] = $truckInfo->isOut();
-            $line['isOutFalse'] = !$truckInfo->isOut();
-            $line['isStart'] = $truckInfo->isStart();
-            $line['isStartFalse'] = !$truckInfo->isStart();
-            $line['isFinish'] = $truckInfo->isFinish();
-            $line['isFinishFalse'] = !$truckInfo->isFinish();
+            $vehicle = $this->em->getRepository('RbsSalesBundle:Vehicle')->find($line['id']);
+            $line['isIn'] = $vehicle->isIn();
+            $line['isInFalse'] = !$vehicle->isIn();
+            $line['isOut'] = $vehicle->isOut();
+            $line['isOutFalse'] = !$vehicle->isOut();
+            $line['isStart'] = $vehicle->isStart();
+            $line['isStartFalse'] = !$vehicle->isStart();
+            $line['isFinish'] = $vehicle->isFinish();
+            $line['isFinishFalse'] = !$vehicle->isFinish();
 
             return $line;
         };
@@ -49,14 +49,12 @@ class InOutTruckInfoDatatable extends BaseDatatable
             ->add('driverName', 'column', array('title' => 'Driver Name'))
             ->add('driverPhone', 'column', array('title' => 'Driver Phone'))
             ->add('truckNumber', 'column', array('title' => 'Truck Number'))
+            ->add('transportGiven', 'column', array('title' => 'Given By'))
+            ->add('smsText', 'column', array('title' => 'SMS Text'))
             ->add('vehicleIn', 'datetime', array('title' => 'In Time', 'date_format' => 'LLL' ))
             ->add('startLoad', 'datetime', array('title' => 'Start Load', 'date_format' => 'LLL' ))
             ->add('finishLoad', 'datetime', array('title' => 'Finish Load', 'date_format' => 'LLL' ))
             ->add('vehicleOut', 'datetime', array('title' => 'Out Time', 'date_format' => 'LLL' ))
-            ->add('orders.id', 'array', array(
-                'title' => 'Orders',
-                'data' => 'orders[, ].id'
-            ))
             ->add('isIn', 'virtual', array('visible' => false))
             ->add('isOut', 'virtual', array('visible' => false))
             ->add('isStart', 'virtual', array('visible' => false))
@@ -153,7 +151,7 @@ class InOutTruckInfoDatatable extends BaseDatatable
      */
     public function getEntity()
     {
-        return 'Rbs\Bundle\SalesBundle\Entity\TruckInfo';
+        return 'Rbs\Bundle\SalesBundle\Entity\Vehicle';
     }
 
     /**

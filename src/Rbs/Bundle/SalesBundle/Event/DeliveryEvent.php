@@ -23,7 +23,7 @@ class DeliveryEvent extends BaseEvent
     public function __construct(Delivery $delivery)
     {
         $this->delivery = $delivery;
-        $this->order = $delivery->getOrderRef();
+        $this->order = $delivery->getOrders();
     }
 
     /**
@@ -45,8 +45,8 @@ class DeliveryEvent extends BaseEvent
     }
 
     /**
-     * @param string $typeName
      * @return string
+     * @internal param string $typeName
      */
     protected function getEventShortName()
     {

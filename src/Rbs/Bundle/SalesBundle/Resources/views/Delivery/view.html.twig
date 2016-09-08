@@ -1,8 +1,13 @@
-{% if order.deliveryState == 'READY' %}
+{% if delivery.deliveryAdd == false %}
 <div class="action-content-cancel">
     <div class="modal-header portlet-title blue">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title">Order No <span class="badge badge-primary">{{ order.id }}</span></h4>
+        <h4 class="modal-title">Order No <span class="badge badge-primary">
+            {% for orderNumber in orderNumberArr %}
+                {{ orderNumber }}
+                {% if delivery.transportGiven != 'AGENT' %},{% endif %}
+            {% endfor %}
+            </span></h4>
     </div>
     <div class="modal-body">
 
@@ -18,18 +23,8 @@
                                 <tr>
                                     <th>Agent Name</th>
                                     <td>{{ agent.user.profile.fullName }}</td>
-                                    <th>Order Date</th>
-                                    <td>{{ order.createdAt|date(php_date_format) }}</td>
                                 </tr>
                                 <tr>
-                                    <th>Delivery Contact Name</th>
-                                    <td>{{ delivery.contactName }}</td>
-                                    <th>Delivery Contact No</th>
-                                    <td>{{ delivery.contactNo }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Other Info</th>
-                                    <td>{{ delivery.otherInfo }}</td>
                                     <th>Delivery From (Depo)</th>
                                     <td>{{ delivery.depo.name }}</td>
                                 </tr>
@@ -52,14 +47,16 @@
                                 </tr>
                                 </thead>
                                 <tbody class="orderItems">
-                                {% for index, item in order.orderItems %}
-                                    <tr>
-                                        <td>{{ order.id }}</td>
-                                        <td>{{ item.item.name }}</td>
-                                        <td class="item-qty">{{ item.quantity }}</td>
-                                        <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
-                                        <td class="remain"></td>
-                                    </tr>
+                                {% for order in orderObj %}
+                                    {% for index, item in order.orderItems %}
+                                        <tr>
+                                            <td>{{ order.id }}</td>
+                                            <td>{{ item.item.name }}</td>
+                                            <td class="item-qty">{{ item.quantity }}</td>
+                                            <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
+                                            <td class="remain"></td>
+                                        </tr>
+                                    {% endfor %}
                                 {% endfor %}
                                 <tbody>
                             </table>
@@ -100,6 +97,32 @@
                         </div>
                     </div>
                     {% endif %}
+
+                    {% if vehicles is not empty %}
+                    <div class="portlet">
+                        <div class="portlet-title partial-delivered-items">
+                            <div class="caption"> Vehicles Info </div>
+                        </div>
+                        <div class="portlet-body partial-delivered-items">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Vehicle</th>
+                                </tr>
+                                </thead>
+                                <tbody class="orderItems">
+                                {% for index, vehicle in vehicles %}
+                                    <tr>
+                                        <td><input name="checked-vehicles[{{ vehicle.id }}]" type="checkbox"></td>
+                                        <td>{{ vehicle.id }}</td>
+                                    </tr>
+                                {% endfor %}
+                                <tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </form>
@@ -114,7 +137,7 @@
     <div class="action-content-cancel">
         <div class="modal-header portlet-title blue">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            <h4 class="modal-title">Order No <span class="badge badge-primary">{{ order.id }}</span></h4>
+            {#<h4 class="modal-title">Order No <span class="badge badge-primary">{{ order.id }}</span></h4>#}
         </div>
 
         <form id="delivery-item-form-partially-shipped" action="{{ path('delivery_partially_shipped') }}" method="post">
@@ -131,13 +154,13 @@
                                         <th>Agent Name</th>
                                         <td>{{ agent.user.profile.fullName }}</td>
                                         <th>Order Date</th>
-                                        <td>{{ order.createdAt|date(php_date_format) }}</td>
+                                        {#<td>{{ order.createdAt|date(php_date_format) }}</td>#}
                                     </tr>
                                     <tr>
                                         <th>Delivery Contact Name</th>
-                                        <td>{{ delivery.contactName }}</td>
+                                        {#<td>{{ delivery.contactName }}</td>#}
                                         <th>Delivery Contact No</th>
-                                        <td>{{ delivery.contactNo }}</td>
+                                        {#<td>{{ delivery.contactNo }}</td>#}
                                     </tr>
                                     <tr>
                                         <th>Other Info</th>

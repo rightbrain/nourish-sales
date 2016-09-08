@@ -10,20 +10,28 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
- * TruckInfo
+ * Vehicle
  *
- * @ORM\Table(name="sales_truck_info")
- * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\TruckInfoRepository")
+ * @ORM\Table(name="sales_vehicles")
+ * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\VehicleRepository")
  * @ORMSubscribedEvents()
  * @ORM\HasLifecycleCallbacks
  */
-class TruckInfo
+class Vehicle
 {
     const ACTIVE = 'ACTIVE';
     const INACTIVE = 'INACTIVE';
+    const UNREAD = 'UNREAD';
+    const READ = 'READ';
     
     const NOURISH = 'NOURISH';
     const AGENT = 'AGENT';
+    
+    const FINISH_LOAD = 'FINISH LOAD';
+    const START_LOAD = 'START LOAD';
+    const IN = 'IN';
+    const OUT = 'OUT';
+    const CREATE = 'CREATE';
 
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
@@ -57,33 +65,31 @@ class TruckInfo
     /**
      * @var Delivery
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Delivery", inversedBy="truckInfos")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Delivery", inversedBy="vehicles")
      * @ORM\JoinColumn(name="deliveries_id", nullable=true)
      */
     private $deliveries;
-    
-    /**
-     * @ORM\ManyToMany(targetEntity="Order", inversedBy="truckInfos")
-     * @ORM\JoinTable(name="sales_join_truckInfos_orders",
-     *      joinColumns={@ORM\JoinColumn(name="truckInfo_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="order_id", referencedColumnName="id")}
-     * )
-     */
-    private $orders;
 
     /**
      * @var array $type
      *
-     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE')", nullable=false)
+     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE', 'READ', 'UNREAD')", nullable=false)
      */
     private $status = 'ACTIVE';
 
     /**
      * @var array $type
      *
-     * @ORM\Column(name="transport_given", type="string", length=255, columnDefinition="ENUM('NOURISH', 'AGENT')", nullable=false)
+     * @ORM\Column(name="transport_status", type="string", length=255, columnDefinition="ENUM('CREATE', 'IN', 'OUT', 'START LOAD', 'FINISH LOAD')", nullable=false)
      */
-    private $transportGiven = 'NOURISH';
+    private $transportStatus = 'CREATE';
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="transport_given", type="string", length=255, columnDefinition="ENUM('NOURISH', 'AGENT')", nullable=true)
+     */
+    private $transportGiven;
     
     /**
      * @var string
@@ -91,6 +97,13 @@ class TruckInfo
      * @ORM\Column(name="driver_name", type="text", nullable=true)
      */
     private $driverName;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="sms_text", type="text", nullable=true)
+     */
+    private $smsText;
 
     /**
      * @var string
@@ -145,21 +158,16 @@ class TruckInfo
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User")
-     * @ORM\JoinColumn(name="truck_invoice_attached_By", nullable=true)
+     * @ORM\JoinColumn(name="vehicle_invoice_attached_By", nullable=true)
      */
     private $truckInvoiceAttachedBy;
     
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="truck_invoice_attached_at", type="datetime", nullable=true)
+     * @ORM\Column(name="vehicle_invoice_attached_at", type="datetime", nullable=true)
      */
     private $truckInvoiceAttachedAt;
-    
-    public function __construct()
-    {
-        $this->orders = new ArrayCollection();
-    }
     
     /**
      * Get id
@@ -284,52 +292,6 @@ class TruckInfo
     }
 
     /**
-     * @return mixed
-     */
-    public function getOrders()
-    {
-        return $this->orders;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getOrdersId()
-    {
-        $orderArr = array();
-        foreach ($this->orders as $order){
-            $orderArr[] = $order->getId();
-        }
-        return $orderArr;
-    }
-
-    /**
-     * @param mixed $orders
-     */
-    public function setOrders($orders)
-    {
-        $this->orders = $orders;
-    }
-    
-    /**
-     * @param \Rbs\Bundle\SalesBundle\Entity\Order $order
-     */
-    public function addOrder($order)
-    {
-        if (!$this->getOrders()->contains($order)) {
-            $this->orders->add($order);
-        }
-    }
-
-    /**
-     * @param \Rbs\Bundle\SalesBundle\Entity\Order $order
-     */
-    public function removeOrder($order)
-    {
-        $this->orders->removeElement($order);
-    }
-
-    /**
      * @return Depo
      */
     public function getDepo()
@@ -441,14 +403,6 @@ class TruckInfo
         return false;
     }
 
-    public function isDeliveryAdd()
-    {
-        if($this->deliveries == null){
-            return true;
-        }
-        return false;
-    }
-
     /**
      * @return mixed
      */
@@ -490,6 +444,22 @@ class TruckInfo
     }
 
     /**
+     * @return string
+     */
+    public function getSmsText()
+    {
+        return $this->smsText;
+    }
+
+    /**
+     * @param string $smsText
+     */
+    public function setSmsText($smsText)
+    {
+        $this->smsText = $smsText;
+    }
+
+    /**
      * @param \DateTime $truckInvoiceAttachedAt
      */
     public function setTruckInvoiceAttachedAt($truckInvoiceAttachedAt)
@@ -500,5 +470,21 @@ class TruckInfo
     public function getTruckInformation()
     {
         return '#' . ' Truck SL :'. $this->getId() . ',' . ' Driver Name :' . $this->getDriverName() . ',' . ' Mobile :' . $this->getDriverPhone();
+    }
+
+    /**
+     * @return array
+     */
+    public function getTransportStatus()
+    {
+        return $this->transportStatus;
+    }
+
+    /**
+     * @param array $transportStatus
+     */
+    public function setTransportStatus($transportStatus)
+    {
+        $this->transportStatus = $transportStatus;
     }
 }

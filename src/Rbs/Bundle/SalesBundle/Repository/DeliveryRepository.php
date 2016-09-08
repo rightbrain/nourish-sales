@@ -18,27 +18,32 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
  */
 class DeliveryRepository extends EntityRepository
 {
-    public function createDelivery(Order $order, Depo $depo)
+    public function createDelivery($data)
     {
-        $delivery = $this->findOneBy(array('orderRef' => $order));
-        if (!$delivery) {
-            $delivery = new Delivery();
-            $delivery->setOrderRef($order);
-            $delivery->setDepo($depo);
-            $this->_em->persist($delivery);
-            $this->_em->flush();
-        }
+        $this->_em->persist($data);
+        $this->_em->flush();
     }
-    
+//    public function createDelivery(Order $order, Depo $depo)
+//    {
+//        $delivery = $this->findOneBy(array('orderRef' => $order));
+//        if (!$delivery) {
+//            $delivery = new Delivery();
+//            $delivery->setOrderRef($order);
+//            $delivery->setDepo($depo);
+//            $this->_em->persist($delivery);
+//            $this->_em->flush();
+//        }
+//    }
+  
     public function create(Order $order, Depo $depo, $request)
     {
         $delivery = new Delivery();
-        $delivery->setOrderRef($order);
+//        $delivery->setOrderRef($order);
         $delivery->setDepo($depo);
-        $delivery->setVehicleIn(new DateTime($request['in']));
-        $delivery->setStartLoad(new DateTime($request['start']));
-        $delivery->setFinishLoad(new DateTime($request['finish']));
-        $delivery->setVehicleOut(new DateTime($request['out']));
+//        $delivery->setVehicleIn(new DateTime($request['in']));
+//        $delivery->setStartLoad(new DateTime($request['start']));
+//        $delivery->setFinishLoad(new DateTime($request['finish']));
+//        $delivery->setVehicleOut(new DateTime($request['out']));
         $this->_em->persist($delivery);
         $this->_em->flush();
         
@@ -52,7 +57,7 @@ class DeliveryRepository extends EntityRepository
             $item = $this->_em->getRepository('RbsSalesBundle:OrderItem')->find($itemId);
 
             $deliveryItem = new DeliveryItem();
-            $deliveryItem->setOrder($item->getOrder());
+//            $deliveryItem->setOrder($item->getOrder());
             $deliveryItem->setDelivery($delivery);
             $deliveryItem->setOrderItem($item);
             $deliveryItem->setQty($qty);
@@ -75,7 +80,7 @@ class DeliveryRepository extends EntityRepository
                 $item = $this->_em->getRepository('RbsSalesBundle:OrderItem')->find($itemId);
 
                 $deliveryItem = new DeliveryItem();
-                $deliveryItem->setOrder($order);
+//                $deliveryItem->setOrder($order);
                 $deliveryItem->setDelivery($delivery);
                 $deliveryItem->setOrderItem($item);
                 $deliveryItem->setQty($qty);
@@ -99,7 +104,7 @@ class DeliveryRepository extends EntityRepository
                     $item = $this->_em->getRepository('RbsSalesBundle:OrderItem')->find($itemId);
 
                     $deliveryItem = new DeliveryItem();
-                    $deliveryItem->setOrder($order);
+//                    $deliveryItem->setOrder($order);
                     $deliveryItem->setDelivery($delivery);
                     $deliveryItem->setOrderItem($item);
                     $deliveryItem->setQty($previousItems[$orderId][$itemId]);
@@ -119,7 +124,7 @@ class DeliveryRepository extends EntityRepository
     public function getDeliveriesForTransportIncentive($firstDateOfPreviousMonth, $lastDateOfPreviousMonth)
     {
         $query = $this->createQueryBuilder('d');
-        $query->join('d.orderRef', 'o');
+        $query->join('d.orders', 'o');
         $query->select('d.id');
         $query->where('d.createdAt >= :startDate');
         $query->andWhere('d.createdAt <= :endDate');
@@ -127,5 +132,15 @@ class DeliveryRepository extends EntityRepository
         $query->setParameters(array('startDate'=>$firstDateOfPreviousMonth, 'endDate'=>$lastDateOfPreviousMonth, 'SHIPPED'=>Order::DELIVERY_STATE_SHIPPED, 'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
 
         return $query->getQuery()->getResult();
+    }
+    
+    public function findOneByOrderId($orderId)
+    {
+        $query = $this->createQueryBuilder('d');
+        $query->join('d.orders', 'o');
+        $query->where('o.id = :orderId');
+        $query->setParameter('orderId', $orderId);
+
+        return $query->getQuery()->getSingleResult();
     }
 }

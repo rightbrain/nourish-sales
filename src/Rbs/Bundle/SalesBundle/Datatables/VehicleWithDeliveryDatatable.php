@@ -1,23 +1,22 @@
 <?php
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
-use Rbs\Bundle\SalesBundle\Entity\TruckInfo;
+use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 
 /**
- * Class TruckWithDeliveryDatatable
+ * Class VehicleWithDeliveryDatatable
  *
  * @package Rbs\Bundle\SalesBundle\Datatables
  */
-class TruckWithDeliveryDatatable extends BaseDatatable
+class VehicleWithDeliveryDatatable extends BaseDatatable
 {
     public function getLineFormatter()
     {
-        /** @var TruckInfo $truckInfo
+        /** @var Vehicle $vehicle
          * @return mixed
          */
         $formatter = function($line){
-            $truckInfo = $this->em->getRepository('RbsSalesBundle:TruckInfo')->find($line['id']);
-            $line['isDeliveryAdd'] = $truckInfo->isDeliveryAdd();
+            $vehicle = $this->em->getRepository('RbsSalesBundle:Vehicle')->find($line['id']);
 
             return $line;
         };
@@ -46,12 +45,6 @@ class TruckWithDeliveryDatatable extends BaseDatatable
             ->add('startLoad', 'datetime', array('title' => 'Start Load', 'date_format' => 'LLL' ))
             ->add('finishLoad', 'datetime', array('title' => 'Finish Load', 'date_format' => 'LLL' ))
             ->add('vehicleOut', 'datetime', array('title' => 'Out Time', 'date_format' => 'LLL' ))
-            ->add('deliveries.id', 'column', array('title' => 'Delivery'))
-            ->add('orders.id', 'array', array(
-                'title' => 'Orders',
-                'data' => 'orders[, ].id'
-            ))
-            ->add('isDeliveryAdd', 'virtual', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '180px',
                 'title' => 'Action',
@@ -70,10 +63,7 @@ class TruckWithDeliveryDatatable extends BaseDatatable
                             'title' => 'Add Delivery',
                             'class' => 'btn btn-primary btn-xs',
                             'role' => 'button'
-                        ),
-                        'confirm' => false,
-                        'confirm_message' => 'Are you sure?',
-                        'render_if' => array('isDeliveryAdd')
+                        )
                     )
                 )
             ))
@@ -85,7 +75,7 @@ class TruckWithDeliveryDatatable extends BaseDatatable
      */
     public function getEntity()
     {
-        return 'Rbs\Bundle\SalesBundle\Entity\TruckInfo';
+        return 'Rbs\Bundle\SalesBundle\Entity\Vehicle';
     }
 
     /**

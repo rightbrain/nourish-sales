@@ -4,12 +4,12 @@ namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Repository\DeliveryRepository;
-use Rbs\Bundle\SalesBundle\Repository\TruckInfoRepository;
+use Rbs\Bundle\SalesBundle\Repository\VehicleRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TruckDeliveryForm extends AbstractType
+class VehicleDeliveryForm extends AbstractType
 {
     private $user;
     private $truckInfo;
@@ -31,7 +31,7 @@ class TruckDeliveryForm extends AbstractType
                 'class' => 'Rbs\Bundle\SalesBundle\Entity\TruckInfo',
                 'property' => 'truckInformation',
                 'mapped' => false,
-                'query_builder' => function (TruckInfoRepository $repository)
+                'query_builder' => function (VehicleRepository $repository)
                 {
                     return $repository->createQueryBuilder('t')
                         ->where('t.id = :truckInfoId')
@@ -90,12 +90,12 @@ class TruckDeliveryForm extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Rbs\Bundle\SalesBundle\Entity\TruckInfo'
+            'data_class' => 'Rbs\Bundle\SalesBundle\Entity\Vehicle'
         ));
     }
 
     public function getName()
     {
-        return 'truck_info';
+        return 'vehicle';
     }
 }

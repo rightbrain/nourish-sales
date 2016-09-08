@@ -83,23 +83,23 @@ services:
         tags:
             - { name: sg.datatable.view }
 
-    rbs_erp.sales.datatable.truck.info:
-        class: Rbs\Bundle\SalesBundle\Datatables\TruckInfoDatatable
+    rbs_erp.sales.datatable.Vehicle:
+        class: Rbs\Bundle\SalesBundle\Datatables\VehicleDatatable
         tags:
             - { name: sg.datatable.view }
 
-    rbs_erp.sales.datatable.my.truck.info:
-        class: Rbs\Bundle\SalesBundle\Datatables\MyTruckInfoDatatable
+    rbs_erp.sales.datatable.my.vehicle:
+        class: Rbs\Bundle\SalesBundle\Datatables\MyVehicleDatatable
         tags:
             - { name: sg.datatable.view }
 
-    rbs_erp.sales.datatable.in.out.truck.info:
-        class: Rbs\Bundle\SalesBundle\Datatables\InOutTruckInfoDatatable
+    rbs_erp.sales.datatable.in.out.vehicle:
+        class: Rbs\Bundle\SalesBundle\Datatables\InOutVehicleDatatable
         tags:
             - { name: sg.datatable.view }
 
-    rbs_erp.sales.datatable.truck.with.delivery:
-        class: Rbs\Bundle\SalesBundle\Datatables\TruckWithDeliveryDatatable
+    rbs_erp.sales.datatable.vehicle.with.delivery:
+        class: Rbs\Bundle\SalesBundle\Datatables\VehicleWithDeliveryDatatable
         tags:
             - { name: sg.datatable.view }
 

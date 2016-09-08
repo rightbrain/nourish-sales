@@ -129,13 +129,13 @@ class SmsParse
         }
         $this->em->flush();
 
-        $delivery = new Delivery();
-        $delivery->setOrderRef($this->order);
-        $delivery->setDepo($this->agent->getDepo());
-
-        $this->em->persist($delivery);
-        $this->em->flush();
-        $this->em->clear();
+//        $delivery = new Delivery();
+//        $delivery->setOrderRef($this->order);
+//        $delivery->setDepo($this->agent->getDepo());
+//
+//        $this->em->persist($delivery);
+//        $this->em->flush();
+//        $this->em->clear();
 
         return array(
             'orderId' => $this->order->getId()

@@ -7,12 +7,10 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Event\DeliveryEvent;
-use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
 use Rbs\Bundle\SalesBundle\Form\Type\DeliveryForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -64,18 +62,18 @@ class DeliveryController extends BaseController
         $function = function($qb) use ($dateFilter, $orderFilter)
         {
             $qb->join('sales_deliveries.depo', 'd');
-            $qb->join('sales_deliveries.orderRef', 'o');
+            $qb->join('sales_deliveries.orders', 'o');
             $qb->join('d.users', 'u');
             $qb->andWhere('u =:user');
-            $qb->andWhere('orderRef.deliveryState IN (:READY) OR orderRef.deliveryState IN (:PARTIALLY_SHIPPED)');
+            $qb->andWhere('orders.deliveryState IN (:READY) OR orders.deliveryState IN (:PARTIALLY_SHIPPED)');
             $qb->setParameters(array('user'=>$this->getUser(), 'READY'=>Order::DELIVERY_STATE_READY, 'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
 
             if ($orderFilter) {
-                $qb->andWhere('o.id =:orderRef');
-                $qb->setParameter('orderRef', $orderFilter);
+                $qb->andWhere('o.id =:orders');
+                $qb->setParameter('orders', $orderFilter);
             }
             if ($dateFilter) {
-                $qb->andWhere('orderRef.createdAt BETWEEN :fromDate AND :toDate')
+                $qb->andWhere('orders.createdAt BETWEEN :fromDate AND :toDate')
                     ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($dateFilter)))
                     ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($dateFilter)));
             }
@@ -94,11 +92,24 @@ class DeliveryController extends BaseController
     public function view(Delivery $delivery)
     {
         $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($delivery);
+        $agents = null;
+        $orderNumberArr = array();
+        $orderObj = array();
+        $orders = $delivery->getOrders();
+
+        foreach ($orders as $order){
+            $orderNumberArr[] = $order->getId();
+            $agents = $order->getAgent();
+            $orderObj[] = $order;
+        }
 
         return $this->render('RbsSalesBundle:Delivery:view.html.twig', array(
             'delivery'  => $delivery,
-            'order'     => $delivery->getOrderRef(),
-            'agent'  => $delivery->getOrderRef()->getAgent(),
+            'order'     => $delivery->getOrders(),
+            'agent'  => $agents,
+            'orderObj'  => $orderObj,
+            'vehicles'  => $delivery->getVehicles(),
+            'orderNumberArr'  => $orderNumberArr,
             'partialItems' => $partialItems
         ));
     }
@@ -128,82 +139,6 @@ class DeliveryController extends BaseController
     }
 
     /**
-     * @Route("/delivery/{id}/vehicle-in", name="delivery_vehicle_in")
-     * @param Delivery $delivery
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN")
-     */
-    public function vehicleInAction(Delivery $delivery)
-    {
-        if (!$delivery->getVehicleIn()) {
-            $delivery->setVehicleIn(new \DateTime());
-            $this->getDoctrine()->getManager()->persist($delivery);
-            $this->getDoctrine()->getManager()->flush();
-
-            $this->dispatch('delivery.vehicle_in', new DeliveryEvent($delivery));
-        }
-
-        return new JsonResponse();
-    }
-
-    /**
-     * @Route("/delivery/{id}/start-loading", name="delivery_start_loading")
-     * @param Delivery $delivery
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_START")
-     */
-    public function startLoadingAction(Delivery $delivery)
-    {
-        if (!$delivery->getStartLoad()) {
-            $delivery->setStartLoad(new \DateTime());
-            $this->getDoctrine()->getManager()->persist($delivery);
-            $this->getDoctrine()->getManager()->flush();
-
-            $this->dispatch('delivery.start_loading', new DeliveryEvent($delivery));
-        }
-
-        return new JsonResponse();
-    }
-
-    /**
-     * @Route("/delivery/{id}/finish-loading", name="delivery_finish_loading")
-     * @param Delivery $delivery
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_FINISH")
-     */
-    public function finishLoadingAction(Delivery $delivery)
-    {
-        if (!$delivery->getFinishLoad()) {
-            $delivery->setFinishLoad(new \DateTime());
-            $this->getDoctrine()->getManager()->persist($delivery);
-            $this->getDoctrine()->getManager()->flush();
-
-            $this->dispatch('delivery.finish_loading', new DeliveryEvent($delivery));
-        }
-
-        return new JsonResponse();
-    }
-
-    /**
-     * @Route("/delivery/{id}/vehicle-out", name="delivery_vehicle_out")
-     * @param Delivery $delivery
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_OUT")
-     */
-    public function vehicleOutAction(Delivery $delivery)
-    {
-        if (!$delivery->getVehicleOut()) {
-            $delivery->setVehicleOut(new \DateTime());
-            $this->getDoctrine()->getManager()->persist($delivery);
-            $this->getDoctrine()->getManager()->flush();
-
-            $this->dispatch('delivery.vehicle_out', new DeliveryEvent($delivery));
-        }
-
-        return new JsonResponse();
-    }
-
-    /**
      * @Route("/delivery/{id}/save", name="delivery_save", options={"expose"=true})
      * @param Delivery $delivery
      * @return \Symfony\Component\HttpFoundation\Response
@@ -220,7 +155,7 @@ class DeliveryController extends BaseController
 
         $this->dispatch('delivery.delivered', new DeliveryEvent($delivery));
 
-        $this->flashMessage('success', 'Order #' . $delivery->getOrderRef()->getId() . ' ' . $delivery->getOrderRef()->getDeliveryState() . ' Successfully');
+        $this->flashMessage('success', 'Order #' . $delivery->getOrders()->getId() . ' ' . $delivery->getOrders()->getDeliveryState() . ' Successfully');
 
         return new Response();
     }
@@ -256,7 +191,7 @@ class DeliveryController extends BaseController
 
                 $this->flashMessage('success', 'Delivery Information Update Successfully!');
 
-                return $this->redirect($this->generateUrl('order_details', array('id' => $delivery->getOrderRef()->getId())));
+                return $this->redirect($this->generateUrl('order_details', array('id' => $delivery->getOrders()->getId())));
             }
         }
 

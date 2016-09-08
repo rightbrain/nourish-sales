@@ -59,11 +59,6 @@ class Order
     protected $payments;
 
     /**
-     * @ORM\ManyToMany(targetEntity="TruckInfo", mappedBy="orders")
-     **/
-    protected $truckInfos;
-
-    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\OrderItem", mappedBy="order", cascade={"persist", "remove"}, orphanRemoval=true))
@@ -142,9 +137,8 @@ class Order
     private $remark;
 
     /**
-     * @var Delivery
      *
-     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\Delivery", mappedBy="orderRef")
+     * @ORM\ManyToMany(targetEntity="Delivery", mappedBy="orders")
      */
     private $deliveries;
 
@@ -166,7 +160,6 @@ class Order
     public function __construct()
     {
         $this->orderItems = new ArrayCollection();
-        $this->deliveries = new ArrayCollection();
     }
 
     /**
@@ -431,11 +424,19 @@ class Order
     }
 
     /**
-     * @return Delivery
+     * @return mixed
      */
     public function getDeliveries()
     {
         return $this->deliveries;
+    }
+
+    /**
+     * @param mixed $deliveries
+     */
+    public function setDeliveries($deliveries)
+    {
+        $this->deliveries = $deliveries;
     }
 
     /**
@@ -454,22 +455,6 @@ class Order
         $this->location = $location;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getTruckInfos()
-    {
-        return $this->truckInfos;
-    }
-
-    /**
-     * @param mixed $truckInfos
-     */
-    public function setTruckInfos($truckInfos)
-    {
-        $this->truckInfos = $truckInfos;
-    }
-    
     public function categorySum()
     {
         $data = array();

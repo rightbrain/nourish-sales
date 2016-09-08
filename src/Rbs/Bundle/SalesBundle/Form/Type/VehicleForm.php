@@ -10,7 +10,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class TruckInfoForm extends AbstractType
+class VehicleForm extends AbstractType
 {
     private $user;
 
@@ -27,25 +27,10 @@ class TruckInfoForm extends AbstractType
     {
         if($this->user->getUserType() != User::AGENT){
             $builder
-                ->add('orders', 'entity', array(
-                    'class' => 'RbsSalesBundle:Order',
-                    'property' => 'getOrderIdAndAgent',
-                    'required' => false,
-                    'multiple' => true,
-                    'empty_value' => 'Select Order',
-                    'empty_data' => null,
-                    'query_builder' => function (OrderRepository $repository)
-                    {
-                        return $repository->createQueryBuilder('o')
-                            ->where('o.deliveryState != :COMPLETE')
-                            ->andWhere('o.orderState != :CANCEL')
-                            ->setParameters(array('COMPLETE'=>Order::DELIVERY_STATE_SHIPPED, 'CANCEL'=>Order::ORDER_STATE_CANCEL));
-                    }
-                ))
                 ->add('depo', 'entity', array(
                     'class' => 'Rbs\Bundle\CoreBundle\Entity\Depo',
                     'property' => 'name',
-                    'required' => false,
+                    'required' => true,
                     'empty_value' => 'Select Depo',
                     'empty_data' => null,
                     'query_builder' => function (DepoRepository $repository)
@@ -57,25 +42,26 @@ class TruckInfoForm extends AbstractType
                 ));
         }else{
             $builder
-            ->add('orders', 'entity', array(
-                'class' => 'RbsSalesBundle:Order',
-                'property' => 'id',
-                'required' => true,
-                'multiple' => true,
-                'empty_value' => 'Select Order',
-                'empty_data' => null,
-                'query_builder' => function (OrderRepository $repository)
-                {
-                    return $repository->createQueryBuilder('o')
-                        ->join('o.agent', 'a')
-                        ->join('a.user', 'u')
-                        ->where('u.id =:user')
-                        ->andWhere('o.deliveryState != :COMPLETE')
-                        ->andWhere('o.orderState != :CANCEL')
-                        ->setParameters(array('COMPLETE'=>Order::DELIVERY_STATE_SHIPPED, 'CANCEL'=>Order::ORDER_STATE_CANCEL,
-                            'user'=>$this->user->getId() ));
-                }
-            ));
+                ->add('orders', 'entity', array(
+                    'class' => 'RbsSalesBundle:Order',
+                    'property' => 'id',
+                    'required' => true,
+                    'multiple' => false,
+                    'mapped' => false,
+                    'empty_value' => 'Select Order',
+                    'empty_data' => null,
+                    'query_builder' => function (OrderRepository $repository)
+                    {
+                        return $repository->createQueryBuilder('o')
+                            ->join('o.agent', 'a')
+                            ->join('a.user', 'u')
+                            ->where('u.id =:user')
+                            ->andWhere('o.deliveryState != :COMPLETE')
+                            ->andWhere('o.orderState != :CANCEL')
+                            ->setParameters(array('COMPLETE'=>Order::DELIVERY_STATE_SHIPPED, 'CANCEL'=>Order::ORDER_STATE_CANCEL,
+                                'user'=>$this->user->getId() ));
+                    }
+                ));
         }
         $builder
             ->add('driverName', 'text', array(
@@ -100,12 +86,12 @@ class TruckInfoForm extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Rbs\Bundle\SalesBundle\Entity\TruckInfo'
+            'data_class' => 'Rbs\Bundle\SalesBundle\Entity\Vehicle'
         ));
     }
 
     public function getName()
     {
-        return 'truck_info';
+        return 'vehicle';
     }
 }
