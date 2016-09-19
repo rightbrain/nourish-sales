@@ -1,7 +1,11 @@
-{% if delivery.deliveryAdd == false %}
+{% if delivery.deliveryAdd == false and shippedStatus == 'READY'%}
 <div class="action-content-cancel">
+    <form id="delivery-item-form" action="{{ path('delivery_save', {id: delivery.id }) }}" method="post">
     <div class="modal-header portlet-title blue">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Delivery ID <span class="badge badge-primary">
+                {{ delivery.id }}
+            </span></h4>
         <h4 class="modal-title">Order No <span class="badge badge-primary">
             {% for orderNumber in orderNumberArr %}
                 {{ orderNumber }}
@@ -10,9 +14,6 @@
             </span></h4>
     </div>
     <div class="modal-body">
-
-        <form id="delivery-item-form">
-
             <div class="row">
                 <div class="col-md-12">
                     <div class="portlet">
@@ -113,10 +114,12 @@
                                 </thead>
                                 <tbody class="orderItems">
                                 {% for index, vehicle in vehicles %}
+                                    {% if vehicle.shipped == 0 %}
                                     <tr>
                                         <td><input name="checked-vehicles[{{ vehicle.id }}]" type="checkbox"></td>
                                         <td>{{ vehicle.id }}</td>
                                     </tr>
+                                    {% endif %}
                                 {% endfor %}
                                 <tbody>
                             </table>
@@ -125,19 +128,26 @@
                     {% endif %}
                 </div>
             </div>
-        </form>
-
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn blue green" id="save-delivery"> Complete Delivery </button>
+        <button type="submit" class="btn blue green" id="save-delivery"> Complete Delivery </button>
         <a class="btn default" data-dismiss="modal"> Close </a>
     </div>
+    </form>
 </div>
 {% else %}
     <div class="action-content-cancel">
         <div class="modal-header portlet-title blue">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-            {#<h4 class="modal-title">Order No <span class="badge badge-primary">{{ order.id }}</span></h4>#}
+            <h4 class="modal-title">Delivery ID <span class="badge badge-primary">
+                {{ delivery.id }}
+            </span></h4>
+            <h4 class="modal-title">Order No <span class="badge badge-primary">
+            {% for orderNumber in orderNumberArr %}
+                {{ orderNumber }}
+                {% if delivery.transportGiven != 'AGENT' %},{% endif %}
+            {% endfor %}
+            </span></h4>
         </div>
 
         <form id="delivery-item-form-partially-shipped" action="{{ path('delivery_partially_shipped') }}" method="post">
@@ -153,18 +163,8 @@
                                     <tr>
                                         <th>Agent Name</th>
                                         <td>{{ agent.user.profile.fullName }}</td>
-                                        <th>Order Date</th>
-                                        {#<td>{{ order.createdAt|date(php_date_format) }}</td>#}
                                     </tr>
                                     <tr>
-                                        <th>Delivery Contact Name</th>
-                                        {#<td>{{ delivery.contactName }}</td>#}
-                                        <th>Delivery Contact No</th>
-                                        {#<td>{{ delivery.contactNo }}</td>#}
-                                    </tr>
-                                    <tr>
-                                        <th>Other Info</th>
-                                        <td>{{ delivery.otherInfo }}</td>
                                         <th>Delivery From (Depo)</th>
                                         <td>{{ delivery.depo.name }}</td>
                                     </tr>
@@ -188,7 +188,6 @@
                                     </thead>
                                     <tbody class="orderItemsPartiallyShipped">
                                     {% for index, item in partialItems %}
-                                        {% if item.orderId == order.id %}
                                         <tr>
                                             <td>{{ item.orderId }}</td>
                                             <td>{{ item.itemName }}</td>
@@ -196,14 +195,40 @@
                                             <td class="deliveredPartiallyShipped">{{ item.quantity - item.delivered }}</td>
                                             <td class="deliverPartiallyShipped">
                                                 <input name="qty[{{ item.id }}]" class="form-control input-xsmall deliver-qtyPartiallyShipped" value="{{ item.quantity - item.delivered }}">
-                                                <input type="hidden" name="orderId" value="{{ order.id }}"/>
+                                                <input type="hidden" name="orderId" value="{{ item.orderId }}"/>
                                             </td>
                                         </tr>
-                                        {% endif %}
                                     {% endfor %}
                                     <tbody>
                                 </table>
                             </div>
+                            {% if vehicles is not empty %}
+                                <div class="portlet">
+                                    <div class="portlet-title partial-delivered-items">
+                                        <div class="caption"> Vehicles Info </div>
+                                    </div>
+                                    <div class="portlet-body partial-delivered-items">
+                                        <table class="table">
+                                            <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Vehicle</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody class="orderItems">
+                                            {% for index, vehicle in vehicles %}
+                                                {% if vehicle.shipped == 0 %}
+                                                    <tr>
+                                                        <td><input name="checked-vehicles[{{ vehicle.id }}]" type="checkbox"></td>
+                                                        <td>{{ vehicle.id }}</td>
+                                                    </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                            <tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            {% endif %}
                             <input type="hidden" name="deliveryId" value="{{ delivery.id }}">
                         </div>
 

@@ -27,8 +27,8 @@ class VehicleDeliveryForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('truckInfo', 'entity', array(
-                'class' => 'Rbs\Bundle\SalesBundle\Entity\TruckInfo',
+            ->add('vehicle', 'entity', array(
+                'class' => 'Rbs\Bundle\SalesBundle\Entity\Vehicle',
                 'property' => 'truckInformation',
                 'mapped' => false,
                 'query_builder' => function (VehicleRepository $repository)
@@ -38,45 +38,28 @@ class VehicleDeliveryForm extends AbstractType
                         ->setParameter('truckInfoId', $this->truckInfo->getId());
                 }
             ));
-        if(count($this->truckInfo->getOrdersId()) == 0){
             $builder
                 ->add('deliveries', 'entity', array(
                     'class' => 'RbsSalesBundle:Delivery',
-                    'property' => 'orderRef',
-                    'required' => true,
-                    'multiple' => false,
-                    'query_builder' => function (DeliveryRepository $repository)
-                    {
-                        return $repository->createQueryBuilder('deliveries')
-                            ->join('deliveries.depo', 'd')
-                            ->join('deliveries.orderRef', 'o')
-                            ->join('d.users', 'u')
-                            ->where('u =:user')
-                            ->andWhere('o.deliveryState IN (:READY) OR o.deliveryState IN (:PARTIALLY_SHIPPED)')
-                            ->setParameters(array('user'=>$this->user->getId(), 'READY'=>Order::DELIVERY_STATE_READY, 'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
-                    }
-                ));
-        }else{
-            $builder
-                ->add('deliveries', 'entity', array(
-                    'class' => 'RbsSalesBundle:Delivery',
-                    'property' => 'orderRef',
+                    'property' => 'id',
+//                    'property' => 'orderRef',
                     'required' => true,
                     'multiple' => true,
                     'query_builder' => function (DeliveryRepository $repository)
                     {
                         return $repository->createQueryBuilder('deliveries')
                             ->join('deliveries.depo', 'd')
-                            ->join('deliveries.orderRef', 'o')
+                            ->join('deliveries.orders', 'o')
                             ->join('d.users', 'u')
                             ->where('u =:user')
                             ->andWhere('o.deliveryState IN (:READY) OR o.deliveryState IN (:PARTIALLY_SHIPPED)')
-                            ->andWhere('o.id IN (:ordersId)')
+//                            ->andWhere('o.id IN (:ordersId)')
                             ->setParameters(array('user'=>$this->user->getId(), 'READY'=>Order::DELIVERY_STATE_READY,
-                                'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED, 'ordersId'=> ($this->truckInfo->getOrdersId())));
+                                'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
+//                                'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED, 'ordersId'=> ($this->truckInfo->getOrdersId())));
                     }
                 ));
-        }
+//        }
         $builder
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')

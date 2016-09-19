@@ -114,14 +114,14 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Sales']->getChild('Truck IN/OUT')->setCurrent(true);
                 }
             }
-            if ($this->authorizationChecker->isGranted(array('ROLE_DELIVERY_MANAGE'))) {
-                $sp3 = true;
-                $menu['Sales']->addChild('Truck With Delivery', array('route' => 'truck_with_delivery_list'))
-                    ->setAttribute('icon', 'fa fa-th-list');
-                if ($this->isMatch('truck_with_delivery_list') or $this->isMatch('set_truck_with_delivery')) {
-                    $menu['Sales']->getChild('Truck With Delivery')->setCurrent(true);
-                }
-            }
+//            if ($this->authorizationChecker->isGranted(array('ROLE_DELIVERY_MANAGE'))) {
+//                $sp3 = true;
+//                $menu['Sales']->addChild('Truck With Delivery', array('route' => 'truck_with_delivery_list'))
+//                    ->setAttribute('icon', 'fa fa-th-list');
+//                if ($this->isMatch('truck_with_delivery_list') or $this->isMatch('set_truck_with_delivery')) {
+//                    $menu['Sales']->getChild('Truck With Delivery')->setCurrent(true);
+//                }
+//            }
             if ($this->authorizationChecker->isGranted(array('ROLE_STOCK_VIEW', 'ROLE_STOCK_CREATE'))) {
                 $sp3 = true;
                 $menu['Sales']->addChild('Stocks', array('route' => 'stocks_home'))

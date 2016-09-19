@@ -36,10 +36,10 @@ class DeliveryEvent extends BaseEvent
         $this->eventName = $eventName;
 
         $eventType = $this->getEventType();
-        $eventDescription = $this->getDescriptionString();
+//        $eventDescription = $this->getDescriptionString();
 
         return array(
-            'description' => $eventDescription,
+//            'description' => $eventDescription,
             'type' => $eventType,
         );
     }

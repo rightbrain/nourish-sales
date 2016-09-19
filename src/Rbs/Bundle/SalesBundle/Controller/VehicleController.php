@@ -8,6 +8,7 @@ use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 use Rbs\Bundle\SalesBundle\Event\DeliveryEvent;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleDeliveryForm;
+use Rbs\Bundle\SalesBundle\Form\Type\VehicleDeliverySetForm;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -178,6 +179,7 @@ class VehicleController extends BaseController
                     $vehicle->setAgent($agent);
                     $vehicle->setTransportGiven(Vehicle::AGENT);
                     $vehicle->setDepo($agent->getDepo());
+                    $vehicle->setOrderText($request->request->get('vehicle')['orders']);
                     $delivery = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->findOneByOrderId($request->request->get('vehicle')['orders']);
                     if(!$delivery){
                         $order = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($request->request->get('vehicle')['orders']);
@@ -250,6 +252,44 @@ class VehicleController extends BaseController
         );
 
         return $this->redirect($this->generateUrl('truck_info_in_out_list'));
+    }
+
+    /**
+     * @Route("/delivery/set/{id}", name="delivery_set", options={"expose"=true})
+     * @param Vehicle $vehicle
+     * @param Request $request
+     * @Template("RbsSalesBundle:Vehicle:vehicle-delivery-set-form.html.twig")
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     */
+    
+    public function deliverySetAction(Request $request, Vehicle $vehicle)
+    {
+        $form = $this->createForm(new VehicleDeliverySetForm($this->getUser(), $vehicle->getId()));
+
+        if ('POST' === $request->getMethod()) {
+            $delivery = new Delivery();
+            $delivery->setDepo($vehicle->getDepo());
+            $delivery->setTransportGiven(Delivery::NOURISH);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
+            foreach ($request->request->get('vehicle_delivery_form')['orders'] as $order){
+                $delivery->addOrder($this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($order));
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->update($delivery);
+            }
+            $vehicle->setDeliveries($delivery);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicle);
+
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                'Vehicle Delivery Set Successfully Start'
+            );
+
+            return $this->redirect($this->generateUrl('deliveries_home'));
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
     }
 
     /**
@@ -346,7 +386,7 @@ class VehicleController extends BaseController
     }
 
     /**
-     * @Route("/vehicle/{id}/add/with/delivery", name="set_truck_with_delivery", options={"expose"=true})
+     * @Route("/vehicle/add/with/delivery/{id}", name="set_truck_with_delivery", options={"expose"=true})
      * @Template("RbsSalesBundle:Vehicle:truck-with-delivery.html.twig")
      * @param Request $request
      * @param Vehicle $vehicle

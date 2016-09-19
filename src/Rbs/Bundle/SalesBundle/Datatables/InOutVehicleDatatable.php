@@ -25,6 +25,8 @@ class InOutVehicleDatatable extends BaseDatatable
             $line['isStartFalse'] = !$vehicle->isStart();
             $line['isFinish'] = $vehicle->isFinish();
             $line['isFinishFalse'] = !$vehicle->isFinish();
+            $line['isDeliveryTrue'] = !$vehicle->isDeliveryTrue();
+            $line['isDeliveryFalse'] = !$vehicle->isDeliveryFalse();
 
             return $line;
         };
@@ -50,6 +52,7 @@ class InOutVehicleDatatable extends BaseDatatable
             ->add('driverPhone', 'column', array('title' => 'Driver Phone'))
             ->add('truckNumber', 'column', array('title' => 'Truck Number'))
             ->add('transportGiven', 'column', array('title' => 'Given By'))
+            ->add('deliveries.id', 'column', array('title' => 'Delivery'))
             ->add('smsText', 'column', array('title' => 'SMS Text'))
             ->add('vehicleIn', 'datetime', array('title' => 'In Time', 'date_format' => 'LLL' ))
             ->add('startLoad', 'datetime', array('title' => 'Start Load', 'date_format' => 'LLL' ))
@@ -63,6 +66,8 @@ class InOutVehicleDatatable extends BaseDatatable
             ->add('isOutFalse', 'virtual', array('visible' => false))
             ->add('isStartFalse', 'virtual', array('visible' => false))
             ->add('isFinishFalse', 'virtual', array('visible' => false))
+            ->add('isDeliveryTrue', 'virtual', array('visible' => false))
+            ->add('isDeliveryFalse', 'virtual', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '180px',
                 'title' => 'Action',
@@ -103,7 +108,25 @@ class InOutVehicleDatatable extends BaseDatatable
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_TRUCK_START',
-                        'render_if' => array('isStart', 'isInFalse')
+                        'render_if' => array('isStart', 'isInFalse', 'isDeliveryTrue')
+                    ),
+                    array(
+                        'route' => 'delivery_set',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Delivery Set',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'disable-action',
+                            'class' => 'btn btn-primary btn-xs delete-list-btn',
+                            'role' => 'button'
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_DELIVERY_MANAGE',
+                        'render_if' => array('isStart', 'isInFalse', 'isDeliveryFalse')
                     ),
                     array(
                         'route' => 'truck_finish',

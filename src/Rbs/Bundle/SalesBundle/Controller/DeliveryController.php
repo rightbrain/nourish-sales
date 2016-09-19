@@ -2,7 +2,8 @@
 
 namespace Rbs\Bundle\SalesBundle\Controller;
 
-use Doctrine\DBAL\Query\QueryBuilder;
+use Doctrine\ORM\Query;
+use Doctrine\ORM\QueryBuilder;
 use JMS\SecurityExtraBundle\Annotation as JMS;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
@@ -64,7 +65,7 @@ class DeliveryController extends BaseController
             $qb->join('sales_deliveries.depo', 'd');
             $qb->join('sales_deliveries.orders', 'o');
             $qb->join('d.users', 'u');
-            $qb->andWhere('u =:user');
+            $qb->where('u =:user');
             $qb->andWhere('orders.deliveryState IN (:READY) OR orders.deliveryState IN (:PARTIALLY_SHIPPED)');
             $qb->setParameters(array('user'=>$this->getUser(), 'READY'=>Order::DELIVERY_STATE_READY, 'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
 
@@ -95,17 +96,25 @@ class DeliveryController extends BaseController
         $agents = null;
         $orderNumberArr = array();
         $orderObj = array();
+        $orderShippedStatus = array();
         $orders = $delivery->getOrders();
 
         foreach ($orders as $order){
             $orderNumberArr[] = $order->getId();
             $agents = $order->getAgent();
             $orderObj[] = $order;
+            $orderShippedStatus[] = $order->getDeliveryState();
+        }
+        if (in_array(Order::DELIVERY_STATE_READY, $orderShippedStatus)) {
+            $shippedStatus = Order::DELIVERY_STATE_READY;
+        }else{
+            $shippedStatus = Order::DELIVERY_STATE_PARTIALLY_SHIPPED;
         }
 
         return $this->render('RbsSalesBundle:Delivery:view.html.twig', array(
             'delivery'  => $delivery,
             'order'     => $delivery->getOrders(),
+            'shippedStatus'     => $shippedStatus,
             'agent'  => $agents,
             'orderObj'  => $orderObj,
             'vehicles'  => $delivery->getVehicles(),
@@ -130,6 +139,14 @@ class DeliveryController extends BaseController
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryStatePartialShipped($data['orders']);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStockFromOnHold($delivery);
+
+        if (!empty($this->get('request')->request->get('checked-vehicles'))) {
+            foreach ($this->get('request')->request->get('checked-vehicles') as $vehicleId => $vehicle) {
+                $vehicleObj = $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->find($vehicleId);
+                $vehicleObj->setShipped(true);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicleObj);
+            }
+        }
 
         $this->dispatch('delivery.delivered', new DeliveryEvent($delivery));
 
@@ -198,5 +215,33 @@ class DeliveryController extends BaseController
         return array(
             'form' => $form->createView(),
         );
+    }
+    /**
+     * @Route("/delivery-save/{id}", name="delivery_save", options={"expose"=true})
+     * @param Request $request
+     * @param Delivery $delivery
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     */
+    public function deliverySaveAction(Request $request, Delivery $delivery)
+    {
+        $data = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->save($delivery, $this->get('request')->request->all());
+
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStockFromOnHold($delivery);
+
+        if (!empty($this->get('request')->request->get('checked-vehicles'))) {
+                foreach ($this->get('request')->request->get('checked-vehicles') as $vehicleId => $vehicle) {
+                    $vehicleObj = $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->find($vehicleId);
+                    $vehicleObj->setShipped(true);
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicleObj);
+                }
+        }
+        
+        $this->dispatch('delivery.delivered', new DeliveryEvent($delivery));
+
+        $this->flashMessage('success', 'Delivery Successfully Complete!');
+
+        return $this->redirect($this->generateUrl('deliveries_home'));
     }
 }

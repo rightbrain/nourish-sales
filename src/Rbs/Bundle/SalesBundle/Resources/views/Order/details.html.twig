@@ -197,48 +197,6 @@
                                 </div>
                             {% endif %}
 
-                            {#{% if order.deliveries is not empty %}#}
-                                {#<div class="portlet">#}
-                                    {#<div class="portlet-title partial-delivered-items">#}
-                                        {#<div class="caption"> Delivery Information </div>#}
-                                    {#</div>#}
-                                    {#<div class="portlet-body partial-delivered-items">#}
-
-                                        {#<table class="table">#}
-                                            {#<thead>#}
-                                            {#<tr>#}
-                                                {#<th>Sl</th>#}
-                                                {#<th>Depo</th>#}
-                                                {#<th>Contact Name</th>#}
-                                                {#<th>Contact No</th>#}
-                                                {#<th>Vehicle In</th>#}
-                                                {#<th>Vehicle Out</th>#}
-                                                {#{% if is_granted('ROLE_ORDER_EDIT') and order.orderState != 'COMPLETE' %}#}
-                                                {#<th>Actions</th>#}
-                                                {#{% endif %}#}
-                                            {#</tr>#}
-                                            {#</thead>#}
-                                            {#<tbody>#}
-                                            {#{% for index, delivery in order.deliveries %}#}
-                                                {#<tr>#}
-                                                    {#<td>{{ index + 1 }}.</td>#}
-                                                    {#<td>{{ delivery.depo.name }}</td>#}
-                                                    {#<td>{{ delivery.contactName }}</td>#}
-                                                    {#<td>{{ delivery.contactNo }}</td>#}
-                                                    {#<td>{% if delivery.vehicleIn is not null %} {{ delivery.vehicleIn|date(php_date_format ~ " h:i a") }} {% endif %}</td>#}
-                                                    {#<td>{% if delivery.vehicleOut is not null %} {{ delivery.vehicleOut|date(php_date_format ~ " h:i a") }} {% endif %}</td>#}
-                                                    {#{% if is_granted('ROLE_ORDER_EDIT') and order.orderState != 'COMPLETE' %}#}
-                                                        {#<td><a role="button" data-target="#deliveryUpdate" data-toggle="modal" class="btn green" href="{{ path('update_delivery', {id: delivery.id}) }}">Edit</a></td>#}
-                                                    {#{% endif %}#}
-                                                {#</tr>#}
-                                            {#{% endfor %}#}
-                                            {#</tbody>#}
-                                        {#</table>#}
-
-                                    {#</div>#}
-                                {#</div>#}
-                            {#{% endif %}#}
-
                             {% if deliveryItems is not empty %}
                                 <div class="portlet">
                                     <div class="portlet-title partial-delivered-items">
@@ -253,7 +211,6 @@
                                                 <th>Delivery ID</th>
                                                 <th>Item Name</th>
                                                 <th>Quantity</th>
-                                                <th>Date</th>
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -263,7 +220,6 @@
                                                     <td>{{ deliveryItem.delivery.id }}</td>
                                                     <td>{{ deliveryItem.orderItem.item.name }}</td>
                                                     <td>{{ deliveryItem.qty }}</td>
-                                                    {#<td>{{ deliveryItem.delivery.finishLoad | date(php_date_format) }}</td>#}
                                                 </tr>
                                             {% endfor %}
                                             </tbody>

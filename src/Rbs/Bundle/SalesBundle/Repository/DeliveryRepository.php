@@ -23,6 +23,14 @@ class DeliveryRepository extends EntityRepository
         $this->_em->persist($data);
         $this->_em->flush();
     }
+    
+    public function update($data)
+    {
+        $this->_em->persist($data);
+        $this->_em->flush();
+        return $this->_em;
+    }
+    
 //    public function createDelivery(Order $order, Depo $depo)
 //    {
 //        $delivery = $this->findOneBy(array('orderRef' => $order));
@@ -57,7 +65,7 @@ class DeliveryRepository extends EntityRepository
             $item = $this->_em->getRepository('RbsSalesBundle:OrderItem')->find($itemId);
 
             $deliveryItem = new DeliveryItem();
-//            $deliveryItem->setOrder($item->getOrder());
+            $deliveryItem->setOrder($item->getOrder());
             $deliveryItem->setDelivery($delivery);
             $deliveryItem->setOrderItem($item);
             $deliveryItem->setQty($qty);
@@ -80,7 +88,7 @@ class DeliveryRepository extends EntityRepository
                 $item = $this->_em->getRepository('RbsSalesBundle:OrderItem')->find($itemId);
 
                 $deliveryItem = new DeliveryItem();
-//                $deliveryItem->setOrder($order);
+                $deliveryItem->setOrder($order);
                 $deliveryItem->setDelivery($delivery);
                 $deliveryItem->setOrderItem($item);
                 $deliveryItem->setQty($qty);
@@ -104,7 +112,7 @@ class DeliveryRepository extends EntityRepository
                     $item = $this->_em->getRepository('RbsSalesBundle:OrderItem')->find($itemId);
 
                     $deliveryItem = new DeliveryItem();
-//                    $deliveryItem->setOrder($order);
+                    $deliveryItem->setOrder($order);
                     $deliveryItem->setDelivery($delivery);
                     $deliveryItem->setOrderItem($item);
                     $deliveryItem->setQty($previousItems[$orderId][$itemId]);
@@ -143,4 +151,6 @@ class DeliveryRepository extends EntityRepository
 
         return $query->getQuery()->getSingleResult();
     }
+    
+    
 }

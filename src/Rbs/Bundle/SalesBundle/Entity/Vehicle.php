@@ -78,6 +78,20 @@ class Vehicle
     private $status = 'ACTIVE';
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="shipped", type="boolean", nullable=true)
+     */
+    private $shipped = false;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="order_text", type="text", nullable=true)
+     */
+    private $orderText;
+
+    /**
      * @var array $type
      *
      * @ORM\Column(name="transport_status", type="string", length=255, columnDefinition="ENUM('CREATE', 'IN', 'OUT', 'START LOAD', 'FINISH LOAD')", nullable=false)
@@ -403,6 +417,22 @@ class Vehicle
         return false;
     }
 
+    public function isDeliveryTrue()
+    {
+        if($this->deliveries == null){
+            return true;
+        }
+        return false;
+    }
+
+    public function isDeliveryFalse()
+    {
+        if($this->deliveries == null){
+            return false;
+        }
+        return true;
+    }
+
     /**
      * @return mixed
      */
@@ -486,5 +516,37 @@ class Vehicle
     public function setTransportStatus($transportStatus)
     {
         $this->transportStatus = $transportStatus;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrderText()
+    {
+        return $this->orderText;
+    }
+
+    /**
+     * @param mixed $orderText
+     */
+    public function setOrderText($orderText)
+    {
+        $this->orderText = $orderText;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getShipped()
+    {
+        return $this->shipped;
+    }
+
+    /**
+     * @param mixed $shipped
+     */
+    public function setShipped($shipped)
+    {
+        $this->shipped = $shipped;
     }
 }
