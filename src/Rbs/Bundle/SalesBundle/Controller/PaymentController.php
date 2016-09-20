@@ -76,13 +76,9 @@ class PaymentController extends BaseController
                         ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($fromDate)));
                 }
             }
-
             if ($user->getUserType() == User::AGENT) {
                 $agent = $agentRepository->findOneBy(array('user' => $user->getId()));
                 $qb->andWhere('sales_payments.agent = :agent')->setParameter('agent', array($agent));
-            } else if ($user->getUserType() == User::AGENT) {
-                $agents = $agentRepository->findBy(array('agent' => $user->getId()));
-                $qb->andWhere('sales_payments.agent IN(:agents)')->setParameter('agents', $agents);
             }
         };
         $query->addWhereAll($function);
