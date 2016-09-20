@@ -30,28 +30,11 @@ class DeliveryRepository extends EntityRepository
         $this->_em->flush();
         return $this->_em;
     }
-    
-//    public function createDelivery(Order $order, Depo $depo)
-//    {
-//        $delivery = $this->findOneBy(array('orderRef' => $order));
-//        if (!$delivery) {
-//            $delivery = new Delivery();
-//            $delivery->setOrderRef($order);
-//            $delivery->setDepo($depo);
-//            $this->_em->persist($delivery);
-//            $this->_em->flush();
-//        }
-//    }
   
     public function create(Order $order, Depo $depo, $request)
     {
         $delivery = new Delivery();
-//        $delivery->setOrderRef($order);
         $delivery->setDepo($depo);
-//        $delivery->setVehicleIn(new DateTime($request['in']));
-//        $delivery->setStartLoad(new DateTime($request['start']));
-//        $delivery->setFinishLoad(new DateTime($request['finish']));
-//        $delivery->setVehicleOut(new DateTime($request['out']));
         $this->_em->persist($delivery);
         $this->_em->flush();
         
@@ -81,6 +64,7 @@ class DeliveryRepository extends EntityRepository
 
     public function save($delivery, $data)
     {
+        $delivery->setShipped(true);
         $output = array('orders' => array());
         foreach ($data['qty'] as $orderId => $deliveryItems) {
             foreach ($deliveryItems as $itemId => $qty) {

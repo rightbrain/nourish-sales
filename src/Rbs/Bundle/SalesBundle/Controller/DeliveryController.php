@@ -8,6 +8,7 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Event\DeliveryEvent;
+use Rbs\Bundle\SalesBundle\Form\Type\DeliveryAddForm;
 use Rbs\Bundle\SalesBundle\Form\Type\DeliveryForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -65,7 +66,8 @@ class DeliveryController extends BaseController
             $qb->join('sales_deliveries.depo', 'd');
             $qb->join('sales_deliveries.orders', 'o');
             $qb->join('d.users', 'u');
-            $qb->where('u =:user');
+            $qb->andWhere('u =:user');
+            $qb->andWhere('sales_deliveries.shipped = 0');
             $qb->andWhere('orders.deliveryState IN (:READY) OR orders.deliveryState IN (:PARTIALLY_SHIPPED)');
             $qb->setParameters(array('user'=>$this->getUser(), 'READY'=>Order::DELIVERY_STATE_READY, 'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
 
@@ -216,6 +218,7 @@ class DeliveryController extends BaseController
             'form' => $form->createView(),
         );
     }
+    
     /**
      * @Route("/delivery-save/{id}", name="delivery_save", options={"expose"=true})
      * @param Request $request
@@ -243,5 +246,43 @@ class DeliveryController extends BaseController
         $this->flashMessage('success', 'Delivery Successfully Complete!');
 
         return $this->redirect($this->generateUrl('deliveries_home'));
+    }
+
+    /**
+     * @Route("/delivery/vehicle/add", name="delivery_add", options={"expose"=true})
+     * @Template("RbsSalesBundle:Delivery:delivery-add.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     */
+    public function addDeliveryAction(Request $request)
+    {
+        $form = $this->createForm(new DeliveryAddForm($this->getUser()));
+
+        if ('POST' === $request->getMethod()) {
+            $delivery = new Delivery();
+            $delivery->setTransportGiven(Delivery::NOURISH);
+            $delivery->setShipped(false);
+            $delivery->setDepo($this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('delivery_add_form')['depo']));
+
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
+            foreach ($request->request->get('delivery_add_form')['orders'] as $order){
+                $orderObj = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($order);
+                $delivery->addOrder($orderObj);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->update($delivery);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($orderObj);
+            }
+            
+            $this->get('session')->getFlashBag()->add(
+                'success',
+                'Delivery Add Successfully'
+            );
+
+            return $this->redirect($this->generateUrl('deliveries_home'));
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
     }
 }

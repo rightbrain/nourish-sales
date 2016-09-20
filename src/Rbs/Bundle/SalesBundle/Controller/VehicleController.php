@@ -185,6 +185,7 @@ class VehicleController extends BaseController
                         $order = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($request->request->get('vehicle')['orders']);
                         $delivery = new Delivery();
                         $delivery->addOrder($order);
+                        $delivery->setShipped(false);
                         $delivery->setDepo($agent->getDepo());
                         $delivery->setTransportGiven(Delivery::AGENT);
                         $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
@@ -268,17 +269,8 @@ class VehicleController extends BaseController
         $form = $this->createForm(new VehicleDeliverySetForm($this->getUser(), $vehicle->getId()));
 
         if ('POST' === $request->getMethod()) {
-            $delivery = new Delivery();
-            $delivery->setDepo($vehicle->getDepo());
-            $delivery->setTransportGiven(Delivery::NOURISH);
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
-            foreach ($request->request->get('vehicle_delivery_form')['orders'] as $order){
-                $delivery->addOrder($this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($order));
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->update($delivery);
-            }
-            $vehicle->setDeliveries($delivery);
+            $vehicle->setDeliveries($this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->find($request->request->get('vehicle_delivery_form')['deliveries']));
             $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicle);
-
             $this->get('session')->getFlashBag()->add(
                 'success',
                 'Vehicle Delivery Set Successfully Start'

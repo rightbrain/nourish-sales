@@ -148,12 +148,10 @@ class OrderRepository extends EntityRepository
             } else {
                 $order->setDeliveryState(Order::DELIVERY_STATE_SHIPPED);
             }
-
             $order->setOrderState(Order::ORDER_STATE_COMPLETE);
             $this->_em->persist($order);
+            $this->_em->flush();
         }
-
-        $this->_em->flush();
     }
 
     public function updateDeliveryStatePartialShipped($orders)

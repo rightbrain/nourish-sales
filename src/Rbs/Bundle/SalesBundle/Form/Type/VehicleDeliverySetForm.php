@@ -2,9 +2,10 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\Vehicle;
-use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
+use Rbs\Bundle\SalesBundle\Repository\DeliveryRepository;
 use Rbs\Bundle\SalesBundle\Repository\VehicleRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -38,23 +39,24 @@ class VehicleDeliverySetForm extends AbstractType
                         ->setParameter('vehicleId', $this->vehicleId);
                 }
             ))
-            ->add('orders', 'entity', array(
-                'class' => 'RbsSalesBundle:Order',
-                'property' => 'id',
+            ->add('deliveries', 'entity', array(
+                'class' => 'RbsSalesBundle:Delivery',
+                'property' => 'deliveryInfo',
                 'required' => true,
-                'multiple' => true,
-                'empty_value' => 'Select Order',
+                'multiple' => false,
+                'empty_value' => 'Select Delivery',
                 'empty_data' => null,
-                'query_builder' => function (OrderRepository $repository)
+                'query_builder' => function (DeliveryRepository $repository)
                 {
-                    return $repository->createQueryBuilder('o')
-                        ->join('o.agent', 'a')
-                        ->join('a.user', 'u')
-                        ->where('o.deliveryState != :COMPLETE')
-                        ->andWhere('o.orderState != :CANCEL')
-                        ->andWhere('o.orderState != :PENDING')
-                        ->setParameters(array('COMPLETE'=>Order::DELIVERY_STATE_SHIPPED, 'CANCEL'=>Order::ORDER_STATE_CANCEL,
-                            'PENDING'=>Order::ORDER_STATE_PENDING));
+                    return $repository->createQueryBuilder('sales_deliveries')
+                        ->join('sales_deliveries.depo', 'd')
+                        ->join('sales_deliveries.orders', 'o')
+                        ->join('d.users', 'u')
+                        ->andWhere('u =:user')
+                        ->andWhere('o.deliveryState IN (:READY) OR o.deliveryState IN (:PARTIALLY_SHIPPED)')
+                        ->setParameters(array('user'=>$this->user, 'READY'=>Order::DELIVERY_STATE_READY,
+                            'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
+
                 }
             ))
             ->add('submit', 'submit', array(

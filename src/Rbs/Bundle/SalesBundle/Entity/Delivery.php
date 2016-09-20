@@ -78,7 +78,14 @@ class Delivery
      * @ORM\Column(name="transport_given", type="string", length=255, columnDefinition="ENUM('NOURISH', 'AGENT')", nullable=true)
      */
     private $transportGiven;
-    
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="shipped", type="boolean", nullable=true)
+     */
+    private $shipped = false;
+
     public function __construct()
     {
         $this->orders = new ArrayCollection();
@@ -228,5 +235,34 @@ class Delivery
             }
         }
         return true;
+    }
+    
+    public function getOrderNumbers(){
+        $orders = ' ';
+        foreach ($this->getOrders() as $key => $order){
+            $orders .= $order->getId() . ', ';
+        }
+        return $orders;
+    }
+    
+    public function getDeliveryInfo()
+    {
+        return '#' . ' Delivery ID #'. $this->getId() . ',' . ' Order Number #' . $this->getOrderNumbers();
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isShipped()
+    {
+        return $this->shipped;
+    }
+
+    /**
+     * @param boolean $shipped
+     */
+    public function setShipped($shipped)
+    {
+        $this->shipped = $shipped;
     }
 }
