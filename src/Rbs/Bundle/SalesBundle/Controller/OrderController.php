@@ -178,6 +178,7 @@ class OrderController extends BaseController
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $order->setLocation($order->getAgent()->getUser()->getUpozilla());
+                $order->setDepo($order->getAgent()->getDepo());
                 $orderIncentiveFlag->setOrder($order);
                 $this->orderRepository()->create($order);
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
@@ -369,12 +370,11 @@ class OrderController extends BaseController
      */
     public function summeryViewAction(Order $order)
     {
-        $delivery = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->findOneBy(array('orderRef' => $order->getId()));
         $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
         /** @var OrderItem $item */
         foreach ($order->getOrderItems() as $item) {
             $stockItem = $stockRepo->findOneBy(
-                array('item' => $item->getItem()->getId(), 'depo' => $delivery->getDepo()->getId())
+                array('item' => $item->getItem()->getId(), 'depo' => $order->getDepo()->getId())
             );
             $item->isAvailable = $stockItem->isStockAvailable($item->getQuantity());
         }

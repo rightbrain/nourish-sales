@@ -98,8 +98,13 @@ services:
         tags:
             - { name: sg.datatable.view }
 
-    rbs_erp.sales.datatable.vehicle.with.delivery:
-        class: Rbs\Bundle\SalesBundle\Datatables\VehicleWithDeliveryDatatable
+    rbs_erp.sales.datatable.load.vehicle:
+        class: Rbs\Bundle\SalesBundle\Datatables\LoadVehicleDatatable
+        tags:
+            - { name: sg.datatable.view }
+
+    rbs_erp.sales.datatable.set.vehicle:
+        class: Rbs\Bundle\SalesBundle\Datatables\SetVehicleDatatable
         tags:
             - { name: sg.datatable.view }
 

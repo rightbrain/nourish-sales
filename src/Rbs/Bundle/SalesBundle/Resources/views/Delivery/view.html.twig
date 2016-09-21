@@ -7,9 +7,8 @@
                 {{ delivery.id }}
             </span></h4>
         <h4 class="modal-title">Order No <span class="badge badge-primary">
-            {% for orderNumber in orderNumberArr %}
-                {{ orderNumber }}
-                {% if delivery.transportGiven != 'AGENT' %},{% endif %}
+            {% for index, order in delivery.orders %}
+                {{ (delivery.orders|length) > (index+1) ? (order.id)~',' : (order.id)  }}
             {% endfor %}
             </span></h4>
     </div>
@@ -17,18 +16,18 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="portlet">
-
+                        <div class="portlet-title partial-delivered-items">
+                            <div class="caption"> Agent Info </div>
+                        </div>
                         <div class="portlet-body">
-
                             <table class="table">
+                                {% for index, order in delivery.orders %}
                                 <tr>
-                                    <th>Agent Name</th>
-                                    <td>{{ agent.user.profile.fullName }}</td>
+                                    <td>Agent Name : {{ order.agent.user.profile.fullName }}</td>
+                                    <td>Order Number : {{ order.id }}</td>
+                                    <td>Delivery To : {{ order.agent.user.profile.address }}</td>
                                 </tr>
-                                <tr>
-                                    <th>Delivery From (Depo)</th>
-                                    <td>{{ delivery.depo.name }}</td>
-                                </tr>
+                                {% endfor %}
                             </table>
                         </div>
                     </div>
@@ -40,6 +39,7 @@
                             <table class="table">
                                 <thead>
                                 <tr>
+                                    <th>SL</th>
                                     <th>Order Id</th>
                                     <th>Item</th>
                                     <th>Quantity</th>
@@ -48,9 +48,10 @@
                                 </tr>
                                 </thead>
                                 <tbody class="orderItems">
-                                {% for order in orderObj %}
+                                {% for order in delivery.orders %}
                                     {% for index, item in order.orderItems %}
                                         <tr>
+                                            <td>{{ index+1 }}</td>
                                             <td>{{ order.id }}</td>
                                             <td>{{ item.item.name }}</td>
                                             <td class="item-qty">{{ item.quantity }}</td>
@@ -65,7 +66,6 @@
                         <input type="hidden" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">
                     </div>
 
-                    {% if vehicles is not empty %}
                     <div class="portlet">
                         <div class="portlet-title partial-delivered-items">
                             <div class="caption"> Vehicles Info </div>
@@ -79,32 +79,38 @@
                                     <th>Driver Name</th>
                                     <th>Vehicle Number</th>
                                     <th>Mobile Number</th>
+                                    <th>Vehicle In</th>
                                 </tr>
                                 </thead>
                                 <tbody class="orderItems">
-                                {% for index, vehicle in vehicles %}
+                                {% set vehicleCount = 0 %}
+                                {% for index, vehicle in delivery.vehicles %}
+                                    {% if vehicle.shipped == 0 and vehicle.vehicleIn != null %}
                                     <tr>
                                         <td>{{ index + 1 }}</td>
                                         <td>{{ vehicle.id }}</td>
                                         <td>{{ vehicle.driverName }}</td>
                                         <td>{{ vehicle.truckNumber }}</td>
                                         <td>{{ vehicle.driverPhone }}</td>
+                                        <td>{{ vehicle.vehicleIn | date("Y F jS \\a\\t g:ia") }}</td>
                                     </tr>
+                                    {% set vehicleCount = vehicleCount+1 %}
+                                    {% endif %}
                                 {% endfor %}
                                 <tbody>
                             </table>
                         </div>
                     </div>
-                    {% endif %}
                 </div>
             </div>
     </div>
     <div class="modal-footer">
-        {% if vehicles|length > 0 %}
-            <button type="submit" class="btn blue green" id="save-delivery"> Complete Delivery </button>
+        {% if vehicleCount > 0 %}
+            <button type="submit" class="btn blue green" id="save-delivery"> Delivery Set </button>
         {% endif %}
         <a class="btn default" data-dismiss="modal"> Close </a>
     </div>
     </form>
 </div>
+
 {% endif %}

@@ -125,16 +125,4 @@ class DeliveryRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
-    
-    public function findOneByOrderId($orderId)
-    {
-        $query = $this->createQueryBuilder('d');
-        $query->join('d.orders', 'o');
-        $query->where('o.id = :orderId');
-        $query->setParameter('orderId', $orderId);
-
-        return $query->getQuery()->getSingleResult();
-    }
-    
-    
 }

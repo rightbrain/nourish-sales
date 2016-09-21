@@ -3,6 +3,7 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\CoreBundle\Entity\Location;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -142,6 +143,14 @@ class Order
      */
     private $deliveries;
 
+    /**
+     * @var Depo
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Depo")
+     * @ORM\JoinColumn(name="depo_id", nullable=true)
+     */
+    private $depo;
+    
     /**
      * Get id
      *
@@ -418,6 +427,18 @@ class Order
         return '#' . ' '. $this->getId() . ' Agent :' . $this->getAgent()->getUser()->getUsername();
     }
 
+    public function getOrderInfo()
+    {
+        return '#' . ' Order Id :'. $this->getId() . ', Amount :' . $this->getPaidAmount() .', Date:'. $this->getCreatedAt()->format('Y-F-d, h:i A');
+    }
+
+    public function getOrderInfoWithAgent()
+    {
+        return '#' . ' Order Id :'. $this->getId(). ', Agent :' .
+            ($this->getAgent()->getUser()->getProfile()->getFullName() ? $this->getAgent()->getUser()->getProfile()->getFullName()
+            : $this->getAgent()->getUser()->getUsername()). ', Date : '. $this->getCreatedAt()->format('Y-F-d, h:i A');
+    }
+
     public function getDueAmount()
     {
         return ($this->getTotalAmount() - $this->getPaidAmount());
@@ -486,5 +507,21 @@ class Order
     public function setOrderIncentiveFlag($orderIncentiveFlag)
     {
         $this->orderIncentiveFlag = $orderIncentiveFlag;
+    }
+
+    /**
+     * @return Depo
+     */
+    public function getDepo()
+    {
+        return $this->depo;
+    }
+
+    /**
+     * @param Depo $depo
+     */
+    public function setDepo($depo)
+    {
+        $this->depo = $depo;
     }
 }

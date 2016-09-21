@@ -433,6 +433,14 @@ class Vehicle
         return true;
     }
 
+    public function isDeliveryShipped()
+    {
+        if($this->deliveries->isShipped() == false){
+            return false;
+        }
+        return true;
+    }
+
     /**
      * @return mixed
      */

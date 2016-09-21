@@ -4,11 +4,11 @@ namespace Rbs\Bundle\SalesBundle\Datatables;
 use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 
 /**
- * Class InOutVehicleDatatable
+ * Class SetVehicleDatatable
  *
  * @package Rbs\Bundle\SalesBundle\Datatables
  */
-class InOutVehicleDatatable extends BaseDatatable
+class SetVehicleDatatable extends BaseDatatable
 {
     public function getLineFormatter()
     {
@@ -27,7 +27,6 @@ class InOutVehicleDatatable extends BaseDatatable
             $line['isFinishFalse'] = !$vehicle->isFinish();
             $line['isDeliveryTrue'] = !$vehicle->isDeliveryTrue();
             $line['isDeliveryFalse'] = !$vehicle->isDeliveryFalse();
-            $line['isShipped'] = !$vehicle->getShipped();
 
             return $line;
         };
@@ -44,7 +43,7 @@ class InOutVehicleDatatable extends BaseDatatable
         $this->options->setOptions($this->defaultOptions());
 
         $this->ajax->setOptions(array(
-            'url' => $this->router->generate('truck_info_in_out_list_ajax'),
+            'url' => $this->router->generate('vehicle_info_set_list_ajax'),
             'type' => 'GET'
         ));
 
@@ -54,8 +53,9 @@ class InOutVehicleDatatable extends BaseDatatable
             ->add('truckNumber', 'column', array('title' => 'Truck Number'))
             ->add('transportGiven', 'column', array('title' => 'Given By'))
             ->add('deliveries.id', 'column', array('title' => 'Delivery'))
+            ->add('smsText', 'column', array('title' => 'SMS Text'))
             ->add('vehicleIn', 'datetime', array('title' => 'In Time', 'date_format' => 'LLL' ))
-            ->add('finishLoad', 'datetime', array('title' => 'Finish Load', 'date_format' => 'LLL' ))
+            ->add('vehicleOut', 'datetime', array('title' => 'Out Time', 'date_format' => 'LLL' ))
             ->add('isIn', 'virtual', array('visible' => false))
             ->add('isOut', 'virtual', array('visible' => false))
             ->add('isStart', 'virtual', array('visible' => false))
@@ -66,7 +66,6 @@ class InOutVehicleDatatable extends BaseDatatable
             ->add('isFinishFalse', 'virtual', array('visible' => false))
             ->add('isDeliveryTrue', 'virtual', array('visible' => false))
             ->add('isDeliveryFalse', 'virtual', array('visible' => false))
-            ->add('isShipped', 'virtual', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '180px',
                 'title' => 'Action',
@@ -74,40 +73,22 @@ class InOutVehicleDatatable extends BaseDatatable
                 'end_html' => '</div>',
                 'actions' => array(
                     array(
-                        'route' => 'truck_in',
+                        'route' => 'delivery_set',
                         'route_parameters' => array(
                             'id' => 'id'
                         ),
-                        'label' => 'Vehicle In',
-                        'icon' => 'glyphicon glyphicon-edit',
-                        'attributes' => array(
-                            'rel' => 'tooltip',
-                            'title' => 'enable-action',
-                            'class' => 'btn btn-primary btn-xs delete-list-btn green',
-                            'role' => 'button'
-                        ),
-                        'confirm' => false,
-                        'confirm_message' => 'Are you sure?',
-                        'role' => 'ROLE_TRUCK_IN',
-                        'render_if' => array('isIn')
-                    ),
-                    array(
-                        'route' => 'truck_out',
-                        'route_parameters' => array(
-                            'id' => 'id'
-                        ),
-                        'label' => 'Vehicle Out',
+                        'label' => 'Delivery Set',
                         'icon' => 'glyphicon glyphicon-edit',
                         'attributes' => array(
                             'rel' => 'tooltip',
                             'title' => 'disable-action',
-                            'class' => 'btn btn-primary btn-xs delete-list-btn red',
+                            'class' => 'btn btn-primary btn-xs delete-list-btn',
                             'role' => 'button'
                         ),
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
-                        'role' => 'ROLE_TRUCK_OUT',
-                        'render_if' => array('isOut', 'isFinishFalse', 'isShipped')
+                        'role' => 'ROLE_DELIVERY_MANAGE',
+                        'render_if' => array('isStart', 'isInFalse', 'isDeliveryFalse')
                     )
                 )
             ))
@@ -127,6 +108,6 @@ class InOutVehicleDatatable extends BaseDatatable
      */
     public function getName()
     {
-        return 'vehicle_in_out_datatable';
+        return 'vehicle_set_datatable';
     }
 }

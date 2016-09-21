@@ -41,8 +41,19 @@ class DepoRepository extends EntityRepository
         $query = $this->createQueryBuilder('d');
         $query->join('d.users', 'u');
         $query->select('d.id');
-        $query->andWhere('u.id = :user');
+        $query->where('u.id = :user');
         $query->setParameter('user', $user);
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getDepoForCurrentUser($user)
+    {
+        $query = $this->createQueryBuilder('d');
+        $query->join('d.users', 'u');
+        $query->where('u.id = :user');
+        $query->setMaxResults(1);
+        $query->setParameter('user', $user->getId());
 
         return $query->getQuery()->getResult();
     }

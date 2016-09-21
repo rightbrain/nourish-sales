@@ -44,7 +44,7 @@ class VehicleForm extends AbstractType
             $builder
                 ->add('orders', 'entity', array(
                     'class' => 'RbsSalesBundle:Order',
-                    'property' => 'id',
+                    'property' => 'getOrderInfo',
                     'required' => true,
                     'multiple' => false,
                     'mapped' => false,

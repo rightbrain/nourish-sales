@@ -4,11 +4,11 @@ namespace Rbs\Bundle\SalesBundle\Datatables;
 use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 
 /**
- * Class InOutVehicleDatatable
+ * Class LoadVehicleDatatable
  *
  * @package Rbs\Bundle\SalesBundle\Datatables
  */
-class InOutVehicleDatatable extends BaseDatatable
+class LoadVehicleDatatable extends BaseDatatable
 {
     public function getLineFormatter()
     {
@@ -28,6 +28,8 @@ class InOutVehicleDatatable extends BaseDatatable
             $line['isDeliveryTrue'] = !$vehicle->isDeliveryTrue();
             $line['isDeliveryFalse'] = !$vehicle->isDeliveryFalse();
             $line['isShipped'] = !$vehicle->getShipped();
+            $line['isDeliveryShipped'] = $vehicle->isDeliveryShipped();
+            $line['isDeliveryShippedFalse'] = !$vehicle->isDeliveryShipped();
 
             return $line;
         };
@@ -44,7 +46,7 @@ class InOutVehicleDatatable extends BaseDatatable
         $this->options->setOptions($this->defaultOptions());
 
         $this->ajax->setOptions(array(
-            'url' => $this->router->generate('truck_info_in_out_list_ajax'),
+            'url' => $this->router->generate('vehicle_info_load_list_ajax'),
             'type' => 'GET'
         ));
 
@@ -55,9 +57,8 @@ class InOutVehicleDatatable extends BaseDatatable
             ->add('transportGiven', 'column', array('title' => 'Given By'))
             ->add('deliveries.id', 'column', array('title' => 'Delivery'))
             ->add('vehicleIn', 'datetime', array('title' => 'In Time', 'date_format' => 'LLL' ))
-            ->add('finishLoad', 'datetime', array('title' => 'Finish Load', 'date_format' => 'LLL' ))
+            ->add('startLoad', 'datetime', array('title' => 'Start Load', 'date_format' => 'LLL' ))
             ->add('isIn', 'virtual', array('visible' => false))
-            ->add('isOut', 'virtual', array('visible' => false))
             ->add('isStart', 'virtual', array('visible' => false))
             ->add('isFinish', 'virtual', array('visible' => false))
             ->add('isInFalse', 'virtual', array('visible' => false))
@@ -67,6 +68,7 @@ class InOutVehicleDatatable extends BaseDatatable
             ->add('isDeliveryTrue', 'virtual', array('visible' => false))
             ->add('isDeliveryFalse', 'virtual', array('visible' => false))
             ->add('isShipped', 'virtual', array('visible' => false))
+            ->add('isDeliveryShipped', 'virtual', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '180px',
                 'title' => 'Action',
@@ -74,40 +76,40 @@ class InOutVehicleDatatable extends BaseDatatable
                 'end_html' => '</div>',
                 'actions' => array(
                     array(
-                        'route' => 'truck_in',
+                        'route' => 'truck_start',
                         'route_parameters' => array(
                             'id' => 'id'
                         ),
-                        'label' => 'Vehicle In',
+                        'label' => 'Start Load',
                         'icon' => 'glyphicon glyphicon-edit',
                         'attributes' => array(
                             'rel' => 'tooltip',
-                            'title' => 'enable-action',
+                            'title' => 'disable-action',
+                            'class' => 'btn btn-primary btn-xs delete-list-btn',
+                            'role' => 'button'
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_TRUCK_START',
+                        'render_if' => array('isStart', 'isInFalse', 'isDeliveryTrue', 'isShipped', 'isDeliveryShipped')
+                    ),
+                    array(
+                        'route' => 'truck_finish',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Finish Load',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'disable-action',
                             'class' => 'btn btn-primary btn-xs delete-list-btn green',
                             'role' => 'button'
                         ),
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
-                        'role' => 'ROLE_TRUCK_IN',
-                        'render_if' => array('isIn')
-                    ),
-                    array(
-                        'route' => 'truck_out',
-                        'route_parameters' => array(
-                            'id' => 'id'
-                        ),
-                        'label' => 'Vehicle Out',
-                        'icon' => 'glyphicon glyphicon-edit',
-                        'attributes' => array(
-                            'rel' => 'tooltip',
-                            'title' => 'disable-action',
-                            'class' => 'btn btn-primary btn-xs delete-list-btn red',
-                            'role' => 'button'
-                        ),
-                        'confirm' => false,
-                        'confirm_message' => 'Are you sure?',
-                        'role' => 'ROLE_TRUCK_OUT',
-                        'render_if' => array('isOut', 'isFinishFalse', 'isShipped')
+                        'role' => 'ROLE_TRUCK_FINISH',
+                        'render_if' => array('isFinish', 'isStartFalse', 'isShipped', 'isDeliveryShipped')
                     )
                 )
             ))
@@ -127,6 +129,6 @@ class InOutVehicleDatatable extends BaseDatatable
      */
     public function getName()
     {
-        return 'vehicle_in_out_datatable';
+        return 'vehicle_load_datatable';
     }
 }

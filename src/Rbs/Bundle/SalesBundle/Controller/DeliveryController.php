@@ -94,89 +94,9 @@ class DeliveryController extends BaseController
      */
     public function view(Delivery $delivery)
     {
-        $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($delivery);
-        $agents = null;
-        $orderNumberArr = array();
-        $orderObj = array();
-        $orderShippedStatus = array();
-        $orders = $delivery->getOrders();
-
-        foreach ($orders as $order){
-            $orderNumberArr[] = $order->getId();
-            $agents = $order->getAgent();
-            $orderObj[] = $order;
-            $orderShippedStatus[] = $order->getDeliveryState();
-        }
-        if (in_array(Order::DELIVERY_STATE_READY, $orderShippedStatus)) {
-            $shippedStatus = Order::DELIVERY_STATE_READY;
-        }else{
-            $shippedStatus = Order::DELIVERY_STATE_PARTIALLY_SHIPPED;
-        }
-
         return $this->render('RbsSalesBundle:Delivery:view.html.twig', array(
-            'delivery'  => $delivery,
-            'order'     => $delivery->getOrders(),
-            'shippedStatus'     => $shippedStatus,
-            'agent'  => $agents,
-            'orderObj'  => $orderObj,
-            'vehicles'  => $delivery->getVehicles(),
-            'orderNumberArr'  => $orderNumberArr,
-            'partialItems' => $partialItems
+            'delivery'      => $delivery,
         ));
-    }
-
-    /**
-     * @Route("/delivery/partially/shipped", name="delivery_partially_shipped", options={"expose"=true})
-     * @param Request $request
-     * @return Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
-     */
-    public function delivery_item_form_partially_shipped(Request $request)
-    {
-        $order = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($request->request->get('orderId'));
-        $previousDelivery = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->find($request->request->get('deliveryId'));
-        $delivery = $this->deliveryRepository()->create($order, $previousDelivery->getDepo(), $request->request->all());
-
-        $data = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->savePartial($delivery, $request->request->all());
-
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryStatePartialShipped($data['orders']);
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStockFromOnHold($delivery);
-
-        if (!empty($this->get('request')->request->get('checked-vehicles'))) {
-            foreach ($this->get('request')->request->get('checked-vehicles') as $vehicleId => $vehicle) {
-                $vehicleObj = $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->find($vehicleId);
-                $vehicleObj->setShipped(true);
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicleObj);
-            }
-        }
-
-        $this->dispatch('delivery.delivered', new DeliveryEvent($delivery));
-
-        $this->flashMessage('success', 'Delivery Successfully Complete!');
-
-        return $this->redirect($this->generateUrl('deliveries_home'));
-    }
-
-    /**
-     * @Route("/delivery/{id}/save", name="delivery_save", options={"expose"=true})
-     * @param Delivery $delivery
-     * @return \Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
-     */
-    public function saveAction(Delivery $delivery)
-    {
-        /** TODO: Service Side Stock Check */
-
-        $data = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->save($delivery, $this->get('request')->request->all());
-
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStockFromOnHold($delivery);
-
-        $this->dispatch('delivery.delivered', new DeliveryEvent($delivery));
-
-        $this->flashMessage('success', 'Order #' . $delivery->getOrders()->getId() . ' ' . $delivery->getOrders()->getDeliveryState() . ' Successfully');
-
-        return new Response();
     }
 
     /**
@@ -226,8 +146,9 @@ class DeliveryController extends BaseController
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      */
-    public function deliverySaveAction(Request $request, Delivery $delivery)
+    public function deliverySetAction(Request $request, Delivery $delivery)
     {
+//        var_dump('ok');die;
         $data = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->save($delivery, $this->get('request')->request->all());
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
