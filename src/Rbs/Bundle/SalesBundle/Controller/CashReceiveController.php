@@ -109,7 +109,7 @@ class CashReceiveController extends BaseController
                     $payment->setRemark('Cash received by depo user.');
                     $payment->setDepositDate(new \DateTime());
                     $payment->setTransactionType(Payment::CR);
-                    $payment->setVerified(false);
+                    $payment->setVerified(true);
                     $payment->addOrder($od);
                     $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
                     $em->getRepository('RbsSalesBundle:Payment')->create($payment);
