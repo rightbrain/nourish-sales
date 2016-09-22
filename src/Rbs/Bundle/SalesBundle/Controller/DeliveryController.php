@@ -148,7 +148,6 @@ class DeliveryController extends BaseController
      */
     public function deliverySetAction(Request $request, Delivery $delivery)
     {
-//        var_dump('ok');die;
         $data = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->save($delivery, $this->get('request')->request->all());
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
