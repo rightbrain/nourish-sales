@@ -21,7 +21,7 @@ class DeliveryItemRepository extends EntityRepository
             $agents = $order->getAgent();
         }
 
-        $orders = $this->_em->getRepository('RbsSalesBundle:Order')->findBy(array('agent' => $agents, 'deliveryState' => Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
+        $orders = $delivery->getOrders();
 
         $data = array();
         foreach ($orders as $order) {
@@ -35,7 +35,7 @@ class DeliveryItemRepository extends EntityRepository
             $result = $query->getQuery()->getResult();
             foreach ($result as $row) {
                 $row['orderId'] = $order->getId();
-                $data[] = $row;
+                $data[$row['orderId']][$row['id']] = $row;
             }
         }
 

@@ -159,22 +159,28 @@ var Delivery = function()
         $('body').on('click', '#save-delivery', function(){
             var loadingDiv = $('.modal-body').find('.portlet');
             if (formValidateInit()) {
-                Metronic.blockUI({
-                    target: loadingDiv,
-                    animate: true,
-                    overlayColor: 'black'
+                bootbox.confirm('Are you sure?', function(result) {
+                    if (result) {
+                        Metronic.blockUI({
+                            target: loadingDiv,
+                            animate: true,
+                            overlayColor: 'black'
+                        });
+                        $.post(Routing.generate('delivery_save', {id:$('#delivery-id').val()}), $('#delivery-item-form').serialize())
+                            .done(function(){
+                                toastr.success('Order Delivery Saved Successfully. Please wait while page reload.');
+                                location.reload();
+                            })
+                            .fail(function(){
+                                toastr.error('Server error. Contact with System Admin');
+                                Metronic.unblockUI(loadingDiv);
+                            });
+                    }
                 });
-                $.post(Routing.generate('delivery_save', {id:$('#delivery-id').val()}), $('#delivery-item-form').serialize())
-                    .done(function(){
-                        toastr.success('Order Delivery Saved Successfully. Please wait while page reload.');
-                        location.reload();
-                    })
-                    .fail(function(){
-                        toastr.error('Server error. Contact with System Admin');
-                        Metronic.unblockUI(loadingDiv);
-                    });
             }
         });
+
+        return false;
     }
 
     function init()

@@ -94,8 +94,10 @@ class DeliveryController extends BaseController
      */
     public function view(Delivery $delivery)
     {
+        $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($delivery);
         return $this->render('RbsSalesBundle:Delivery:view.html.twig', array(
             'delivery'      => $delivery,
+            'partialItems'  => $partialItems,
         ));
     }
 
@@ -150,14 +152,14 @@ class DeliveryController extends BaseController
     {
         $data = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->save($delivery, $this->get('request')->request->all());
 
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStockFromOnHold($delivery);
+        #$this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
+        #$this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStockFromOnHold($delivery);
 
         if (!empty($this->get('request')->request->get('checked-vehicles'))) {
                 foreach ($this->get('request')->request->get('checked-vehicles') as $vehicleId => $vehicle) {
                     $vehicleObj = $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->find($vehicleId);
                     $vehicleObj->setShipped(true);
-                    $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicleObj);
+                    #$this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicleObj);
                 }
         }
         
@@ -204,5 +206,26 @@ class DeliveryController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @Route("/order_item_quantity", name="order_item_quantity", options={"expose"=true})
+     * @param Request $request
+     * @return Response
+     */
+    public function orderItemQuantityAction(Request $request)
+    {
+        $orderItemId = $request->request->get('orderItemId');
+        $deliveryItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->findOneBy(array(
+            'orderItem' => $orderItemId
+        ));
+        $orderItemQuantity = 0;
+        foreach ($deliveryItems as $deliveryItem){
+            $orderItemQuantity += $deliveryItem->getQty();
+        }
+        
+        $response = new Response(json_encode(array("orderItemQuantity" => $orderItemQuantity)), 200);
+
+        return $response;
     }
 }
