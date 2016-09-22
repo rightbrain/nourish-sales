@@ -517,6 +517,7 @@ class OrderController extends BaseController
             $payment->setRemark('A new order create.');
             $payment->setDepositDate(new \DateTime());
             $payment->setTransactionType(Payment::DR);
+            $payment->setVerified(true);
             $payment->addOrder($order);
             $em->getRepository('RbsSalesBundle:Payment')->create($payment);
 

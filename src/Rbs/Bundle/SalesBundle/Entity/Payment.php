@@ -116,6 +116,13 @@ class Payment
     private $paymentVia = 'SYSTEM';
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="verified", type="boolean", nullable=true)
+     */
+    private $verified = false;
+    
+    /**
      * Get id
      *
      * @return integer
@@ -312,6 +319,22 @@ class Payment
     public function setTransactionType($transactionType)
     {
         $this->transactionType = $transactionType;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isVerified()
+    {
+        return $this->verified;
+    }
+
+    /**
+     * @param boolean $verified
+     */
+    public function setVerified($verified)
+    {
+        $this->verified = $verified;
     }
 
 }

@@ -47,6 +47,7 @@ class PaymentRepository extends EntityRepository
         $query->where('u.userType = :AGENT');
         $query->andWhere('a.id = :agentId');
         $query->andWhere('p.transactionType = :CR');
+        $query->andWhere('p.verified = 1');
         if (!empty($data['start_date'])) {
             $query->andWhere('p.depositDate < :startDate');
             $query->setParameter('startDate', $data['start_date'].' 00:00:01');
@@ -67,6 +68,7 @@ class PaymentRepository extends EntityRepository
         $query->where('u.userType = :AGENT');
         $query->andWhere('a.id = :agentId');
         $query->andWhere('p.transactionType = :CR');
+        $query->andWhere('p.verified = 1');
         if (!empty($data['end_date'])) {
             $query->andWhere('p.depositDate < :endDate');
             $query->setParameter('endDate', $data['end_date'].' 23:59:5');
@@ -87,6 +89,7 @@ class PaymentRepository extends EntityRepository
         $query->where('u.userType = :AGENT');
         $query->andWhere('a.id = :agentId');
         $query->andWhere('p.transactionType = :DR');
+        $query->andWhere('p.verified = 1');
         if (!empty($data['start_date'])) {
             $query->andWhere('p.depositDate < :startDate');
             $query->setParameter('startDate', $data['start_date'].' 00:00:01');
@@ -107,6 +110,7 @@ class PaymentRepository extends EntityRepository
         $query->where('u.userType = :AGENT');
         $query->andWhere('a.id = :agentId');
         $query->andWhere('p.transactionType = :DR');
+        $query->andWhere('p.verified = 1');
         if (!empty($data['end_date'])) {
             $query->andWhere('p.depositDate < :endDate');
             $query->setParameter('endDate', $data['end_date'].' 23:59:5');
@@ -130,6 +134,7 @@ class PaymentRepository extends EntityRepository
         $query->addSelect('p.depositDate');
         $query->where('u.userType = :AGENT');
         $query->andWhere('a.id = :agentId');
+        $query->andWhere('p.verified = 1');
         $query->setParameter('AGENT', User::AGENT);
         $query->setParameter('agentId', $data['agent']);
         $this->handleSearchByTwoDate($query, $data['start_date'], $data['end_date']);
@@ -147,6 +152,7 @@ class PaymentRepository extends EntityRepository
         $query->where('u.userType = :AGENT');
         $query->andWhere('a.id = :agentId');
         $query->andWhere('p.transactionType = :CR');
+        $query->andWhere('p.verified = 1');
         if (!empty($data['start_date'])) {
             $query->andWhere('p.depositDate < :startDate');
             $query->setParameter('startDate', $data['start_date'].' 00:00:01');
@@ -167,6 +173,7 @@ class PaymentRepository extends EntityRepository
         $query->where('u.userType = :AGENT');
         $query->andWhere('a.id = :agentId');
         $query->andWhere('p.transactionType = :CR');
+        $query->andWhere('p.verified = 1');
         if (!empty($data['end_date'])) {
             $query->andWhere('p.depositDate < :endDate');
             $query->setParameter('endDate', $data['end_date'].' 23:59:5');
@@ -187,6 +194,7 @@ class PaymentRepository extends EntityRepository
         $query->where('u.userType = :AGENT');
         $query->andWhere('a.id = :agentId');
         $query->andWhere('p.transactionType = :DR');
+        $query->andWhere('p.verified = 1');
         if (!empty($data['start_date'])) {
             $query->andWhere('p.depositDate < :startDate');
             $query->setParameter('startDate', $data['start_date'].' 00:00:01');
@@ -207,6 +215,7 @@ class PaymentRepository extends EntityRepository
         $query->where('u.userType = :AGENT');
         $query->andWhere('a.id = :agentId');
         $query->andWhere('p.transactionType = :DR');
+        $query->andWhere('p.verified = 1');
         if (!empty($data['end_date'])) {
             $query->andWhere('p.depositDate < :endDate');
             $query->setParameter('endDate', $data['end_date'].' 23:59:5');
@@ -230,6 +239,7 @@ class PaymentRepository extends EntityRepository
         $query->addSelect('p.depositDate');
         $query->where('u.userType = :AGENT');
         $query->andWhere('a.id = :agentId');
+        $query->andWhere('p.verified = 1');
         $query->setParameter('AGENT', User::AGENT);
         $query->setParameter('agentId', $agentId);
         $this->handleSearchByTwoDate($query, $data['start_date'], $data['end_date']);

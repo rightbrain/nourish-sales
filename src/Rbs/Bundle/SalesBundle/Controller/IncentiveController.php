@@ -131,6 +131,7 @@ class IncentiveController extends BaseController
         $payment->setRemark('Refund for incentive.');
         $payment->setDepositDate(new \DateTime());
         $payment->setTransactionType(Payment::CR);
+        $payment->setVerified(true);
 
         $incentive->setApprovedAt(new \DateTime());
         $incentive->setApprovedBy($this->getUser());

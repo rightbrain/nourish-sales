@@ -362,7 +362,6 @@ class VehicleController extends BaseController
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
      */
-    
     public function deliverySetAction(Request $request, Vehicle $vehicle)
     {
         $form = $this->createForm(new VehicleDeliverySetForm($this->getUser(), $vehicle->getId()));

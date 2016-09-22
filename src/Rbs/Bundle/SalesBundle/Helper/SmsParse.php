@@ -122,6 +122,7 @@ class SmsParse
             $this->payment->addOrder($this->order);
             $this->payment->setAgent($this->agent);
             $this->payment->setTransactionType(Payment::CR);
+            $this->payment->setVerified(false);
             $this->em->persist($this->payment);
 
             $payments = new ArrayCollection();
@@ -129,14 +130,6 @@ class SmsParse
             $payments->add($this->payment);
         }
         $this->em->flush();
-
-//        $delivery = new Delivery();
-//        $delivery->setOrderRef($this->order);
-//        $delivery->setDepo($this->agent->getDepo());
-//
-//        $this->em->persist($delivery);
-//        $this->em->flush();
-//        $this->em->clear();
 
         return array(
             'orderId' => $this->order->getId()
@@ -237,6 +230,7 @@ class SmsParse
             $this->payment->setAmount($amount);
             $this->payment->setBankName($bankName);
             $this->payment->setBranchName($bankBranch);
+            $this->payment->setVerified(false);
             $this->payment->setDepositDate(new \DateTime());
             $this->payment->setPaymentVia('SMS');
         }

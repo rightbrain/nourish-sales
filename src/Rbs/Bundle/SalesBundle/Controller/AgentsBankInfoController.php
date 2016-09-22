@@ -167,6 +167,7 @@ class AgentsBankInfoController extends BaseController
         $payment->setBranchName($agentsBankInfo->getBranchName());
         $payment->setDepositDate(new \DateTime());
         $payment->setTransactionType(Payment::CR);
+        $payment->setVerified(true);
         $payment->addOrder($agentsBankInfo->getOrderRef());
 
         $agentsBankInfo->setStatus(AgentsBankInfo::APPROVED);

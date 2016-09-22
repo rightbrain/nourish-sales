@@ -15,6 +15,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use JMS\SecurityExtraBundle\Annotation as JMS;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Payment Controller.
@@ -107,6 +108,7 @@ class PaymentController extends BaseController
 
             if ($form->isValid()) {
                 $payment->setTransactionType(Payment::CR);
+                $payment->setVerified(false);
                 $em = $this->getDoctrine()->getManager();
                 $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
                 $em->getRepository('RbsSalesBundle:Payment')->create($payment);
@@ -225,5 +227,18 @@ class PaymentController extends BaseController
             'agentCreditLaserTotal' => $agentCreditLaserTotal,
             'currentBalance' => $currentBalance,
         ));
+    }
+
+    /**
+     * @Route("/payment_amount_verified/{id}", name="payment_amount_verified", options={"expose"=true})
+     * @param Payment $payment
+     * @return Response
+     */
+    public function verifyAction(Payment $payment)
+    {
+        $payment->setVerified(true);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->update($payment);
+
+        return new Response(json_encode(array("message" => 'Payment Verified')), 200);
     }
 }
