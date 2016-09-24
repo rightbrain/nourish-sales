@@ -151,15 +151,14 @@ class DeliveryController extends BaseController
     public function deliverySetAction(Request $request, Delivery $delivery)
     {
         $data = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->save($delivery, $this->get('request')->request->all());
-
-        #$this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
-        #$this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStockFromOnHold($delivery);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStockFromOnHold($delivery);
 
         if (!empty($this->get('request')->request->get('checked-vehicles'))) {
                 foreach ($this->get('request')->request->get('checked-vehicles') as $vehicleId => $vehicle) {
                     $vehicleObj = $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->find($vehicleId);
                     $vehicleObj->setShipped(true);
-                    #$this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicleObj);
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicleObj);
                 }
         }
         

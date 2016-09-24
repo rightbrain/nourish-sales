@@ -52,34 +52,22 @@ var Delivery = function()
 
     function formValidateInit()
     {
-        var isFormValid = true;
-
+        var oneValidValue = false;
         $('.orderItems').find('tr').each(function(index, e){
             var elm = $(e);
-            var qty = elm.find('.item-qty').text();
             var deliver = elm.find('.deliver');
-            var check = elm.find('[type=checkbox]');
 
             deliver.removeClass('has-error');
 
-            if (check.length && !check.is(':checked')) {
-                return;
-            }
+            var deliveryQtq = deliver.find('input').val();
 
-            if (deliver.find('input').val() == '') {
-                deliver.addClass('has-error');
-                isFormValid = false;
-            }
-
-            var deliveryQtq = parseInt(deliver.find('input').val());
-            if (!deliveryQtq || deliveryQtq > parseInt(qty)) {
-                deliver.addClass('has-error');
-                isFormValid = false;
+            if (parseInt(deliveryQtq) > 0) {
+                oneValidValue = true;
             }
 
         });
 
-        return isFormValid;
+        return oneValidValue;
     }
 
     function orderItemRemainingHandle()
@@ -177,10 +165,12 @@ var Delivery = function()
                             });
                     }
                 });
+            } else {
+                toastr.error('Please enter at least one quantity');
             }
-        });
 
-        return false;
+            return false;
+        });
     }
 
     function init()
