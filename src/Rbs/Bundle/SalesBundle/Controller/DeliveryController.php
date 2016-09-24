@@ -17,13 +17,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * User Controller.
+ * Delivery Controller.
  *
  */
 class DeliveryController extends BaseController
 {
     /**
-     * @Route("/deliveries", name="deliveries_home")
+     * @Route("/challan/add", name="deliveries_home")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
