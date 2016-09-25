@@ -337,4 +337,11 @@ class Payment
         $this->verified = $verified;
     }
 
+    public function isVerifiedTrue()
+    {
+        if($this->verified == true){
+            return true;
+        }
+        return false;
+    }
 }

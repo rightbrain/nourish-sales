@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 class PaymentController extends BaseController
 {
     /**
-     * @Route("/payments", name="payments_home")
+     * @Route("/payments", name="payments_home", options={"expose"=true})
      * @Template()
      * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_PAYMENT_VIEW, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
      */
