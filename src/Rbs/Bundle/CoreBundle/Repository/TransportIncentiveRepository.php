@@ -50,6 +50,7 @@ class TransportIncentiveRepository extends EntityRepository
         $query->addSelect('dis.name as district');
         $query->addSelect('sta.name as station');
         $query->where('ti.deletedAt IS NULL');
+        $query->andWhere('d.usedInTransport = 1');
         $query->andWhere('ti.status = :CURRENT');
         $query->orderBy('dis.name', 'ASC');
         $query->setParameters(array('CURRENT'=>TransportIncentive::CURRENT));

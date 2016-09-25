@@ -63,6 +63,7 @@ class DepoRepository extends EntityRepository
         $query = $this->createQueryBuilder('d');
         $query->select('d.name');
         $query->where('d.deletedAt IS NULL');
+        $query->andWhere('d.usedInTransport = 1');
         $query->orderBy('d.name', 'DESC');
 
         return $query->getQuery()->getResult();

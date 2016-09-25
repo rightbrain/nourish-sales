@@ -60,6 +60,13 @@ class Depo
      **/
     private $users;
 
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="used_in_transport", type="boolean", nullable=true)
+     */
+    private $usedInTransport = false;
+
     public function __construct()
     {
         $this->bundles = new ArrayCollection();
@@ -165,5 +172,21 @@ class Depo
     public function setLocation($location)
     {
         $this->location = $location;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isUsedInTransport()
+    {
+        return $this->usedInTransport;
+    }
+
+    /**
+     * @param boolean $usedInTransport
+     */
+    public function setUsedInTransport($usedInTransport)
+    {
+        $this->usedInTransport = $usedInTransport;
     }
 }
