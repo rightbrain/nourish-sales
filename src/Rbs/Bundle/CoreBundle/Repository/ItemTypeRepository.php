@@ -11,6 +11,7 @@ class ItemTypeRepository extends EntityRepository
         $query = $this->createQueryBuilder('it');
         $query->select('it.itemType');
         $query->where('it.deletedAt IS NULL');
+        $query->orderBy('it.itemType', 'ASC');
 
         return $query->getQuery()->getResult();
     }
