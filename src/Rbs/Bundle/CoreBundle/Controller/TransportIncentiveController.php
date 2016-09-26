@@ -125,24 +125,19 @@ class TransportIncentiveController extends BaseController
                     $num = count($data);
                     for ($c=0; $c < $num; $c++) {
                         $col[$c] = $data[$c];
-
+                    }
+                    $transportIncentiveOlds = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentiveForStatusChange($this->getLocationByName($col[0]), $this->getLocationByName($col[1]), $this->getDepoByName($col), $this->getItemTypeByName($col));
+                    foreach ($transportIncentiveOlds as $transportIncentiveOld){
+                        $transportIncentiveOld->setStatus(TransportIncentive::ARCHIVED);
+                        $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->create($transportIncentiveOld);
                     }
                     $transportIncentive = new TransportIncentive();
-
                     $transportIncentive->setStatus(TransportIncentive::CURRENT);
                     $transportIncentive->setDistrict($this->getLocationByName($col[0]));
                     $transportIncentive->setStation($this->getLocationByName($col[1]));
                     $transportIncentive->setDepo($this->getDepoByName($col));
                     $transportIncentive->setItemType($this->getItemTypeByName($col));
                     $transportIncentive->setAmount($col[4]);
-
-                    $transportIncentiveOlds = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentiveForStatusChange($this->getLocationByName($col[0]), $this->getLocationByName($col[1]), $this->getDepoByName($col), $this->getItemTypeByName($col));
-                    foreach ($transportIncentiveOlds as $transportIncentiveOld){
-                        $transportIncentiveOld->setStatus(TransportIncentive::ARCHIVED);
-                        $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->create($transportIncentiveOld);
-
-                    }
-
                     $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->create($transportIncentive);
                 }
                 fclose($handle);
