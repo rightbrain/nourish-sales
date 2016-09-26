@@ -77,7 +77,7 @@ class ConfigureMenuListener extends ContextAwareListener
             if ($this->authorizationChecker->isGranted('ROLE_TRANSPORT_INCENTIVE_MANAGE')) {
                 $menu['Settings']->addChild('Transport Commission', array('route' => 'transport_incentive_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
-                if ($this->isMatch('transport_incentive_list')) {
+                if ($this->isMatch('transport_incentive_list') or $this->isMatch('transport_incentive_import')) {
                     $menu['Settings']->getChild('Transport Commission')->setCurrent(true);
                 }
             }
