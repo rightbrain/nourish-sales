@@ -8,8 +8,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use JMS\SecurityExtraBundle\Annotation as JMS;
+use Rbs\Bundle\CoreBundle\Entity\Upload;
+use Rbs\Bundle\CoreBundle\Form\Type\UploadForm;
 
 /**
  * TransportIncentive Controller.
@@ -91,5 +95,92 @@ class TransportIncentiveController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @Route("/transport/incentive/import", name="transport_incentive_import")
+     * @Template("RbsCoreBundle:TransportIncentive:import-form.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function importAction(Request $request)
+    {
+        $upload = new Upload();
+        $form = $this->createForm(new UploadForm(), $upload);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $upload->getFile();
+            $fileName = md5(uniqid()).'.csv';
+            $file->move(
+                $this->getParameter('brochures_directory'),
+                $fileName
+            );
+            $upload->setFile($fileName);
+
+            $file = $this->get('request')->getSchemeAndHttpHost().'/uploads/sales/csv-import/'.$fileName;
+            if (($handle = fopen($file, "r")) !== FALSE) {
+                fgetcsv($handle);
+                while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                    $num = count($data);
+                    for ($c=0; $c < $num; $c++) {
+                        $col[$c] = $data[$c];
+
+                    }
+                    $transportIncentive = new TransportIncentive();
+
+                    $transportIncentive->setStatus(TransportIncentive::CURRENT);
+                    $transportIncentive->setDistrict($this->getLocationByName($col[0]));
+                    $transportIncentive->setStation($this->getLocationByName($col[1]));
+                    $transportIncentive->setDepo($this->getDepoByName($col));
+                    $transportIncentive->setItemType($this->getItemTypeByName($col));
+                    $transportIncentive->setAmount($col[4]);
+
+                    $transportIncentiveOlds = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentiveForStatusChange($this->getLocationByName($col[0]), $this->getLocationByName($col[1]), $this->getDepoByName($col), $this->getItemTypeByName($col));
+                    foreach ($transportIncentiveOlds as $transportIncentiveOld){
+                        $transportIncentiveOld->setStatus(TransportIncentive::ARCHIVED);
+                        $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->create($transportIncentiveOld);
+
+                    }
+
+                    $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->create($transportIncentive);
+                }
+                fclose($handle);
+            }
+
+            $this->flashMessage('success', 'Transport Incentive Import Successfully!');
+            return $this->redirect($this->generateUrl('transport_incentive_list'));
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
+    }
+
+    /**
+     * @param $col
+     * @return mixed
+     */
+    protected function getLocationByName($col)
+    {
+        return $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findOneByName($col);
+    }
+
+    /**
+     * @param $col
+     * @return mixed
+     */
+    protected function getDepoByName($col)
+    {
+        return $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->findOneByName($col[2]);
+    }
+
+    /**
+     * @param $col
+     * @return mixed
+     */
+    protected function getItemTypeByName($col)
+    {
+        return $this->getDoctrine()->getRepository('RbsCoreBundle:ItemType')->findOneByItemType($col[3]);
     }
 }

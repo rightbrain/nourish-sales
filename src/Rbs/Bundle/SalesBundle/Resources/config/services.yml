@@ -1,5 +1,5 @@
 parameters:
-
+    brochures_directory: '%kernel.root_dir%/../web/uploads/sales/csv-import'
 services:
     rbs_erp.sales.configure_menu_listener:
         class: Rbs\Bundle\SalesBundle\EventListener\ConfigureMenuListener
