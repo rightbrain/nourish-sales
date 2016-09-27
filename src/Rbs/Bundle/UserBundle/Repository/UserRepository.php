@@ -100,4 +100,14 @@ class UserRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function findByPhoneNumber($phoneNumber)
+    {
+        $query = $this->createQueryBuilder('u');
+        $query->join('u.profile', 'p');
+        $query->andWhere('p.cellphone = :phoneNumber');
+        $query->setParameter('phoneNumber', $phoneNumber);
+
+        return $query->getQuery()->getSingleScalarResult();
+    }
 }
