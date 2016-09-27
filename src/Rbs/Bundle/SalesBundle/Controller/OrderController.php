@@ -173,6 +173,14 @@ class OrderController extends BaseController
         $form = $this->createForm(new OrderForm($refSms), $order);
 
         if ('POST' === $request->getMethod()) {
+
+            foreach ($request->request->get('order')['orderItems'] as $orderItem){
+                if($orderItem['quantity'] <=0){
+                    $this->flashMessage('error', 'quantity should not zero!');
+                    goto a;
+                }
+            }
+
             $form->handleRequest($request);
 
             if ($form->isValid()) {
@@ -190,6 +198,7 @@ class OrderController extends BaseController
 
                 return $this->redirect($this->generateUrl('orders_home'));
             }
+            a:
         }
 
         return array(
@@ -221,6 +230,13 @@ class OrderController extends BaseController
             $oldQty = $stockRepo->extractOrderItemQuantity($order);
             $form->handleRequest($request);
 
+            foreach ($request->request->get('order')['orderItems'] as $orderItem){
+                if($orderItem['quantity'] <=0){
+                    $this->flashMessage('error', 'quantity should not zero!');
+                    goto a;
+                }
+            }
+
             if ($form->isValid()) {
 
                 if ($sms) {
@@ -237,6 +253,7 @@ class OrderController extends BaseController
 
                 return $this->redirect($this->generateUrl('orders_home'));
             }
+            a:
         }
 
         return array(
