@@ -88,6 +88,17 @@ class UserRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function findAgentsUsingParentId($parentId)
+    {
+        $query = $this->createQueryBuilder('u');
+        $query->where('u.userType = :AGENT');
+        $query->andWhere('u.parentId = :parentId');
+        $query->setParameter('AGENT', User::AGENT);
+        $query->setParameter('parentId', $parentId);
+
+        return $query->getQuery()->getResult();
+    }
+
     public function getNawParentId($zillaId)
     {
         $query = $this->createQueryBuilder('u');

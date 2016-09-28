@@ -72,10 +72,15 @@ class DamageGoodController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
         $damageGood = new DamageGood();
-        $agents = $em->getRepository('RbsUserBundle:User')->findOneBy(array(
-            'parentId' => $this->getUser()->getId()
+        $userAgents = $em->getRepository('RbsUserBundle:User')->findAgentsUsingParentId($this->getUser()->getId());
+
+        foreach ($userAgents as $userAgent){
+            $user = $userAgent;
+        }
+        $agent = $em->getRepository('RbsSalesBundle:Agent')->findOneBy(array(
+            'user' => $user
         ));
-        $form = $this->createForm(new DamageGoodForm($agents), $damageGood, array(
+        $form = $this->createForm(new DamageGoodForm($agent->getDepo()->getId()), $damageGood, array(
             'action' => $this->generateUrl('damage_good_form'), 'method' => 'POST',
             'attr' => array('novalidate' => 'novalidate')
         ));

@@ -10,11 +10,11 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DamageGoodForm extends AbstractType
 {
-    private $agents;
+    private $depo;
 
-    public function __construct($agents)
+    public function __construct($depo)
     {
-        $this->agents = $agents;
+        $this->depo = $depo;
     }
 
     /**
@@ -37,16 +37,12 @@ class DamageGoodForm extends AbstractType
                 'empty_data' => null,
                 'query_builder' => function (OrderRepository $repository)
                 {
-                    $query =  $repository->createQueryBuilder('o');
-                    $query->join('o.agent', 'a');
-                    $query->where('o.orderState = :COMPLETE');
-                    foreach ($this->agents as $agent){
-                        $query->andWhere('o.agent = :agent');
-                        $query->setParameter('agent', $agent);
-                    }
-                    $query->setParameter('COMPLETE', Order::ORDER_STATE_COMPLETE);
-
-                    return $query;
+                    return  $repository->createQueryBuilder('o')
+                        ->join('o.depo', 'd')
+                        ->where('o.orderState = :COMPLETE')
+                        ->andWhere('d.id = :depo')
+                        ->setParameter('depo', $this->depo)
+                        ->setParameter('COMPLETE', Order::ORDER_STATE_COMPLETE);
                 }
             ))
             ->add('file')
