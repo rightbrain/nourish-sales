@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
+use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Entity\SaleIncentive;
 use Rbs\Bundle\CoreBundle\Entity\Upload;
 use Rbs\Bundle\CoreBundle\Form\Type\SaleIncentiveForm;
@@ -69,6 +70,120 @@ class SaleIncentiveController extends BaseController
         ));
     }
 
+    /**
+     * @Route("/sale/incentive/monthly/history", name="sale_incentive_monthly_history", options={"expose"=true})
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SALE_INCENTIVE_MANAGE")
+     */
+    public function saleIncentiveMonthlyHistoryAction()
+    {
+        $salesIncentiveHistories = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->findBy(
+            array('status' => SaleIncentive::ARCHIVED, 'durationType' => SaleIncentive::MONTH), array('createdAt' => 'DESC'), 20
+        );
+
+        return $this->render('RbsCoreBundle:SaleIncentive:history.html.twig', array(
+            'salesIncentiveHistories' => $salesIncentiveHistories,
+            'group' => 'Monthly'
+        ));
+    }
+    
+    /**
+     * @Route("/sale/incentive/monthly/history/list", name="sale_incentive_monthly_history_list", options={"expose"=true})
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SALE_INCENTIVE_MANAGE")
+     */
+    public function saleIncentiveMonthlyAllHistoryAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.sale.incentive.monthly.history');
+        $datatable->buildDatatable();
+
+        return $this->render('RbsCoreBundle:SaleIncentive:historyList.html.twig', array(
+            'datatable' => $datatable
+        ));
+    }
+
+    /**
+     * @Route("/sale_incentive_monthly_history_list_ajax", name="sale_incentive_monthly_history_list_ajax", options={"expose"=true})
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SALE_INCENTIVE_MANAGE")
+     */
+    public function saleIncentiveMonthlyAllHistoryAjaxAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.sale.incentive.monthly.history');
+        $datatable->buildDatatable();
+
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb
+         * @param $qb
+         */
+        $function = function($qb)
+        {
+            $qb->andWhere("core_sale_incentives.status = :ARCHIVED");
+            $qb->andWhere("core_sale_incentives.durationType = :MONTHLY");
+            $qb->setParameter("ARCHIVED", SaleIncentive::ARCHIVED);
+            $qb->setParameter("MONTHLY", SaleIncentive::MONTH);
+        };
+        $query->addWhereAll($function);
+        return $query->getResponse();
+    }
+
+    /**
+     * @Route("/sale/incentive/yearly/history", name="sale_incentive_yearly_history", options={"expose"=true})
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SALE_INCENTIVE_MANAGE")
+     */
+    public function saleIncentiveYearlyHistoryAction()
+    {
+        $salesIncentiveHistories = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->findBy(
+            array('status' => SaleIncentive::ARCHIVED, 'durationType' => SaleIncentive::YEAR), array('createdAt' => 'DESC'), 20
+        );
+
+        return $this->render('RbsCoreBundle:SaleIncentive:history-yearly.html.twig', array(
+            'salesIncentiveHistories' => $salesIncentiveHistories,
+            'group' => 'Yearly'
+        ));
+    }
+    
+    /**
+     * @Route("/sale/incentive/yearly/history/list", name="sale_incentive_yearly_history_list", options={"expose"=true})
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SALE_INCENTIVE_MANAGE")
+     */
+    public function saleIncentiveYearlyAllHistoryAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.sale.incentive.yearly.history');
+        $datatable->buildDatatable();
+
+        return $this->render('RbsCoreBundle:SaleIncentive:historyList-yearly.html.twig', array(
+            'datatable' => $datatable
+        ));
+    }
+
+    /**
+     * @Route("/sale_incentive_yearly_history_list_ajax", name="sale_incentive_yearly_history_list_ajax", options={"expose"=true})
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SALE_INCENTIVE_MANAGE")
+     */
+    public function saleIncentiveYearlyAllHistoryAjaxAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.sale.incentive.yearly.history');
+        $datatable->buildDatatable();
+
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb
+         * @param $qb
+         */
+        $function = function($qb)
+        {
+            $qb->andWhere("core_sale_incentives.status = :ARCHIVED");
+            $qb->andWhere("core_sale_incentives.durationType = :MONTHLY");
+            $qb->setParameter("ARCHIVED", SaleIncentive::ARCHIVED);
+            $qb->setParameter("MONTHLY", SaleIncentive::YEAR);
+        };
+        $query->addWhereAll($function);
+        return $query->getResponse();
+    }
+    
     /**
      * @Route("/sale/incentive/create", name="sale_incentive_create")
      * @Template("RbsCoreBundle:SaleIncentive:form.html.twig")
