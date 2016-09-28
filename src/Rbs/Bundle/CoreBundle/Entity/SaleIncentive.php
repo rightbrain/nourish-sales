@@ -20,6 +20,11 @@ class SaleIncentive
     const SALE = 'SALE';
     const TRANSPORT = 'TRANSPORT';
     
+    const GROUP_ONE = 'GROUP ONE';
+    const GROUP_TWO = 'GROUP TWO';
+    const GROUP_THREE = 'GROUP THREE';
+    const GROUP_FOUR = 'GROUP FOUR';
+    
     const CURRENT = 'CURRENT';
     const ARCHIVED = 'ARCHIVED';
     
@@ -66,11 +71,11 @@ class SaleIncentive
     private $quantity;
 
     /**
-     * @var string
+     * @var array $type
      *
-     * @ORM\Column(name="groups", type="string", length=255, nullable=false)
+     * @ORM\Column(name="groups", type="string", length=255, columnDefinition="ENUM('GROUP ONE', 'GROUP TWO', 'GROUP FOUR')", nullable=false)
      */
-    private $group;
+    private $group = 'GROUP ONE';
 
     /**
      * @var array $type
