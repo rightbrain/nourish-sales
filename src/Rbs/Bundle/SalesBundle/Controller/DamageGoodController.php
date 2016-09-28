@@ -72,7 +72,10 @@ class DamageGoodController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
         $damageGood = new DamageGood();
-        $form = $this->createForm(new DamageGoodForm($this->getUser()), $damageGood, array(
+        $agents = $em->getRepository('RbsUserBundle:User')->findOneBy(array(
+            'parentId' => $this->getUser()->getId()
+        ));
+        $form = $this->createForm(new DamageGoodForm($agents), $damageGood, array(
             'action' => $this->generateUrl('damage_good_form'), 'method' => 'POST',
             'attr' => array('novalidate' => 'novalidate')
         ));

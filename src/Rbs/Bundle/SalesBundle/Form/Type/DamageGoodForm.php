@@ -3,20 +3,18 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\SalesBundle\Entity\Order;
-use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
-use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DamageGoodForm extends AbstractType
 {
-    private $user;
+    private $agents;
 
-    public function __construct($user)
+    public function __construct($agents)
     {
-        $this->user = $user;
+        $this->agents = $agents;
     }
 
     /**
@@ -33,16 +31,22 @@ class DamageGoodForm extends AbstractType
                 'attr' => array(
                     'class' => 'select2me'
                 ),
-                'property' => 'id',
+                'property' => 'orderInfoForDamageGoods',
                 'required' => true,
                 'empty_value' => 'Select Order',
                 'empty_data' => null,
                 'query_builder' => function (OrderRepository $repository)
                 {
-                    return $repository->createQueryBuilder('o')
-                        ->join('o.agent', 'a')
-                        ->andWhere('o.orderState = :COMPLETE')
-                        ->setParameter('COMPLETE', Order::ORDER_STATE_COMPLETE);
+                    $query =  $repository->createQueryBuilder('o');
+                    $query->join('o.agent', 'a');
+                    $query->where('o.orderState = :COMPLETE');
+                    foreach ($this->agents as $agent){
+                        $query->andWhere('o.agent = :agent');
+                        $query->setParameter('agent', $agent);
+                    }
+                    $query->setParameter('COMPLETE', Order::ORDER_STATE_COMPLETE);
+
+                    return $query;
                 }
             ))
             ->add('file')

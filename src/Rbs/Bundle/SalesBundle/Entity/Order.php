@@ -432,6 +432,13 @@ class Order
         return '#' . ' Order Id :'. $this->getId() . ', Amount :' . $this->getPaidAmount() .', Date:'. $this->getCreatedAt()->format('Y-F-d, h:i A');
     }
 
+    public function getOrderInfoForDamageGoods()
+    {
+        return '#' . ' Order Id :'. $this->getId(). ' Depo :'. $this->getDepo()->getName(). ', Agent :' .
+        ($this->getAgent()->getUser()->getProfile()->getFullName() ? $this->getAgent()->getUser()->getProfile()->getFullName()
+            : $this->getAgent()->getUser()->getUsername()). ', Date : '. $this->getCreatedAt()->format('Y-F-d, h:i A');
+    }
+
     public function getOrderInfoWithAgent()
     {
         return '#' . ' Order Id :'. $this->getId(). ', Agent :' .
