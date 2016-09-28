@@ -3,7 +3,9 @@
 namespace Rbs\Bundle\CoreBundle\Controller;
 
 use Rbs\Bundle\CoreBundle\Entity\SaleIncentive;
+use Rbs\Bundle\CoreBundle\Entity\Upload;
 use Rbs\Bundle\CoreBundle\Form\Type\SaleIncentiveForm;
+use Rbs\Bundle\CoreBundle\Form\Type\UploadForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -114,5 +116,70 @@ class SaleIncentiveController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @Route("/sale/incentive/import", name="sale_incentive_import")
+     * @Template("RbsCoreBundle:SaleIncentive:import-form.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function importAction(Request $request)
+    {
+        $upload = new Upload();
+        $form = $this->createForm(new UploadForm(), $upload);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $file = $upload->getFile();
+            $fileName = md5(uniqid()).'.csv';
+            $file->move(
+                $this->getParameter('brochures_directory'),
+                $fileName
+            );
+            $upload->setFile($fileName);
+
+            $file = $this->get('request')->getSchemeAndHttpHost().'/uploads/sales/csv-import/'.$fileName;
+            if (($handle = fopen($file, "r")) !== FALSE) {
+                fgetcsv($handle);
+                while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                    $num = count($data);
+                    for ($c=0; $c < $num; $c++) {
+                        $col[$c] = $data[$c];
+                    }
+                    $saleIncentiveOlds = $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->getSalesIncentiveForStatusChange($this->getCategoryByName($col[0]), $col[1], $col[2], $col[3]);
+                    foreach ($saleIncentiveOlds as $saleIncentiveOld){
+                        $saleIncentiveOld->setStatus(SaleIncentive::ARCHIVED);
+                        $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->update($saleIncentiveOld);
+                    }
+                    $saleIncentive = new SaleIncentive();
+                    $saleIncentive->setStatus(SaleIncentive::CURRENT);
+                    $saleIncentive->setCategory($this->getCategoryByName($col[0]));
+                    $saleIncentive->setQuantity($col[1]);
+                    $saleIncentive->setDurationType($col[2]);
+                    $saleIncentive->setGroup($col[3]);
+                    $saleIncentive->setAmount($col[4]);
+                    $saleIncentive->setType(SaleIncentive::SALE);
+                    $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->create($saleIncentive);
+                }
+                fclose($handle);
+            }
+
+            $this->flashMessage('success', 'Sales Incentive Import Successfully!');
+            return $this->redirect($this->generateUrl('sale_incentive_list'));
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
+    }
+
+    /**
+     * @param $col
+     * @return mixed
+     */
+    protected function getCategoryByName($col)
+    {
+        return $this->getDoctrine()->getRepository('RbsCoreBundle:Category')->findOneByName($col);
     }
 }

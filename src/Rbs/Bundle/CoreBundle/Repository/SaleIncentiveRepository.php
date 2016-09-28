@@ -150,7 +150,7 @@ class SaleIncentiveRepository extends EntityRepository
         $query->where('si.deletedAt IS NULL');
         $query->andWhere('c.id = :category');
         $query->andWhere('si.durationType = :durationType');
-        $query->andWhere('si.quantity > :quantity');
+        $query->andWhere('si.quantity = :quantity');
         $query->andWhere('si.status = :CURRENT');
         $query->andWhere('si.group = :group');
         $query->setParameters(array('category'=>$category, 'quantity'=>$quantity, 

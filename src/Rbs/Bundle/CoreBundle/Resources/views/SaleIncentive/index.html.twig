@@ -12,8 +12,8 @@
                 </div>
             </div>
             <div class="portlet-body">
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('sale_incentive_import'), label: 'Import Commission', 'icon': 'plus'}) }}
                     <div class="dataTables_wrapper no-footer">
-
                         <div class="col-md-12">
                             <div class="portlet-title">
                                 <div class="caption bold"><u>Month</u></div>
