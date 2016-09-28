@@ -13,7 +13,9 @@ class StockDatatable extends BaseDatatable
 {
     public function getLineFormatter()
     {
-        /** @var Stock $stock */
+        /** @var Stock $stock
+         * @return mixed
+         */
         $formatter = function($line){
             $stock = $this->em->getRepository('RbsSalesBundle:Stock')->find($line['id']);
             $line['available'] = $stock->isAvailableOnDemand();

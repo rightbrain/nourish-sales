@@ -3,12 +3,21 @@
 {% block title %}{{ parent() }} : Transport Incentives {% endblock %}
 
 {% block body %}
-
+    <div class="modal fade" id="ajaxHistory" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="{{ asset('assets/global/img/loading-spinner-grey.gif') }}" alt="" class="loading">
+                    <span> &nbsp;&nbsp;Loading... </span>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-md-12">
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-list"></i>Transport Incentive
+                    <i class="fa fa-list"></i>Transport Commission
                 </div>
             </div>
             <div class="portlet-body">
@@ -19,6 +28,7 @@
                                 <tr>
                                     <td style="width: 40px;">SL</td>
                                     <td style="width: 150px;">District</td>
+                                    <td style="width: 150px;">History</td>
                                     <td>
                                         <table class="table table-bordered table-striped">
                                             <tr>
@@ -48,6 +58,7 @@
                                     <tr>
                                         <td style="width: 40px;">{{ i }}</td>
                                         <td style="width: 150px;">{{ district }}</td>
+                                        <td style="width: 150px;"><a data-target="#ajaxHistory" data-toggle="modal" href="{{ path('transport_commission_history', {"district":district}) }}">History</a></td>
                                         <td>
                                             <table class="table table-bordered table-striped">
                                                 {% for station, transport in transportIncentive %}
@@ -74,4 +85,11 @@
     <div style="clear: both"></div>
 {% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
 

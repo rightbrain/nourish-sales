@@ -47,6 +47,12 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.transport.commission.history:
+        class: Rbs\Bundle\CoreBundle\Datatables\TransportCommissionHistoryDatatable
+        tags:
+            - { name: sg.datatable.view }
+        arguments: [@security.authorization_checker, @security.token_storage, @twig, @translator, @router, @doctrine.orm.entity_manager, @service_container]
+
 
     rbs_erp.sales.datatable.payment:
         class: Rbs\Bundle\SalesBundle\Datatables\PaymentDatatable

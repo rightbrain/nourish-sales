@@ -2,15 +2,13 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
+use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Entity\TransportIncentive;
 use Rbs\Bundle\CoreBundle\Form\Type\TransportIncentiveForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use JMS\SecurityExtraBundle\Annotation as JMS;
 use Rbs\Bundle\CoreBundle\Entity\Upload;
 use Rbs\Bundle\CoreBundle\Form\Type\UploadForm;
@@ -53,7 +51,73 @@ class TransportIncentiveController extends BaseController
                 'itemTypeCount' => $itemTypeCount
         ));
     }
+    
+    /**
+     * @Route("/transport/commission/history", name="transport_commission_history", options={"expose"=true})
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_TRANSPORT_INCENTIVE_MANAGE")
+     */
+    public function transportCommissionHistoryAction(Request $request)
+    {
+        $district = $this->getLocationByName($request->query->all()['district']);
+        $transportCommissionHistories = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->findBy(
+            array('district' => $district->getId(), 'status' => TransportIncentive::ARCHIVED), array('createdAt' => 'DESC'), 10
+        );
 
+        return $this->render('RbsCoreBundle:TransportIncentive:history.html.twig', array(
+            'transportCommissionHistories' => $transportCommissionHistories,
+            'district' => $district
+        ));
+    }
+
+    /**
+     * @Route("/transport/commission/history/{id}", name="transport_commission_history_list", options={"expose"=true})
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_TRANSPORT_INCENTIVE_MANAGE")
+     */
+    public function transportCommissionAllHistoryAction(Request $request)
+    {
+        $district = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->attributes->get('id'));
+            
+        $datatable = $this->get('rbs_erp.sales.datatable.transport.commission.history');
+        $datatable->buildDatatable();
+
+        return $this->render('RbsCoreBundle:TransportIncentive:historyList.html.twig', array(
+            'district' => $district,
+            'datatable' => $datatable
+        ));
+    }
+
+    /**
+     * @Route("/transport_commission_history_list_ajax/{id}", name="transport_commission_history_list_ajax", options={"expose"=true})
+     * @Method("GET")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_TRANSPORT_INCENTIVE_MANAGE")
+     */
+    public function transportCommissionAllHistoryAjaxAction(Request $request)
+    {
+        $district = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($request->attributes->get('id'));
+        $datatable = $this->get('rbs_erp.sales.datatable.transport.commission.history');
+        $datatable->buildDatatable();
+
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb
+         * @param $qb
+         */
+        $function = function($qb) use ($district)
+        {
+            $qb->andWhere("core_transport_incentives.status = :ARCHIVED");
+            $qb->andWhere("core_transport_incentives.district = :district");
+            $qb->setParameter("ARCHIVED", TransportIncentive::ARCHIVED);
+            $qb->setParameter("district", $district->getId());
+        };
+        $query->addWhereAll($function);
+        return $query->getResponse();
+    }
+    
     /**
      * @Route("/transport/incentive/create", name="transport_incentive_create")
      * @Template("RbsCoreBundle:TransportIncentive:form.html.twig")
@@ -121,7 +185,7 @@ class TransportIncentiveController extends BaseController
             $file = $this->get('request')->getSchemeAndHttpHost().'/uploads/sales/csv-import/'.$fileName;
             if (($handle = fopen($file, "r")) !== FALSE) {
                 fgetcsv($handle);
-                while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                while (($data = fgetcsv($handle, 3000, ",")) !== FALSE) {
                     $num = count($data);
                     for ($c=0; $c < $num; $c++) {
                         $col[$c] = $data[$c];
@@ -129,7 +193,7 @@ class TransportIncentiveController extends BaseController
                     $transportIncentiveOlds = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentiveForStatusChange($this->getLocationByName($col[0]), $this->getLocationByName($col[1]), $this->getDepoByName($col), $this->getItemTypeByName($col));
                     foreach ($transportIncentiveOlds as $transportIncentiveOld){
                         $transportIncentiveOld->setStatus(TransportIncentive::ARCHIVED);
-                        $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->create($transportIncentiveOld);
+                        $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->update($transportIncentiveOld);
                     }
                     $transportIncentive = new TransportIncentive();
                     $transportIncentive->setStatus(TransportIncentive::CURRENT);
