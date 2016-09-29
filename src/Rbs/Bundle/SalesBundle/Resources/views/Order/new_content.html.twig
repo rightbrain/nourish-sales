@@ -1,12 +1,21 @@
 {{ form_start(form, {'method': 'POST', attr: { novalidate: 'novalidate'}}) }}
 
-    <div class="form-group">
-        <label class="col-md-2 control-label">Agent</label>
-        <div class="col-md-6" style="margin-top: 10px;">
-            {{ form_widget(form.agent) }}
-            {{ form_errors(form.agent) }}
+    {#{% if order is defined %}#}
+        {#<div class="form-group">#}
+            {#<label class="col-md-2 control-label">Agent</label>#}
+            {#<div class="col-md-6" style="margin-top: 10px;">#}
+                {#{{ order.agent.user.profile.fullName }}#}
+            {#</div>#}
+        {#</div>#}
+    {#{% else %}#}
+        <div class="form-group">
+            <label class="col-md-2 control-label">Agent</label>
+            <div class="col-md-6" style="margin-top: 10px;">
+                {{ form_widget(form.agent) }}
+                {{ form_errors(form.agent) }}
+            </div>
         </div>
-    </div>
+    {#{% endif %}#}
 
     <div class="form-group">
         <label class="col-md-2 control-label">Ref. SMS</label>
