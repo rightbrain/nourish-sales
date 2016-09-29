@@ -16,6 +16,14 @@
 </div>
 
 <div class="form-group">
+    <label class="col-md-2 control-label">Depo</label>
+    <div class="col-md-6" style="margin-top: 10px;">
+        {{ form_widget(form.depo) }}
+        {{ form_errors(form.depo) }}
+    </div>
+</div>
+
+<div class="form-group">
     <label class="col-md-2 control-label">Remark</label>
     <div class="col-md-6" style="margin-top: 10px;">
         {{ form_widget(form.remark) }}
@@ -72,4 +80,5 @@
         </tfoot>
     </table>
 </div>
+
 {{ form_end(form) }}

@@ -50,10 +50,10 @@
                                             <td>{{ order.orderVia }}</td>
                                         </tr>
                                         <tr>
+                                            <th>Depo</th>
+                                            <td>{{ order.depo.name | default('') }}</td>
                                             <th>Remarks</th>
                                             <td>{{ order.remark }}</td>
-                                            <th></th>
-                                            <td></td>
                                         </tr>
                                     </table>
                                 </div>

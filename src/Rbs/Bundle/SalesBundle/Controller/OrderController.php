@@ -186,7 +186,6 @@ class OrderController extends BaseController
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $order->setLocation($order->getAgent()->getUser()->getUpozilla());
-                $order->setDepo($order->getAgent()->getDepo());
                 $orderIncentiveFlag->setOrder($order);
                 $this->orderRepository()->create($order);
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
