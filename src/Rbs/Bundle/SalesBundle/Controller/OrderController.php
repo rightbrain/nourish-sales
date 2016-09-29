@@ -189,9 +189,10 @@ class OrderController extends BaseController
                 $orderIncentiveFlag->setOrder($order);
                 $this->orderRepository()->create($order);
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
-                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getAgent()->getDepo());
+                $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('order')['depo']);
+                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
 
-                $this->deliveryRepository()->createDelivery($order, $order->getAgent()->getDepo());
+                $this->deliveryRepository()->createDelivery($order);
 
                 $this->flashMessage('success', 'Order Add Successfully!');
 
@@ -237,7 +238,7 @@ class OrderController extends BaseController
             }
 
             if ($form->isValid()) {
-
+                $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('order')['depo']);
                 if ($sms) {
                     $em->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
                 }
@@ -245,7 +246,7 @@ class OrderController extends BaseController
                 if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
                     $stockRepo->subtractFromOnHold($oldQty);
                 }
-                $stockRepo->addStockToOnHold($order, $order->getAgent()->getDepo());
+                $stockRepo->addStockToOnHold($order, $depo);
                 $em->getRepository('RbsSalesBundle:Order')->update($order, true);
 
                 $this->flashMessage('success', 'Order Update Successfully!');
