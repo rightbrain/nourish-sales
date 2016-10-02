@@ -69,7 +69,7 @@ class ConfigureMenuListener extends ContextAwareListener
             if ($this->authorizationChecker->isGranted('ROLE_SALE_INCENTIVE_MANAGE')) {
                 $menu['Settings']->addChild('Sale Incentive', array('route' => 'sale_incentive_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
-                if ($this->isMatch('sale_incentive_list')) {
+                if ($this->isMatch('sale_incentive_list') or $this->isMatch('sale_incentive_import')) {
                     $menu['Settings']->getChild('Sale Incentive')->setCurrent(true);
                 }
             }
