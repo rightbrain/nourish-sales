@@ -90,6 +90,14 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
+            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+                $menu['Settings']->addChild('Vehicle SMS Emulator', array('route' => 'vehicle_via_sms'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('vehicle_via_sms')) {
+                    $menu['Settings']->getChild('Vehicle SMS Emulator')->setCurrent(true);
+                }
+            }
+
             if (empty($menu->getChild('Settings')->getChildren())) {
                 $menu->removeChild($menu['Settings']);
             }

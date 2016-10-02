@@ -2,17 +2,15 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
-use Doctrine\ORM\QueryBuilder;
-use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Sms;
-use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 use Rbs\Bundle\SalesBundle\Helper\SmsParse;
+use Rbs\Bundle\SalesBundle\Helper\SmsVehicleParse;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Command;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 /**
  * ApiController.
@@ -82,54 +80,24 @@ class ApiController extends BaseController
             if ($smsApiKey == $request->headers->get('X-API-KEY')) {
 
                 $senderPhoneNumber = $request->request->get('senderPhoneNumber');
-                $timestamp = $request->request->get('timestamp') ? $request->request->get('timestamp') : date('Y-m-d H:i:s');
-
-                $orderId = $request->request->get('order') ? $request->request->get('order') : null;
-                $depoId = $request->request->get('depo') ? $request->request->get('depo') : null;
-
-                $driverName = $request->request->get('driverName');
-                $driverPhone = $request->request->get('driverPhone');
-                $vehicleNumber = $request->request->get('vehicleNumber');
-
-                $remarks = $request->request->get('remarks');
                 $message = $request->request->get('message');
 
                 $user = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findByPhoneNumber($senderPhoneNumber);
 
-                if ($driverName == null and $driverPhone == null and $vehicleNumber == null and ($orderId == null or $depoId == null)) {
-                    $response = new Response(json_encode(array("message" => 'Bad request. Invalid Parameter')), 400);
-                } else {
-                    try {
-                        $vehicle = new Vehicle();
-                        $vehicle->setRemark($remarks);
-                        $vehicle->setSmsText($message);
-                        if($user->getUserType() == User::AGENT){
-                            $order = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($orderId);
-                            $vehicle->setAgent($order->getAgent());
-                            $vehicle->setTransportGiven(Vehicle::AGENT);
-                            $vehicle->setDepo($order->getDepo());
-                            $vehicle->setOrderText($order->getId());
+                if($user == null) {
+                    $response = new Response(json_encode(array("message" => 'Invalid Phone Number')), 400);
+                }else{
+                    if ($message == null) {
+                        $response = new Response(json_encode(array("message" => 'Bad request. Invalid Parameter')), 400);
+                    } else {
+                        try {
+                            $smsVehicleParse = new SmsVehicleParse($this->getDoctrine()->getManager(), $user[0]);
+                            $smsVehicleParse->parse($message);
 
-                            $delivery = new Delivery();
-                            $delivery->addOrder($order);
-                            $delivery->setShipped(false);
-                            $delivery->setDepo($order->getDepo());
-                            $delivery->setTransportGiven(Delivery::AGENT);
-                            $vehicle->setDeliveries($delivery);
-                            $this->getDoctrine()->getManager()->persist($delivery);
-                            $this->getDoctrine()->getManager()->flush();
-                        }else{
-                            $vehicle->setDepo($this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($depoId));
-                            $vehicle->setTransportGiven(Vehicle::NOURISH);
+                            $response = new Response(json_encode(array("message" => 'SMS received Successfully')), 200);
+                        } catch (\Exception $e) {
+                            $response = new Response(json_encode(array("message" => 'Server Internal Error')), 500);
                         }
-                        $vehicle->setShipped(false);
-
-                        $this->getDoctrine()->getManager()->persist($vehicle);
-                        $this->getDoctrine()->getManager()->flush();
-
-                        $response = new Response(json_encode(array("message" => 'SMS received Successfully')), 200);
-                    } catch (\Exception $e) {
-                        $response = new Response(json_encode(array("message" => 'Server Internal Error')), 500);
                     }
                 }
             } else {
