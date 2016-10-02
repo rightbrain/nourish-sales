@@ -1,6 +1,7 @@
 <?php
 namespace Rbs\Bundle\SalesBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\UserBundle\Entity\User;
@@ -130,6 +131,13 @@ class Agent
      */
     private $depo;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\ChickenSetForAgent", mappedBy="agents")
+     */
+    private $chickenSetForAgent;
+    
     /**
      * Get id
      *
@@ -363,5 +371,21 @@ class Agent
     {
         // payment total - order(processing+complete) total amount
         return false;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getChickenSetForAgent()
+    {
+        return $this->chickenSetForAgent;
+    }
+
+    /**
+     * @param ArrayCollection $chickenSetForAgent
+     */
+    public function setChickenSetForAgent($chickenSetForAgent)
+    {
+        $this->chickenSetForAgent = $chickenSetForAgent;
     }
 }

@@ -246,6 +246,11 @@ class ConfigureMenuListener extends ContextAwareListener
                 if ($this->isMatch('damage_good_list') or $this->isMatch('damage_good_form')) {
                     $menu['Sales']->getChild('Damage Good')->setCurrent(true);
                 }
+            $menu['Sales']->addChild('Chicken Set', array('route' => 'chicken_type_set_list'))
+                ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('chicken_type_set_list') or $this->isMatch('chicken_type_set_list')) {
+                    $menu['Sales']->getChild('Chicken Set')->setCurrent(true);
+                }
         }
 
         if ($this->user->getUserType() == User::AGENT and $this->authorizationChecker->isGranted(array('ROLE_AGENT'))){

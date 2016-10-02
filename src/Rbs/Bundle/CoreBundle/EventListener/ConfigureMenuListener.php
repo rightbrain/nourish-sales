@@ -58,6 +58,12 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
+            $menu['Settings']->addChild('Chicken Set', array('route' => 'chicken_set_in_location'))
+                ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('chicken_set_in_location')) {
+                $menu['Settings']->getChild('Chicken Set')->setCurrent(true);
+            }
+
             if ($this->authorizationChecker->isGranted('ROLE_DEPO_MANAGE')) {
                 $menu['Settings']->addChild('Depos', array('route' => 'depo'))
                     ->setAttribute('icon', 'fa fa-th-list');

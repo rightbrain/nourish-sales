@@ -1,0 +1,61 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : My Agent List {% endblock %}
+
+{% block body %}
+    <div class="modal fade" id="ajax" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>My Agent List
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="dataTables_wrapper no-footer">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>Sl</th>
+                                <th>Agent Name</th>
+                                <th>Item Name</th>
+                                <th>Quantity</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for index, agent in agents %}
+                                <tr>
+                                    <td>{{ index + 1 }}.</td>
+                                    <td>{{ agent.agent.user.profile.fullName ? agent.agent.user.profile.fullName : agent.agent.user.username }}</td>
+                                    <td>{{ agent.item.name }}</td>
+                                    <td>{{ agent.quantity | default('0') }}</td>
+                                    <td><a href="{{ path('chicken_type_add', {'id' : agent.id}) }}" data-target="#ajax" data-toggle="modal">add</a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+{% endblock %}
