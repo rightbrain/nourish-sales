@@ -52,7 +52,14 @@ class ChickenSetForAgent
      * @ORM\Column(name="quantity", type="integer", nullable=true)
      */
     private $quantity;
-    
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="status", type="integer")
+     */
+    private $status = 1;
+
     /**
      * Get id
      *
@@ -109,5 +116,21 @@ class ChickenSetForAgent
     public function setQuantity($quantity)
     {
         $this->quantity = $quantity;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param int $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 }

@@ -14,12 +14,23 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="ajaxAdd" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="{{ asset('assets/global/img/loading-spinner-grey.gif') }}" alt="" class="loading">
+                    <span> &nbsp;&nbsp;Loading... </span>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-md-12">
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
                     <i class="fa fa-globe"></i>Chicken Set List
                 </div>
+                <a style="float: right; margin-top: 3px;" href="{{ path('chicken_set_in_location_create') }}" class="btn green" data-target="#ajaxAdd" data-toggle="modal">New Chicken Set</a>
             </div>
             <div class="portlet-body">
                 <div class="dataTables_wrapper no-footer">
