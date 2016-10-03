@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\CoreBundle\Form\Type;
 
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,8 +16,13 @@ class ItemTypeForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('itemType')
-            //->add('vendors')
+            ->add('itemType', 'choice', array(
+                'choices'  => array(
+                    'Floating' => ItemType::Floating,
+                    'Poultry' => ItemType::Poultry,
+                    'Chicken' => ItemType::Chicken
+                )
+            ))
             ->add('bundles', null, array('label' => 'Modules'))
         ;
     }

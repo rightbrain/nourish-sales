@@ -23,6 +23,10 @@ class ItemType
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
 
+    const Chicken = 'Chicken';
+    const Floating = 'Floating';
+    const Poultry = 'Poultry';
+
     /**
      * @var integer
      *
@@ -33,9 +37,9 @@ class ItemType
     private $id;
 
     /**
-     * @var string
+     * @var array $type
      *
-     * @ORM\Column(name="item_types", type="string", length=255)
+     * @ORM\Column(name="item_types", type="string", length=255, columnDefinition="ENUM('Chicken', 'Floating', 'Poultry')")
      * @Assert\NotBlank()
      */
     private $itemType;

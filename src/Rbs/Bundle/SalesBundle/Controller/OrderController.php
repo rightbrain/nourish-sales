@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderIncentiveFlag;
@@ -387,6 +388,9 @@ class OrderController extends BaseController
      */
     public function summeryViewAction(Order $order)
     {
+        $chickenCheck = 0;
+        $chickenCheckForAgent = null;
+        $availableCheck = false;
         $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
         /** @var OrderItem $item */
         foreach ($order->getOrderItems() as $item) {
@@ -394,10 +398,21 @@ class OrderController extends BaseController
                 array('item' => $item->getItem()->getId(), 'depo' => $order->getDepo()->getId())
             );
             $item->isAvailable = $stockItem->isStockAvailable($item->getQuantity());
+            if($item->getItem()->getItemType() == ItemType::Chicken){
+                $chickenCheckForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(array(
+                    'item' => $item->getItem()->getId(), 'agent' => $order->getAgent()->getId()
+                ));
+                $availableCheck = $chickenCheckForAgent->isStockAvailable($item->getQuantity());
+                $item->isAvailableQty = $chickenCheckForAgent->getQuantity();
+                $chickenCheck = 1;
+            }
         }
 
         return $this->render('RbsSalesBundle:Order:summeryView.html.twig', array(
             'order' => $order,
+            'chickenCheck' => $chickenCheck,
+            'chickenCheckForAgent' => $chickenCheckForAgent,
+            'availableCheck' => $availableCheck,
         ));
     }
 

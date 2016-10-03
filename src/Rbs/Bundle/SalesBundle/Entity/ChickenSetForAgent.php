@@ -133,4 +133,12 @@ class ChickenSetForAgent
     {
         $this->status = $status;
     }
+    
+    public function isStockAvailable($quantity = 0)
+    {
+        if($quantity > $this->quantity){
+            return false;
+        }
+        return true;
+    }
 }

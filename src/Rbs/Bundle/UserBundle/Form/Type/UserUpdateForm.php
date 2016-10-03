@@ -78,6 +78,11 @@ class UserUpdateForm extends AbstractType
                     'class' => 'thana-selector select2me',
                     'id' => 'user_level2'
                 ),
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Upozilla should not be blank'
+                    )),
+                ),
                 'required' => false
             ))
         ;

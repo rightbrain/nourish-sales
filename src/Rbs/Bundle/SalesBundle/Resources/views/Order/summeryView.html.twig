@@ -22,14 +22,18 @@
                                 <tr><th>Remarks</th><td>{{ order.remark }}</td></tr>
                                 <tr><th></th><td></td></tr>
                             </table>
-
                             <table class="table-bordered table-striped table-condensed flip-content col-md-12">
                                 <thead>
                                 <tr>
                                     <th class="col-md-1">Sl</th>
                                     <th class="col-md-7">Item</th>
-                                    <th class="text-center col-md-2">Quantity</th>
-                                    <th class="text-center col-md-2">Available</th>
+                                    {% if chickenCheck == 0 %}
+                                        <th class="text-center col-md-2">Quantity</th>
+                                        <th class="text-center col-md-2">Available</th>
+                                    {% else %}
+                                        <th class="text-center col-md-2">Order Quantity</th>
+                                        <th class="text-center col-md-2">Assigned Quantity</th>
+                                    {% endif %}
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -38,20 +42,24 @@
                                     <tr>
                                         <td>{{ index + 1 }}.</td>
                                         <td>{{ orderItem.item.itemName | default('') }}</td>
-                                        <td class="text-center">{{ orderItem.quantity | default('') }}</td>
-                                        <td class="text-center">
-                                            {% if orderItem.isAvailable == true %}
-                                                <i class="fa fa-check green"></i>
-                                            {% else %}
-                                                <i class="fa fa-times red"></i>
-                                                {% set available = false %}
-                                            {% endif %}
-                                        </td>
+                                        {% if chickenCheck == 0 %}
+                                            <td class="text-center">{{ orderItem.quantity | default('') }}</td>
+                                            <td class="text-center">
+                                                {% if orderItem.isAvailable == true %}
+                                                    <i class="fa fa-check green"></i>
+                                                {% else %}
+                                                    <i class="fa fa-times red"></i>
+                                                    {% set available = false %}
+                                                {% endif %}
+                                            </td>
+                                        {% else %}
+                                            <td class="text-center">{{ orderItem.quantity | default('') }}</td>
+                                            <td class="text-center">{{ orderItem.isAvailableQty | default('') }}</td>
+                                        {% endif %}
                                     </tr>
                                 {% endfor %}
                                 </tbody>
                             </table>
-
                             <div style="clear: both"></div>
                         </div>
                     </div>
@@ -64,7 +72,7 @@
         <a class="btn blue red order-cancel-modal-action">
             Order Cancel
         </a>
-        {% if available == false %}
+        {% if available == false or availableCheck == false %}
             <a class="btn blue delete-list-btn" href="{{ path('order_update', {"id": order.id}) }}" target="_blank">
                 Edit
             </a>
