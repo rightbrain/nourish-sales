@@ -94,10 +94,18 @@ class CreditLimitRepository extends EntityRepository
             $category = $orderItem->getItem()->getCategory()[0];
             
             $data = $this->_em->getRepository('RbsSalesBundle:OrderItem')->getCreditStatus($orderItem);
-            $data['name'] = $category->getName();
-            $data['totalAmount'] = (float)$data[0]['totalAmount'];
-            $data['paidAmount'] = (float)$data[0]['paidAmount'];
-            $data['creditRemain'] = (float)$data[0]['creditRemain'];
+            if(isset($data[0])){
+                $data['name'] = $category->getName();
+                $data['totalAmount'] = (float)$data[0]['totalAmount'];
+                $data['paidAmount'] = (float)$data[0]['paidAmount'];
+                $data['creditRemain'] = (float)$data[0]['creditRemain'];
+            }else{
+                $data['name'] = $category->getName();
+                $data['totalAmount'] = (float)$data['totalAmount'];
+                $data['paidAmount'] = (float)$data['paidAmount'];
+                $data['creditRemain'] = (float)$data['creditRemain'];
+            }
+
             $categoryCredit[$category->getId()] = $data;
         }
 
