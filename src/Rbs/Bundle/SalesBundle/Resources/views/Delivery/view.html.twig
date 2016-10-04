@@ -50,8 +50,6 @@
                                 <tbody class="orderItems">
                                 {% for order in delivery.orders %}
                                     {% for index, item in order.orderItems %}
-                                        {% if partialItems[order.id]  is defined %}
-                                        {% if item.quantity > partialItems[order.id][item.id]['delivered'] %}
                                         <tr>
                                             <td>{{ index+1 }}</td>
                                             <td>{{ order.id }}</td>
@@ -65,8 +63,6 @@
                                             <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
                                             <td class="remain"></td>
                                         </tr>
-                                        {% endif %}
-                                        {% endif %}
                                     {% endfor %}
                                 {% endfor %}
                                 <tbody>

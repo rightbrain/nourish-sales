@@ -17,12 +17,6 @@ class DeliveryItemRepository extends EntityRepository
     public function getPartialDeliveredItems(Delivery $delivery)
     {
         $orders = $delivery->getOrders();
-        foreach ($orders as $order){
-            $agents = $order->getAgent();
-        }
-
-        $orders = $delivery->getOrders();
-
         $data = array();
         foreach ($orders as $order) {
             $query = $this->createQueryBuilder('deliveryItem');

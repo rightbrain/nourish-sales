@@ -367,12 +367,12 @@ class VehicleController extends BaseController
         $form = $this->createForm(new VehicleDeliverySetForm($this->getUser(), $vehicle->getId()));
         if ('POST' === $request->getMethod()) {
             $em = $this->getDoctrine()->getManager();
-            $getDepo = $em->getRepository('RbsCoreBundle:Depo')->getDepoForCurrentUser($this->getUser());
             $delivery = new Delivery();
-            foreach ($request->request->get('vehicle_delivery_form')['orders'] as $order){
-                $delivery->addOrder($em->getRepository('RbsSalesBundle:Order')->find($order));
+            foreach ($request->request->get('vehicle_delivery_form')['orders'] as $orderId){
+                $order = $em->getRepository('RbsSalesBundle:Order')->find($orderId);
+                $delivery->addOrder($order);
+                $delivery->setDepo($order->getDepo());
             }
-            $delivery->setDepo($getDepo[0]);
             $delivery->setShipped(false);
             $delivery->setTransportGiven(Delivery::NOURISH);
             $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
