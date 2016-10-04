@@ -8,7 +8,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use JMS\SecurityExtraBundle\Annotation as JMS;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * ChickenTypeSet Controller.
@@ -97,5 +99,31 @@ class ChickenTypeSetController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * find ChickenSetForAgent ajax
+     * @Route("find_assigned_item_ajax", name="find_assigned_item_ajax", options={"expose"=true})
+     * @param Request $request
+     * @return Response
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
+     */
+    public function findItemAction(Request $request)
+    {
+        $item = $request->request->get('item');
+        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($request->request->get('agent'));
+
+        $chickenSetForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(array(
+            'item' => $item,
+            'agent' => $agent
+        ));
+        
+        $response = array(
+            'onHand'    => $chickenSetForAgent->getQuantity(),
+            'price'     => $chickenSetForAgent->getItem()->getPrice(),
+            'itemUnit'  => $chickenSetForAgent->getItem()->getItemUnit(),
+        );
+
+        return new JsonResponse($response);
     }
 }

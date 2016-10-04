@@ -74,17 +74,15 @@ var Order = function()
 
         $.ajax({
             type: "post",
-            url: Routing.generate('find_stock_item_ajax'),
-            data: "item=" + item + "&agent=" + $('#order_agent').val() + "&orderId=" + $('#order_id').val(),
+            url: Routing.generate('find_assigned_item_ajax'),
+            data: "item=" + item + "&agent=" + $('#order_agent').val(),
             dataType: 'json',
             success: function (response) {
                 var onHand = response.onHand;
-                var onHold = response.onHold;
-                var available = response.available;
                 var price = response.price;
                 var itemUnit = response.itemUnit;
 
-                setOrderItemValue(index, onHand, onHold, available, price, itemUnit, false);
+                setOrderItemValue(index, onHand, price, itemUnit, false);
                 Metronic.unblockUI(collectionHolder);
             },
             error: function(){
@@ -115,16 +113,11 @@ var Order = function()
         totalAmountCalculate();
     }
 
-    function setOrderItemValue(index, onHand, onHold, availableOnDemand, price, itemUnit, itemQty){
+    function setOrderItemValue(index, onHand, price, itemUnit, itemQty){
         var row = $('#order-item-'+index);
 
-        var stockAvailableInfo = 'Available On Demand';
-
-        if (!availableOnDemand) {
-            stockAvailableInfo = parseInt(onHand) - parseInt(onHold);
-        }
         row.find('.item-price input').val(price);
-        row.find('.stock-available').text(stockAvailableInfo);
+        row.find('.assigned-available').text(parseInt(onHand));
         if (itemQty) {
             row.find('.quantity').val(itemQty);
         }

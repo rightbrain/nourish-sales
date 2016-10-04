@@ -104,10 +104,11 @@ class StockController extends Controller
     {
         $item = $request->request->get('item');
         $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($request->request->get('agent'));
+        $order = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($request->request->get('orderId'));
 
         $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(array(
             'item' => $item,
-            'depo' => $agent->getDepo()->getId()
+            'depo' => $order->getDepo()->getId()
         ));
 
         $response = array(

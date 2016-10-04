@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\CoreBundle\Entity\Location;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
@@ -399,6 +400,17 @@ class Order
         }
 
         return $state;
+    }
+    
+    public function getOrderItemType()
+    {
+        foreach ($this->orderItems as $item){
+            if($item->getItem()->getItemType()->getItemType() == ItemType::Chicken){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
