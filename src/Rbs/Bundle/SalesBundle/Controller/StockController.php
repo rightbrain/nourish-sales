@@ -123,6 +123,34 @@ class StockController extends Controller
     }
 
     /**
+     * find stock item ajax
+     * @Route("find_stock_item_depo_ajax", name="find_stock_item_depo_ajax", options={"expose"=true})
+     * @param Request $request
+     * @return Response
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
+     */
+    public function findItemDepoAction(Request $request)
+    {
+        $item = $request->request->get('item');
+        $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('depoId'));
+
+        $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(array(
+            'item' => $item,
+            'depo' => $depo
+        ));
+
+        $response = array(
+            'onHand'    => $stock->getOnHand(),
+            'onHold'    => $stock->getOnHold(),
+            'available' => $stock->isAvailableOnDemand(),
+            'price'     => $stock->getItem()->getPrice(),
+            'itemUnit'  => $stock->getItem()->getItemUnit(),
+        );
+
+        return new JsonResponse($response);
+    }
+
+    /**
      * @param $stock
      */
     protected function checkAvailableOnDemand(Stock $stock)
