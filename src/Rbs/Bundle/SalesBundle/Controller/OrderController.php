@@ -495,6 +495,18 @@ class OrderController extends BaseController
             $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
         }
 
+        $em = $this->getDoctrine()->getManager();
+        $payment = new Payment();
+        $payment->setAgent($order->getAgent());
+        $payment->setAmount($order->getTotalAmount());
+        $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+        $payment->setRemark('A new order create.');
+        $payment->setDepositDate(new \DateTime());
+        $payment->setTransactionType(Payment::DR);
+        $payment->setVerified(true);
+        $payment->addOrder($order);
+        $em->getRepository('RbsSalesBundle:Payment')->create($payment);
+
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
         $this->dispatchApproveProcessEvent('payment.approved', $order);
@@ -520,6 +532,23 @@ class OrderController extends BaseController
         } else {
             $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
         }
+
+        $em = $this->getDoctrine()->getManager();
+        $payment = $em->getRepository('RbsSalesBundle:Payment')->findByOrdersVerifiedType($order->getId(),Payment::DR, true);
+
+        if($payment == null){
+            $payment = new Payment();
+            $payment->setAgent($order->getAgent());
+            $payment->setAmount($order->getTotalAmount());
+            $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+            $payment->setRemark('A new order create.');
+            $payment->setDepositDate(new \DateTime());
+            $payment->setTransactionType(Payment::DR);
+            $payment->setVerified(true);
+            $payment->addOrder($order);
+            $em->getRepository('RbsSalesBundle:Payment')->create($payment);
+        }
+
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
         $this->dispatchApproveProcessEvent('payment.over.credit.approved', $order);
@@ -540,19 +569,6 @@ class OrderController extends BaseController
         if ($order->getOrderState() == Order::ORDER_STATE_PROCESSING &&
             in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))
         ) {
-            $em = $this->getDoctrine()->getManager();
-            $payment = new Payment();
-
-            $payment->setAgent($order->getAgent());
-            $payment->setAmount($order->getTotalAmount());
-            $payment->setPaymentMethod(Payment::PAYMENT_METHOD_REFUND);
-            $payment->setRemark('A new order create.');
-            $payment->setDepositDate(new \DateTime());
-            $payment->setTransactionType(Payment::DR);
-            $payment->setVerified(true);
-            $payment->addOrder($order);
-            $em->getRepository('RbsSalesBundle:Payment')->create($payment);
-
             $order->setDeliveryState(Order::DELIVERY_STATE_READY);
             $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 

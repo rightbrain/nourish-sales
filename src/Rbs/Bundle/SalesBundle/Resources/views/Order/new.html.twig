@@ -26,7 +26,6 @@
     %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
-
 {% endblock stylesheets %}
 
 {% block javascripts %}
@@ -41,7 +40,6 @@
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock javascripts %}
-{#<script>#}
 {% block documentReady %}
     {{ parent() }}
     Order.init();

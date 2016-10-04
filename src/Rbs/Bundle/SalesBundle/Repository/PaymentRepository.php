@@ -185,6 +185,20 @@ class PaymentRepository extends EntityRepository
         return $query->getQuery()->getSingleScalarResult();
     }
 
+    public function findByOrdersVerifiedType($order, $transactionType, $verified)
+    {
+        $query = $this->createQueryBuilder('p');
+        $query->join('p.orders', 'o');
+        $query->where('o.id = :order');
+        $query->andWhere('p.transactionType = :transactionType');
+        $query->andWhere('p.verified = :verified');
+        $query->setParameter('verified', $verified);
+        $query->setParameter('order', $order);
+        $query->setParameter('transactionType', $transactionType);
+
+        return $query->getQuery()->getResult();
+    }
+
     public function getMyPreviousDebitLaserTotal($agentId, $data)
     {
         $query = $this->createQueryBuilder('p');

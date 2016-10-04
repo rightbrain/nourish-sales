@@ -72,7 +72,11 @@
         <a class="btn blue red order-cancel-modal-action">
             Order Cancel
         </a>
-        {% if available == false or availableCheck == false %}
+        {% if available == false and order.orderItemType == true %}
+            <a class="btn blue delete-list-btn" href="{{ path('order_update', {"id": order.id}) }}" target="_blank">
+                Edit
+            </a>
+        {% elseif availableCheck == false and order.orderItemType == false %}
             <a class="btn blue delete-list-btn" href="{{ path('order_update', {"id": order.id}) }}" target="_blank">
                 Edit
             </a>

@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\SalesBundle\Entity\Stock;
 use Rbs\Bundle\SalesBundle\Entity\StockHistory;
 use Rbs\Bundle\SalesBundle\Form\Type\StockHistoryForm;
@@ -132,20 +133,40 @@ class StockController extends Controller
     public function findItemDepoAction(Request $request)
     {
         $item = $request->request->get('item');
+        $itemObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->find($item);
+        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($request->request->get('agent'));
         $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('depoId'));
+        if($depo == null){
+            $depo = $agent->getDepo()->getId();
+        }
 
-        $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(array(
-            'item' => $item,
-            'depo' => $depo
-        ));
+        if($itemObj->getItemType()->getItemType() == ItemType::Chicken){
+            $chickenSetForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(array(
+                'item' => $item,
+                'agent' => $agent
+            ));
 
-        $response = array(
-            'onHand'    => $stock->getOnHand(),
-            'onHold'    => $stock->getOnHold(),
-            'available' => $stock->isAvailableOnDemand(),
-            'price'     => $stock->getItem()->getPrice(),
-            'itemUnit'  => $stock->getItem()->getItemUnit(),
-        );
+            $response = array(
+                'onHand'    => $chickenSetForAgent->getQuantity(),
+                'onHold'    => 0,
+                'available' => 0,
+                'price'     => $chickenSetForAgent->getItem()->getPrice(),
+                'itemUnit'  => $chickenSetForAgent->getItem()->getItemUnit(),
+            );
+        }else{
+            $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(array(
+                'item' => $item,
+                'depo' => $depo
+            ));
+
+            $response = array(
+                'onHand'    => $stock->getOnHand(),
+                'onHold'    => $stock->getOnHold(),
+                'available' => $stock->isAvailableOnDemand(),
+                'price'     => $stock->getItem()->getPrice(),
+                'itemUnit'  => $stock->getItem()->getItemUnit(),
+            );
+        }
 
         return new JsonResponse($response);
     }
