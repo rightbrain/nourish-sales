@@ -83,7 +83,7 @@ class UserUpdateForm extends AbstractType
                         'message'=>'Upozilla should not be blank'
                     )),
                 ),
-                'required' => false
+                'required' => true
             ))
         ;
 
