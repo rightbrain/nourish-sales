@@ -29,7 +29,7 @@ class OrderController extends BaseController
      * @Route("/orders", name="orders_home")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
     public function indexAction(Request $request)
     {
@@ -39,6 +39,34 @@ class OrderController extends BaseController
         return $this->render('RbsSalesBundle:Order:index.html.twig', array(
             'datatable' => $datatable,
         ));
+    }
+
+    /**
+     * @Route("/orders_list_ajax", name="orders_list_ajax", options={"expose"=true})
+     * @Method("GET")
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     */
+    public function listAjaxAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.order');
+        $datatable->buildDatatable();
+
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+
+        /** @var QueryBuilder $qb */
+        $function = function($qb)
+        {
+            if($this->isGranted('ROLE_ADMIN')){
+            }elseif($this->isGranted('ROLE_DEPO_USER')){
+                $qb->join('sales_orders.depo', 'd');
+                $qb->join('d.users', 'u');
+                $qb->andWhere('u.id = :user');
+                $qb->setParameter('user', $this->getUser()->getId());
+            }
+        };
+        $query->addWhereAll($function);
+
+        return $query->getResponse();
     }
 
     /**
@@ -78,37 +106,6 @@ class OrderController extends BaseController
             $qb->join('a.user', 'u');
             $qb->andWhere('u.id =:user');
             $qb->setParameter('user', $this->getUser()->getId());
-        };
-        $query->addWhereAll($function);
-
-        return $query->getResponse();
-    }
-    
-    /**
-     * @Route("/orders_list_ajax", name="orders_list_ajax", options={"expose"=true})
-     * @Method("GET")
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
-     */
-    public function listAjaxAction()
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        $agentRepository = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
-        $datatable = $this->get('rbs_erp.sales.datatable.order');
-        $datatable->buildDatatable();
-
-        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
-
-        /** @var QueryBuilder $qb */
-        $function = function($qb) use ($user, $agentRepository)
-        {
-            if ($user->getUserType() == User::AGENT) {
-                $agent = $agentRepository->findOneBy(array('user' => $user->getId()));
-                $qb->andWhere('sales_orders.agent = :agent')->setParameter('agent', array($agent));
-            } else if ($user->getUserType() == User::AGENT) {
-                $agents = $agentRepository->findBy(array('agent' => $user->getId()));
-                $qb->andWhere('sales_orders.agent IN(:agents)')->setParameter('agents', $agents);
-            }
         };
         $query->addWhereAll($function);
 

@@ -28,7 +28,7 @@ class ConfigureMenuListener extends ContextAwareListener
         $sp5 = false;
 
         if ($this->user->getUserType() != User::AGENT) {
-            if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_DEPO_USER', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
                 $sp1 = true;
                 $menu['Sales']->addChild('Orders', array('route' => 'orders_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
