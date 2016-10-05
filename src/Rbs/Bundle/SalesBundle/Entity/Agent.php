@@ -361,18 +361,6 @@ class Agent
         $this->openingBalanceFlag = $openingBalanceFlag;
     }
 
-    protected function getCurrentCreditLimit()
-    {
-        // (payment total + order(processing+complete) total amount) + (credit limit + opening balance)
-        return false;
-    }
-
-    protected function getCurrentBalance()
-    {
-        // payment total - order(processing+complete) total amount
-        return false;
-    }
-
     /**
      * @return ArrayCollection
      */
