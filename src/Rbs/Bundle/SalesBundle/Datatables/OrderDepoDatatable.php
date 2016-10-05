@@ -10,7 +10,7 @@ use Rbs\Bundle\UserBundle\Entity\User;
  *
  * @package Rbs\Bundle\SalesBundle\Datatables
  */
-class OrderDatatable extends BaseDatatable
+class OrderDepoDatatable extends BaseDatatable
 {
     private $user;
     protected $showAgentName;
@@ -34,8 +34,6 @@ class OrderDatatable extends BaseDatatable
             if ($this->showAgentName) {
                 $line["fullName"] = $order->getAgent()->getUser()->getProfile()->getFullName();
             }
-
-            $line["actionButtons"] = $this->generateActionList($order);
 
             return $line;
         };
@@ -81,18 +79,18 @@ class OrderDatatable extends BaseDatatable
         if ($this->showAgentName) {
             $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName'));
         }
-        $this->columnBuilder->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
-            ->add('orderState', 'column', array('title' => 'Order State', 'render' => 'Order.OrderStateFormat'))
-            ->add('paymentState', 'column', array('title' => 'Payment State', 'render' => 'Order.OrderStateFormat'))
-            ->add('deliveryState', 'column', array('title' => 'Delivery State', 'render' => 'Order.OrderStateFormat'))
-            ->add('totalAmount', 'column', array('title' => 'Total Amount', 'render' => 'Order.OrderPaymentFormat'))
-            ->add('paidAmount', 'column', array('title' => 'Paid Amount', 'render' => 'Order.OrderPaymentFormat'))
-            ->add('isComplete', 'virtual', array('visible' => false))
-            ->add('isCancel', 'virtual', array('visible' => false))
-            ->add('enabled', 'virtual', array('visible' => false))
-            ->add('disabled', 'virtual', array('visible' => false))
-            ->add('actionButtons', 'virtual', array('title' => 'Action'))
-        ;
+
+            $this->columnBuilder->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
+                ->add('orderState', 'column', array('title' => 'Order State', 'render' => 'Order.OrderStateFormat'))
+                ->add('paymentState', 'column', array('title' => 'Payment State', 'render' => 'Order.OrderStateFormat'))
+                ->add('deliveryState', 'column', array('title' => 'Delivery State', 'render' => 'Order.OrderStateFormat'))
+                ->add('totalAmount', 'column', array('title' => 'Total Amount', 'render' => 'Order.OrderPaymentFormat'))
+                ->add('paidAmount', 'column', array('title' => 'Paid Amount', 'render' => 'Order.OrderPaymentFormat'))
+                ->add('isComplete', 'virtual', array('visible' => false))
+                ->add('isCancel', 'virtual', array('visible' => false))
+                ->add('enabled', 'virtual', array('visible' => false))
+                ->add('disabled', 'virtual', array('visible' => false))
+            ;
     }
 
     /**
