@@ -11,7 +11,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation as JMS;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Agent Group Controller.
@@ -27,12 +26,10 @@ class AgentGroupController extends Controller
      */
     public function indexAction()
     {
-        $agentGroups = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentGroup')->agentGroups();
         $datatable = $this->get('rbs_erp.sales.datatable.agent.group');
         $datatable->buildDatatable();
 
         return $this->render('RbsSalesBundle:AgentGroup:index.html.twig', array(
-            'agentGroups' => $agentGroups,
             'datatable' => $datatable
         ));
     }
@@ -67,21 +64,13 @@ class AgentGroupController extends Controller
     public function createAction(Request $request)
     {
         $agentGroup = new AgentGroup();
-
         $form = $this->createForm(new AgentGroupForm(), $agentGroup);
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
-
             if ($form->isValid()) {
-
-                $this->getDoctrine()->getRepository('RbsSalesBundle:AgentGroup')->create($agentGroup);
-
-                $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'Agent Group Create Successfully!'
-                );
-
+                $this->em()->getRepository('RbsSalesBundle:AgentGroup')->create($agentGroup);
+                $this->get('session')->getFlashBag()->add('success','Agent Group Create Successfully!');
                 return $this->redirect($this->generateUrl('agent_groups_home'));
             }
         }
@@ -105,16 +94,9 @@ class AgentGroupController extends Controller
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
-
             if ($form->isValid()) {
-
-                $this->getDoctrine()->getRepository('RbsSalesBundle:AgentGroup')->update($agentGroup);
-
-                $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'User Updated Successfully!'
-                );
-
+                $this->em()->getRepository('RbsSalesBundle:AgentGroup')->update($agentGroup);
+                $this->get('session')->getFlashBag()->add('success','User Updated Successfully!');
                 return $this->redirect($this->generateUrl('agent_groups_home'));
             }
         }
@@ -132,14 +114,18 @@ class AgentGroupController extends Controller
      */
     public function deleteAction(AgentGroup $agentGroup)
     {
-        $this->getDoctrine()->getManager()->remove($agentGroup);
-        $this->getDoctrine()->getManager()->flush();
+        $this->em()->remove($agentGroup);
+        $this->em()->flush();
 
-        $this->get('session')->getFlashBag()->add(
-            'success',
-            'Agent Group Successfully Delete'
-        );
-
+        $this->get('session')->getFlashBag()->add('success','Agent Group Successfully Delete');
         return $this->redirect($this->generateUrl('agent_groups_home'));
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager|object
+     */
+    protected function em()
+    {
+        return $this->getDoctrine()->getManager();
     }
 }

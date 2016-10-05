@@ -12,7 +12,9 @@
             </div>
             <div class="portlet-body">
                 {{ include('_elements/_back_to_list_button.html.twig', {url: path('agent_groups_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}
-                {% include "RbsSalesBundle:AgentGroup:new_content.html.twig" %}
+                {{ form_start(form, {'method': 'POST', attr: { novalidate: 'novalidate'}}) }}
+                {{ form_widget(form) }}
+                {{ form_end(form) }}
             </div>
         </div>
     </div>
@@ -21,29 +23,7 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {% stylesheets  filter='cssrewrite'
-    "assets/global/plugins/jquery-multi-select/css/multi-select.css"
-    %}
-    <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
-
 {% endblock stylesheets %}
-
 {% block javascripts %}
     {{ parent() }}
-    {% javascripts
-    "assets/global/plugins/select2/select2.min.js"
-    "assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js"
-
-    "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
-    "assets/admin/pages/scripts/form-validation.js"
-    %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
 {% endblock javascripts %}
-
-{% block documentReady %}
-    {{ parent() }}
-    FormValidation.init();
-    $("select[multiple=multiple]").multiSelect({selectableOptgroup: true});
-{% endblock documentReady %}
