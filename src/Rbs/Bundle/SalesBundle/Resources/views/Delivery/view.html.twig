@@ -52,8 +52,7 @@
                                     {% for index, item in order.orderItems %}
                                         {% if item.quantity != 0 %}
                                         {% if order.deliveryState == 'PARTIALLY_SHIPPED' and partialItems[order.id][item.id] is defined %}
-                                            {% if (item.quantity - partialItems[order.id][item.id]['delivered']) == 0 %}
-                                                {% else %}
+                                            {% if (item.quantity != partialItems[order.id][item.id]['delivered']) %}
                                                 <tr>
                                                     <td>{{ index+1 }}</td>
                                                     <td>{{ order.id }}</td>
