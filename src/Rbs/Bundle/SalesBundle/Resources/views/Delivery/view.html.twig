@@ -50,6 +50,7 @@
                                 <tbody class="orderItems">
                                 {% for order in delivery.orders %}
                                     {% for index, item in order.orderItems %}
+                                        {% if item.quantity != 0 %}
                                         <tr>
                                             <td>{{ index+1 }}</td>
                                             <td>{{ order.id }}</td>
@@ -63,6 +64,7 @@
                                             <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
                                             <td class="remain"></td>
                                         </tr>
+                                        {% endif %}
                                     {% endfor %}
                                 {% endfor %}
                                 <tbody>

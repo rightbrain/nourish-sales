@@ -138,6 +138,7 @@
                                         </thead>
                                         <tbody class="orderItems">
                                         {% for index, orderItem in order.orderItems %}
+                                            {% if orderItem.quantity != 0 %}
                                             <tr>
                                                 <td>{{ index + 1 }}.</td>
                                                 <td>{{ orderItem.item.name | default('') }}</td>
@@ -147,6 +148,7 @@
                                                 <td>{{ orderItem.totalAmount | default('') }}</td>
                                                 <td>{{ orderItem.paidAmount | default('') }}</td>
                                             </tr>
+                                            {% endif %}
                                         {% endfor %}
                                         <tbody>
                                     </table>
