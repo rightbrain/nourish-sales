@@ -19,11 +19,10 @@ class IncentiveController extends BaseController
 {
     /**
      * @Route("/incentives", name="incentives_home")
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_INCENTIVE_MANAGE")
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
         $datatable = $this->get('rbs_erp.sales.datatable.incentive');
         $datatable->buildDatatable();
@@ -72,11 +71,10 @@ class IncentiveController extends BaseController
 
     /**
      * @Route("/incentive/create", name="incentive_create", options={"expose"=true})
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_INCENTIVE_MANAGE")
      */
-    public function createAction(Request $request)
+    public function createAction()
     {
         $agents = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getAll();
 
@@ -104,12 +102,8 @@ class IncentiveController extends BaseController
             $incentive->setDuration($request->request->get('duration'));
             $incentive->setDetails($request->request->get('details'));
             $incentive->setDate(new \DateTime());
-
             $this->getDoctrine()->getRepository('RbsSalesBundle:Incentive')->create($incentive);
-
-            $this->get('session')->getFlashBag()->add(
-                'success', 'Incentive Add Successfully!'
-            );
+            $this->get('session')->getFlashBag()->add('success', 'Incentive Add Successfully!');
 
             return $this->redirect($this->generateUrl('incentives_home'));
         }
@@ -136,12 +130,10 @@ class IncentiveController extends BaseController
         $incentive->setApprovedAt(new \DateTime());
         $incentive->setApprovedBy($this->getUser());
         $incentive->setStatus(Incentive::APPROVED);
-
         $this->getDoctrine()->getRepository('RbsSalesBundle:Incentive')->update($incentive);
 
         $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
         $em->getRepository('RbsSalesBundle:Payment')->create($payment);
-
         $this->flashMessage('success', 'Incentive Approve Successfully!');
 
         return $this->redirect($this->generateUrl('incentives_home'));
@@ -160,7 +152,6 @@ class IncentiveController extends BaseController
         $incentive->setStatus(Incentive::DENIED);
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Incentive')->update($incentive);
-
         $this->flashMessage('success', 'Incentive Cancel Successfully!');
 
         return $this->redirect($this->generateUrl('incentives_home'));
