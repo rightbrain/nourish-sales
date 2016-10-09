@@ -6,19 +6,16 @@ use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Vehicle;
-use Rbs\Bundle\SalesBundle\Event\DeliveryEvent;
-use Rbs\Bundle\SalesBundle\Form\Type\VehicleDeliveryForm;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleDeliverySetForm;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\SecurityExtraBundle\Annotation as JMS;
-use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Vehicle Controller.
@@ -29,7 +26,6 @@ class VehicleController extends BaseController
     /**
      * @Route("/vehicle/list", name="truck_info_list")
      * @Method("GET")
-     * @Template()
      * @JMS\Secure(roles="ROLE_TRUCK_MANAGE")
      */
     public function indexAction()
@@ -66,7 +62,6 @@ class VehicleController extends BaseController
     /**
      * @Route("/vehicle/my/list", name="truck_info_my_list", options={"expose"=true})
      * @Method("GET")
-     * @Template()
      * @JMS\Secure(roles="ROLE_AGENT")
      */
     public function myIndexAction()
@@ -88,17 +83,15 @@ class VehicleController extends BaseController
     {
         $datatable = $this->get('rbs_erp.sales.datatable.my.vehicle');
         $datatable->buildDatatable();
-        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array(
-            'user' => $this->getUser()
-        ));
+        
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
-        $function = function($qb) use ($agent)
+        $function = function($qb)
         {
             $qb->join('sales_vehicles.agent', 'a');
             $qb->andWhere('a =:agent');
             $qb->andWhere('sales_vehicles.transportGiven =:AGENT');
-            $qb->setParameters(array('agent'=>$agent,'AGENT'=>Vehicle::AGENT));
+            $qb->setParameters(array('agent'=>$this->getAgent(), 'AGENT'=>Vehicle::AGENT));
         };
         $query->addWhereAll($function);
         
@@ -108,7 +101,6 @@ class VehicleController extends BaseController
     /**
      * @Route("/vehicle/in/out/list", name="truck_info_in_out_list", options={"expose"=true})
      * @Method("GET")
-     * @Template()
      * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
      */
     public function inOutIndexAction()
@@ -128,12 +120,9 @@ class VehicleController extends BaseController
      */
     public function inOutListAjaxAction()
     {
-        $em = $this->getDoctrine()->getManager();
         $datatable = $this->get('rbs_erp.sales.datatable.in.out.vehicle');
         $datatable->buildDatatable();
-
-        $getDepoId = $em->getRepository('RbsCoreBundle:Depo')->getDepoId($this->getUser()->getId());
-        $getDepoId ? $depoId = $getDepoId[0]['id'] : $depoId = 0;
+        $depoId = $this->checkUserDepo();
         
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
@@ -177,12 +166,9 @@ class VehicleController extends BaseController
      */
     public function loadListAjaxAction()
     {
-        $em = $this->getDoctrine()->getManager();
         $datatable = $this->get('rbs_erp.sales.datatable.load.vehicle');
         $datatable->buildDatatable();
-
-        $getDepoId = $em->getRepository('RbsCoreBundle:Depo')->getDepoId($this->getUser()->getId());
-        $getDepoId ? $depoId = $getDepoId[0]['id'] : $depoId = 0;
+        $depoId = $this->checkUserDepo();
         
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
@@ -212,7 +198,6 @@ class VehicleController extends BaseController
     /**
      * @Route("/vehicle/set/list", name="vehicle_info_set_list", options={"expose"=true})
      * @Method("GET")
-     * @Template()
      * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
      */
     public function setIndexAction()
@@ -232,12 +217,9 @@ class VehicleController extends BaseController
      */
     public function setListAjaxAction()
     {
-        $em = $this->getDoctrine()->getManager();
         $datatable = $this->get('rbs_erp.sales.datatable.set.vehicle');
         $datatable->buildDatatable();
-
-        $getDepoId = $em->getRepository('RbsCoreBundle:Depo')->getDepoId($this->getUser()->getId());
-        $getDepoId ? $depoId = $getDepoId[0]['id'] : $depoId = 0;
+        $depoId = $this->checkUserDepo();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
@@ -276,35 +258,10 @@ class VehicleController extends BaseController
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-
-                if($this->getUser()->getUserType() == User::AGENT){
-                    $order = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($request->request->get('vehicle')['orders']);
-                    $vehicle->setAgent($order->getAgent());
-                    $vehicle->setTransportGiven(Vehicle::AGENT);
-                    $vehicle->setDepo($order->getDepo());
-                    $vehicle->setOrderText($request->request->get('vehicle')['orders']);
-                    $delivery = new Delivery();
-                    $delivery->addOrder($order);
-                    $delivery->setShipped(false);
-                    $delivery->setDepo($order->getDepo());
-                    $delivery->setTransportGiven(Delivery::AGENT);
-                    $vehicle->setDeliveries($delivery);
-                    $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
-                }else{
-                    $vehicle->setTransportGiven(Vehicle::NOURISH);
-                }
-                $vehicle->setShipped(false);
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->create($vehicle);
-
-                $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'Agent Vehicle Info Add Successfully!'
-                );
-                if($this->getUser()->getUserType() == User::AGENT){
-                    return $this->redirect($this->generateUrl('truck_info_my_list'));
-                }else{
-                    return $this->redirect($this->generateUrl('truck_info_list'));
-                }
+                $this->checkUserForFieldSet($request, $vehicle);
+                $this->vehicleRepo()->create($vehicle);
+                $this->get('session')->getFlashBag()->add('success', 'Agent Vehicle Info Add Successfully!');
+                return $this->checkUserTypeForRedirect();
             }
         }
 
@@ -324,12 +281,8 @@ class VehicleController extends BaseController
     {
         $vehicle->setVehicleIn(new \DateTime());
         $vehicle->setTransportStatus(Vehicle::IN);
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicle);
-
-        $this->get('session')->getFlashBag()->add(
-            'success',
-            'Vehicle In Successfully'
-        );
+        $this->vehicleRepo()->update($vehicle);
+        $this->get('session')->getFlashBag()->add('success', 'Vehicle In Successfully');
 
         return $this->redirect($this->generateUrl('truck_info_in_out_list'));
     }
@@ -344,12 +297,8 @@ class VehicleController extends BaseController
     {
         $vehicle->setStartLoad(new \DateTime());
         $vehicle->setTransportStatus(Vehicle::START_LOAD);
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicle);
-
-        $this->get('session')->getFlashBag()->add(
-            'success',
-            'Vehicle Load Successfully Start'
-        );
+        $this->vehicleRepo()->update($vehicle);
+        $this->get('session')->getFlashBag()->add('success', 'Vehicle Load Successfully Start');
 
         return $this->redirect($this->generateUrl('vehicle_info_load_list'));
     }
@@ -365,28 +314,25 @@ class VehicleController extends BaseController
     public function deliverySetAction(Request $request, Vehicle $vehicle)
     {
         $form = $this->createForm(new VehicleDeliverySetForm($this->getUser(), $vehicle->getId()));
+        
         if ('POST' === $request->getMethod()) {
-            $em = $this->getDoctrine()->getManager();
             $delivery = new Delivery();
             foreach ($request->request->get('vehicle_delivery_form')['orders'] as $orderId){
-                $order = $em->getRepository('RbsSalesBundle:Order')->find($orderId);
+                $order = $this->em()->getRepository('RbsSalesBundle:Order')->find($orderId);
                 $delivery->addOrder($order);
                 $delivery->setDepo($order->getDepo());
             }
             $delivery->setShipped(false);
             $delivery->setTransportGiven(Delivery::NOURISH);
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
+            $this->em()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
 
             $vehicle->setTruckInvoiceAttachedBy($this->getUser());
             $vehicle->setTruckInvoiceAttachedAt(new \DateTime());
             $vehicle->setDeliveries($delivery);
             $vehicle->setShipped(false);
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicle);
 
-            $this->get('session')->getFlashBag()->add(
-                'success',
-                'Vehicle Delivery Set Successfully Start'
-            );
+            $this->vehicleRepo()->update($vehicle);
+            $this->get('session')->getFlashBag()->add('success', 'Vehicle Delivery Set Successfully Start');
 
             return $this->redirect($this->generateUrl('vehicle_info_set_list'));
         }
@@ -406,12 +352,8 @@ class VehicleController extends BaseController
     {
         $vehicle->setFinishLoad(new \DateTime());
         $vehicle->setTransportStatus(Vehicle::FINISH_LOAD);
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicle);
-
-        $this->get('session')->getFlashBag()->add(
-            'success',
-            'Vehicle Successfully Finished'
-        );
+        $this->vehicleRepo()->update($vehicle);
+        $this->get('session')->getFlashBag()->add('success', 'Vehicle Successfully Finished');
 
         return $this->redirect($this->generateUrl('vehicle_info_load_list'));
     }
@@ -427,13 +369,80 @@ class VehicleController extends BaseController
         $vehicle->setVehicleOut(new \DateTime());
         $vehicle->setTransportStatus(Vehicle::OUT);
         $vehicle->setShipped(true);
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicle);
-
-        $this->get('session')->getFlashBag()->add(
-            'success',
-            'Vehicle Successfully Out'
-        );
+        $this->vehicleRepo()->update($vehicle);
+        $this->get('session')->getFlashBag()->add('success', 'Vehicle Successfully Out');
 
         return $this->redirect($this->generateUrl('truck_info_in_out_list'));
+    }
+
+    /**
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    protected function checkUserTypeForRedirect()
+    {
+        return $this->getUser()->getUserType() == User::AGENT ?
+            $this->redirect($this->generateUrl('truck_info_my_list')) :
+            $this->redirect($this->generateUrl('truck_info_list'));
+    }
+
+    /**
+     * @param Request $request
+     * @param Vehicle $vehicle
+     */
+    protected function checkUserForFieldSet(Request $request, Vehicle $vehicle)
+    {
+        if ($this->getUser()->getUserType() == User::AGENT) {
+            $order = $this->em()->getRepository('RbsSalesBundle:Order')->find($request->request->get('vehicle')['orders']);
+            $vehicle->setAgent($order->getAgent());
+            $vehicle->setTransportGiven(Vehicle::AGENT);
+            $vehicle->setDepo($order->getDepo());
+            $vehicle->setOrderText($request->request->get('vehicle')['orders']);
+            $delivery = new Delivery();
+            $delivery->addOrder($order);
+            $delivery->setShipped(false);
+            $delivery->setDepo($order->getDepo());
+            $delivery->setTransportGiven(Delivery::AGENT);
+            $vehicle->setDeliveries($delivery);
+            $this->em()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
+        } else {
+            $vehicle->setTransportGiven(Vehicle::NOURISH);
+        }
+        $vehicle->setShipped(false);
+    }
+
+    /**
+     * @return int
+     */
+    protected function checkUserDepo()
+    {
+        $getDepoId = $this->em()->getRepository('RbsCoreBundle:Depo')
+                                ->getDepoId($this->getUser()->getId());
+        return $getDepoId ? $depoId = $getDepoId[0]['id'] : $depoId = 0;
+    }
+
+    /**
+     * @return Agent
+     */
+    protected function getAgent()
+    {
+        return $this->em()->getRepository('RbsSalesBundle:Agent')->findOneBy(array(
+            'user' => $this->getUser()
+        ));
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager|object
+     */
+    protected function em()
+    {
+        return $this->getDoctrine()->getManager();
+    }
+
+    /**
+     * @return \Rbs\Bundle\SalesBundle\Repository\VehicleRepository
+     */
+    protected function vehicleRepo()
+    {
+        return $this->em()->getRepository('RbsSalesBundle:Vehicle');
     }
 }
