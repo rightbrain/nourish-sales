@@ -17,7 +17,6 @@ class SmsController extends Controller
 {
     /**
      * @Route("/sms", name="sms_home")
-     * @Template()
      * @JMS\Secure(roles="ROLE_ORDER_VIEW")
      */
     public function indexAction()
@@ -52,7 +51,6 @@ class SmsController extends Controller
 
     /**
      * @Route("/sms/readable", name="sms_readable")
-     * @Template()
      * @JMS\Secure(roles="ROLE_ORDER_VIEW")
      */
     public function indexReadableAction()
