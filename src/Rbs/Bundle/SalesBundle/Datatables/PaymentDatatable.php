@@ -27,7 +27,6 @@ class PaymentDatatable extends BaseDatatable
             $line['bankInfo'] = 'Payment Method:'.$payment->getPaymentMethod().', Bank Name:'.$payment->getBankName().', Branch Name:'.$payment->getBranchName();
             $line['totalAmount'] = '<div style="text-align: right;">'. number_format($payment->getAmount(), 2) .'</div>';
             $line['isVerifiedTrue'] = $payment->isVerifiedTrue();
-            $line['isVerifiedFalse'] = !$payment->isVerifiedTrue();
             if ($this->allowAgentSearch) {
                 $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $payment->getAgent()->getUser()->getId()));
                 $line["fullName"] = $profile->getFullName();
@@ -82,24 +81,7 @@ class PaymentDatatable extends BaseDatatable
             ->add('bankName', 'column', array('visible' => false))
             ->add('branchName', 'column', array('visible' => false))
             ->add('bankInfo', 'virtual', array('title' => 'Bank Info'))
-            ->add('isVerifiedTrue', 'virtual', array('visible' => false))
-            ->add('isVerifiedFalse', 'virtual', array('visible' => false))
-            ->add(null, 'action', array(
-                'width' => '180px',
-                'title' => 'Action',
-                'actions' => array(
-                    array(
-                        'route' => 'payments_home',
-                        'label' => 'NOT VERIFIED',
-                        'render_if' => array('isVerifiedFalse')
-                    ),
-                    array(
-                        'route' => 'payments_home',
-                        'label' => 'VERIFIED',
-                        'render_if' => array('isVerifiedTrue')
-                    )
-                )
-            ))
+            ->add('isVerifiedTrue', 'virtual', array('title' => 'Verified', 'visible' => true))
             ->add('orders.id', 'array', array(
                 'title' => 'Orders',
                 'data' => 'orders[, ].id'
