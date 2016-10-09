@@ -32,7 +32,6 @@ class DeliveryItemRepository extends EntityRepository
                 $data[$row['orderId']][$row['id']] = $row;
             }
         }
-        var_dump($data);die;
         return $data;
     }
 
