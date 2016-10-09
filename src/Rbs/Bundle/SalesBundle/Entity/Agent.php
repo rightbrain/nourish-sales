@@ -134,7 +134,7 @@ class Agent
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\ChickenSetForAgent", mappedBy="agents")
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\ChickenSetForAgent", mappedBy="agent")
      */
     private $chickenSetForAgent;
     
