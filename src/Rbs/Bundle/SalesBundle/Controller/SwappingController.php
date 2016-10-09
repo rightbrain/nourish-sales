@@ -23,14 +23,12 @@ class SwappingController extends Controller
 {
     /**
      * @Route("/swapping/rsm/list", name="swapping_rsm_list", options={"expose"=true})
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_SWAPPING_MANAGE")
      */
-    public function swappingRsmListAction(Request $request)
+    public function swappingRsmListAction()
     {
-        $em = $this->getDoctrine()->getManager();
-        $rsmList = $em->getRepository('RbsUserBundle:User')->getRsmList();
+        $rsmList = $this->em()->getRepository('RbsUserBundle:User')->getRsmList();
 
         return $this->render('RbsSalesBundle:Swapping:rsm_list.html.twig', array(
             'rsmList' => $rsmList
@@ -47,21 +45,16 @@ class SwappingController extends Controller
      */
     public function swappingRsmCreateAction(Request $request, User $user)
     {
-        $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(new SwappingRsmForm($user), $user);
 
         if ('POST' === $request->getMethod()) {
-            $user->setZilla($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('rsm_swap')['areaNew']));
-            $em->getRepository('RbsUserBundle:User')->update($user);
+            $user->setZilla($this->em()->getRepository('RbsCoreBundle:Location')->find($request->request->get('rsm_swap')['areaNew']));
+            $this->em()->getRepository('RbsUserBundle:User')->update($user);
 
-            $userSwapping = $em->getRepository('RbsUserBundle:User')->find($request->request->get('rsm_swap')['userChange']);
-            $userSwapping->setZilla($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('rsm_swap')['areaOld']));
-            $em->getRepository('RbsUserBundle:User')->update($userSwapping);
-
-            $this->get('session')->getFlashBag()->add(
-                        'success',
-                        'Swap Successfully!'
-                );
+            $userSwapping = $this->em()->getRepository('RbsUserBundle:User')->find($request->request->get('rsm_swap')['userChange']);
+            $userSwapping->setZilla($this->em()->getRepository('RbsCoreBundle:Location')->find($request->request->get('rsm_swap')['areaOld']));
+            $this->em()->getRepository('RbsUserBundle:User')->update($userSwapping);
+            $this->get('session')->getFlashBag()->add('success', 'Swap Successfully!');
 
             return $this->redirect($this->generateUrl('swapping_rsm_list'));
         }
@@ -79,7 +72,7 @@ class SwappingController extends Controller
      */
     public function getUsersByLocation(Location $location)
     {
-        $users = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findUsersByLocation($location->getId());
+        $users = $this->em()->getRepository('RbsUserBundle:User')->findUsersByLocation($location->getId());
 
         $usersArr = array();
         foreach ($users as $user) {
@@ -91,14 +84,12 @@ class SwappingController extends Controller
 
     /**
      * @Route("/swapping/sr/list", name="swapping_sr_list", options={"expose"=true})
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_SWAPPING_MANAGE")
      */
-    public function swappingSrListAction(Request $request)
+    public function swappingSrListAction()
     {
-        $em = $this->getDoctrine()->getManager();
-        $srList = $em->getRepository('RbsUserBundle:User')->getSrList();
+        $srList = $this->em()->getRepository('RbsUserBundle:User')->getSrList();
         
         return $this->render('RbsSalesBundle:Swapping:sr_list.html.twig', array(
             'srList' => $srList
@@ -115,17 +106,12 @@ class SwappingController extends Controller
      */
     public function swappingSrCreateAction(Request $request, User $user)
     {
-        $em = $this->getDoctrine()->getManager();
         $form = $this->createForm(new SwappingSrForm($user), $user);
 
         if ('POST' === $request->getMethod()) {
-            $user->setZilla($em->getRepository('RbsCoreBundle:Location')->find($request->request->get('sr_swap')['location']));
-            $em->getRepository('RbsUserBundle:User')->update($user);
-
-            $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'Swap Successfully!'
-                );
+            $user->setZilla($this->em()->getRepository('RbsCoreBundle:Location')->find($request->request->get('sr_swap')['location']));
+            $this->em()->getRepository('RbsUserBundle:User')->update($user);
+            $this->get('session')->getFlashBag()->add('success', 'Swap Successfully!');
 
             return $this->redirect($this->generateUrl('swapping_sr_list'));
         }
@@ -133,5 +119,13 @@ class SwappingController extends Controller
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager|object
+     */
+    protected function em()
+    {
+        return $this->getDoctrine()->getManager();
     }
 }
