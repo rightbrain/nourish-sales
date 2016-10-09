@@ -1,17 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }} : User create {% endblock %}
+{% block title %}{{ parent() }} : Upload Bank Slip {% endblock %}
 
 {% block body %}
     <div class="col-md-12">
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-globe"></i>Add Agents
+                    <i class="fa fa-globe"></i>Upload Bank Slip
                 </div>
             </div>
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('orders_my_home'), label: 'Back to List', 'icon': 'plus'}) }}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('bank_info_list'), label: 'Back to List', 'icon': 'plus'}) }}
                 {{ form_start(form, {'method': 'POST'}) }}
                     {{ form_row(form.amount) }}
                     {{ form_row(form.orderRef) }}
