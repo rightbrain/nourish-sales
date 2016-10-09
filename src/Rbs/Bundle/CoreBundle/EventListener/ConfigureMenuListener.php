@@ -26,6 +26,7 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-cog')
                 ->setLinkAttribute('data-hover', 'dropdown');
 
+
             if ($this->authorizationChecker->isGranted('ROLE_ITEM_MANAGE')) {
                 $menu['Settings']->addChild('Items', array('route' => 'item'))
                     ->setAttribute('icon', 'fa fa-th-list');
@@ -89,10 +90,35 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Settings']->getChild('SMS Emulator')->setCurrent(true);
                 }
             }
+/* Report Menu*/
+            $menu->addChild('Report', array())
+                ->setAttribute('dropdown', true)
+                ->setAttribute('icon', 'fa fa-cog')
+                ->setLinkAttribute('data-hover', 'dropdown');
 
             if (empty($menu->getChild('Settings')->getChildren())) {
                 $menu->removeChild($menu['Settings']);
             }
+
+            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+                $menu['Report']->addChild('Upozilla Wise Report', array('route' => 'upozilla_wise_item_report'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('upozilla_wise_item_report')) {
+                    $menu['Report']->getChild('Upozilla Wise Report')->setCurrent(true);
+                }
+            }
+            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+                $menu['Report']->addChild('Item Yearly Report', array('route' => 'item_yearly_report'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('item_yearly_report')) {
+                    $menu['Report']->getChild('Item Yearly Report')->setCurrent(true);
+                }
+            }
+
+            if (empty($menu->getChild('Report')->getChildren())) {
+                $menu->removeChild($menu['Report']);
+            }
+
             return $menu;
         }
     }
