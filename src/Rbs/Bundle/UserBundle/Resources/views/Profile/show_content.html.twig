@@ -22,8 +22,13 @@
                                     <tr>
                                         <th>Name</th>
                                         <td>{{ user.profile.fullname | default('') }}</td>
-                                        <th>Cellphone</th>
-                                        <td>{{ user.profile.cellphone | default('') }}</td>
+                                        {% if agent != null %}
+                                            <th>Agent Id</th>
+                                            <td>{{ agent.agentID | default('') }}</td>
+                                        {% else %}
+                                            <th></th>
+                                            <td></td>
+                                        {% endif %}
                                     </tr>
                                     <tr>
                                         <th>Designation</th>
@@ -32,10 +37,10 @@
                                         <td>{{ user.userType | default('') }}</td>
                                     </tr>
                                     <tr>
+                                        <th>Cellphone</th>
+                                        <td>{{ user.profile.cellphone | default('') }}</td>
                                         <th>Address</th>
                                         <td>{{ user.profile.address | default('') }}</td>
-                                        <th></th>
-                                        <td></td>
                                     </tr>
                                 </table>
                             </div>

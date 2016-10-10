@@ -32,7 +32,7 @@ class AgentsBankInfoForm extends AbstractType
                 'attr' => array(
                     'class' => 'select2me'
                 ),
-                'property' => 'id',
+                'property' => 'orderInfo',
                 'required' => false,
                 'empty_value' => 'Select Order',
                 'empty_data' => null,

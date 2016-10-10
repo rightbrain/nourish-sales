@@ -183,8 +183,7 @@ class OrderController extends BaseController
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
                 $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('order')['depo']);
                 $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
-
-                $this->deliveryRepository()->createDelivery($order);
+                
                 $this->flashMessage('success', 'Order Add Successfully!');
                 return $this->redirect($this->generateUrl('orders_home'));
             }

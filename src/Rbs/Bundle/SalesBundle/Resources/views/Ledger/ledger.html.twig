@@ -79,7 +79,7 @@
                             </tr>
                             {% for laser in agentLaser %}
                                 <tr>
-                                    <td class="col-md-1">{{ laser['depositDate'] | date('d F y') }}</td>
+                                    <td class="col-md-1">{{ laser['depositDate'] | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                     <td class="col-md-1">{{ laser['remark'] | default('') }}</td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'CR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>

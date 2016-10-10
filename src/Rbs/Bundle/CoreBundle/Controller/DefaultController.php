@@ -92,11 +92,11 @@ class DefaultController extends BaseController
                 $smsVehicleParse = new SmsVehicleParse($this->getDoctrine()->getManager(), $user[0]);
                 $response = $smsVehicleParse->parse($formView->get('msg')->getData());
 
-//                if ($response) {
-//                    $this->flashMessage('success', 'Vehicle create Successfully');
-//                } else {
-//                    $this->flashMessage('error', $smsVehicleParse->error);
-//                }
+                if ($response) {
+                    $this->flashMessage('success', 'Vehicle create Successfully');
+                } else {
+                    $this->flashMessage('error', $smsVehicleParse->error);
+                }
             }
 
             return $this->redirectToRoute('vehicle_via_sms');

@@ -29,7 +29,7 @@
                                             <th>Agent Name</th>
                                             <td>{{ order.agent.user.username }}</td>
                                             <th>Order Date</th>
-                                            <td>{{ order.createdAt|date(php_date_format) }}</td>
+                                            <td>{{ order.createdAt|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                         </tr>
                                         <tr>
                                             <th>Created By</th>
@@ -181,7 +181,7 @@
                                                 {% if payment.paymentMethod == 'BANK' %}
                                                 <tr>
                                                     <td>{{ index }}.</td>
-                                                    <td>{{ payment.depositDate | date(php_date_format) }}</td>
+                                                    <td>{{ payment.depositDate | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                                     <td>{{ payment.id | default('') }}</td>
                                                     <td>{{ payment.paymentMethod | default('') }}</td>
                                                     <td>{{ payment.bankName | default('') }}</td>
@@ -252,7 +252,7 @@
                                                 <tr>
                                                     <td>{{ auditLog.type }}</td>
                                                     <td>{{ auditLog.user }}</td>
-                                                    <td>{{ auditLog.eventTime|date(php_date_format ~ ' h:i A') }}</td>
+                                                    <td>{{ auditLog.eventTime|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                                     <td>{{ auditLog.reason }}</td>
                                                 </tr>
                                             {% endfor %}

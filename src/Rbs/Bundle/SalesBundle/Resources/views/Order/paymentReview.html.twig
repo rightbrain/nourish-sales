@@ -1,7 +1,7 @@
 <div class="main-content">
     <div class="modal-header portlet-title blue">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title">Order Summery</h4>
+        <h4 class="modal-title">Order Summary</h4>
     </div>
 
     <div class="modal-body">
@@ -37,7 +37,7 @@
                                 {% set available = true %}
                                 {% for index, payment in order.payments %}
                                     <tr>
-                                        <td>{{ payment.depositDate|date(php_date_format) }}</td>
+                                        <td>{{ payment.depositDate|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                         <td>{{ payment.bankName }}</td>
                                         <td>{{ payment.branchName }}</td>
                                         <td class="text-right">{{ payment.amount|number_format(2) }}</td>
