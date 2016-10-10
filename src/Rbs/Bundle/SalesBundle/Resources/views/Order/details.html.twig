@@ -29,7 +29,7 @@
                                             <th>Agent Name</th>
                                             <td>{{ order.agent.user.username }}</td>
                                             <th>Order Date</th>
-                                            <td>{{ order.createdAt|date(php_date_format) }}</td>
+                                            <td>{{ order.createdAt|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                         </tr>
                                         <tr>
                                             <th>Created By</th>
