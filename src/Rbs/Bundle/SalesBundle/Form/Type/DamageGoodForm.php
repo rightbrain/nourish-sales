@@ -7,6 +7,7 @@ use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DamageGoodForm extends AbstractType
 {
@@ -24,7 +25,13 @@ class DamageGoodForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('amount')
+            ->add('amount', 'text', array(
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Order should not be blank'
+                    ))
+                )
+            ))
             ->add('remark')
             ->add('orderRef', 'entity', array(
                 'class' => 'RbsSalesBundle:Order',
@@ -43,7 +50,12 @@ class DamageGoodForm extends AbstractType
                         ->andWhere('d.id = :depo')
                         ->setParameter('depo', $this->depo)
                         ->setParameter('COMPLETE', Order::ORDER_STATE_COMPLETE);
-                }
+                },
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Order should not be blank'
+                    )),
+                )
             ))
             ->add('file')
             ->add('submit', 'submit', array(

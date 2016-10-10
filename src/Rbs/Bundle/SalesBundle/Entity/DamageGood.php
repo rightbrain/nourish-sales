@@ -102,6 +102,10 @@ class DamageGood
      * @var float
      *
      * @ORM\Column(name="amount", type="float")
+     * @Assert\Range(
+     *      min = 1,
+     *      minMessage = "Amount should not be zero",
+     * )
      */
     private $amount = 0 ;
 
