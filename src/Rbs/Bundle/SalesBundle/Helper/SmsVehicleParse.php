@@ -43,7 +43,7 @@ class SmsVehicleParse
     {
         $this->error;
         $this->validate($message);
-        $this->create($message);
+        return $this->create($message);
     }
 
     protected function validate($message)
@@ -51,37 +51,45 @@ class SmsVehicleParse
         $splitMsg = array_filter(explode(';', $message));
         $splitMsgVehicles = array_filter(explode(':', $splitMsg[0]));
 
-        if($splitMsg[1] == null){
-            $this->setError('Invalid message');
-            return;
-        }
-        if($this->user->getUserType() == User::AGENT) {
-            $order = $this->em->getRepository('RbsSalesBundle:Order')->find($splitMsg[1]);
-            if($order == null){
-                $this->setError('Invalid order number');
-                return;
+        if (sizeof($splitMsg)>1){
+            if($this->user->getUserType() == User::AGENT) {
+                $order = $this->em->getRepository('RbsSalesBundle:Order')->find($splitMsg[1]);
+                if($order == null){
+                    $this->setError('Invalid order number');
+                    return;
+                }
+            }else{
+                $depo =  $this->em->getRepository('RbsCoreBundle:Depo')->findByName($splitMsg[1]);
+                if($depo == null){
+                    $this->setError('Invalid depo name');
+                    return;
+                }
+            }
+            foreach($splitMsgVehicles as $vehicle){
+                $vehicleInfo = array_filter(explode(',', $vehicle));
+                
+                if(sizeof($vehicleInfo)>0){
+                    if($vehicleInfo[0] == null){
+                        $this->setError('Invalid vehicle number');
+                        return;
+                    }
+                }
+                if(sizeof($vehicleInfo)>1) {
+                    if ($vehicleInfo[1] == null) {
+                        $this->setError('Invalid driver name');
+                        return;
+                    }
+                }
+                if(sizeof($vehicleInfo)>2) {
+                    if ($vehicleInfo[2] == null) {
+                        $this->setError('Invalid driver phone number');
+                        return;
+                    }
+                }
             }
         }else{
-            $depo =  $this->em->getRepository('RbsCoreBundle:Depo')->findByName($splitMsg[1]);
-            if($depo == null){
-                $this->setError('Invalid depo name');
-                return;
-            }
-        }
-        foreach($splitMsgVehicles as $vehicle){
-            $vehicleInfo = array_filter(explode(',', $vehicle));
-            if($vehicleInfo[0] == null){
-                $this->setError('Invalid vehicle number');
-                return;
-            }
-            if($vehicleInfo[1] == null){
-                $this->setError('Invalid driver name');
-                return;
-            }
-            if($vehicleInfo[2] == null){
-                $this->setError('Invalid driver phone number');
-                return;
-            }
+            $this->setError('Invalid parameter');
+            return;
         }
     }
 
