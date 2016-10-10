@@ -181,7 +181,7 @@
                                                 {% if payment.paymentMethod == 'BANK' %}
                                                 <tr>
                                                     <td>{{ index }}.</td>
-                                                    <td>{{ payment.depositDate | date(php_date_format) }}</td>
+                                                    <td>{{ payment.depositDate | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                                     <td>{{ payment.id | default('') }}</td>
                                                     <td>{{ payment.paymentMethod | default('') }}</td>
                                                     <td>{{ payment.bankName | default('') }}</td>
