@@ -197,6 +197,7 @@ class OrderItemRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+
     public function getCompleteOrderItemByMonth($data)
     {
         $date = new DateTime($data['year'].'-'.$data['month']);
@@ -228,4 +229,157 @@ class OrderItemRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function getYearlyWiseItemSalesReport($data) {
+
+        if(empty($data['year'])) {
+            return false;
+        }
+        $date = new DateTime($data['year']);
+        $yearlyReport = array();
+        $month = array(
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December');
+
+        if (!empty($data['year'])) {
+
+            for ($i = 1; $i < 13; $i++) {
+                $start_date = $date->format('Y-'.$i.'-01').' 00:00:01';
+                $end_date = $date->format('Y-'.$i.'-t').' 23:59:59';
+
+
+                $yearlyReport[$month[$i-1]] = $this->getYearlyItemSalesReport($start_date,$end_date);
+            }
+
+        }
+
+        return $yearlyReport;
+    }
+
+    public function getYearlyItemSalesReport($start_date,$end_date)
+    {
+        $query = $this->createQueryBuilder('oi');
+        $query->join('oi.order', 'o');
+        $query->join('o.agent', 'a');
+        $query->join('oi.item', 'i');
+        $query->join('i.category', 'c');
+        $query->select('SUM(oi.quantity) as quantity');
+        $query->addSelect('i.id as itemId');
+        $query->where("o.orderState = 'COMPLETE' OR o.orderState = 'PROCESSING'");
+        $query->andWhere('o.createdAt >= :startDate');
+        $query->setParameter('startDate', $start_date);
+        $query->andWhere('o.createdAt <= :endDate');
+        $query->setParameter('endDate', $end_date);
+        $query->groupBy('i.id');
+
+        $results = $query->getQuery()->getResult();
+
+            $itemLists = array();
+
+        foreach ($results as $itemList){
+            $itemLists[$itemList['itemId']] = $itemList;
+        }
+
+        return $itemLists;
+    }
+
+    public function getUpozillaWiseItemSalesReport($data,$itemLists) {
+
+        if(empty($data['year']) or empty($data['month'])) {
+            return false;
+        }
+
+        $date = new DateTime($data['year'].'-'.$data['month']);
+
+        $start_date = $date->format('Y-m-01'). ' 00:00:01';
+        $end_date   = $date->format('Y-m-t'). ' 23:59:59';
+
+        $sql = "SELECT SUM(sclr1) as quantity,name0 as itemName ,name2 as zilla,name3 as upozilla, id4 as upozillaId, zilla_id,id5 as itemId  FROM
+
+                (SELECT c0_.name AS name0, (s1_.quantity) AS sclr1, c2_.name AS name2, c3_.name AS name3,u10_.zilla_id,
+                 c4_.id AS id4, c0_.id AS id5 FROM sales_order_items s1_ 
+                 LEFT JOIN sales_orders s5_ ON s1_.order_id = s5_.id 
+                 LEFT JOIN core_items c0_ ON s1_.item_id = c0_.id 
+                 LEFT JOIN core_item_types c6_ ON c0_.item_types = c6_.id 
+                 LEFT JOIN core_join_items_categories c8_ ON c0_.id = c8_.item_id 
+                 LEFT JOIN core_categories c7_ ON c7_.id = c8_.categories_id 
+                 LEFT JOIN sales_agents s9_ ON s5_.agent_id = s9_.id 
+                 LEFT JOIN user_users u10_ ON s9_.user_id = u10_.id 
+                 LEFT JOIN core_locations c2_ ON u10_.zilla_id = c2_.id 
+                 LEFT JOIN core_locations c3_ ON u10_.upozilla_id = c3_.id 
+                 LEFT JOIN core_locations c4_ ON s5_.location_id = c4_.id 
+                 WHERE (s5_.order_state = 'COMPLETE' 
+                 OR s5_.order_state = 'PROCESSING') 
+                 AND s5_.created_at >= '$start_date' 
+                 AND s5_.created_at <= '$end_date') as tbl 
+                 group by id5 ,name0,name2,name3";
+
+        $upozillaLists = $this->_em->getConnection()->fetchAll($sql);
+
+        $data = array();
+
+
+        foreach ($upozillaLists as $upozillaList){
+
+            $data[$upozillaList['zilla']][$upozillaList['upozilla']][$upozillaList['itemId']] = $upozillaList;
+        }
+
+            return $data;
+    }
+
+    public function getUpozillaWiseItemSalesReportExcel($data) {
+
+        if(empty($data['year']) or empty($data['month'])) {
+            return false;
+        }
+
+        $date = new DateTime($data['year'].'-'.$data['month']);
+
+        $start_date = $date->format('Y-m-01'). ' 00:00:01';
+        $end_date   = $date->format('Y-m-t'). ' 23:59:59';
+
+        $sql = "SELECT SUM(sclr1) as quantity,name0 as itemName ,name2 as zilla,name3 as upozilla, id4 as upozillaId, zilla_id,id5 as itemId  FROM
+
+                (SELECT c0_.name AS name0, (s1_.quantity) AS sclr1, c2_.name AS name2, c3_.name AS name3,u10_.zilla_id,
+                 c4_.id AS id4, c0_.id AS id5 FROM sales_order_items s1_ 
+                 LEFT JOIN sales_orders s5_ ON s1_.order_id = s5_.id 
+                 LEFT JOIN core_items c0_ ON s1_.item_id = c0_.id 
+                 LEFT JOIN core_item_types c6_ ON c0_.item_types = c6_.id 
+                 LEFT JOIN core_join_items_categories c8_ ON c0_.id = c8_.item_id 
+                 LEFT JOIN core_categories c7_ ON c7_.id = c8_.categories_id 
+                 LEFT JOIN sales_agents s9_ ON s5_.agent_id = s9_.id 
+                 LEFT JOIN user_users u10_ ON s9_.user_id = u10_.id 
+                 LEFT JOIN core_locations c2_ ON u10_.zilla_id = c2_.id 
+                 LEFT JOIN core_locations c3_ ON u10_.upozilla_id = c3_.id 
+                 LEFT JOIN core_locations c4_ ON s5_.location_id = c4_.id 
+                 WHERE (s5_.order_state = 'COMPLETE' 
+                 OR s5_.order_state = 'PROCESSING') 
+                 AND s5_.created_at >= '$start_date' 
+                 AND s5_.created_at <= '$end_date') as tbl 
+                 group by id5 ,name0,name2,name3";
+
+        $upozillaLists = $this->_em->getConnection()->fetchAll($sql);
+
+        $data = array();
+
+
+        foreach ($upozillaLists as $upozillaList){
+
+            $data[$upozillaList['zilla']][$upozillaList['upozilla']][$upozillaList['itemId']] = $upozillaList;
+        }
+
+            return $data;
+    }
+
+
 }
