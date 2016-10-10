@@ -21,11 +21,10 @@ class TargetController extends BaseController
 {
     /**
      * @Route("/target/list", name="target_list", options={"expose"=true})
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_TARGET_MANAGE")
      */
-    public function targetListAction(Request $request)
+    public function targetListAction()
     {
         $datatable = $this->get('rbs_erp.sales.datatable.target');
         $datatable->buildDatatable();
@@ -38,11 +37,10 @@ class TargetController extends BaseController
     /**
      * @Route("/target_list_ajax", name="target_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_TARGET_MANAGE")
      */
-    public function listAjaxAction(Request $request)
+    public function listAjaxAction()
     {
         $datatable = $this->get('rbs_erp.sales.datatable.target');
         $datatable->buildDatatable();
@@ -72,11 +70,8 @@ class TargetController extends BaseController
      */
     public function createAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        $categories = $em->getRepository('RbsCoreBundle:Category')->getAllActiveCategory();
-
+        $categories = $this->em()->getRepository('RbsCoreBundle:Category')->getAllActiveCategory();
         $target = new Target();
-
         foreach ($categories as $category) {
             $categoryWiseField = new Target();
             $categoryWiseField->setQuantity(0);
@@ -91,13 +86,10 @@ class TargetController extends BaseController
         ));
 
         $form->get('child_entities')->setData($targets);
-
         if ('POST' === $request->getMethod()) {
-
             $form->handleRequest($request);
-
             if ($form->isValid()) {
-                $em->getRepository('RbsSalesBundle:Target')->create($target);
+                $this->em()->getRepository('RbsSalesBundle:Target')->create($target);
                 $this->flashMessage('success', 'Target Add Successfully!');
                 return $this->redirect($this->generateUrl('target_list'));
             }
@@ -120,19 +112,12 @@ class TargetController extends BaseController
     public function updateAction(Request $request, Target $target)
     {
         $form = $this->createForm(new TargetUpdateForm(), $target);
-
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->update($target, $request->request->get('target')['endDate']);
-
-                $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'Target Updated Successfully!'
-                );
-
+                $this->em()->getRepository('RbsSalesBundle:Target')->update($target, $request->request->get('target')['endDate']);
+                $this->get('session')->getFlashBag()->add('success', 'Target Updated Successfully!');
                 return $this->redirect($this->generateUrl('target_list'));
             }
         }
@@ -151,13 +136,21 @@ class TargetController extends BaseController
      */
     public function myAction()
     {
-        $targets = $this->getDoctrine()->getRepository('RbsSalesBundle:Target')->findMyLocationTargetRSM($this->getUser()->getZilla());
-        $srList = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findSRByParentId($this->getUser()->getId());
+        $targets = $this->em()->getRepository('RbsSalesBundle:Target')->findMyLocationTargetRSM($this->getUser()->getZilla());
+        $srList = $this->em()->getRepository('RbsUserBundle:User')->findSRByParentId($this->getUser()->getId());
 
         return array(
             'targets'       => $targets,
             'srList'       => $srList,
             'user'       => $this->getUser()
         );
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager|object
+     */
+    protected function em()
+    {
+        return $this->getDoctrine()->getManager();
     }
 }

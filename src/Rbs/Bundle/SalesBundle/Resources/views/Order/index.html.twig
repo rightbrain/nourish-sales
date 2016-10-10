@@ -23,7 +23,9 @@
                 </div>
             </div>
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('order_create'), label: 'Add New Order', 'icon': 'plus'}) }}
+                {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_ORDER_CREATE") or is_granted("ROLE_ORDER_EDIT") or is_granted("ROLE_ORDER_APPROVE") or is_granted("ROLE_ORDER_CANCEL") %}
+                    {{ include('_elements/_back_to_list_button.html.twig', {url: path('order_create'), label: 'Add New Order', 'icon': 'plus'}) }}
+                {% endif %}
                 <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}
                     <div style="clear: both"></div>

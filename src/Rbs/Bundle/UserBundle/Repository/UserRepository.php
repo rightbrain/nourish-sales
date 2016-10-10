@@ -116,9 +116,10 @@ class UserRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('u');
         $query->join('u.profile', 'p');
-        $query->andWhere('p.cellphone = :phoneNumber');
+        $query->where('p.cellphone = :phoneNumber');
         $query->setParameter('phoneNumber', $phoneNumber);
+        $query->setMaxResults(1);
 
-        return $query->getQuery()->getSingleScalarResult();
+        return $query->getQuery()->getResult();
     }
 }

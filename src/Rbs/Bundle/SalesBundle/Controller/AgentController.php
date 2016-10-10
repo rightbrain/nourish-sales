@@ -7,7 +7,6 @@ use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentDoc;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
-use Rbs\Bundle\SalesBundle\Entity\Stock;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentDocForm;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentUpdateForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
@@ -90,7 +89,6 @@ class AgentController extends BaseController
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
-
             if ($form->isValid()) {
 
                 if(!$agent->isOpeningBalanceFlag()){
@@ -109,12 +107,7 @@ class AgentController extends BaseController
                 }
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->update($agent);
-
-                $this->get('session')->getFlashBag()->add(
-                    'success',
-                    'User Updated Successfully!'
-                );
-
+                $this->get('session')->getFlashBag()->add('success','User Updated Successfully!');
                 return $this->redirect($this->generateUrl('agents_home'));
             }
         }
@@ -138,21 +131,13 @@ class AgentController extends BaseController
         $form = $this->createForm(new UserUpdatePasswordForm(), $user);
 
         if ($request->getMethod() == 'POST') {
-
             $form->handleRequest($request);
-
             if ($form->isValid()) {
-
                 $user->setPassword($form->get('plainPassword')->getData());
                 $user->setPlainPassword($form->get('plainPassword')->getData());
 
                 $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
-
-                $this->get('session')->getFlashBag()->add(
-                    'notice',
-                    'Password Successfully Change'
-                );
-
+                $this->get('session')->getFlashBag()->add('notice','Password Successfully Change');
                 return $this->redirect($this->generateUrl('homepage'));
             }
         }
@@ -189,7 +174,6 @@ class AgentController extends BaseController
     protected function checkViewDetailAccess(Agent $agent)
     {
         if ($this->isGranted('ROLE_AGENT')) {
-
             if ($agent->getSr() != $this->getUser()) {
                 throw new AccessDeniedException('Access Denied');
             }
@@ -211,11 +195,7 @@ class AgentController extends BaseController
         $this->getDoctrine()->getManager()->remove($agent);
         $this->getDoctrine()->getManager()->flush();
 
-        $this->get('session')->getFlashBag()->add(
-            'success',
-            'Agent Successfully Delete'
-        );
-
+        $this->get('session')->getFlashBag()->add('success','Agent Successfully Delete');
         return $this->redirect($this->generateUrl('agents_home'));
     }
 
@@ -228,7 +208,6 @@ class AgentController extends BaseController
     public function findAgentAction(Request $request)
     {
         $agentId = $request->request->get('agent');
-
         $agentRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
         $agent = $agentRepo->find($agentId);
 
@@ -269,9 +248,10 @@ class AgentController extends BaseController
      */
     public function myDocAction()
     {
-        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array(
-                                                     'user' => $this->getUser()->getId()));
-        $docs = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentDoc')->getAllFileForLogInAgent($agent->getId());
+        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')
+            ->findOneBy(array('user' => $this->getUser()->getId()));
+        $docs = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentDoc')
+            ->getAllFileForLogInAgent($agent->getId());
 
         return $this->render('RbsSalesBundle:Agent:my-doc.html.twig', array(
             'agent' => $agent,
@@ -297,8 +277,8 @@ class AgentController extends BaseController
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
             if ($form->isValid()) {
-                $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array(
-                    'user' => $this->getUser()->getId()));
+                $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')
+                    ->findOneBy(array('user' => $this->getUser()->getId()));
                 $agentDoc->setAgent($agent);
                 $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:AgentDoc')->create($agentDoc);
                 $this->flashMessage('success', 'Agent Doc add Successfully!');

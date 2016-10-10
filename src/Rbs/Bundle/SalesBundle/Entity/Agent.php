@@ -1,6 +1,7 @@
 <?php
 namespace Rbs\Bundle\SalesBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\UserBundle\Entity\User;
@@ -130,6 +131,13 @@ class Agent
      */
     private $depo;
 
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\ChickenSetForAgent", mappedBy="agent")
+     */
+    private $chickenSetForAgent;
+    
     /**
      * Get id
      *
@@ -353,15 +361,19 @@ class Agent
         $this->openingBalanceFlag = $openingBalanceFlag;
     }
 
-    protected function getCurrentCreditLimit()
+    /**
+     * @return ArrayCollection
+     */
+    public function getChickenSetForAgent()
     {
-        // (payment total + order(processing+complete) total amount) + (credit limit + opening balance)
-        return false;
+        return $this->chickenSetForAgent;
     }
 
-    protected function getCurrentBalance()
+    /**
+     * @param ArrayCollection $chickenSetForAgent
+     */
+    public function setChickenSetForAgent($chickenSetForAgent)
     {
-        // payment total - order(processing+complete) total amount
-        return false;
+        $this->chickenSetForAgent = $chickenSetForAgent;
     }
 }

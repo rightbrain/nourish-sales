@@ -108,7 +108,7 @@ class PaymentController extends BaseController
 
             if ($form->isValid()) {
                 $payment->setTransactionType(Payment::CR);
-                $payment->setVerified(false);
+                $payment->setVerified(true);
                 $em = $this->getDoctrine()->getManager();
                 $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
                 $em->getRepository('RbsSalesBundle:Payment')->create($payment);

@@ -340,8 +340,8 @@ class Payment
     public function isVerifiedTrue()
     {
         if($this->verified == true){
-            return true;
+            return 'VERIFIED';
         }
-        return false;
+        return 'NOT VERIFIED';
     }
 }

@@ -75,7 +75,7 @@ var Order = function()
         $.ajax({
             type: "post",
             url: Routing.generate('find_stock_item_ajax'),
-            data: "item=" + item + "&agent=" + $('#order_agent').val(),
+            data: "item=" + item + "&agent=" + $('#order_agent').val() + "&orderId=" + $('#order_id').val(),
             dataType: 'json',
             success: function (response) {
                 var onHand = response.onHand;

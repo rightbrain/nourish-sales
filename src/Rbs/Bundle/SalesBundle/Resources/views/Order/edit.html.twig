@@ -31,15 +31,27 @@
 
 {% block javascripts %}
     {{ parent() }}
-    {% javascripts
-    "assets/global/plugins/bootstrap-toastr/toastr.min.js"
+    {% if order.orderItemType == true %}
+        {% javascripts
+        "assets/global/plugins/bootstrap-toastr/toastr.min.js"
 
-    "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
-    "assets/admin/pages/scripts/form-validation.js"
-    "bundles/rbssales/js/order.js"
-    %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
+        "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
+        "assets/admin/pages/scripts/form-validation.js"
+        "bundles/rbssales/js/order.js"
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% else %}
+        {% javascripts
+        "assets/global/plugins/bootstrap-toastr/toastr.min.js"
+
+        "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
+        "assets/admin/pages/scripts/form-validation.js"
+        "bundles/rbssales/js/order-for-chicken.js"
+        %}
+        <script type="text/javascript" src="{{ asset_url }}"></script>
+        {% endjavascripts %}
+    {% endif %}
 {% endblock javascripts %}
 {#<script>#}
 {% block documentReady %}

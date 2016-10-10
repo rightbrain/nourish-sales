@@ -59,6 +59,12 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
+            $menu['Settings']->addChild('Chicken Set', array('route' => 'chicken_set_in_location'))
+                ->setAttribute('icon', 'fa fa-th-list');
+            if ($this->isMatch('chicken_set_in_location')) {
+                $menu['Settings']->getChild('Chicken Set')->setCurrent(true);
+            }
+
             if ($this->authorizationChecker->isGranted('ROLE_DEPO_MANAGE')) {
                 $menu['Settings']->addChild('Depos', array('route' => 'depo'))
                     ->setAttribute('icon', 'fa fa-th-list');
@@ -70,7 +76,7 @@ class ConfigureMenuListener extends ContextAwareListener
             if ($this->authorizationChecker->isGranted('ROLE_SALE_INCENTIVE_MANAGE')) {
                 $menu['Settings']->addChild('Sale Incentive', array('route' => 'sale_incentive_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
-                if ($this->isMatch('sale_incentive_list')) {
+                if ($this->isMatch('sale_incentive_list') or $this->isMatch('sale_incentive_import')) {
                     $menu['Settings']->getChild('Sale Incentive')->setCurrent(true);
                 }
             }
@@ -95,6 +101,14 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('dropdown', true)
                 ->setAttribute('icon', 'fa fa-cog')
                 ->setLinkAttribute('data-hover', 'dropdown');
+
+            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+                $menu['Settings']->addChild('Vehicle SMS Emulator', array('route' => 'vehicle_via_sms'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('vehicle_via_sms')) {
+                    $menu['Settings']->getChild('Vehicle SMS Emulator')->setCurrent(true);
+                }
+            }
 
             if (empty($menu->getChild('Settings')->getChildren())) {
                 $menu->removeChild($menu['Settings']);

@@ -17,12 +17,6 @@ class DeliveryItemRepository extends EntityRepository
     public function getPartialDeliveredItems(Delivery $delivery)
     {
         $orders = $delivery->getOrders();
-        foreach ($orders as $order){
-            $agents = $order->getAgent();
-        }
-
-        $orders = $delivery->getOrders();
-
         $data = array();
         foreach ($orders as $order) {
             $query = $this->createQueryBuilder('deliveryItem');
@@ -30,7 +24,7 @@ class DeliveryItemRepository extends EntityRepository
             $query->join('orderItem.item', 'item');
             $query->select('SUM(deliveryItem.qty) AS delivered, orderItem.quantity, item.name AS itemName, orderItem.id');
             $query->groupBy('deliveryItem.orderItem');
-            $query->having('orderItem.quantity > delivered');
+//            $query->having('orderItem.quantity >= delivered');
             $query->where("deliveryItem.order = :order")->setParameter('order', $order);
             $result = $query->getQuery()->getResult();
             foreach ($result as $row) {
@@ -38,7 +32,6 @@ class DeliveryItemRepository extends EntityRepository
                 $data[$row['orderId']][$row['id']] = $row;
             }
         }
-
         return $data;
     }
 

@@ -3,20 +3,18 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
-use Rbs\Bundle\SalesBundle\Entity\Agent;
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderIncentiveFlag;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
-use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation as JMS;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Order Controller.
@@ -26,13 +24,16 @@ class OrderController extends BaseController
 {
     /**
      * @Route("/orders", name="orders_home")
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
-        $datatable = $this->get('rbs_erp.sales.datatable.order');
+        if($this->isGranted('ROLE_DEPO_USER') and !$this->isGranted('ROLE_ADMIN')){
+            $datatable = $this->get('rbs_erp.sales.datatable.order.depo');
+        }else{
+            $datatable = $this->get('rbs_erp.sales.datatable.order');
+        }
         $datatable->buildDatatable();
 
         return $this->render('RbsSalesBundle:Order:index.html.twig', array(
@@ -41,12 +42,41 @@ class OrderController extends BaseController
     }
 
     /**
+     * @Route("/orders_list_ajax", name="orders_list_ajax", options={"expose"=true})
+     * @Method("GET")
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     */
+    public function listAjaxAction()
+    {
+        if($this->isGranted('ROLE_DEPO_USER') and !$this->isGranted('ROLE_ADMIN')){
+            $datatable = $this->get('rbs_erp.sales.datatable.order.depo');
+        }else{
+            $datatable = $this->get('rbs_erp.sales.datatable.order');
+        }
+        $datatable->buildDatatable();
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+
+        /** @var QueryBuilder $qb */
+        $function = function($qb)
+        {
+            if($this->isGranted('ROLE_DEPO_USER')){
+                $qb->join('sales_orders.depo', 'd');
+                $qb->join('d.users', 'u');
+                $qb->andWhere('u.id = :user');
+                $qb->setParameter('user', $this->getUser()->getId());
+            }
+        };
+        $query->addWhereAll($function);
+
+        return $query->getResponse();
+    }
+
+    /**
      * @Route("/orders/my", name="orders_my_home")
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_AGENT")
      */
-    public function myOrdersAction(Request $request)
+    public function myOrdersAction()
     {
         $datatable = $this->get('rbs_erp.sales.datatable.order.individual');
         $datatable->buildDatatable();
@@ -62,16 +92,12 @@ class OrderController extends BaseController
      */
     public function listAjaxMyAction()
     {
-        /** @var User $user */
-        $user = $this->getUser();
-        $agentRepository = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
         $datatable = $this->get('rbs_erp.sales.datatable.order.individual');
         $datatable->buildDatatable();
-
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
 
         /** @var QueryBuilder $qb */
-        $function = function($qb) use ($user, $agentRepository)
+        $function = function($qb)
         {
             $qb->join('sales_orders.agent', 'a');
             $qb->join('a.user', 'u');
@@ -82,45 +108,13 @@ class OrderController extends BaseController
 
         return $query->getResponse();
     }
-    
-    /**
-     * @Route("/orders_list_ajax", name="orders_list_ajax", options={"expose"=true})
-     * @Method("GET")
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
-     */
-    public function listAjaxAction()
-    {
-        /** @var User $user */
-        $user = $this->getUser();
-        $agentRepository = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
-        $datatable = $this->get('rbs_erp.sales.datatable.order');
-        $datatable->buildDatatable();
-
-        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
-
-        /** @var QueryBuilder $qb */
-        $function = function($qb) use ($user, $agentRepository)
-        {
-            if ($user->getUserType() == User::AGENT) {
-                $agent = $agentRepository->findOneBy(array('user' => $user->getId()));
-                $qb->andWhere('sales_orders.agent = :agent')->setParameter('agent', array($agent));
-            } else if ($user->getUserType() == User::AGENT) {
-                $agents = $agentRepository->findBy(array('agent' => $user->getId()));
-                $qb->andWhere('sales_orders.agent IN(:agents)')->setParameter('agents', $agents);
-            }
-        };
-        $query->addWhereAll($function);
-
-        return $query->getResponse();
-    }
 
     /**
      * @Route("/order/readable/sms", name="order_readable_sms")
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
      */
-    public function indexOrderReadableSmsAction(Request $request)
+    public function indexOrderReadableSmsAction()
     {
         $datatable = $this->get('rbs_erp.sales.datatable.order.readable.sms');
         $datatable->buildDatatable();
@@ -171,9 +165,7 @@ class OrderController extends BaseController
         }
 
         $form = $this->createForm(new OrderForm($refSms), $order);
-
         if ('POST' === $request->getMethod()) {
-
             foreach ($request->request->get('order')['orderItems'] as $orderItem){
                 if($orderItem['quantity'] <=0){
                     $this->flashMessage('error', 'quantity should not zero!');
@@ -193,9 +185,7 @@ class OrderController extends BaseController
                 $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
 
                 $this->deliveryRepository()->createDelivery($order);
-
                 $this->flashMessage('success', 'Order Add Successfully!');
-
                 return $this->redirect($this->generateUrl('orders_home'));
             }
             a:
@@ -222,14 +212,11 @@ class OrderController extends BaseController
 
         $form = $this->createForm(new OrderForm($refSms), $order);
         $em = $this->getDoctrine()->getManager();
-
         if ('POST' === $request->getMethod()) {
-
             $sms = $order->getRefSMS();
             $stockRepo = $em->getRepository('RbsSalesBundle:Stock');
             $oldQty = $stockRepo->extractOrderItemQuantity($order);
             $form->handleRequest($request);
-
             foreach ($request->request->get('order')['orderItems'] as $orderItem){
                 if($orderItem['quantity'] <=0){
                     $this->flashMessage('error', 'quantity should not zero!');
@@ -271,13 +258,11 @@ class OrderController extends BaseController
     public function detailsAction(Order $order)
     {
         $this->checkViewOrderAccess($order);
-
         $deliveryItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->findBy(array(
             'order' => $order->getId(),
         ));
 
         $deliveredItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItems($order);
-
         $auditLogs = $this->getDoctrine()->getRepository('RbsCoreBundle:AuditLog')->getByTypeOrObjectId(array(
             'order.verified', 'order.hold', 'order.canceled', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
 
@@ -326,9 +311,7 @@ class OrderController extends BaseController
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
         $this->dispatchApproveProcessEvent('order.approved', $order);
-
         $this->flashMessage('success', 'Order Approve Successfully!');
-
         return $this->redirect($this->generateUrl('orders_home'));
     }
 
@@ -345,11 +328,8 @@ class OrderController extends BaseController
         }
 
         $this->orderRepository()->cancelOrder($order);
-
         $this->dispatchApproveProcessEvent('order.canceled', $order);
-
         $this->flashMessage('success', 'Order Cancel Successfully!');
-
         return $this->redirect($this->generateUrl('orders_home'));
     }
 
@@ -371,11 +351,8 @@ class OrderController extends BaseController
 
         $order->setOrderState(Order::ORDER_STATE_HOLD);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
-
         $this->dispatchApproveProcessEvent('order.hold', $order);
-
         $this->flashMessage('success', 'Order Hold Successfully!');
-
         return $this->redirect($this->generateUrl('orders_home'));
     }
 
@@ -387,6 +364,9 @@ class OrderController extends BaseController
      */
     public function summeryViewAction(Order $order)
     {
+        $chickenCheck = 0;
+        $chickenCheckForAgent = null;
+        $availableCheck = false;
         $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
         /** @var OrderItem $item */
         foreach ($order->getOrderItems() as $item) {
@@ -394,10 +374,21 @@ class OrderController extends BaseController
                 array('item' => $item->getItem()->getId(), 'depo' => $order->getDepo()->getId())
             );
             $item->isAvailable = $stockItem->isStockAvailable($item->getQuantity());
+            if($item->getItem()->getItemType() == ItemType::Chicken){
+                $chickenCheckForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(array(
+                    'item' => $item->getItem()->getId(), 'agent' => $order->getAgent()->getId()
+                ));
+                $availableCheck = $chickenCheckForAgent->isStockAvailable($item->getQuantity());
+                $item->isAvailableQty = $chickenCheckForAgent->getQuantity();
+                $chickenCheck = 1;
+            }
         }
 
         return $this->render('RbsSalesBundle:Order:summeryView.html.twig', array(
             'order' => $order,
+            'chickenCheck' => $chickenCheck,
+            'chickenCheckForAgent' => $chickenCheckForAgent,
+            'availableCheck' => $availableCheck,
         ));
     }
 
@@ -480,12 +471,22 @@ class OrderController extends BaseController
             $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
         }
 
+        $em = $this->getDoctrine()->getManager();
+        $payment = new Payment();
+        $payment->setAgent($order->getAgent());
+        $payment->setAmount($order->getTotalAmount());
+        $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+        $payment->setRemark('A new order create.');
+        $payment->setDepositDate(new \DateTime());
+        $payment->setTransactionType(Payment::DR);
+        $payment->setVerified(true);
+        $payment->addOrder($order);
+        $em->getRepository('RbsSalesBundle:Payment')->create($payment);
+
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
         $this->dispatchApproveProcessEvent('payment.approved', $order);
-
         $this->flashMessage('success', 'Payment Approved Successfully!');
-
         return $this->redirect($this->generateUrl('orders_home'));
     }
 
@@ -505,12 +506,26 @@ class OrderController extends BaseController
         } else {
             $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
         }
+
+        $em = $this->getDoctrine()->getManager();
+        $payment = $em->getRepository('RbsSalesBundle:Payment')->findByOrdersVerifiedType($order->getId(),Payment::DR, true);
+
+        if($payment == null){
+            $payment = new Payment();
+            $payment->setAgent($order->getAgent());
+            $payment->setAmount($order->getTotalAmount());
+            $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+            $payment->setRemark('A new order create.');
+            $payment->setDepositDate(new \DateTime());
+            $payment->setTransactionType(Payment::DR);
+            $payment->setVerified(true);
+            $payment->addOrder($order);
+            $em->getRepository('RbsSalesBundle:Payment')->create($payment);
+        }
+
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
-
         $this->dispatchApproveProcessEvent('payment.over.credit.approved', $order);
-
         $this->flashMessage('success', 'Payment Approved Successfully!');
-
         return $this->redirect($this->generateUrl('orders_home'));
     }
 
@@ -525,24 +540,9 @@ class OrderController extends BaseController
         if ($order->getOrderState() == Order::ORDER_STATE_PROCESSING &&
             in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))
         ) {
-            $em = $this->getDoctrine()->getManager();
-            $payment = new Payment();
-
-            $payment->setAgent($order->getAgent());
-            $payment->setAmount($order->getTotalAmount());
-            $payment->setPaymentMethod(Payment::PAYMENT_METHOD_REFUND);
-            $payment->setRemark('A new order create.');
-            $payment->setDepositDate(new \DateTime());
-            $payment->setTransactionType(Payment::DR);
-            $payment->setVerified(true);
-            $payment->addOrder($order);
-            $em->getRepository('RbsSalesBundle:Payment')->create($payment);
-
             $order->setDeliveryState(Order::DELIVERY_STATE_READY);
             $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
-
             $this->dispatchApproveProcessEvent('order.verified', $order);
-
             $this->flashMessage('success', 'Order Verified Successfully and Ready for Delivery');
         }
 

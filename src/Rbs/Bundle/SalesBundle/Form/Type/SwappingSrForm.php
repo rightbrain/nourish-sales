@@ -3,7 +3,6 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
-use Rbs\Bundle\CoreBundle\Repository\LocationRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
@@ -27,7 +26,7 @@ class SwappingSrForm extends AbstractType
     {
         $builder
             ->add('username', 'entity', array(
-                'class' => 'Rbs\Bundle\UserBundle\Entity\User',
+                'class' => 'RbsUserBundle:User',
                 'attr' => array(
                     'class' => 'select2me'
                 ),
@@ -40,7 +39,7 @@ class SwappingSrForm extends AbstractType
                 }
             ))
             ->add('location', 'entity', array(
-                'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
+                'class' => 'RbsCoreBundle:Location',
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('a')
                         ->where('a.level = :level')

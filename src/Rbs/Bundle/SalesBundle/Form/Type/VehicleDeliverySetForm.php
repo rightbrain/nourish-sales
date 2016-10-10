@@ -53,10 +53,9 @@ class VehicleDeliverySetForm extends AbstractType
                     return $repository->createQueryBuilder('o')
                         ->join('o.depo', 'd')
                         ->join('d.users', 'u')
-                        ->where('o.deliveryState != :COMPLETE')
-                        ->andWhere('o.orderState != :CANCEL')
+                        ->where('o.deliveryState = :PARTIALLY_SHIPPED OR o.deliveryState = :READY')
                         ->andWhere('u.id = :user')
-                        ->setParameters(array('COMPLETE'=>Order::DELIVERY_STATE_SHIPPED, 'CANCEL'=>Order::ORDER_STATE_CANCEL, 
+                        ->setParameters(array('PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED, 'READY'=>Order::DELIVERY_STATE_READY,
                             'user' => $this->user->getId()));
                 }
             ))

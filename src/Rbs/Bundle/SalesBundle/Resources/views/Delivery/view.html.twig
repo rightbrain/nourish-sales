@@ -50,20 +50,30 @@
                                 <tbody class="orderItems">
                                 {% for order in delivery.orders %}
                                     {% for index, item in order.orderItems %}
-                                        {% if item.quantity > partialItems[order.id][item.id]['delivered'] %}
-                                        <tr>
-                                            <td>{{ index+1 }}</td>
-                                            <td>{{ order.id }}</td>
-                                            <td>{{ item.item.name }}</td>
-                                            {% if order.deliveryState == 'PARTIALLY_SHIPPED' %}
-                                                <td class="item-qty">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
-                                            {% else %}
-                                                <td class="item-qty">{{ item.quantity }}</td>
+                                        {% if item.quantity != 0 %}
+                                        {% if order.deliveryState == 'PARTIALLY_SHIPPED' and partialItems[order.id][item.id] is defined %}
+                                            {% if (item.quantity > partialItems[order.id][item.id]['delivered']) %}
+                                                <tr>
+                                                    <td>{{ index+1 }}</td>
+                                                    <td>{{ order.id }}</td>
+                                                    <td>{{ item.item.name }}</td>
+                                                    <td class="item-qty">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
+                                                    <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
+                                                    <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
+                                                    <td class="remain"></td>
+                                                </tr>
                                             {% endif %}
-                                            <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
-                                            <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
-                                            <td class="remain"></td>
-                                        </tr>
+                                        {% else %}
+                                            <tr>
+                                                <td>{{ index+1 }}</td>
+                                                <td>{{ order.id }}</td>
+                                                <td>{{ item.item.name }}</td>
+                                                <td class="item-qty">{{ item.quantity }}</td>
+                                                <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
+                                                <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
+                                                <td class="remain"></td>
+                                            </tr>
+                                        {% endif %}
                                         {% endif %}
                                     {% endfor %}
                                 {% endfor %}

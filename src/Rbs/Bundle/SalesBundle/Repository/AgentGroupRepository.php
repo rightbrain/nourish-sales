@@ -35,11 +35,4 @@ class AgentGroupRepository extends EntityRepository
         $this->_em->flush();
         return $this->_em;
     }
-
-    public function agentGroups()
-    {
-        $query = $this->createQueryBuilder('cg');
-
-        return $query->getQuery()->getResult();
-    }
 }

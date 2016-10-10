@@ -101,7 +101,7 @@ class UserForm extends AbstractType
                     'class' => 'thana-selector select2me',
                     'id' => 'user_level2'
                 ),
-                'required' => false
+                'required' => true
             ))
         ;
 

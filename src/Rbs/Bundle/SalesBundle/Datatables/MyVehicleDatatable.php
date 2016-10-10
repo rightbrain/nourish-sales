@@ -32,7 +32,6 @@ class MyVehicleDatatable extends BaseDatatable
             ->add('truckNumber', 'column', array('title' => 'Truck Number'))
             ->add('transportStatus', 'column', array('title' => 'Status'))
             ->add('smsText', 'column', array('title' => 'SMS Text'))
-            ->add('remark', 'column', array('title' => 'Remark'))
         ;
     }
 

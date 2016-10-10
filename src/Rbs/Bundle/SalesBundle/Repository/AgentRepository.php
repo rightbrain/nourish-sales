@@ -3,8 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Rbs\Bundle\SalesBundle\Entity\Agent;
-use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\UserBundle\Entity\User;
 
 /**
  * AgentRepository
@@ -43,41 +42,8 @@ class AgentRepository extends EntityRepository
         $query = $this->createQueryBuilder('c');
         $query->join('c.user', 'u');
         $query->where('u.userType = :AGENT');
-        $query->setParameter('AGENT', 'AGENT');
+        $query->setParameter('AGENT', User::AGENT);
 
         return $query->getQuery()->getResult();
-    }
-
-    public function getCurrentBalance(Agent $agent)
-    {
-        try {
-            $totalOrderAmount = $this->_em
-                ->createQuery(
-                    "SELECT SUM(o.totalAmount) FROM Rbs\Bundle\SalesBundle\Entity\Order o WHERE o.agent = :agent AND o.paymentState IN (:paymentState) GROUP BY o.agent"
-                )
-                ->setParameter('agent', $agent)
-                ->setParameter('paymentState', array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))
-                ->getSingleScalarResult();
-        } catch (\Exception $e) {
-            $totalOrderAmount = 0;
-        }
-
-        try {
-            $totalPaymentAmount = $this->_em
-                ->createQuery("SELECT SUM(p.amount) FROM Rbs\Bundle\SalesBundle\Entity\Payment p WHERE p.agent = :agent GROUP BY p.agent")
-                ->setParameter('agent', $agent)
-                ->getSingleScalarResult();
-        } catch (\Exception $e) {
-            $totalPaymentAmount = 0;
-        }
-
-        return $totalPaymentAmount - $totalOrderAmount;
-    }
-
-    public function getCurrentCreditLimit(Agent $agent)
-    {
-        $agentCurrentBalance = $this->getCurrentBalance($agent);
-
-        return $agentCurrentBalance + ($agent->getCreditLimit() + $agent->getOpeningBalance());
     }
 }

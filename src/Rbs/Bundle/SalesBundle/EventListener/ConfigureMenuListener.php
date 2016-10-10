@@ -28,7 +28,7 @@ class ConfigureMenuListener extends ContextAwareListener
         $sp5 = false;
 
         if ($this->user->getUserType() != User::AGENT) {
-            if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_DEPO_USER', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
                 $sp1 = true;
                 $menu['Sales']->addChild('Orders', array('route' => 'orders_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
@@ -149,7 +149,8 @@ class ConfigureMenuListener extends ContextAwareListener
                 $sp4 = true;
                 $menu['Sales']->addChild('Agents', array('route' => 'agents_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
-                if ($this->isMatch('agents_home') or $this->isMatch('agent_update') or $this->isMatch('agent_details')) {
+                if ($this->isMatch('agents_home') or $this->isMatch('agent_update') or $this->isMatch('agent_details') or
+                    $this->isMatch('agent_groups_home') or $this->isMatch('agent_group_create') or $this->isMatch('agent_group_update')) {
                     $menu['Sales']->getChild('Agents')->setCurrent(true);
                 }
             }
@@ -245,6 +246,11 @@ class ConfigureMenuListener extends ContextAwareListener
                 ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('damage_good_list') or $this->isMatch('damage_good_form')) {
                     $menu['Sales']->getChild('Damage Good')->setCurrent(true);
+                }
+            $menu['Sales']->addChild('Chicken Set', array('route' => 'chicken_type_set_list'))
+                ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('chicken_type_set_list') or $this->isMatch('chicken_type_set_list')) {
+                    $menu['Sales']->getChild('Chicken Set')->setCurrent(true);
                 }
         }
 

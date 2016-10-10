@@ -20,11 +20,10 @@ class CashDepositController extends BaseController
 {
     /**
      * @Route("/cash/deposit/list", name="cash_deposit_list", options={"expose"=true})
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_CASH_DEPOSIT_MANAGE")
      */
-    public function cashDepositListAction(Request $request)
+    public function cashDepositListAction()
     {
         $datatable = $this->get('rbs_erp.sales.datatable.cash.deposit');
         $datatable->buildDatatable();
@@ -37,11 +36,10 @@ class CashDepositController extends BaseController
     /**
      * @Route("/cash_deposit_list_ajax", name="cash_deposit_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_CASH_DEPOSIT_MANAGE")
      */
-    public function listAjaxAction(Request $request)
+    public function listAjaxAction()
     {
         $datatable = $this->get('rbs_erp.sales.datatable.cash.deposit');
         $datatable->buildDatatable();
@@ -68,17 +66,16 @@ class CashDepositController extends BaseController
      */
     public function createAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
         $cashDeposit = new CashDeposit();
         $form = $this->createForm(new CashDepositForm(), $cashDeposit, array(
             'action' => $this->generateUrl('cash_deposit_create'), 'method' => 'POST',
             'attr' => array('novalidate' => 'novalidate')
         ));
 
-        $getDepoId = $em->getRepository('RbsCoreBundle:Depo')->getDepoId($this->getUser()->getId());
-        $cashDepositedId = $em->getRepository('RbsSalesBundle:CashDeposit')->getLastCashDepositId($this->getUser()->getId());
+        $getDepoId = $this->em()->getRepository('RbsCoreBundle:Depo')->getDepoId($this->getUser()->getId());
+        $cashDepositedId = $this->em()->getRepository('RbsSalesBundle:CashDeposit')->getLastCashDepositId($this->getUser()->getId());
         if($cashDepositedId!=null && 'POST' === $request->getMethod()){
-            $lastTotalDepositedAmount = $em->getRepository('RbsSalesBundle:CashDeposit')->lastTotalDepositAmount($cashDepositedId[0]['id']);
+            $lastTotalDepositedAmount = $this->em()->getRepository('RbsSalesBundle:CashDeposit')->lastTotalDepositAmount($cashDepositedId[0]['id']);
             $lastTotalAmount = $lastTotalDepositedAmount!=null?$lastTotalDepositedAmount[0]:0;
             $total = $lastTotalAmount['totalDepositedAmount']+$_POST['cash_deposit']['deposit'];
             $cashDeposit->setTotalDepositedAmount($total);
@@ -89,8 +86,8 @@ class CashDepositController extends BaseController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $cashDeposit->setDepositedBy($this->getUser());
-                $cashDeposit->setDepo($em->getRepository('RbsCoreBundle:Depo')->find($getDepoId[0]['id']));
-                $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:CashDeposit')->create($cashDeposit);
+                $cashDeposit->setDepo($this->em()->getRepository('RbsCoreBundle:Depo')->find($getDepoId[0]['id']));
+                $this->em()->getRepository('RbsSalesBundle:CashDeposit')->create($cashDeposit);
                 $this->flashMessage('success', 'Cash Deposit Successfully!');
                 return $this->redirect($this->generateUrl('cash_deposit_list'));
             }
@@ -111,5 +108,13 @@ class CashDepositController extends BaseController
         return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
             'location' => $this->getRequest()->getUriForPath('/uploads/sales/cash-deposit-slip/'.$cashDeposit->getPath()),
         ));
+    }
+
+    /**
+     * @return \Doctrine\Common\Persistence\ObjectManager|object
+     */
+    protected function em()
+    {
+        return $this->getDoctrine()->getManager();
     }
 }

@@ -142,7 +142,6 @@ class OrderDatatable extends BaseDatatable
         }
 
         if ($canApproveOrder && in_array($order->getOrderState(), array(Order::ORDER_STATE_PENDING))) {
-            //$html .= $this->generateMenuLink('Approve Order', 'order_approve', array('id' => $order->getId()));
             $html .= '<li><a href="'.$this->router->generate('order_summery_view', array('id'=>$order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Approve Order</a></li>';
         }
 
@@ -160,48 +159,6 @@ class OrderDatatable extends BaseDatatable
         ) {
             $html .= '<li><a href="'.$this->router->generate('order_review', array('id'=>$order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Verify Order</a></li>';
         }
-
-            /*$html .= '
-            <li>
-                        <a href="javascript:;">
-                            <i class="i"></i> All Project </a>
-                        </li>
-                        <li class="divider">
-                        </li>
-                        <li>
-                            <a href="javascript:;">
-                            AirAsia </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;">
-                            Cruise </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;">
-                            HSBC </a>
-                        </li>
-                        <li class="divider">
-                        </li>
-                        <li>
-                            <a href="javascript:;">
-                            Pending <span class="badge badge-danger">
-                            4 </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;">
-                            Completed <span class="badge badge-success">
-                            12 </span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:;">
-                            Overdue <span class="badge badge-warning">
-                            9 </span>
-                            </a>
-                        </li>
-            ';*/
-
             $html .='</ul>
                 </div>
             </div>';
