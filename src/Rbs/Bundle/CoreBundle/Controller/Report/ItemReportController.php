@@ -68,15 +68,17 @@ class ItemReportController extends Controller
            $yearlyItems = $this->getDoctrine()
                               ->getRepository('RbsSalesBundle:OrderItem')
                               ->getYearlyWiseItemSalesReport($data);
+       if($data['year']){
 
-       foreach ($yearlyItems as $data) {
-           foreach ($data as $row) {
-                if (!isset($itemLists[$row['itemId']]['total'])) {
-                    $itemLists[$row['itemId']]['total'] = 0;
-                }
-               $itemLists[$row['itemId']]['total'] = $itemLists[$row['itemId']]['total'] + $row['quantity'];
+           foreach ($yearlyItems as $data) {
+               foreach ($data as $row) {
+                    if (!isset($itemLists[$row['itemId']]['total'])) {
+                        $itemLists[$row['itemId']]['total'] = 0;
+                    }
+                   $itemLists[$row['itemId']]['total'] = $itemLists[$row['itemId']]['total'] + $row['quantity'];
+               }
            }
-       }
+        }
 
        return    $this->render('RbsCoreBundle:Report:yearly-item-report.html.twig', array(
            'formSearch' => $formSearch->createView(),
@@ -130,13 +132,14 @@ class ItemReportController extends Controller
        $yearlyItems = $this->getDoctrine()
            ->getRepository('RbsSalesBundle:OrderItem')
            ->getYearlyWiseItemSalesReport($data);
-
-       foreach ($yearlyItems as $data) {
-           foreach ($data as $row) {
-               if (!isset($itemLists[$row['itemId']]['total'])) {
-                   $itemLists[$row['itemId']]['total'] = 0;
+       if($data['year']) {
+           foreach ($yearlyItems as $data) {
+               foreach ($data as $row) {
+                   if (!isset($itemLists[$row['itemId']]['total'])) {
+                       $itemLists[$row['itemId']]['total'] = 0;
+                   }
+                   $itemLists[$row['itemId']]['total'] = $itemLists[$row['itemId']]['total'] + $row['quantity'];
                }
-               $itemLists[$row['itemId']]['total'] = $itemLists[$row['itemId']]['total'] + $row['quantity'];
            }
        }
 
