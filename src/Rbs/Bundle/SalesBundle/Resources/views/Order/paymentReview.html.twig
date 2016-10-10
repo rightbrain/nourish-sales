@@ -37,7 +37,7 @@
                                 {% set available = true %}
                                 {% for index, payment in order.payments %}
                                     <tr>
-                                        <td>{{ payment.depositDate|date(php_date_format) }}</td>
+                                        <td>{{ payment.depositDate|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                         <td>{{ payment.bankName }}</td>
                                         <td>{{ payment.branchName }}</td>
                                         <td class="text-right">{{ payment.amount|number_format(2) }}</td>
