@@ -101,7 +101,7 @@ var Order = function()
             }
         });
 
-        $("#order_totalAmount").val(totalAmount);
+        $("#order_totalAmount").val(totalAmount.toFixed(2));
     }
 
     function totalPriceCalculation() {
@@ -109,7 +109,7 @@ var Order = function()
         var quantity = parseFloat($(this).closest('td').parent('tr').find('.quantity').val());
         if (!price) { price = 0; }
         if (!quantity) { quantity = 0; }
-        $(this).closest('td').parent('tr').find('.total_price').val(price * quantity);
+        $(this).closest('td').parent('tr').find('.total_price').val((price * quantity).toFixed(2));
         totalAmountCalculate();
     }
 
