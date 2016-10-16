@@ -39,7 +39,7 @@ class CashDepositDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-            ->add('depositedAt', 'datetime', array('title' => 'Date', 'date_format' => 'LLL' ))
+            ->add('depositedAt', 'datetime', array('title' => 'Date', 'date_format' => 'LL' ))
             ->add('depo.name', 'column', array('title' => 'Depo'))
             ->add('depositedBy.username', 'column', array('title' => 'Depositor'))
             ->add('deposit', 'column', array('title' => 'Amount'))

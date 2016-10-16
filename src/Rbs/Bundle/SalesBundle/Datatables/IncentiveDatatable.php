@@ -1,6 +1,7 @@
 <?php
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
+
 use Rbs\Bundle\SalesBundle\Entity\Incentive;
 use Rbs\Bundle\UserBundle\Entity\User;
 
@@ -65,7 +66,6 @@ class IncentiveDatatable extends BaseDatatable
                 'actions' => array(
                     $this->makeActionButton('incentive_approve', array('id' => 'id'), 'ROLE_ADMIN', 'Approve', 'Approve', '', 'btn btn-primary btn-xs delete-list-btn', array('render_if' => array('isActive'))),
                     $this->makeActionButton('incentive_cancel', array('id' => 'id'), 'ROLE_ADMIN', 'Reject', 'Reject', '', 'btn btn-primary btn-xs delete-list-btn', array('render_if' => array('isActive'))),
-//                    $this->makeActionButton('incentive_details', array('id' => 'id'), 'ROLE_ADMIN', 'View', 'View', '', '', array()),
                     array(
                         'route' => 'incentive_details',
                         'route_parameters' => array(
