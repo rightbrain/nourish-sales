@@ -32,7 +32,7 @@ class CashReceiveForm extends AbstractType
                 'attr' => array(
                     'class' => 'select2me'
                 ),
-                'property' => 'id',
+                'property' => 'orderIdAndAgent',
                 'required' => true,
                 'empty_value' => 'Select Order',
                 'empty_data' => null,
@@ -43,8 +43,9 @@ class CashReceiveForm extends AbstractType
                         ->join('o.deliveries', 'deliveries')
                         ->join('deliveries.depo', 'd')
                         ->where('o.orderState != :CANCEL')
+                        ->andWhere('o.orderState != :PROCESSING')
                         ->andWhere('d.id = :depoId')
-                        ->setParameters(array('CANCEL'=>Order::ORDER_STATE_CANCEL, 'depoId'=>$this->depoId));
+                        ->setParameters(array('CANCEL'=>Order::ORDER_STATE_CANCEL, 'PROCESSING'=>Order::ORDER_STATE_PROCESSING, 'depoId'=>$this->depoId));
                 }
             ));
         }else{
@@ -54,7 +55,7 @@ class CashReceiveForm extends AbstractType
                 'attr' => array(
                     'class' => 'select2me'
                 ),
-                'property' => 'id',
+                'property' => 'orderIdAndAgent',
                 'required' => true,
                 'empty_value' => 'Select Order',
                 'empty_data' => null,
@@ -63,7 +64,8 @@ class CashReceiveForm extends AbstractType
                     return $repository->createQueryBuilder('o')
                         ->join('o.agent', 'a')
                         ->where('o.orderState != :CANCEL')
-                        ->setParameters(array('CANCEL'=>Order::ORDER_STATE_CANCEL));
+                        ->andWhere('o.orderState != :PROCESSING')
+                        ->setParameters(array('CANCEL'=>Order::ORDER_STATE_CANCEL, 'PROCESSING'=>Order::ORDER_STATE_PROCESSING));
                 }
             ));
         }
