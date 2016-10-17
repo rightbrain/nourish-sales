@@ -80,7 +80,7 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Sales']->getChild('Cash Deposit')->setCurrent(true);
                 }
             }
-            if ($this->authorizationChecker->isGranted(array('ROLE_CASH_RECEIVE_MANAGE'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_HEAD_OFFICE_USER'))) {
                 $sp2 = true;
                 $menu['Sales']->addChild('Cash Receive From Depo', array('route' => 'cash_receive_from_depo_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
