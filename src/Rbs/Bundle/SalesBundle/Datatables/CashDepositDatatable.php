@@ -47,6 +47,7 @@ class CashDepositDatatable extends BaseDatatable
             ->add('branchName', 'column', array('title' => 'Branch Name'))
             ->add('remark', 'column', array('title' => 'Remark'))
             ->add('isPathExist', 'virtual', array('visible' => false))
+            ->add('path', 'column', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'File',
@@ -56,7 +57,7 @@ class CashDepositDatatable extends BaseDatatable
                     array(
                         'route' => 'cash_deposit_doc_view',
                         'route_parameters' => array(
-                            'id' => 'id'
+                            'path' => 'path'
                         ),
                         'label' => 'View',
                         'icon' => 'fa fa-file',

@@ -96,18 +96,15 @@ class CashDepositController extends BaseController
             'form' => $form->createView()
         );
     }
-
+    
     /**
-     * @Route("/cash/deposit/doc/view/{id}", name="cash_deposit_doc_view", options={"expose"=true})
-     * @param CashDeposit $cashDeposit
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @Route("/uploads/sales/cash-deposit-slip/{path}", name="cash_deposit_doc_view", options={"expose"=true})
      * @JMS\Secure(roles="ROLE_CASH_DEPOSIT_MANAGE")
+     * @return Response
      */
-    public function fileViewAction(CashDeposit $cashDeposit)
+    public function viewDocAction()
     {
-        return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
-            'location' => $this->getRequest()->getUriForPath('/uploads/sales/cash-deposit-slip/'.$cashDeposit->getPath()),
-        ));
+        //nothing to have
     }
 
     /**

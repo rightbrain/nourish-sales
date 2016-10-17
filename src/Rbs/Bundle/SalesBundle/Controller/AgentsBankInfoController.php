@@ -200,15 +200,30 @@ class AgentsBankInfoController extends BaseController
     }
 
     /**
-     * @Route("/agent/bank/info/doc/view/{id}", name="agent_bank_info_doc_view", options={"expose"=true})
-     * @param AgentsBankInfo $agentsBankInfo
-     * @return Response
+     * @Route("/uploads/sales/agent-bank-slip/{path}", name="agent_bank_info_doc_view", options={"expose"=true})
      * @JMS\Secure(roles="ROLE_AGENT, ROLE_BANK_SLIP_VERIFIER, ROLE_BANK_SLIP_APPROVAL")
+     * @return Response
      */
-    public function viewDocAction(AgentsBankInfo $agentsBankInfo)
+    public function viewDocAction()
     {
-        return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
-            'location' => $this->getRequest()->getUriForPath('/uploads/sales/agent-bank-slip/'.$agentsBankInfo->getPath()),
-        ));
+        //nothing to have
     }
+
+//    /**
+//     * @Route("/agent/bank/info/doc/view/{id}", name="agent_bank_info_doc_view", options={"expose"=true})
+//     * @param AgentsBankInfo $agentsBankInfo
+//     * @JMS\Secure(roles="ROLE_AGENT, ROLE_BANK_SLIP_VERIFIER, ROLE_BANK_SLIP_APPROVAL")
+//     * @return Response
+//     */
+//    public function viewDocAction(AgentsBankInfo $agentsBankInfo)
+//    {
+//        $file = WEB_PATH . '/uploads/sales/agent-bank-slip/'.$agentsBankInfo->getPath();
+//
+//        $response = new Response();
+//        $response->headers->set('Content-type', 'application/octet-stream');
+//        $response->headers->set('Content-Disposition', sprintf('attachment; filename="%s"', basename($file)));
+//        $response->setContent(file_get_contents($file));
+//
+//        return $response;
+//    }
 }

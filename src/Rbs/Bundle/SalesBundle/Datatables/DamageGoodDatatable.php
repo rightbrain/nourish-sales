@@ -52,6 +52,7 @@ class DamageGoodDatatable extends BaseDatatable
             ->add('amount', 'column', array('title' => 'Claim'))
             ->add('refundAmount', 'column', array('title' => 'Refund'))
             ->add('isPathExist', 'virtual', array('visible' => false))
+            ->add('path', 'column', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'File',
@@ -61,7 +62,7 @@ class DamageGoodDatatable extends BaseDatatable
                     array(
                         'route' => 'damage_good_doc_view',
                         'route_parameters' => array(
-                            'id' => 'id'
+                            'path' => 'path'
                         ),
                         'label' => 'View',
                         'icon' => 'fa fa-file',

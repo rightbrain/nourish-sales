@@ -220,15 +220,12 @@ class DamageGoodController extends BaseController
     }
 
     /**
-     * @Route("/damage/good/doc/view/{id}", name="damage_good_doc_view", options={"expose"=true})
-     * @param DamageGood $damageGood
+     * @Route("/uploads/sales/damage-goods/{path}", name="damage_good_doc_view", options={"expose"=true})
      * @return Response
      * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
      */
-    public function viewDocAction(DamageGood $damageGood)
+    public function viewDocAction()
     {
-        return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
-            'location' => $this->getRequest()->getUriForPath('/uploads/sales/damage-goods/'.$damageGood->getPath()),
-        ));
+        //nothing to have
     }
 }

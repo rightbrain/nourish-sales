@@ -50,9 +50,23 @@
                                     <td class="col-md-1 bold">{{ doc.fileType }}</td>
                                     <td class="col-md-1 bold">{{ doc.remark }}</td>
                                     <td class="col-md-1 bold">
-                                        <a class="btn btn-xs" href="#" onclick="javascript: window.open('/my/doc/view/{{ doc.id }}')">
-                                            <i class="fa fa-file"></i>
-                                        </a>
+                                        {% if doc.path != null %}
+                                            {% set split = doc.path|split('.') %}
+                                            {% set ext = split[1] %}
+                                        {% else %}
+                                            {% set ext = 'none' %}
+                                        {% endif %}
+                                        {% if ext != 'pdf' %}
+                                            <a class="btn btn-xs" href="#" onclick="javascript: window.open('/my/doc/view/{{ doc.id }}')">
+                                                <i class="fa fa-file"></i>
+                                            </a>
+                                        {% elseif ext == 'none' %}
+                                            <span>N/A</span>
+                                        {% else %}
+                                            <a class="btn btn-xs" onclick="javascript: window.open('{{ asset('uploads/sales/agent-documents/'~doc.path) }}')">
+                                                <i class="fa fa-file"></i>
+                                            </a>
+                                        {% endif %}
                                     </td>
                                 </tr>
                             {% endfor %}

@@ -58,6 +58,7 @@ class AgentsBankInfoAdminDatatable extends BaseDatatable
             ->add('isApproved', 'virtual', array('visible' => false))
             ->add('isVerified', 'virtual', array('visible' => false))
             ->add('isVerifiedTrue', 'virtual', array('visible' => false))
+            ->add('path', 'column', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'File',
@@ -67,7 +68,7 @@ class AgentsBankInfoAdminDatatable extends BaseDatatable
                     array(
                         'route' => 'agent_bank_info_doc_view',
                         'route_parameters' => array(
-                            'id' => 'id'
+                            'path' => 'path'
                         ),
                         'label' => 'View',
                         'icon' => 'fa fa-file',

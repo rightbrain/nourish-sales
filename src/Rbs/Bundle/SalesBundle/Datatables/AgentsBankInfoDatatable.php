@@ -51,6 +51,7 @@ class AgentsBankInfoDatatable extends BaseDatatable
             ->add('amount', 'column', array('title' => 'Amount'))
             ->add('status', 'column', array('title' => 'Status'))
             ->add('isPathExist', 'virtual', array('visible' => false))
+            ->add('path', 'column', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'File',
@@ -60,7 +61,7 @@ class AgentsBankInfoDatatable extends BaseDatatable
                     array(
                         'route' => 'agent_bank_info_doc_view',
                         'route_parameters' => array(
-                            'id' => 'id'
+                            'path' => 'path'
                         ),
                         'label' => 'View',
                         'icon' => 'fa fa-file',
