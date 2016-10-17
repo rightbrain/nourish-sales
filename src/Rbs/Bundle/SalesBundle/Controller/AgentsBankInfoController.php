@@ -201,7 +201,6 @@ class AgentsBankInfoController extends BaseController
 
     /**
      * @Route("/uploads/sales/agent-bank-slip/{path}", name="agent_bank_info_doc_view", options={"expose"=true})
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_BANK_SLIP_VERIFIER, ROLE_BANK_SLIP_APPROVAL")
      * @return Response
      */
     public function viewDocAction()

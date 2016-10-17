@@ -290,17 +290,4 @@ class AgentController extends BaseController
             'form' => $form->createView()
         );
     }
-
-    /**
-     * @Route("my/doc/view/{id}", name="my_doc_view")
-     * @param AgentDoc $agentDoc
-     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @JMS\Secure(roles="ROLE_AGENT")
-     */
-    public function fileViewAction(AgentDoc $agentDoc)
-    {
-        return $this->render('RbsCoreBundle:View:viewer.html.twig', array(
-            'location' => $this->getRequest()->getUriForPath('/uploads/sales/agent-documents/'.$agentDoc->getPath()),
-        ));
-    }
 }
