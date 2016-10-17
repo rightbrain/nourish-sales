@@ -17,11 +17,30 @@
                             <div class="portlet-body">
                                 <table class="table">
                                     <tr>
-                                        <th colspan="4"><h4>User Profile Information</h4></th>
+                                        <th>Photo</th>
+                                        <th colspan="3">
+                                            {% if user.profile != null %}
+                                                {% if user.profile.path != null %}
+                                                    <img src='{{ asset('uploads/user/'~agent.user.profile.path) }}' style="width: 60px;height: 60px;"/>
+                                                {% else %}
+                                                    <img src='{{ asset('assets/admin/layout/img/avatar.png') }}' style="width: 60px;height: 60px;"/>
+                                                {% endif %}
+                                            {% else %}
+                                                <img src='{{ asset('assets/admin/layout/img/avatar.png') }}' style="width: 60px;height: 60px;"/>
+                                            {% endif %}
+                                        </th>
                                     </tr>
                                     <tr>
                                         <th>Name</th>
-                                        <td>{{ user.profile.fullname | default('') }}</td>
+                                        {% if user.profile != null %}
+                                            {% if user.profile.fullname != null %}
+                                                <td>{{ user.profile.fullname }}</td>
+                                            {% else %}
+                                                <td>{{ user.username }}</td>
+                                            {% endif %}
+                                        {% else %}
+                                            <td>{{ user.username }}</td>
+                                        {% endif %}
                                         {% if agent != null %}
                                             <th>Agent Id</th>
                                             <td>{{ agent.agentID | default('') }}</td>
@@ -32,15 +51,15 @@
                                     </tr>
                                     <tr>
                                         <th>Designation</th>
-                                        <td>{{ user.profile.designation | default('') }}</td>
+                                        <td>{{ user.profile.designation | default('N/A') }}</td>
                                         <th>User Type</th>
-                                        <td>{{ user.userType | default('') }}</td>
+                                        <td>{{ user.userType | default('N/A') }}</td>
                                     </tr>
                                     <tr>
                                         <th>Cellphone</th>
-                                        <td>{{ user.profile.cellphone | default('') }}</td>
+                                        <td>{{ user.profile.cellphone | default('N/A') }}</td>
                                         <th>Address</th>
-                                        <td>{{ user.profile.address | default('') }}</td>
+                                        <td>{{ user.profile.address | default('N/A') }}</td>
                                     </tr>
                                 </table>
                             </div>
