@@ -42,10 +42,10 @@ class CashReceiveForm extends AbstractType
                         ->join('o.agent', 'a')
                         ->join('o.deliveries', 'deliveries')
                         ->join('deliveries.depo', 'd')
-                        ->where('o.orderState != :CANCEL')
-                        ->andWhere('o.orderState != :PROCESSING')
+                        ->where('o.deliveryState == :READY OR o.deliveryState == :PARTIALLY_SHIPPED OR o.deliveryState == :SHIPPED OR o.deliveryState == :PENDING ')
+                        ->andWhere('o.orderState != :CANCEL')
                         ->andWhere('d.id = :depoId')
-                        ->setParameters(array('CANCEL'=>Order::ORDER_STATE_CANCEL, 'PROCESSING'=>Order::ORDER_STATE_PROCESSING, 'depoId'=>$this->depoId));
+                        ->setParameters(array('CANCEL'=>Order::ORDER_STATE_CANCEL, 'SHIPPED'=>Order::DELIVERY_STATE_SHIPPED, 'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED, 'READY'=>Order::DELIVERY_STATE_READY, 'PENDING'=>Order::DELIVERY_STATE_PENDING, 'depoId'=>$this->depoId));
                 }
             ));
         }else{
