@@ -33,7 +33,7 @@ class ProfileController extends Controller
             $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array(
                'user' => $user->getId()
             )) : $agent = null;
-//var_dump($user);die;
+
         return $this->render('FOSUserBundle:Profile:show.html.twig', array(
             'user' => $user,
             'agent' => $agent

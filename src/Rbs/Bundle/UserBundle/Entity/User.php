@@ -120,14 +120,6 @@ class User extends BaseUser
         $this->profile = $profile;
     }
 
-    /**
-     * @return Profile
-     */
-    public function getFullName()
-    {
-        return $this->profile->getFullName() ? $this->profile->getFullName() : $this->username;
-    }
-
     public function isSuperAdmin()
     {
         $groups = $this->getGroups();
