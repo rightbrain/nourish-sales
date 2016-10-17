@@ -34,7 +34,6 @@ class AgentProfileForm extends AbstractType
                 ),
                 'required' => true
             ))
-            ->add('file')
         ;
     }
 

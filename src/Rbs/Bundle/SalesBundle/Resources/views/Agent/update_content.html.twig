@@ -23,31 +23,16 @@
         {{ form_row(form.itemType, { 'attr': {'class': ''} }) }}
 
         {{ form_row(form.user.profile.fullName, { 'attr': {'class': ''} }) }}
-    {% if agent.openingBalanceFlag != 1 %}
-        {{ form_row(form.openingBalance, { 'attr': {'class': ''} }) }}
-        {{ form_row(form.openingBalanceType, { 'attr': {'class': ''} }) }}
-    {% endif %}
+        {% if agent.openingBalanceFlag != 1 %}
+            {{ form_row(form.openingBalance, { 'attr': {'class': ''} }) }}
+            {{ form_row(form.openingBalanceType, { 'attr': {'class': ''} }) }}
+        {% endif %}
         {{ form_row(form.depo, { 'attr': {'class': ''} }) }}
         {{ form_row(form.user.profile.cellphone, { 'attr': {'class': ''} }) }}
         {{ form_row(form.user.profile.address, { 'attr': {'class': ''} }) }}
         {{ form_row(form.agentGroup, { 'attr': {'class': ''} }) }}
 
-    <div class="form-group">
-        <label for="inputEmail12" class="col-md-2 control-label">Photo</label>
-        <div class="col-md-4">
-            <div class="input-icon">
-                <i class="fa fa-folder"></i>
-                {{ form_widget(form.user.profile.file, { 'attr': {'class': 'form-control'} }) }}
-            </div>
-        </div>
-    </div>
-
-    <hr>
-    <h4>Agent Email Information</h4>
-
         {{ form_row(form.user.email, { 'attr': {'class': ''} }) }}
-
-    <hr>
 
     {{ form_row(form.submit, { 'attr': {'class': ''} }) }}
 
