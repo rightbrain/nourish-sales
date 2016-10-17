@@ -215,7 +215,7 @@ var Order = function()
                 },
                 {
                     column_number: 5,
-                    data: ["PENDING", "PARTIALLY_SHIPPED", "SHIPPED", "HOLD"],
+                    data: ["PENDING", "PARTIALLY_SHIPPED", "SHIPPED", "READY"],
                     filter_container_id: "order-delivery-status",
                     filter_reset_button_text: false,
                     filter_default_label: "Delivery State"
