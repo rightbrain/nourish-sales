@@ -53,7 +53,7 @@
                                 <tr>
                                     <td>{{ auditLog.type }}</td>
                                     <td>{{ auditLog.user }}</td>
-                                    <td>{{ auditLog.eventTime|date(php_date_format ~ ' h:i A') }}</td>
+                                    <td>{{ auditLog.eventTime|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                     <td>{{ auditLog.reason }}</td>
                                 </tr>
                             {% endfor %}
