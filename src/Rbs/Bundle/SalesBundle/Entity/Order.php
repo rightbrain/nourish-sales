@@ -441,21 +441,24 @@ class Order
 
     public function getOrderInfo()
     {
-        return '#' . ' Order Id :'. $this->getId() . ', Amount :' . $this->getPaidAmount() .', Date:'. $this->getCreatedAt()->format('Y-F-d, h:i A');
+        $date = $this->getCreatedAt()->setTimezone(new \DateTimeZone( 'Asia/Dhaka' ));
+        return '#' . ' Order Id :'. $this->getId() . ', Amount :' . $this->getPaidAmount() .', Date:'. $date->format('Y-F-d, h:i A');
     }
 
     public function getOrderInfoForDamageGoods()
     {
+        $date = $this->getCreatedAt()->setTimezone(new \DateTimeZone( 'Asia/Dhaka' ));
         return '#' . ' Order Id :'. $this->getId(). ' Depo :'. $this->getDepo()->getName(). ', Agent :' .
         ($this->getAgent()->getUser()->getProfile()->getFullName() ? $this->getAgent()->getUser()->getProfile()->getFullName()
-            : $this->getAgent()->getUser()->getUsername()). ', Date : '. $this->getCreatedAt()->format('Y-F-d, h:i A');
+            : $this->getAgent()->getUser()->getUsername()). ', Date : '. $date->format('Y-F-d, h:i A');
     }
 
     public function getOrderInfoWithAgent()
     {
+        $date = $this->getCreatedAt()->setTimezone(new \DateTimeZone( 'Asia/Dhaka' ));
         return '#' . ' Order Id :'. $this->getId(). ', Agent :' .
             ($this->getAgent()->getUser()->getProfile()->getFullName() ? $this->getAgent()->getUser()->getProfile()->getFullName()
-            : $this->getAgent()->getUser()->getUsername()). ', Date : '. $this->getCreatedAt()->format('Y-F-d, h:i A');
+            : $this->getAgent()->getUser()->getUsername()). ', Date : '. $date->format('Y-F-d, h:i A');
     }
 
     public function getDueAmount()
