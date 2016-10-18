@@ -16,8 +16,7 @@
                 {% else %}
                     {{ include('_elements/_back_to_list_button.html.twig', {url: path('truck_info_list'), label: 'Back to List', 'icon': 'chevron-left'}) }}
                 {% endif %}
-                {{ form_start(form, {'method': 'POST'}) }}
-
+                {{ form_start(form, {'method': 'POST', attr: { novalidate: 'novalidate'}}) }}
                 {{ form_end(form) }}
             </div>
         </div>

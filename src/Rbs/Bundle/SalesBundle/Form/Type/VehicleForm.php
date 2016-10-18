@@ -9,6 +9,8 @@ use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class VehicleForm extends AbstractType
 {
@@ -33,6 +35,11 @@ class VehicleForm extends AbstractType
                     'required' => true,
                     'empty_value' => 'Select Depo',
                     'empty_data' => null,
+                    'constraints' => array(
+                        new NotBlank(array(
+                            'message'=>'Depo should not be blank'
+                        ))
+                    ),
                     'query_builder' => function (DepoRepository $repository)
                     {
                         return $repository->createQueryBuilder('d')
@@ -50,6 +57,11 @@ class VehicleForm extends AbstractType
                     'mapped' => false,
                     'empty_value' => 'Select Order',
                     'empty_data' => null,
+                    'constraints' => array(
+                        new NotBlank(array(
+                            'message'=>'Order should not be blank'
+                        ))
+                    ),
                     'query_builder' => function (OrderRepository $repository)
                     {
                         return $repository->createQueryBuilder('o')
@@ -66,12 +78,33 @@ class VehicleForm extends AbstractType
         $builder
             ->add('driverName', 'text', array(
                 'required' => true,
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Driver name should not be blank'
+                    ))
+                )
             ))
             ->add('driverPhone', 'text', array(
                 'required' => true,
+                'max_length' => 50,
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Phone number should not be blank'
+                    )),
+                    new Regex(array(
+                        'pattern'   => '/^[0-9 -\+#\(\)\/]$/',
+                        'match'     => true,
+                        'message' =>'Wrong phone number'
+                    ))
+                )
             ))
             ->add('truckNumber', 'text', array(
                 'required' => true,
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'Truck number should not be blank'
+                    ))
+                )
             ))
             ->add('remark')
             ->add('submit', 'submit', array(

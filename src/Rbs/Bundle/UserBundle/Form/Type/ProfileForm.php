@@ -5,6 +5,8 @@ namespace Rbs\Bundle\UserBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class ProfileForm extends AbstractType
 {
@@ -21,6 +23,11 @@ class ProfileForm extends AbstractType
             ))
             ->add('cellphone', 'text', array(
                 'constraints' => array(
+                    new Regex(array(
+                        'pattern'   => '/^[0-9 -\+#\(\)\/]$/',
+                        'match'     => true,
+                        'message' =>'Wrong phone number'
+                    ))
                 )
             ))
             ->add('designation')
