@@ -92,7 +92,7 @@ class VehicleForm extends AbstractType
                         'message'=>'Phone number should not be blank'
                     )),
                     new Regex(array(
-                        'pattern'   => '/^[0-9 -\+#\(\)\/]$/',
+                        'pattern'   => '/^(\+?\(?\d{2,4}\)?[\d\s-]{3,})$/',
                         'match'     => true,
                         'message' =>'Wrong phone number'
                     ))
