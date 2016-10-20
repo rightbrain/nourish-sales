@@ -102,6 +102,7 @@ class OrderController extends BaseController
             $qb->join('sales_orders.agent', 'a');
             $qb->join('a.user', 'u');
             $qb->andWhere('u.id =:user');
+            $qb->orderBy('sales_orders.createdAt', 'DESC');
             $qb->setParameter('user', $this->getUser()->getId());
         };
         $query->addWhereAll($function);
