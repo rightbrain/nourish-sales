@@ -80,6 +80,11 @@ class ChickenTypeSetController extends BaseController
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
+            if($request->request->get('chicken_set_for_agent')['item'] == null and
+                $request->request->get('chicken_set_for_agent')['agent'] == null){
+                $this->flashMessage('error', 'Agent and Item should not blank');
+                return $this->redirect($this->generateUrl('chicken_type_set_list'));
+            }
             if ($form->isValid()) {
                 $itemAgentCheck = $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(array(
                     'item' => $request->request->get('chicken_set_for_agent')['item'],
