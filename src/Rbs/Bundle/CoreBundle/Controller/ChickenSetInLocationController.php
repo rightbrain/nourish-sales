@@ -73,6 +73,10 @@ class ChickenSetInLocationController extends BaseController
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
+            if($request->request->get('sale_chicken_set')['item'] == null){
+                $this->flashMessage('error', 'Item should not blank');
+                return $this->redirect($this->generateUrl('chicken_set_in_location'));
+            }
             if ($form->isValid()) {
                 $locations = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findBy(array(
                     'level' => 4
