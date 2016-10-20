@@ -91,6 +91,7 @@ class VehicleController extends BaseController
             $qb->join('sales_vehicles.agent', 'a');
             $qb->andWhere('a =:agent');
             $qb->andWhere('sales_vehicles.transportGiven =:AGENT');
+            $qb->orderBy('sales_vehicles.createdAt', 'DESC');
             $qb->setParameters(array('agent'=>$this->getAgent(), 'AGENT'=>Vehicle::AGENT));
         };
         $query->addWhereAll($function);

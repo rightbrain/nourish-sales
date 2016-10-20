@@ -70,6 +70,7 @@ class VehicleForm extends AbstractType
                             ->where('u.id =:user')
                             ->andWhere('o.deliveryState != :COMPLETE')
                             ->andWhere('o.orderState != :CANCEL')
+                            ->orderBy('o.createdAt', 'DESC')
                             ->setParameters(array('COMPLETE'=>Order::DELIVERY_STATE_SHIPPED, 'CANCEL'=>Order::ORDER_STATE_CANCEL,
                                 'user'=>$this->user->getId() ));
                     }
