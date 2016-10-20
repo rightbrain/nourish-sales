@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\CoreBundle\Form\Type;
 
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\CoreBundle\Repository\ItemRepository;
 use Rbs\Bundle\SalesBundle\RbsSalesBundle;
 use Symfony\Component\Form\AbstractType;
@@ -28,6 +29,7 @@ class ChickenSetForLocationForm extends AbstractType
                     return $repository->createQueryBuilder('i')
                         ->join('i.itemType', 'it')
                         ->where('i.deletedAt IS NULL')
+                        ->andWhere('it.itemType = :chicken')->setParameter('chicken', ItemType::Chicken)
                         ->orderBy('i.name','ASC')
                         ->join('i.bundles', 'bundles')
                         ->andWhere('bundles.id = :saleBundleId')->setParameter('saleBundleId', RbsSalesBundle::ID);
