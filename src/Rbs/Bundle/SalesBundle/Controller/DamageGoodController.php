@@ -53,6 +53,7 @@ class DamageGoodController extends BaseController
             $qb->join('sales_damage_goods.agent', 'a');
             $qb->join('sales_damage_goods.user', 'u');
             $qb->andWhere('u =:user');
+            $qb->orderBy('sales_damage_goods.createdAt', 'DESC');
             $qb->setParameter('user', $this->getUser());
         };
         $query->addWhereAll($function);
