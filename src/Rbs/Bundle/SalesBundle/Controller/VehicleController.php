@@ -183,6 +183,7 @@ class VehicleController extends BaseController
                 $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
                 $qb->andWhere('sales_vehicles.finishLoad IS NULL');
                 $qb->andWhere('sales_vehicles.deliveries IS NOT NULL');
+                $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
             }else{
                 $qb->join('sales_vehicles.depo', 'd');
                 $qb->andWhere('d.id =:depoId');
@@ -190,6 +191,7 @@ class VehicleController extends BaseController
                 $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
                 $qb->andWhere('sales_vehicles.finishLoad IS NULL');
                 $qb->andWhere('sales_vehicles.deliveries IS NOT NULL');
+                $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
                 $qb->setParameters(array('depoId'=>$depoId));
             }
         };
