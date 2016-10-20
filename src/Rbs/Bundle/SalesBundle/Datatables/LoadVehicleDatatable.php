@@ -55,7 +55,7 @@ class LoadVehicleDatatable extends BaseDatatable
             ->add('driverPhone', 'column', array('title' => 'Driver Phone'))
             ->add('truckNumber', 'column', array('title' => 'Truck Number'))
             ->add('transportGiven', 'column', array('title' => 'Given By'))
-            ->add('deliveries.id', 'column', array('title' => 'Delivery'))
+            ->add('orderText', 'column', array('title' => 'Order Number'))
             ->add('vehicleIn', 'datetime', array('title' => 'In Time', 'date_format' => 'LLL' ))
             ->add('startLoad', 'datetime', array('title' => 'Start Load', 'date_format' => 'LLL' ))
             ->add('isIn', 'virtual', array('visible' => false))

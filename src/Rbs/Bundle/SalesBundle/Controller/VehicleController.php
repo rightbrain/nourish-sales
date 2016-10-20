@@ -318,10 +318,12 @@ class VehicleController extends BaseController
         
         if ('POST' === $request->getMethod()) {
             $delivery = new Delivery();
+            $orderText=null;
             foreach ($request->request->get('vehicle_delivery_form')['orders'] as $orderId){
                 $order = $this->em()->getRepository('RbsSalesBundle:Order')->find($orderId);
                 $delivery->addOrder($order);
                 $delivery->setDepo($order->getDepo());
+                $orderText =+ $orderId .', ';
             }
             $delivery->setShipped(false);
             $delivery->setTransportGiven(Delivery::NOURISH);
@@ -331,6 +333,7 @@ class VehicleController extends BaseController
             $vehicle->setTruckInvoiceAttachedAt(new \DateTime());
             $vehicle->setDeliveries($delivery);
             $vehicle->setShipped(false);
+            $vehicle->setOrderText($orderText);
 
             $this->vehicleRepo()->update($vehicle);
             $this->get('session')->getFlashBag()->add('success', 'Vehicle Delivery Set Successfully Start');

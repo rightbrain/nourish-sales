@@ -52,7 +52,6 @@ class SetVehicleDatatable extends BaseDatatable
             ->add('driverPhone', 'column', array('title' => 'Driver Phone'))
             ->add('truckNumber', 'column', array('title' => 'Truck Number'))
             ->add('transportGiven', 'column', array('title' => 'Given By'))
-            ->add('deliveries.id', 'column', array('title' => 'Delivery'))
             ->add('smsText', 'column', array('title' => 'SMS Text'))
             ->add('vehicleIn', 'datetime', array('title' => 'In Time', 'date_format' => 'LLL' ))
             ->add('vehicleOut', 'datetime', array('title' => 'Out Time', 'date_format' => 'LLL' ))
