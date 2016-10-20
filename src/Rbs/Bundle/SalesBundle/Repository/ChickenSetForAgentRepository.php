@@ -42,4 +42,17 @@ class ChickenSetForAgentRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function findAgentsUsingZilla($zilla)
+    {
+        $query = $this->createQueryBuilder('csfa');
+        $query->join('csfa.agent', 'a');
+        $query->join('a.user', 'u');
+        $query->where('u.userType = :AGENT');
+        $query->andWhere('u.zilla = :zilla');
+        $query->setParameter('AGENT', User::AGENT);
+        $query->setParameter('zilla', $zilla);
+
+        return $query->getQuery()->getResult();
+    }
 }

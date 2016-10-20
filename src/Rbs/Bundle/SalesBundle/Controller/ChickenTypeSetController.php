@@ -26,7 +26,7 @@ class ChickenTypeSetController extends BaseController
     public function indexAction()
     {
         $em = $this->getDoctrine()->getManager();
-        $agents = $em->getRepository('RbsSalesBundle:ChickenSetForAgent')->findAgentsUsingParentId($this->getUser()->getId());
+        $agents = $em->getRepository('RbsSalesBundle:ChickenSetForAgent')->findAgentsUsingZilla($this->getUser()->getZilla());
         $myChickenTargets = $em->getRepository('RbsCoreBundle:ChickenSet')->findBy(array(
             'location' => $this->getUser()->getZilla()
         ));
