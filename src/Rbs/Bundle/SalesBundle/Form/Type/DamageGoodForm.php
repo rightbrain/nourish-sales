@@ -48,6 +48,7 @@ class DamageGoodForm extends AbstractType
                         ->join('o.depo', 'd')
                         ->where('o.orderState = :COMPLETE')
                         ->andWhere('d.id = :depo')
+                        ->orderBy('o.id', 'DESC')
                         ->setParameter('depo', $this->depo)
                         ->setParameter('COMPLETE', Order::ORDER_STATE_COMPLETE);
                 },
