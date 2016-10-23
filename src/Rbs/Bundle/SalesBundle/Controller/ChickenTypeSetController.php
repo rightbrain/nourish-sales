@@ -58,6 +58,10 @@ class ChickenTypeSetController extends BaseController
      */
     public function saveAction(Request $request, ChickenSetForAgent $chickenSetForAgent)
     {
+        if(!is_numeric($request->request->get('quantity'))){
+            $this->flashMessage('error', 'Quantity should be number');
+            return $this->redirect($this->generateUrl('chicken_type_set_list'));
+        }
         $chickenSetForAgent->setQuantity($request->request->get('quantity'));
         $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->update($chickenSetForAgent);
         $this->flashMessage('success', 'Chicken Set Successfully!');
