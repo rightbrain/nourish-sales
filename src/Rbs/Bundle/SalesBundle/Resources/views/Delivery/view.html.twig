@@ -109,7 +109,7 @@
                                         <td>{{ vehicle.driverName }}</td>
                                         <td>{{ vehicle.truckNumber }}</td>
                                         <td>{{ vehicle.driverPhone }}</td>
-                                        <td>{{ vehicle.vehicleIn | date("Y F jS \\a\\t g:ia") }}</td>
+                                        <td>{{ vehicle.vehicleIn | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                     </tr>
                                     {% set vehicleCount = vehicleCount+1 %}
                                     {% endif %}
