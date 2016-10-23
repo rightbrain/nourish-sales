@@ -51,6 +51,10 @@ class ChickenSetInLocationController extends BaseController
      */
     public function saveAction(Request $request, ChickenSet $chickenSet)
     {
+        if($request->request->get('quantity') == null){
+            $this->flashMessage('error', 'Quantity should not be blank');
+            return $this->redirect($this->generateUrl('chicken_set_in_location'));
+        }
         $chickenSet->setQuantity($request->request->get('quantity'));
         $this->getDoctrine()->getRepository('RbsCoreBundle:ChickenSet')->update($chickenSet);
         $this->flashMessage('success', 'Chicken Set For Location Successfully!');
