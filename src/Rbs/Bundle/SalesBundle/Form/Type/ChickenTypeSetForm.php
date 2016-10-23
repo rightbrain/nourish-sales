@@ -50,7 +50,9 @@ class ChickenTypeSetForm extends AbstractType
                         ->andWhere('u.enabled = 1')
                         ->andWhere('u.zilla = :zilla')
                         ->andWhere('u.userType = :AGENT')
+                        ->andWhere('c.itemType = :itemType')
                         ->setParameter('AGENT', User::AGENT)
+                        ->setParameter('itemType', ItemType::Chicken)
                         ->setParameter('zilla', $this->user->getZilla())
                         ->orderBy('p.fullName','ASC');
                 }
