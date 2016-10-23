@@ -224,4 +224,11 @@ class User extends BaseUser
     {
         $this->upozilla = $upozilla;
     }
+
+    public function getName()
+    {
+        return !empty($this->getProfile()->getFullName())
+            ? $this->getProfile()->getFullName()
+            : $this->getUsername();
+    }
 }

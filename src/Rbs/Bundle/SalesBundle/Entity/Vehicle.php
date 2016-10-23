@@ -557,4 +557,11 @@ class Vehicle
     {
         $this->shipped = $shipped;
     }
+    
+    public function getName()
+    {
+        return !empty($this->getAgent()->getName())
+            ? $this->getAgent()->getName()
+            : $this->getAgent()->getUsername();
+    }
 }

@@ -376,4 +376,11 @@ class Agent
     {
         $this->chickenSetForAgent = $chickenSetForAgent;
     }
+
+    public function getName()
+    {
+        return !empty($this->getUser()->getProfile()->getFullName()) 
+            ? $this->getUser()->getProfile()->getFullName()
+            : $this->getUser()->getUsername();
+    }
 }
