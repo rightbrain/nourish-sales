@@ -231,10 +231,10 @@ class ConfigureMenuListener extends ContextAwareListener
             $menu['Sales']->addChild(str_repeat(' ', 5), ['divider' => true]);
         }
 
-        if ($this->authorizationChecker->isGranted(array('ROLE_SALES_REPORT'))) {
-            $menu['Sales']->addChild('District wise Item Report', array('route' => 'district_wise_item_monthly_report'))
-                ->setAttribute('icon', 'fa fa-th-list');
-        }
+//        if ($this->authorizationChecker->isGranted(array('ROLE_SALES_REPORT'))) {
+//            $menu['Sales']->addChild('District wise Item Report', array('route' => 'district_wise_item_monthly_report'))
+//                ->setAttribute('icon', 'fa fa-th-list');
+//        }
         
         if ($this->user->getUserType() == User::RSM and $this->authorizationChecker->isGranted(array('ROLE_RSM_GROUP'))){
             $menu['Sales']->addChild('RSM', array('route' => 'target_my'))
