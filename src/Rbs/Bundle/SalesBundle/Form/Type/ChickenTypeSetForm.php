@@ -31,7 +31,7 @@ class ChickenTypeSetForm extends AbstractType
             ->add('agent', 'entity', array(
                 'class' => 'RbsSalesBundle:Agent',
                 'property' => 'user.profile.fullName',
-                'required' => false,
+                'required' => true,
                 'attr' => array(
                     'class' => 'select2me'
                 ),
@@ -48,10 +48,10 @@ class ChickenTypeSetForm extends AbstractType
                         ->join('u.profile', 'p')
                         ->where('u.deletedAt IS NULL')
                         ->andWhere('u.enabled = 1')
-                        ->andWhere('u.parentId = :parentId')
+                        ->andWhere('u.zilla = :zilla')
                         ->andWhere('u.userType = :AGENT')
                         ->setParameter('AGENT', User::AGENT)
-                        ->setParameter('parentId', $this->user->getId())
+                        ->setParameter('zilla', $this->user->getZilla())
                         ->orderBy('p.fullName','ASC');
                 }
             ))
