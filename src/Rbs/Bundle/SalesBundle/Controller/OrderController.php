@@ -141,6 +141,7 @@ class OrderController extends BaseController
         {
             $qb->join('sales_orders.refSMS', 's');
             $qb->andWhere('s is not null');
+            $qb->orderBy('sales_orders.createdAt', 'DESC');
         };
         $query->addWhereAll($function);
 
