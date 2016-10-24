@@ -207,7 +207,7 @@ class TransportIncentiveController extends BaseController
                 fclose($handle);
             }
 
-            $this->flashMessage('success', 'Transport Incentive Import Successfully!');
+            $this->flashMessage('success', 'Transport Incentive Imported Successfully!');
             return $this->redirect($this->generateUrl('transport_incentive_list'));
         }
 
