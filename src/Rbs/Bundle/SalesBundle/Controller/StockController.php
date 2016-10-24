@@ -47,7 +47,7 @@ class StockController extends Controller
                     ->save($request, $form, $stockHistory);
 
                 $this->get('session')->getFlashBag()->add(
-                    'success', 'Stock Item Quantity Add Successfully!'
+                    'success', 'Stock Item Quantity Added Successfully!'
                 );
 
                 return $this->redirect($this->generateUrl('stocks_home'));
