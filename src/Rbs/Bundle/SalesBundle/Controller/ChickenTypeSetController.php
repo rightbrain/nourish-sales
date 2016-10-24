@@ -64,7 +64,7 @@ class ChickenTypeSetController extends BaseController
         }
         $chickenSetForAgent->setQuantity($request->request->get('quantity'));
         $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->update($chickenSetForAgent);
-        $this->flashMessage('success', 'Chicken Set Successfully!');
+        $this->flashMessage('success', 'Chicken Set Successfully');
         return $this->redirect($this->generateUrl('chicken_type_set_list'));
     }
 
@@ -100,7 +100,7 @@ class ChickenTypeSetController extends BaseController
                     $this->flashMessage('success', 'This Item Is Already Added!');
                     return $this->redirect($this->generateUrl('chicken_type_set_list'));
                 }
-                $this->flashMessage('success', 'Chicken Set Successfully!');
+                $this->flashMessage('success', 'Chicken Set Successfully');
                 return $this->redirect($this->generateUrl('chicken_type_set_list'));
             }
         }

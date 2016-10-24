@@ -103,7 +103,7 @@ class ChickenSetInLocationController extends BaseController
                     $this->flashMessage('success', 'This Item Is Already Added!');
                     return $this->redirect($this->generateUrl('chicken_set_in_location'));
                 }
-                $this->flashMessage('success', 'It must be Chicken Set Added Successfully!');
+                $this->flashMessage('success', 'Location Wise Chicken Set Assigned Successfully');
                 return $this->redirect($this->generateUrl('chicken_set_in_location'));
             }
         }
