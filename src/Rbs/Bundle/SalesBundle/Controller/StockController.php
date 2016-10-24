@@ -47,7 +47,7 @@ class StockController extends Controller
                     ->save($request, $form, $stockHistory);
 
                 $this->get('session')->getFlashBag()->add(
-                    'success', 'Stock Item Quantity Added Successfully!'
+                    'success', 'Stock Item Quantity Added Successfully'
                 );
 
                 return $this->redirect($this->generateUrl('stocks_home'));
@@ -241,7 +241,7 @@ class StockController extends Controller
         $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
 
         $this->get('session')->getFlashBag()->add(
-            'success', 'Stock Item Available Set Successfully!'
+            'success', 'Stock Item Available Set Successfully'
         );
         return $this->redirect($this->generateUrl('stocks_home'));
     }

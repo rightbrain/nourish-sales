@@ -91,7 +91,7 @@ class CashDepositController extends BaseController
                 $cashDeposit->setDepositedBy($this->getUser());
                 $cashDeposit->setDepo($this->em()->getRepository('RbsCoreBundle:Depo')->find($getDepoId[0]['id']));
                 $this->em()->getRepository('RbsSalesBundle:CashDeposit')->create($cashDeposit);
-                $this->flashMessage('success', 'Cash Deposited Successfully!');
+                $this->flashMessage('success', 'Cash Deposited Successfully');
                 return $this->redirect($this->generateUrl('cash_deposit_list'));
             }
         }
