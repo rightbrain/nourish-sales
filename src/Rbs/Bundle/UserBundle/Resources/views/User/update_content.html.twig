@@ -2,14 +2,34 @@
 
     <h4>User Profile Information</h4>
 
-        {{ form_row(form.profile.fullName, { 'attr': {'class': ''} }) }}
-        {{ form_row(form.userType, { 'attr': {'class': ''} }) }}
+    <div class="form-group">
+        <label for="fullName" class="col-md-2 control-label required">Full Name</label>
+        <div class="col-md-10">
+            {{ form_widget(form.profile.fullName, { 'attr': {'class': ''} }) }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="userType" class="col-md-2 control-label required">User Type</label>
+        <div class="col-md-10">
+            {{ form_widget(form.userType, { 'attr': {'class': ''} }) }}
+        </div>
+    </div>
         {{ form_row(form.profile.designation, { 'attr': {'class': ''} }) }}
-        {{ form_row(form.profile.cellphone, { 'attr': {'class': ''} }) }}
+    <div class="form-group">
+        <label for="cellphone" class="col-md-2 control-label required">Cell Phone</label>
+        <div class="col-md-10">
+            {{ form_widget(form.profile.cellphone, { 'attr': {'class': ''} }) }}
+        </div>
+    </div>
         {{ form_row(form.profile.address, { 'attr': {'class': ''} }) }}
         {{ form_row(form.zilla, { 'attr': {'class': 'zilla-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'ZillaZilla'} }) }}
         {{ form_row(form.upozilla, { 'attr': {'class': 'thana-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'Thana/UpoZilla'} }) }}
-        {{ form_row(form.parentId, { 'attr': {'class': ''} }) }}
+    <div class="form-group">
+        <label for="parentId" class="col-md-2 control-label">Parent Id</label>
+        <div class="col-md-10">
+            {{ form_widget(form.parentId, { 'attr': {'class': ''} }) }}
+        </div>
+    </div>
         {{ form_row(form.groups, { 'attr': {'class': ''} }) }}
 
     <div class="form-group">
