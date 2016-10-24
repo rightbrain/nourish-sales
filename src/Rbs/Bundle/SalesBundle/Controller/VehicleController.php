@@ -267,7 +267,7 @@ class VehicleController extends BaseController
             if ($form->isValid()) {
                 $this->checkUserForFieldSet($request, $vehicle);
                 $this->vehicleRepo()->create($vehicle);
-                $this->get('session')->getFlashBag()->add('success', 'Agent Vehicle Info Added Successfully!');
+                $this->get('session')->getFlashBag()->add('success', 'Agent Vehicle Info Added Successfully');
                 return $this->checkUserTypeForRedirect();
             }
         }

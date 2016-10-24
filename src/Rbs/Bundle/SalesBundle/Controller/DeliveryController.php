@@ -130,7 +130,7 @@ class DeliveryController extends BaseController
                 $em->persist($delivery);
                 $em->flush();
 
-                $this->flashMessage('success', 'Delivery Information Update Successfully!');
+                $this->flashMessage('success', 'Delivery Information Update Successfully');
 
                 return $this->redirect($this->generateUrl('order_details', array('id' => $delivery->getOrders()->getId())));
             }
