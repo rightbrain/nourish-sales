@@ -60,7 +60,7 @@ class ChickenSetInLocationController extends BaseController
         }
         $chickenSet->setQuantity($request->request->get('quantity'));
         $this->getDoctrine()->getRepository('RbsCoreBundle:ChickenSet')->update($chickenSet);
-        $this->flashMessage('success', 'Chicken Set For Location Successfully!');
+        $this->flashMessage('success', 'It must be Location Wise Chicken Set Assigned Successfully');
         return $this->redirect($this->generateUrl('chicken_set_in_location'));
     }
 
