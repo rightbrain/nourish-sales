@@ -8,6 +8,7 @@ use Rbs\Bundle\SalesBundle\Helper\SmsVehicleParse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DefaultController extends BaseController
 {
@@ -34,32 +35,43 @@ class DefaultController extends BaseController
     {
         $data = array();
         $form = $this->createFormBuilder($data);
-        $form->add('mobile', 'text');
-        $form->add('msg', 'textarea');
+        $form->add('mobile', 'text', array(
+            'required' => true,
+            'constraints' => array(
+                new NotBlank(array(
+                    'message'=>'Please Fill Out'
+                ))
+            )
+        ));
+        $form->add('msg', 'textarea', array(
+            'required' => true,
+            'constraints' => array(
+                new NotBlank(array(
+                    'message'=>'Please Fill Out'
+                ))
+            )
+        ));
         $form->add('Submit', 'submit');
 
         $formView = $form->getForm();
         if ($request->isMethod('POST')) {
             $formView->handleRequest($request);
-
-            $smsParse = new SmsParse($this->get('doctrine.orm.entity_manager'));
-
-            $sms = new Sms();
-            $sms->setMobileNo($formView->get('mobile')->getData());
-            $sms->setMsg($formView->get('msg')->getData());
-            $sms->setDate(new \DateTime());
-            $sms->setSl(rand());
-            $sms->setStatus('NEW');
-
-            $response = $smsParse->parse($sms);
-
-            if ($response) {
-                $this->flashMessage('success', 'Order Create Successfully, Order ID: ' . $response['orderId']);
-            } else {
-                $this->flashMessage('error', $smsParse->error);
+            if ($formView->isValid()) {
+                $smsParse = new SmsParse($this->get('doctrine.orm.entity_manager'));
+                $sms = new Sms();
+                $sms->setMobileNo($formView->get('mobile')->getData());
+                $sms->setMsg($formView->get('msg')->getData());
+                $sms->setDate(new \DateTime());
+                $sms->setSl(rand());
+                $sms->setStatus('NEW');
+                $response = $smsParse->parse($sms);
+                if ($response) {
+                    $this->flashMessage('success', 'Order Create Successfully, Order ID: ' . $response['orderId']);
+                } else {
+                    $this->flashMessage('error', $smsParse->error);
+                }
+                return $this->redirectToRoute('order_via_sms');
             }
-
-            return $this->redirectToRoute('order_via_sms');
         }
 
         return array(
@@ -78,28 +90,43 @@ class DefaultController extends BaseController
     {
         $data = array();
         $form = $this->createFormBuilder($data);
-        $form->add('mobile', 'text');
-        $form->add('msg', 'textarea');
+        $form->add('mobile', 'text', array(
+            'required' => true,
+            'constraints' => array(
+                new NotBlank(array(
+                    'message'=>'Please Fill Out'
+                ))
+            )
+        ));
+        $form->add('msg', 'textarea', array(
+            'required' => true,
+            'constraints' => array(
+                new NotBlank(array(
+                    'message'=>'Please Fill Out'
+                ))
+            )
+        ));
         $form->add('Submit', 'submit');
 
         $formView = $form->getForm();
         if ($request->isMethod('POST')) {
             $formView->handleRequest($request);
-            $user = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findByPhoneNumber($formView->get('mobile')->getData());
-            if($user == null) {
-                $this->flashMessage('error', 'Invalid Phone Number');
-            }else{
-                $smsVehicleParse = new SmsVehicleParse($this->getDoctrine()->getManager(), $user[0]);
-                $response = $smsVehicleParse->parse($formView->get('msg')->getData());
-
-                if ($response) {
-                    $this->flashMessage('success', 'Vehicle create Successfully');
+            if ($formView->isValid()) {
+                $user = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findByPhoneNumber($formView->get('mobile')->getData());
+                if ($user == null) {
+                    $this->flashMessage('error', 'Invalid Phone Number');
                 } else {
-                    $this->flashMessage('error', $smsVehicleParse->error);
-                }
-            }
+                    $smsVehicleParse = new SmsVehicleParse($this->getDoctrine()->getManager(), $user[0]);
+                    $response = $smsVehicleParse->parse($formView->get('msg')->getData());
 
-            return $this->redirectToRoute('vehicle_via_sms');
+                    if ($response) {
+                        $this->flashMessage('success', 'Vehicle create Successfully');
+                    } else {
+                        $this->flashMessage('error', $smsVehicleParse->error);
+                    }
+                }
+                return $this->redirectToRoute('vehicle_via_sms');
+            }
         }
 
         return array(

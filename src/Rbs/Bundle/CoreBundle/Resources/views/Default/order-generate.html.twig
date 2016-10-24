@@ -2,6 +2,8 @@
 
 {% block body %}
 
-    {{ form(form) }}
+    {{ form_start(form, {'method': 'POST', attr: { novalidate: 'novalidate'}}) }}
+        {{ form(form) }}
+    {{ form_end(form) }}
 
 {% endblock %}
