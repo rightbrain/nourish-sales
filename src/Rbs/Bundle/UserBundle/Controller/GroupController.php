@@ -123,7 +123,7 @@ class GroupController extends Controller
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
-                    'Group Update Successfully!'
+                    'Group Updated Successfully!'
                 );
 
                 return $this->redirect($this->generateUrl('groups_home'));
