@@ -81,7 +81,7 @@ class ChickenSetInLocationController extends BaseController
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
             if($request->request->get('sale_chicken_set')['item'] == null){
-                $this->flashMessage('error', 'Item should not blank');
+                $this->flashMessage('error', 'Item Should Not Be Blank');
                 return $this->redirect($this->generateUrl('chicken_set_in_location'));
             }
             if ($form->isValid()) {
