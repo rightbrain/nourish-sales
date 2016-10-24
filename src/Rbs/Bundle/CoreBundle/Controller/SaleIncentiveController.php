@@ -235,22 +235,7 @@ class SaleIncentiveController extends BaseController
 
     /**
      * @Route("/sale/incentive/import", name="sale_incentive_import")
-     * @Template("RbsCoreBundle:SaleIncentive:import-form.html.twig")+
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     * 
+     * @Template("RbsCoreBundle:SaleIncentive:import-form.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
@@ -295,7 +280,7 @@ class SaleIncentiveController extends BaseController
                 fclose($handle);
             }
 
-            $this->flashMessage('success', 'Sales Incentive Import Successfully!');
+            $this->flashMessage('success', 'Sales Incentive Imported Successfully!');
             return $this->redirect($this->generateUrl('sale_incentive_list'));
         }
 
