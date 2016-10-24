@@ -66,7 +66,7 @@ class DefaultController extends BaseController
                 $sms->setStatus('NEW');
                 $response = $smsParse->parse($sms);
                 if ($response) {
-                    $this->flashMessage('success', 'Order Create Successfully, Order ID: ' . $response['orderId']);
+                    $this->flashMessage('success', 'Order Created Successfully, Order ID: ' . $response['orderId']);
                 } else {
                     $this->flashMessage('error', $smsParse->error);
                 }
@@ -120,7 +120,7 @@ class DefaultController extends BaseController
                     $response = $smsVehicleParse->parse($formView->get('msg')->getData());
 
                     if ($response) {
-                        $this->flashMessage('success', 'Vehicle create Successfully');
+                        $this->flashMessage('success', 'Vehicle created Successfully');
                     } else {
                         $this->flashMessage('error', $smsVehicleParse->error);
                     }
