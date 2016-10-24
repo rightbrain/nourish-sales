@@ -24,7 +24,7 @@ class SalesIncentiveYearlyHistoryDatatable extends BaseDatatable
         
         $this->columnBuilder
             ->add('updatedAt', 'datetime', array('title' => 'Date', 'date_format' => 'LLL' ))
-            ->add('updatedBy.username', 'column', array('title' => 'CreatedBy'))
+            ->add('updatedBy.username', 'column', array('title' => 'Created By'))
             ->add('category.name', 'column', array('title' => 'Category'))
             ->add('quantity', 'column', array('title' => 'Quantity'))
             ->add('amount', 'column', array('title' => 'Amount'))
