@@ -342,7 +342,7 @@ class VehicleController extends BaseController
             $vehicle->setOrderText($orderText);
 
             $this->vehicleRepo()->update($vehicle);
-            $this->get('session')->getFlashBag()->add('success', 'Vehicle Delivery Set Successfully Start');
+            $this->get('session')->getFlashBag()->add('success', 'Vehicle Delivery Set Started Successfully');
 
             return $this->redirect($this->generateUrl('vehicle_info_set_list'));
         }
