@@ -170,7 +170,7 @@ class OrderController extends BaseController
         if ('POST' === $request->getMethod()) {
             foreach ($request->request->get('order')['orderItems'] as $orderItem){
                 if($orderItem['quantity'] <=0){
-                    $this->flashMessage('error', 'quantity should not zero!');
+                    $this->flashMessage('error', 'Quantity Should Not Be Zero!');
                     goto a;
                 }
             }
@@ -186,7 +186,7 @@ class OrderController extends BaseController
                 $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('order')['depo']);
                 $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
                 
-                $this->flashMessage('success', 'Order Add Successfully!');
+                $this->flashMessage('success', 'Order Created Successfully!');
                 return $this->redirect($this->generateUrl('orders_home'));
             }
             a:
@@ -220,7 +220,7 @@ class OrderController extends BaseController
             $form->handleRequest($request);
             foreach ($request->request->get('order')['orderItems'] as $orderItem){
                 if($orderItem['quantity'] <=0){
-                    $this->flashMessage('error', 'quantity should not zero!');
+                    $this->flashMessage('error', 'Quantity Should Not Be Zero');
                     goto a;
                 }
             }
@@ -237,7 +237,7 @@ class OrderController extends BaseController
                 $stockRepo->addStockToOnHold($order, $depo);
                 $em->getRepository('RbsSalesBundle:Order')->update($order, true);
 
-                $this->flashMessage('success', 'Order Update Successfully!');
+                $this->flashMessage('success', 'Order Updated Successfully!');
 
                 return $this->redirect($this->generateUrl('orders_home'));
             }
@@ -312,7 +312,7 @@ class OrderController extends BaseController
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
 
         $this->dispatchApproveProcessEvent('order.approved', $order);
-        $this->flashMessage('success', 'Order Approve Successfully!');
+        $this->flashMessage('success', 'Order Approved Successfully!');
         return $this->redirect($this->generateUrl('orders_home'));
     }
 
@@ -330,7 +330,7 @@ class OrderController extends BaseController
 
         $this->orderRepository()->cancelOrder($order);
         $this->dispatchApproveProcessEvent('order.canceled', $order);
-        $this->flashMessage('success', 'Order Cancel Successfully!');
+        $this->flashMessage('success', 'Order Canceled Successfully!');
         return $this->redirect($this->generateUrl('orders_home'));
     }
 

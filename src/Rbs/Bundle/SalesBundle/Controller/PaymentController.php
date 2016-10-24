@@ -113,7 +113,7 @@ class PaymentController extends BaseController
                 $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
                 $em->getRepository('RbsSalesBundle:Payment')->create($payment);
 
-                $this->flashMessage('success', 'Payment Add Successfully!');
+                $this->flashMessage('success', 'Payment Created Successfully!');
                 return $this->redirect($this->generateUrl('payments_home'));
             }
         }
