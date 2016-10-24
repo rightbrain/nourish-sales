@@ -227,7 +227,7 @@ class ItemController extends BaseController
         if ($editForm->isValid()) {
             $currentPrice = floatval($request->request->get('rbs_bundle_corebundle_item')['price']);
             $em->flush();
-            $this->flashMessage('success', 'Item Update Successfully');
+            $this->flashMessage('success', 'Item Updated Successfully');
 
             if($currentPrice != $previousPrice){
                 $em->getRepository('RbsCoreBundle:ItemPriceLog')->itemPriceLog($this->getUser(), $id, $currentPrice, $previousPrice);
