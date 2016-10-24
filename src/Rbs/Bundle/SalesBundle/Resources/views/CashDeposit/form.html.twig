@@ -13,7 +13,12 @@
             <div class="portlet-body">
                 {{ include('_elements/_back_to_list_button.html.twig', {url: path('cash_deposit_list'), label: 'Back to List', 'icon': 'chevron-left'}) }}
                 {{ form_start(form, {'method': 'POST'}) }}
-                    {{ form_row(form.deposit) }}
+                    <div class="form-group">
+                        <label for="deposit" class="col-md-2 control-label required">Deposit Amount</label>
+                        <div class="col-md-4">
+                            {{ form_widget(form.deposit) }}
+                        </div>
+                    </div>
                     {{ form_row(form.bankName) }}
                     {{ form_row(form.branchName) }}
                     {{ form_row(form.depositedAt) }}
