@@ -228,7 +228,7 @@ class UserController extends Controller
                 $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
 
                 $this->get('session')->getFlashBag()->add(
-                    'notice',
+                    'success',
                     'Password Changed Successfully'
                 );
 
