@@ -118,7 +118,7 @@ class CashReceiveController extends BaseController
                     $cashReceive->setReceivedBy($this->getUser());
                     $cashReceive->setDepo($em->getRepository('RbsCoreBundle:Depo')->find($getDepoId[0]['id']));
                     $em->getRepository('RbsSalesBundle:CashReceive')->create($cashReceive);
-                    $this->flashMessage('success', 'Cash Receive Successfully!');
+                    $this->flashMessage('success', 'Cash Received Successfully!');
                     return $this->redirect($this->generateUrl('cash_receive_list'));
                 }
             }
