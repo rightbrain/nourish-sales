@@ -86,7 +86,7 @@ class ChickenTypeSetController extends BaseController
             $form->handleRequest($request);
             if($request->request->get('chicken_set_for_agent')['item'] == null or
                 $request->request->get('chicken_set_for_agent')['agent'] == null){
-                $this->flashMessage('error', 'Agent or Item should not blank');
+                $this->flashMessage('error', 'Item or Agent Should Not Be Blank');
                 return $this->redirect($this->generateUrl('chicken_type_set_list'));
             }
             if ($form->isValid()) {
