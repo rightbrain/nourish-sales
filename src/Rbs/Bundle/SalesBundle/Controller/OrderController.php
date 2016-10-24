@@ -353,7 +353,7 @@ class OrderController extends BaseController
         $order->setOrderState(Order::ORDER_STATE_HOLD);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
         $this->dispatchApproveProcessEvent('order.hold', $order);
-        $this->flashMessage('success', 'Order Hold Successfully!');
+        $this->flashMessage('success', 'Order Holded Successfully!');
         return $this->redirect($this->generateUrl('orders_home'));
     }
 
