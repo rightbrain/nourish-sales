@@ -69,6 +69,7 @@ class AgentsBankInfoController extends BaseController
                 $qb->andWhere('u =:user');
                 $qb->setParameter('user', $user);
             }
+            $qb->orderBy('sales_agents_bank_info.createdAt', 'DESC');
         };
         $query->addWhereAll($function);
         
