@@ -305,7 +305,7 @@ class VehicleController extends BaseController
         $vehicle->setStartLoad(new \DateTime());
         $vehicle->setTransportStatus(Vehicle::START_LOAD);
         $this->vehicleRepo()->update($vehicle);
-        $this->get('session')->getFlashBag()->add('success', 'Vehicle Load Successfully Start');
+        $this->get('session')->getFlashBag()->add('success', 'Vehicle Load Started Successfully');
 
         return $this->redirect($this->generateUrl('vehicle_info_load_list'));
     }
