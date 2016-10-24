@@ -97,7 +97,7 @@ class AgentsBankInfoController extends BaseController
                                                              'user' => $this->getUser()->getId()));
                 $agentsBankInfo->setAgent($agent);
                 $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:AgentsBankInfo')->create($agentsBankInfo);
-                $this->flashMessage('success', 'Bank info add Successfully!');
+                $this->flashMessage('success', 'Bank info added Successfully!');
                 return $this->redirect($this->generateUrl('bank_info_list'));
             }
         }
@@ -122,7 +122,7 @@ class AgentsBankInfoController extends BaseController
 
         $this->get('session')->getFlashBag()->add(
             'success',
-            'Agents Bank Info Successfully Cancel'
+            'Agents Bank Info Canceled Successfully'
         );
 
         return $this->redirect($this->generateUrl('bank_info_list'));
@@ -143,7 +143,7 @@ class AgentsBankInfoController extends BaseController
 
         $this->get('session')->getFlashBag()->add(
             'success',
-            'Agents Bank Info Successfully Verified'
+            'Agents Bank Info Verified Successfully'
         );
 
         return $this->redirect($this->generateUrl('bank_info_list'));
@@ -180,7 +180,7 @@ class AgentsBankInfoController extends BaseController
 
         $this->get('session')->getFlashBag()->add(
             'success',
-            'Agents Bank Info Successfully Verified'
+            'Agents Bank Info Verified Successfully'
         );
 
         return $this->redirect($this->generateUrl('bank_info_list'));
