@@ -90,7 +90,7 @@ class TargetController extends BaseController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->em()->getRepository('RbsSalesBundle:Target')->create($target);
-                $this->flashMessage('success', 'Target Add Successfully!');
+                $this->flashMessage('success', 'Target Added Successfully!');
                 return $this->redirect($this->generateUrl('target_list'));
             }
         }
