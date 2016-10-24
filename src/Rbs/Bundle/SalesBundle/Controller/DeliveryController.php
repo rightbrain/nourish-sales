@@ -164,7 +164,7 @@ class DeliveryController extends BaseController
         
         $this->dispatch('delivery.delivered', new DeliveryEvent($delivery));
 
-        $this->flashMessage('success', 'Delivery Successfully Complete!');
+        $this->flashMessage('success', 'Delivery Completed Successfully');
 
         return $this->redirect($this->generateUrl('deliveries_home'));
     }
