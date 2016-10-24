@@ -380,7 +380,7 @@ class VehicleController extends BaseController
         $vehicle->setTransportStatus(Vehicle::OUT);
         $vehicle->setShipped(true);
         $this->vehicleRepo()->update($vehicle);
-        $this->get('session')->getFlashBag()->add('success', 'Vehicle Successfully Out');
+        $this->get('session')->getFlashBag()->add('success', 'Vehicle Out Successfully');
 
         return $this->redirect($this->generateUrl('truck_info_in_out_list'));
     }
