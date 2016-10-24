@@ -88,7 +88,7 @@ class GroupController extends Controller
             if (null === $response = $event->getResponse()) {
                 $this->get('session')->getFlashBag()->add(
                     'success',
-                    'Group Created Successfully!'
+                    'Group Created Successfully'
                 );
             }
 
@@ -123,7 +123,7 @@ class GroupController extends Controller
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
-                    'Group Updated Successfully!'
+                    'Group Updated Successfully'
                 );
 
                 return $this->redirect($this->generateUrl('groups_home'));
@@ -151,7 +151,7 @@ class GroupController extends Controller
 
         $this->get('session')->getFlashBag()->add(
             'success',
-            'Group Deleted Successfully!'
+            'Group Deleted Successfully'
         );
 
         return $response;
