@@ -151,7 +151,7 @@ class TransportIncentiveController extends BaseController
                 
                 $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->create($transportIncentive);
 
-                $this->flashMessage('success', 'Transport Incentive Added Successfully!');
+                $this->flashMessage('success', 'Transport Incentive Added Successfully');
                 return $this->redirect($this->generateUrl('transport_incentive_list'));
             }
         }
@@ -207,7 +207,7 @@ class TransportIncentiveController extends BaseController
                 fclose($handle);
             }
 
-            $this->flashMessage('success', 'Transport Incentive Imported Successfully!');
+            $this->flashMessage('success', 'Transport Incentive Imported Successfully');
             return $this->redirect($this->generateUrl('transport_incentive_list'));
         }
 

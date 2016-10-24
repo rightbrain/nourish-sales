@@ -103,7 +103,7 @@ class IncentiveController extends BaseController
             $incentive->setDetails($request->request->get('details'));
             $incentive->setDate(new \DateTime());
             $this->getDoctrine()->getRepository('RbsSalesBundle:Incentive')->create($incentive);
-            $this->get('session')->getFlashBag()->add('success', 'Incentive Added Successfully!');
+            $this->get('session')->getFlashBag()->add('success', 'Incentive Added Successfully');
 
             return $this->redirect($this->generateUrl('incentives_home'));
         }
@@ -134,7 +134,7 @@ class IncentiveController extends BaseController
 
         $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
         $em->getRepository('RbsSalesBundle:Payment')->create($payment);
-        $this->flashMessage('success', 'Incentive Approved Successfully!');
+        $this->flashMessage('success', 'Incentive Approved Successfully');
 
         return $this->redirect($this->generateUrl('incentives_home'));
     }
@@ -152,7 +152,7 @@ class IncentiveController extends BaseController
         $incentive->setStatus(Incentive::DENIED);
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Incentive')->update($incentive);
-        $this->flashMessage('success', 'Incentive Canceled Successfully!');
+        $this->flashMessage('success', 'Incentive Canceled Successfully');
 
         return $this->redirect($this->generateUrl('incentives_home'));
     }
