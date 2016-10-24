@@ -223,7 +223,7 @@ class SaleIncentiveController extends BaseController
                     $this->getDoctrine()->getRepository('RbsCoreBundle:SaleIncentive')->create($saleIncentive);
                 }
 
-                $this->flashMessage('success', 'Sale Incentive Add Successfully!');
+                $this->flashMessage('success', 'Sale Incentive Added Successfully!');
                 return $this->redirect($this->generateUrl('sale_incentive_list'));
             }
         }
