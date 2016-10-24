@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\UserBundle\Controller;
 
+use Doctrine\ORM\QueryBuilder;
 use FOS\UserBundle\Controller\GroupController as Controller;
 use FOS\UserBundle\Event\FilterGroupResponseEvent;
 use FOS\UserBundle\Event\FormEvent;
@@ -50,6 +51,12 @@ class GroupController extends Controller
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb */
+        $function = function($qb)
+        {
+            $qb->orderBy('user_groups.name', 'ASC');
+        };
+        $query->addWhereAll($function);
 
         return $query->getResponse();
     }
