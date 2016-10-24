@@ -103,7 +103,7 @@ class UserController extends Controller
 
                 $this->get('session')->getFlashBag()->add(
                     'success',
-                    'User Create Successfully!'
+                    'User Created Successfully!'
                 );
 
                 return $this->redirect($this->generateUrl('users_home'));
@@ -193,7 +193,7 @@ class UserController extends Controller
 
                 $this->get('session')->getFlashBag()->add(
                     'notice',
-                    'Password Successfully Change'
+                    'Password Changed Successfully '
                 );
 
                 return $this->redirect($this->generateUrl('users_home'));
@@ -229,7 +229,7 @@ class UserController extends Controller
 
                 $this->get('session')->getFlashBag()->add(
                     'notice',
-                    'Password Successfully Change'
+                    'Password Changed Successfully'
                 );
 
                 return $this->redirect($this->generateUrl('fos_user_profile_show'));
@@ -308,7 +308,7 @@ class UserController extends Controller
 
         $this->get('session')->getFlashBag()->add(
             'success',
-            'User Successfully Delete'
+            'User Deleted Successfully'
         );
 
         return $this->redirect($this->generateUrl('users_home'));
