@@ -40,8 +40,8 @@ class TargetDatatable extends BaseDatatable
             ->add('upozilla.name', 'column', array('title' => 'Upozilla'))
             ->add('quantity', 'column', array('title' => 'Quantity'))
             ->add('category.name', 'column', array('title' => 'Category'))
-            ->add('startDate', 'datetime', array('title' => 'startDate', 'date_format' => $dateFormat))
-            ->add('endDate', 'datetime', array('title' => 'endDate', 'date_format' => $dateFormat))
+            ->add('startDate', 'datetime', array('title' => 'Start Date', 'date_format' => $dateFormat))
+            ->add('endDate', 'datetime', array('title' => 'End Date', 'date_format' => $dateFormat))
             ->add('monthDiff', 'virtual', array('title' => 'Month'))
             ->add(null, 'action', array(
                 'width' => '200px',
