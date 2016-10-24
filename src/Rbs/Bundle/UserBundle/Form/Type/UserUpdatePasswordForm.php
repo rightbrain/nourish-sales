@@ -25,7 +25,7 @@ class UserUpdatePasswordForm extends AbstractType
                 'invalid_message' => 'fos_user.password.mismatch',
                 'constraints' => array(
                     new NotBlank(array(
-                        'message'=>'Password should not be blank'
+                        'message'=>'Please Fill Out'
                     )),
                     new Length(array('min' => 6)),
                 ),
