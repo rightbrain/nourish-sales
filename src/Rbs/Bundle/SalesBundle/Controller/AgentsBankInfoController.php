@@ -97,7 +97,7 @@ class AgentsBankInfoController extends BaseController
                                                              'user' => $this->getUser()->getId()));
                 $agentsBankInfo->setAgent($agent);
                 $this->getDoctrine()->getManager()->getRepository('RbsSalesBundle:AgentsBankInfo')->create($agentsBankInfo);
-                $this->flashMessage('success', 'Bank info added Successfully!');
+                $this->flashMessage('success', 'Bank info added Successfully');
                 return $this->redirect($this->generateUrl('bank_info_list'));
             }
         }

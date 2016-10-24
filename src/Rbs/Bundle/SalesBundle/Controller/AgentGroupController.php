@@ -70,7 +70,7 @@ class AgentGroupController extends Controller
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->em()->getRepository('RbsSalesBundle:AgentGroup')->create($agentGroup);
-                $this->get('session')->getFlashBag()->add('success','Agent Group Created Successfully!');
+                $this->get('session')->getFlashBag()->add('success','Agent Group Created Successfully');
                 return $this->redirect($this->generateUrl('agent_groups_home'));
             }
         }
@@ -96,7 +96,7 @@ class AgentGroupController extends Controller
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->em()->getRepository('RbsSalesBundle:AgentGroup')->update($agentGroup);
-                $this->get('session')->getFlashBag()->add('success','User Updated Successfully!');
+                $this->get('session')->getFlashBag()->add('success','User Updated Successfully');
                 return $this->redirect($this->generateUrl('agent_groups_home'));
             }
         }

@@ -90,7 +90,7 @@ class TargetController extends BaseController
             $form->handleRequest($request);
             if ($form->isValid()) {
                 $this->em()->getRepository('RbsSalesBundle:Target')->create($target);
-                $this->flashMessage('success', 'Target Added Successfully!');
+                $this->flashMessage('success', 'Target Added Successfully');
                 return $this->redirect($this->generateUrl('target_list'));
             }
         }
@@ -117,7 +117,7 @@ class TargetController extends BaseController
 
             if ($form->isValid()) {
                 $this->em()->getRepository('RbsSalesBundle:Target')->update($target, $request->request->get('target')['endDate']);
-                $this->get('session')->getFlashBag()->add('success', 'Target Updated Successfully!');
+                $this->get('session')->getFlashBag()->add('success', 'Target Updated Successfully');
                 return $this->redirect($this->generateUrl('target_list'));
             }
         }
