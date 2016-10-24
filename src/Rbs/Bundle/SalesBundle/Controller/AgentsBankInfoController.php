@@ -122,7 +122,7 @@ class AgentsBankInfoController extends BaseController
 
         $this->get('session')->getFlashBag()->add(
             'success',
-            'Agents Bank Info Canceled Successfully'
+            'Agents Bank Info Cancelled Successfully'
         );
 
         return $this->redirect($this->generateUrl('bank_info_list'));
@@ -143,7 +143,7 @@ class AgentsBankInfoController extends BaseController
 
         $this->get('session')->getFlashBag()->add(
             'success',
-            'Agents Bank Info Verified Successfully'
+            'Agent Bank Info Verified Successfully'
         );
 
         return $this->redirect($this->generateUrl('bank_info_list'));

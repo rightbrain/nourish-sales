@@ -330,7 +330,7 @@ class OrderController extends BaseController
 
         $this->orderRepository()->cancelOrder($order);
         $this->dispatchApproveProcessEvent('order.canceled', $order);
-        $this->flashMessage('success', 'Order Canceled Successfully');
+        $this->flashMessage('success', 'Order Cancelled Successfully');
         return $this->redirect($this->generateUrl('orders_home'));
     }
 
