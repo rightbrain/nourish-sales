@@ -221,7 +221,7 @@ class CategoryController extends BaseController
 
         if ($editForm->isValid()) {
             $em->flush();
-            $this->flashMessage('success', 'Updated Created Successfully');
+            $this->flashMessage('success', 'Category Updated Successfully');
             return $this->redirect($this->generateUrl('category'));
         }
 
