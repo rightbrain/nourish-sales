@@ -363,7 +363,7 @@ class VehicleController extends BaseController
         $vehicle->setFinishLoad(new \DateTime());
         $vehicle->setTransportStatus(Vehicle::FINISH_LOAD);
         $this->vehicleRepo()->update($vehicle);
-        $this->get('session')->getFlashBag()->add('success', 'Vehicle Successfully Finished');
+        $this->get('session')->getFlashBag()->add('success', 'Vehicle Finished Successfully');
 
         return $this->redirect($this->generateUrl('vehicle_info_load_list'));
     }
