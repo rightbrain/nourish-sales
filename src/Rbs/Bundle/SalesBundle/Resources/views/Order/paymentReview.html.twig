@@ -105,7 +105,7 @@
             Order Cancel
         </a>
         {% if is_granted('ROLE_PAYMENT_OVER_CREDIT_APPROVE') %}
-            <a class="btn green confirmation-btn" href="{{ path('approve_credit_payment', {"id": order.id}) }}" data-title="Do you want to approve payment this order?">
+            <a class="btn green confirmation-btn" href="{{ path('approve_credit_payment', {"id": order.id}) }}" data-title="Do you want to approve the payment of this order?">
                 {% if isOverCredit %}Credit {% endif %} Payment Approve
             </a>
         {% elseif is_granted('ROLE_PAYMENT_APPROVE') %}
