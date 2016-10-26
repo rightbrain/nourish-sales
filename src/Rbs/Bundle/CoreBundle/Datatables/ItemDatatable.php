@@ -40,7 +40,7 @@ class ItemDatatable extends BaseDatatable
             ->add('itemUnit', 'column', array('title' => 'Item Unit'))
             ->add('price', 'column', array('title' => 'Price'))
             ->add('itemType.itemType', 'column', array('title' => 'Item Type'))
-            ->add('category.name', 'array', array('title' => 'category', 'data' => 'category[, ].name'))
+            ->add('category.name', 'array', array('title' => 'Category', 'data' => 'category[, ].name'))
             ->add('status', 'boolean', array(
                 'title' => 'Status',
                 'true_icon' => 'fa fa-check-circle-o',
