@@ -146,7 +146,7 @@ class SmsParse
         $this->agent = $this->em->getRepository('RbsSalesBundle:Agent')->findOneBy(array('agentID' => $agentId));
 
         if (!$this->agent) {
-            $this->setError('Invalid agent ID');
+            $this->setError('Invalid Agent ID');
             $this->markError($agentId);
         } else {
 
@@ -173,7 +173,7 @@ class SmsParse
             $orderItems = explode('-', $orderInfo);
 
             if (empty($orderItems)) {
-                $this->setError('Invalid order information');
+                $this->setError('Invalid Order Information');
                 $this->markError($orderInfo);
             }
 
@@ -182,15 +182,15 @@ class SmsParse
                 $item = $itemRepo->findOneBy(array('sku' => trim($sku)));
 
                 if (!$item) {
-                    $this->setError('Invalid produce code');
+                    $this->setError('Invalid Produce Code');
                     $this->markError($sku);
                     break;
                 } else if (!preg_match('/^\d+$/', trim($qty))) {
-                    $this->setError('Invalid qty code');
+                    $this->setError('Invalid Quantity');
                     $this->markError($qty);
                     break;
                 } else if ($this->agent->getItemType() != null and  $this->agent->getItemType() != $item->getItemType()) {
-                    $this->setError('Product type not match');
+                    $this->setError('Product Type Not Match');
                     $this->markError($sku);
                     break;
                 } else {
@@ -204,7 +204,7 @@ class SmsParse
             }
 
         } catch (\Exception $e) {
-            $this->setError("Invalid product:qty format");
+            $this->setError("Invalid Product:Quantity Format");
         }
     }
 
@@ -215,13 +215,13 @@ class SmsParse
         }
 
         if (!empty($amount) && !preg_match('/^\d+$/', trim($amount))) {
-            $this->setError('Invalid amount');
+            $this->setError('Invalid Amount');
             $this->markError($amount);
             return;
         }
 
         if (!empty($amount) && (empty(trim($bankName)) || empty(trim($bankBranch)))) {
-            $this->setError('Invalid bank or branch name');
+            $this->setError('Invalid Bank or Branch Name');
             return;
         }
 

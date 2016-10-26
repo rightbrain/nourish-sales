@@ -55,13 +55,13 @@ class SmsVehicleParse
             if($this->user->getUserType() == User::AGENT) {
                 $order = $this->em->getRepository('RbsSalesBundle:Order')->find($splitMsg[1]);
                 if($order == null){
-                    $this->setError('Invalid order number');
+                    $this->setError('Invalid Order Number');
                     return;
                 }
             }else{
                 $depo =  $this->em->getRepository('RbsCoreBundle:Depo')->findByName($splitMsg[1]);
                 if($depo == null){
-                    $this->setError('Invalid depo name');
+                    $this->setError('Invalid Depo Name');
                     return;
                 }
             }
@@ -70,25 +70,25 @@ class SmsVehicleParse
                 
                 if(sizeof($vehicleInfo)>0){
                     if($vehicleInfo[0] == null){
-                        $this->setError('Invalid vehicle number');
+                        $this->setError('Invalid Vehicle Number');
                         return;
                     }
                 }
                 if(sizeof($vehicleInfo)>1) {
                     if ($vehicleInfo[1] == null) {
-                        $this->setError('Invalid driver name');
+                        $this->setError('Invalid Driver Name');
                         return;
                     }
                 }
                 if(sizeof($vehicleInfo)>2) {
                     if ($vehicleInfo[2] == null) {
-                        $this->setError('Invalid driver phone number');
+                        $this->setError('Invalid Driver Phone Number');
                         return;
                     }
                 }
             }
         }else{
-            $this->setError('Invalid parameter');
+            $this->setError('Invalid Parameter');
             return;
         }
     }

@@ -120,7 +120,7 @@ class DefaultController extends BaseController
                     $response = $smsVehicleParse->parse($formView->get('msg')->getData());
 
                     if ($response) {
-                        $this->flashMessage('success', 'Vehicle created Successfully');
+                        $this->flashMessage('success', 'Vehicle Created Successfully');
                     } else {
                         $this->flashMessage('error', $smsVehicleParse->error);
                     }
