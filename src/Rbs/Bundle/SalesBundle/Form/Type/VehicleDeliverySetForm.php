@@ -11,6 +11,9 @@ use Rbs\Bundle\SalesBundle\Repository\VehicleRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Count;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class VehicleDeliverySetForm extends AbstractType
 {
@@ -45,9 +48,6 @@ class VehicleDeliverySetForm extends AbstractType
                 'property' => 'getOrderInfoWithAgent',
                 'required' => true,
                 'multiple' => true,
-                'mapped' => false,
-                'empty_value' => 'Select Order',
-                'empty_data' => null,
                 'query_builder' => function (OrderRepository $repository)
                 {
                     return $repository->createQueryBuilder('o')

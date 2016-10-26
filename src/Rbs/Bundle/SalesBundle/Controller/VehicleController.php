@@ -323,6 +323,10 @@ class VehicleController extends BaseController
         $form = $this->createForm(new VehicleDeliverySetForm($this->getUser(), $vehicle->getId()));
         
         if ('POST' === $request->getMethod()) {
+            if(!isset($request->request->get('vehicle_delivery_form')['orders'])){
+                $this->get('session')->getFlashBag()->add('error', 'Please select at least Order');
+                return $this->redirect($this->generateUrl('delivery_set', array('id' => $request->attributes->all()['id'])));
+            }
             $delivery = new Delivery();
             $orderText=null;
             foreach ($request->request->get('vehicle_delivery_form')['orders'] as $orderId){

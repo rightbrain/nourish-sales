@@ -41,6 +41,8 @@ class Item
      *      inverseJoinColumns={@ORM\JoinColumn(name="categories_id", referencedColumnName="id")}
      * )
      * @ORM\JoinColumn(name="categories")
+     * @Assert\NotBlank()
+     * @Assert\Count(min = 1, minMessage = "Please select at least {{ limit }} module")
      */
     private $category;
 
