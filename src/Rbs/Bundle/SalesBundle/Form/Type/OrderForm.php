@@ -60,6 +60,9 @@ class OrderForm extends AbstractType
                 ))
                 ->add('depo', 'entity', array(
                     'class' => 'Rbs\Bundle\CoreBundle\Entity\Depo',
+                    'attr' => array(
+                        'class' => 'select2me'
+                    ),
                     'property' => 'name',
                     'required' => false,
                     'empty_value' => 'Select Depo',
@@ -106,6 +109,9 @@ class OrderForm extends AbstractType
                 ))
                 ->add('depo', 'entity', array(
                     'class' => 'Rbs\Bundle\CoreBundle\Entity\Depo',
+                    'attr' => array(
+                        'class' => 'select2me'
+                    ),
                     'property' => 'name',
                     'required' => false,
                     'empty_value' => 'Select Depo',
@@ -144,6 +150,9 @@ class OrderForm extends AbstractType
                 ))
                 ->add('depo', 'entity', array(
                     'class' => 'Rbs\Bundle\CoreBundle\Entity\Depo',
+                    'attr' => array(
+                        'class' => 'select2me'
+                    ),
                     'property' => 'name',
                     'required' => false,
                     'empty_value' => 'Select Depo',
