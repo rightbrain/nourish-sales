@@ -2,15 +2,10 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
-use Rbs\Bundle\CoreBundle\Repository\ProjectRepository;
-use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
-use Rbs\Bundle\SalesBundle\RbsSalesBundle;
-use Rbs\Bundle\SalesBundle\Repository\StockRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 class StockHistoryForm extends AbstractType
@@ -34,11 +29,11 @@ class StockHistoryForm extends AbstractType
                 'label' => 'Date',
                 'attr' => array(
                     'class' => 'date-picker',
-                    'placeholder' => 'Year-month-date'
+                    'placeholder' => 'date-month-Year'
                 ),
                 'empty_data' => new \DateTime(),
                 'required' => true
-            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'Y-m-d')))
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
             ->add('description')
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')
