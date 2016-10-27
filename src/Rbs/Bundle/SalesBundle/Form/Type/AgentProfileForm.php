@@ -17,11 +17,13 @@ class AgentProfileForm extends AbstractType
     {
         $builder
             ->add('fullName', null, array(
+                'label' => 'Full Name',
                 'constraints' => array(
                     new NotBlank()
                 )
             ))
             ->add('cellphone', null, array(
+                'label' => 'Cell Phone',
                 'constraints' => array(
                     new NotBlank()
                 )

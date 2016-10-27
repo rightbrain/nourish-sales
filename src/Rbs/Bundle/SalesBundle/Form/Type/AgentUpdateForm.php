@@ -34,6 +34,7 @@ class AgentUpdateForm extends AbstractType
             ))
             ->add('itemType', 'entity', array(
                 'class' => 'RbsCoreBundle:ItemType',
+                'label' => 'Item Type',
                 'property' => 'itemType',
                 'required' => false,
                 'empty_value' => 'Select Item Type',
@@ -74,6 +75,7 @@ class AgentUpdateForm extends AbstractType
             ))
             ->add('agentGroup', 'entity', array(
                 'class' => 'RbsSalesBundle:AgentGroup',
+                'label' => 'Agent Group',
                 'property' => 'label',
                 'required' => false,
                 'empty_value' => 'Select Group',
