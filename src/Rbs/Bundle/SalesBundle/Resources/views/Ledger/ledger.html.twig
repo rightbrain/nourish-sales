@@ -51,10 +51,10 @@
 
                     <div class="col-md-12" style="margin-top: 25px;">
                         <div class="form-group">
-                            <div class="col-md-3">
+                            <div class="col-md-5">
                                 <div class="input-icon right">
                                     {% if agent != null %}
-                                        Agent Name: {{ agent.user.username | default('') }}
+                                        Agent Name: {{ agent.user.profile.fullName ? agent.user.profile.fullName : agent.user.username }}
                                     {% endif %}
                                 </div>
                             </div>

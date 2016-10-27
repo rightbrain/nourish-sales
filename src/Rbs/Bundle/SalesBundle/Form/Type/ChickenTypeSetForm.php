@@ -30,7 +30,7 @@ class ChickenTypeSetForm extends AbstractType
         $builder
             ->add('agent', 'entity', array(
                 'class' => 'RbsSalesBundle:Agent',
-                'property' => 'user.profile.fullName',
+                'property' => 'name',
                 'required' => true,
                 'attr' => array(
                     'class' => 'select2me'
