@@ -1,6 +1,7 @@
 <?php
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
+use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 
 /**
  * Class VehicleDatatable
@@ -9,6 +10,28 @@ namespace Rbs\Bundle\SalesBundle\Datatables;
  */
 class VehicleDatatable extends BaseDatatable
 {
+    public function getLineFormatter()
+    {
+        /** @var Vehicle $vehicle
+         * @return mixed
+         */
+        $formatter = function($line){
+            $vehicle = $this->em->getRepository('RbsSalesBundle:Vehicle')->find($line['id']);
+
+            if($vehicle->getAgent() != null){
+                $agent = $this->em->getRepository('RbsSalesBundle:Agent')->findOneBy(array('id' => $vehicle->getAgent()->getId()));
+                $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $agent->getUser()->getId()));
+                $line["fullName"] = $profile->getFullName();
+            }else{
+                $line["fullName"] = 'NOURISH';
+            }
+
+            return $line;
+        };
+
+        return $formatter;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -26,8 +49,10 @@ class VehicleDatatable extends BaseDatatable
         $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
 
         $this->columnBuilder
-            ->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
-            ->add('agent.user.username', 'column', array('title' => 'Agent Name'))
+            ->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat));
+        $this->columnBuilder
+            ->add('agent.user.id', 'column', array('title' => 'Agent/Nourish', 'render' => 'resolveAgentName'));
+        $this->columnBuilder
             ->add('driverName', 'column', array('title' => 'Driver Name'))
             ->add('driverPhone', 'column', array('title' => 'Driver Phone'))
             ->add('truckNumber', 'column', array('title' => 'Truck Number'))
