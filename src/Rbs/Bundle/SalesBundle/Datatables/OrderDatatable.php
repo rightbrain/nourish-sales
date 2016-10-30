@@ -26,6 +26,7 @@ class OrderDatatable extends BaseDatatable
             $line["isComplete"] = !$order->isComplete();
             $line["enabled"] = $order->isPending();
             $line["disabled"] = !$order->isPending();
+            $line["checkDeliveryState"] = !$order->checkDeliveryState();
             $line["orderState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getOrderState()).'"> '.$order->getOrderState().' </span>';
             $line["paymentState"] = $order->getOrderState() == Order::ORDER_STATE_CANCEL ? '' : '<span class="label label-sm label-'.$this->getStatusColor($order->getPaymentState()).'"> '.$order->getPaymentState().' </span>';
             $line["deliveryState"] = $order->getOrderState() == Order::ORDER_STATE_CANCEL ? '' : '<span class="label label-sm label-'.$this->getStatusColor($order->getDeliveryState()).'"> '.$order->getDeliveryState().' </span>';
@@ -129,8 +130,10 @@ class OrderDatatable extends BaseDatatable
                     <ul class="dropdown-menu pull-right">
                     ';
 
-        if ($canEdit && !in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
-            $html .= $this->generateMenuLink('Edit', 'order_update', array('id' => $order->getId()));
+        if($order->getDeliveryState() != Order::DELIVERY_STATE_READY and $order->getDeliveryState() != Order::DELIVERY_STATE_PARTIALLY_SHIPPED and $order->getDeliveryState() != Order::ORDER_STATE_CANCEL) {
+            if ($canEdit && !in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
+                $html .= $this->generateMenuLink('Edit', 'order_update', array('id' => $order->getId()));
+            }
         }
 
         if ($canView) {

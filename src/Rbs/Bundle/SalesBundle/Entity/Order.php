@@ -382,6 +382,17 @@ class Order
         return $state;
     }
 
+    public function checkDeliveryState()
+    {
+        if($this->getDeliveryState() == Order::DELIVERY_STATE_READY 
+            or $this->getDeliveryState() == Order::DELIVERY_STATE_PARTIALLY_SHIPPED
+            or $this->getDeliveryState() == Order::ORDER_STATE_CANCEL){
+            return true;
+        }
+
+        return false;
+    }
+
     public function isComplete()
     {
         $state = false;
