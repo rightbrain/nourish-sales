@@ -50,8 +50,9 @@ class CreditLimitRepository extends EntityRepository
         $query = $this->createQueryBuilder('cl');
         $query->join('cl.agent', 'a');
         $query->join('a.user', 'u');
+        $query->join('u.profile', 'p');
         $query->join('cl.category', 'c');
-        $query->select('u.username as agentName');
+        $query->select('p.fullName as agentName');
         $query->addSelect('a.id as agentId');
         $query->addSelect('c.name as categoryName');
         $query->addSelect('c.id as categoryId');
