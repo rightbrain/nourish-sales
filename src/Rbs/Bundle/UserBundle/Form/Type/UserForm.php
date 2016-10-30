@@ -119,6 +119,7 @@ class UserForm extends AbstractType
                 'query_builder' => function(EntityRepository $groupRepository) {
                     return $groupRepository->createQueryBuilder('g')
                         ->andWhere("g.name != :group")
+                        ->orderBy('g.name', 'ASC')
                         ->setParameter('group', 'Super Administrator');
                 },
                 'property' => 'name',
