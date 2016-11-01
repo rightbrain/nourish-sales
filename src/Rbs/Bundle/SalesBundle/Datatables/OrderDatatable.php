@@ -140,8 +140,10 @@ class OrderDatatable extends BaseDatatable
             $html .= $this->generateMenuLink('View', 'order_details', array('id' => $order->getId()));
         }
 
-        if ($canCancel && !in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
-            $html .= $this->generateMenuLink('Cancel', 'order_cancel', array('id' => $order->getId()));
+        if($order->getDeliveryState() != Order::DELIVERY_STATE_READY and $order->getDeliveryState() != Order::DELIVERY_STATE_PARTIALLY_SHIPPED and $order->getDeliveryState() != Order::ORDER_STATE_CANCEL) {
+            if ($canCancel && !in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
+                $html .= $this->generateMenuLink('Cancel', 'order_cancel', array('id' => $order->getId()));
+            }
         }
 
         if ($canApproveOrder && in_array($order->getOrderState(), array(Order::ORDER_STATE_PENDING))) {
