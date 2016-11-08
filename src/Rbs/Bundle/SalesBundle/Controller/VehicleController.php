@@ -124,7 +124,7 @@ class VehicleController extends BaseController
         $datatable = $this->get('rbs_erp.sales.datatable.in.out.vehicle');
         $datatable->buildDatatable();
         $depoId = $this->checkUserDepo();
-        
+
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
         $function = function($qb) use ($depoId)

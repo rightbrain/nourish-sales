@@ -138,34 +138,43 @@ class StockController extends Controller
         $itemObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->find($item);
         $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($request->request->get('agent'));
         $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('depoId'));
-        if($depo == null){
+        if ($depo == null) {
             $depo = $agent->getDepo()->getId();
         }
 
-        if($itemObj->getItemType()->getItemType() == ItemType::Chicken){
-            $chickenSetForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(array(
-                'item' => $item,
-                'agent' => $agent
-            ));
+        /** Getting Item Price */
+        $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+            $item, $agent->getUser()->getZilla()
+        );
+
+        if ($itemObj->getItemType()->getItemType() == ItemType::Chicken) {
+            $chickenSetForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(
+                array(
+                    'item'  => $item,
+                    'agent' => $agent,
+                )
+            );
 
             $response = array(
                 'onHand'    => $chickenSetForAgent->getQuantity(),
                 'onHold'    => 0,
                 'available' => 0,
-                'price'     => $chickenSetForAgent->getItem()->getPrice(),
+                'price'     => $price,
                 'itemUnit'  => $chickenSetForAgent->getItem()->getItemUnit(),
             );
-        }else{
-            $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(array(
-                'item' => $item,
-                'depo' => $depo
-            ));
+        } else {
+            $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(
+                array(
+                    'item' => $item,
+                    'depo' => $depo,
+                )
+            );
 
             $response = array(
                 'onHand'    => $stock->getOnHand(),
                 'onHold'    => $stock->getOnHold(),
                 'available' => $stock->isAvailableOnDemand(),
-                'price'     => $stock->getItem()->getPrice(),
+                'price'     => $price,
                 'itemUnit'  => $stock->getItem()->getItemUnit(),
             );
         }

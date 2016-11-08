@@ -56,6 +56,23 @@ class ItemDatatable extends BaseDatatable
                 'actions' => array(
                     $this->makeActionButton('item_edit', array('id' => 'id'), 'ROLE_ADMIN', 'Edit', 'Edit', 'fa fa-pencil-square-o'),
 //                    $this->makeActionButton('item_delete', array('id' => 'id'), 'ROLE_ADMIN', 'Delete', 'Delete', 'fa fa-trash-o', 'btn btn-default btn-xs delete-list-btn'),
+                    array(
+                        'route' => 'set_item_price',
+                        'route_parameters' => array('id' => 'id'),
+                        'label' => 'Set Price',
+                        'icon' => 'fa fa-pencil-square-o',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'Set Price',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button',
+                            'data-target' => "#price-set-modal",
+                            'data-toggle' => "modal"
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_ADMIN',
+                    ),
                     $this->makeActionButton('ItemPriceLogs_home', array('item' => 'id'), 'ROLE_ADMIN', 'Price Log', 'Price Log', 'fa fa-pencil-square-o'),
                     $this->makeActionButton('item_statue_change', array('id' => 'id'), 'ROLE_ADMIN', 'Enable', 'Enable', 'fa fa-check-circle-o', 'btn btn-default btn-xs confirmation-btn delete-list-btn', array('render_if' => arraY('disabled'))),
                     $this->makeActionButton('item_statue_change', array('id' => 'id'), 'ROLE_ADMIN', 'Disable', 'Disable', 'fa fa-ban', 'btn btn-default btn-xs confirmation-btn delete-list-btn', array('render_if' => array('enabled'))),

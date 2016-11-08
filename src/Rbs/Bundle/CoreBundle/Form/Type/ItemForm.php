@@ -30,7 +30,6 @@ class ItemForm extends AbstractType
                 'label' => 'Item Code'
             ))
             ->add('itemUnit')
-            ->add('price')
             ->add('itemType', 'entity', array(
                 'attr' => array('class' => 'select2me'),
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\ItemType',

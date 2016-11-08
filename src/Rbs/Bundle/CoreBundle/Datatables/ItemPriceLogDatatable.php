@@ -2,8 +2,6 @@
 
 namespace Rbs\Bundle\CoreBundle\Datatables;
 
-use Rbs\Bundle\CoreBundle\Entity\ItemPriceLog;
-
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,17 +47,40 @@ class ItemPriceLogDatatable extends BaseDatatable
     {
         $itemId = $this->request->get('item');
         $this->features->setFeatures($this->defaultFeatures());
-        $this->options->setOptions($this->defaultOptions());
+        $this->options->setOptions(array_merge($this->defaultOptions(), array(
+            'individual_filtering' => true,
+            'individual_filtering_position' => 'head',
+            'order' => [[3, 'desc']],
+        )));
 
         $this->ajax->setOptions(array(
             'url' => $this->router->generate('items_price_log_list_ajax', array('item' => $itemId)),
             'type' => 'GET'
         ));
 
+        $this->callbacks->setCallbacks(array
+            (
+                'init_complete' => "function(settings) {
+                        ItemPriceLog.filterInit();
+                }",
+                'pre_draw_callback' => "function(settings) {
+                    $('.dataTables_scrollHead').find('table thead tr').eq(1).remove();
+                }"
+            )
+        );
+
         $this->columnBuilder
-            ->add('item.name', 'column', array('title' => 'Item Name'))
-            ->add('currentPrice', 'column', array('title' => 'Current Price'))
-            ->add('previousPrice', 'column', array('title' => 'Previous Price'))
+            /*->add('item.name', 'column', array(
+                'title' => 'Item Name',
+                'filter_type' => 'select',
+                'filter_options' => array(
+                    '' => 'All',
+                    'Dhaka' => 'Dhaka'
+                )
+            ))*/
+            ->add('location.name', 'column', array('title' => 'District'))
+            ->add('amount', 'column', array('title' => 'Amount'))
+            ->add('active', 'boolean', array('title' => 'Active', 'true_label' => 'Yes', 'false_label' => 'No'))
             ->add('updatedAt', 'datetime', array('title' => 'Update Date',
                     'date_format' => 'LLL' ))
             ->add('updatedBy.profile.fullName', 'column', array('title' => 'Update By'))
@@ -71,7 +92,7 @@ class ItemPriceLogDatatable extends BaseDatatable
      */
     public function getEntity()
     {
-        return 'Rbs\Bundle\CoreBundle\Entity\ItemPriceLog';
+        return 'Rbs\Bundle\CoreBundle\Entity\ItemPrice';
     }
 
     /**

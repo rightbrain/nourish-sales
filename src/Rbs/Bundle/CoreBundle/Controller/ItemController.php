@@ -214,7 +214,6 @@ class ItemController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         $entity = $em->getRepository('RbsCoreBundle:Item')->find($id);
-        $previousPrice = $entity->getPrice();
 
         if (!$entity) {
             throw $this->createNotFoundException('Unable to find Item entity.');
@@ -225,13 +224,8 @@ class ItemController extends BaseController
         $editForm->handleRequest($request);
 
         if ($editForm->isValid()) {
-            $currentPrice = floatval($request->request->get('rbs_bundle_corebundle_item')['price']);
             $em->flush();
             $this->flashMessage('success', 'Item Updated Successfully');
-
-            if($currentPrice != $previousPrice){
-                $em->getRepository('RbsCoreBundle:ItemPriceLog')->itemPriceLog($this->getUser(), $id, $currentPrice, $previousPrice);
-            }
 
             return $this->redirect($this->generateUrl('item'));
         }
@@ -326,5 +320,29 @@ class ItemController extends BaseController
         $response->headers->set('Content-Type', 'application/json');
 
         return $response;
+    }
+
+    /**
+     * @Route("/{id}/set-price", name="set_item_price", options={"expose"=true})
+     * @param Request $request
+     * @param Item $item
+     * @return Response
+     */
+    public function setItemPriceAction(Request $request, Item $item)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $locations = $em->getRepository('RbsCoreBundle:Location')
+            ->findBy(array('level' => 4), array('name' => 'ASC'));
+        $itemPrices = $em->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPriceAsArray($item);
+
+        if ($request->isMethod('POST')) {
+            $em->getRepository('RbsCoreBundle:ItemPrice')->save($request->request->all(), $locations, $item, $itemPrices);
+        }
+
+        return $this->render('RbsCoreBundle:Item:set-price.html.twig', array(
+            'item' => $item,
+            'locations' => $locations,
+            'itemPrices' => $itemPrices,
+        ));
     }
 }
