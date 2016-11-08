@@ -144,7 +144,7 @@ class StockController extends Controller
 
         /** Getting Item Price */
         $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
-            $item, $agent->getUser()->getZilla()
+            $itemObj, $agent->getUser()->getZilla()
         );
 
         if ($itemObj->getItemType()->getItemType() == ItemType::Chicken) {
