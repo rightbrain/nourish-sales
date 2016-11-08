@@ -73,7 +73,7 @@ class ItemDatatable extends BaseDatatable
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_ADMIN',
                     ),
-                    $this->makeActionButton('ItemPriceLogs_home', array('item' => 'id'), 'ROLE_ADMIN', 'Price Log', 'Price Log', 'fa fa-pencil-square-o'),
+                    $this->makeActionButton('ItemPriceLogs_home', array('id' => 'id'), 'ROLE_ADMIN', 'Price Log', 'Price Log', 'fa fa-pencil-square-o'),
                     $this->makeActionButton('item_statue_change', array('id' => 'id'), 'ROLE_ADMIN', 'Enable', 'Enable', 'fa fa-check-circle-o', 'btn btn-default btn-xs confirmation-btn delete-list-btn', array('render_if' => arraY('disabled'))),
                     $this->makeActionButton('item_statue_change', array('id' => 'id'), 'ROLE_ADMIN', 'Disable', 'Disable', 'fa fa-ban', 'btn btn-default btn-xs confirmation-btn delete-list-btn', array('render_if' => array('enabled'))),
                 )
