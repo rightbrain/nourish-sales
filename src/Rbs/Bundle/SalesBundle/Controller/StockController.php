@@ -4,7 +4,10 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
+use Rbs\Bundle\CoreBundle\Entity\Item;
 use Rbs\Bundle\CoreBundle\Entity\ItemType;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
+use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\Stock;
 use Rbs\Bundle\SalesBundle\Entity\StockHistory;
 use Rbs\Bundle\SalesBundle\Form\Type\StockHistoryForm;
@@ -127,27 +130,35 @@ class StockController extends Controller
 
     /**
      * find stock item ajax
-     * @Route("find_stock_item_depo_ajax", name="find_stock_item_depo_ajax", options={"expose"=true})
+     * @Route("find_stock_item_depo_ajax/{item}/{agent}/{depo}/{order}", name="find_stock_item_depo_ajax", options={"expose"=true})
      * @param Request $request
      * @return Response
      * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
      */
-    public function findItemDepoAction(Request $request)
+    public function findItemDepoAction(Request $request, Item $item, Agent $agent, Depo $depo, Order $order = null)
     {
-        $item = $request->request->get('item');
-        $itemObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->find($item);
-        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($request->request->get('agent'));
-        $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('depoId'));
+        $em = $this->getDoctrine()->getManager();
         if ($depo == null) {
             $depo = $agent->getDepo()->getId();
         }
 
         /** Getting Item Price */
-        $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
-            $itemObj, $agent->getUser()->getZilla()
-        );
+        $price = 0;
+        if ($order) { // edit mode and item already added
+            $orderItem = $em->getRepository('RbsSalesBundle:OrderItem')->findOneBy(
+                array('order' => $order, 'item' => $item)
+            );
+            $price = $orderItem ? $orderItem->getPrice() : 0;
+        }
 
-        if ($itemObj->getItemType()->getItemType() == ItemType::Chicken) {
+        // new entry or new item add to edit mode
+        if (!$price) {
+            $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+                $item, $agent->getUser()->getZilla()
+            );
+        }
+
+        if ($item->getItemType() == ItemType::Chicken) {
             $chickenSetForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(
                 array(
                     'item'  => $item,
@@ -159,7 +170,7 @@ class StockController extends Controller
                 'onHand'    => $chickenSetForAgent->getQuantity(),
                 'onHold'    => 0,
                 'available' => 0,
-                'price'     => $price,
+                'price'     => number_format($price, 2),
                 'itemUnit'  => $chickenSetForAgent->getItem()->getItemUnit(),
             );
         } else {
@@ -174,7 +185,7 @@ class StockController extends Controller
                 'onHand'    => $stock->getOnHand(),
                 'onHold'    => $stock->getOnHold(),
                 'available' => $stock->isAvailableOnDemand(),
-                'price'     => $price,
+                'price'     => number_format($price, 2),
                 'itemUnit'  => $stock->getItem()->getItemUnit(),
             );
         }

@@ -74,8 +74,13 @@ var Order = function()
 
         $.ajax({
             type: "post",
-            url: Routing.generate('find_stock_item_depo_ajax'),
-            data: "item=" + item + "&agent=" + $('#order_agent').val() + "&depoId=" + $('#order_depo').val(),
+            url: Routing.generate('find_stock_item_depo_ajax', {
+                item: item,
+                agent: $('#order_agent').val(),
+                depo: $('#order_depo').val(),
+                order: $('#order_id').val()
+            }),
+            //data: "item=" + item + "&agent=" + $('#order_agent').val() + "&depoId=" + $('#order_depo').val() + "&orderId=" + $('#order_id').val() ? $('#order_id').val() : '',
             dataType: 'json',
             success: function (response) {
                 var onHand = response.onHand;
@@ -149,6 +154,8 @@ var Order = function()
     {
         var $collectionHolder;
         var $addTagLink = $('#add_order_item');
+        var agentElm = $('#order_agent');
+        var depoElm = $('#order_depo');
         $collectionHolder = $('tbody.tags');
         $collectionHolder.data('index', $collectionHolder.find(':input').length);
         bindItemChangeEvent($collectionHolder);
@@ -157,7 +164,15 @@ var Order = function()
             addItemForm($collectionHolder);
         });
 
-        $("#order_agent").change(function () {
+        depoElm.change(function () {
+            $collectionHolder.find('tr').remove();
+            if (depoElm.val() != '' && agentElm.val() != '') {
+                $addTagLink.trigger('click');
+            }
+        });
+
+        agentElm.change(function () {
+
             $collectionHolder.find('tr').remove();
             var agent = $(this).val();
             if (agent == false) {
@@ -176,9 +191,10 @@ var Order = function()
                     success: function (response) {
                         var item_type_prototype = response.item_type_prototype;
                         $collectionHolder.data('prototype', item_type_prototype);
-
-                        $addTagLink.trigger('click');
                         Metronic.unblockUI();
+                        if (depoElm.val() != '' && agentElm.val() != '') {
+                            $addTagLink.trigger('click');
+                        }
                     },
                     error: function(){
                         Metronic.unblockUI();
@@ -256,6 +272,26 @@ var Order = function()
             var isFormValid = true;
             var orderItem = $('#orderItems');
 
+            if ($('#order_agent').val() == '') {
+                toastr.error("Please select an agent");
+                isFormValid = false;
+            }
+
+            if (isFormValid && $('#order_refSMS').val() == '') {
+                toastr.error("Please select a reference SMS");
+                isFormValid = false;
+            }
+
+            if (isFormValid && $('#order_depo').val() == '') {
+                toastr.error("Please select a depo");
+                isFormValid = false;
+            }
+
+            if (isFormValid && orderItem.find('tr').length == 0) {
+                toastr.error("Please add minimum an item");
+                isFormValid = false;
+            }
+
             orderItem.find('tr').each(function(index, e){
                 var elm = $(e);
                 var item = elm.find('td:eq(0)');
@@ -279,9 +315,7 @@ var Order = function()
 
             });
 
-            if (!isFormValid) {
-                return false;
-            }
+            return isFormValid;
         });
     }
 

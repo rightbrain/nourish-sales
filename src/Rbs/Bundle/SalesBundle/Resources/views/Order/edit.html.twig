@@ -34,17 +34,15 @@
     {% if order.orderItemType == true %}
         {% javascripts
         "assets/global/plugins/bootstrap-toastr/toastr.min.js"
-
         "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
         "assets/admin/pages/scripts/form-validation.js"
-        "bundles/rbssales/js/order.js"
+        "bundles/rbssales/js/order-new.js"
         %}
         <script type="text/javascript" src="{{ asset_url }}"></script>
         {% endjavascripts %}
     {% else %}
         {% javascripts
         "assets/global/plugins/bootstrap-toastr/toastr.min.js"
-
         "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
         "assets/admin/pages/scripts/form-validation.js"
         "bundles/rbssales/js/order-for-chicken.js"
