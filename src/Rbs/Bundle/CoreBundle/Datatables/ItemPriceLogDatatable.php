@@ -50,7 +50,7 @@ class ItemPriceLogDatatable extends BaseDatatable
         $this->options->setOptions(array_merge($this->defaultOptions(), array(
             'individual_filtering' => true,
             'individual_filtering_position' => 'head',
-            'order' => [[3, 'desc']],
+            //'order' => [[3, 'desc']],
         )));
 
         $this->ajax->setOptions(array(
@@ -81,7 +81,7 @@ class ItemPriceLogDatatable extends BaseDatatable
             ->add('location.name', 'column', array('title' => 'District'))
             ->add('price', 'column', array('title' => 'Price'))
             ->add('oldPrice', 'column', array('title' => 'Old Price'))
-            ->add('active', 'boolean', array('title' => 'Active', 'true_label' => 'Yes', 'false_label' => 'No'))
+            ->add('active', 'boolean', array('title' => 'Active', 'true_label' => 'Yes', 'false_label' => 'No', 'orderable' => false))
             ->add('updatedAt', 'datetime', array('title' => 'Update Date',
                     'date_format' => 'LLL' ))
             ->add('updatedBy.profile.fullName', 'column', array('title' => 'Update By'))
