@@ -29,9 +29,16 @@ class ItemPrice
     /**
      * @var float
      *
-     * @ORM\Column(name="amount", type="float")
+     * @ORM\Column(name="price", type="float")
      */
-    private $amount;
+    private $price;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="old_price", type="float")
+     */
+    private $oldPrice;
 
     /**
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item")
@@ -64,26 +71,43 @@ class ItemPrice
     }
 
     /**
-     * Set amount
+     * @return float
+     */
+    public function getPrice()
+    {
+        return $this->price;
+    }
+
+    /**
+     * @param float $price
      *
-     * @param string $amount
      * @return ItemPrice
      */
-    public function setAmount($amount)
+    public function setPrice($price)
     {
-        $this->amount = $amount;
+        $this->price = $price;
 
         return $this;
     }
 
     /**
-     * Get amount
-     *
-     * @return string 
+     * @return mixed
      */
-    public function getAmount()
+    public function getOldPrice()
     {
-        return $this->amount;
+        return $this->oldPrice;
+    }
+
+    /**
+     * @param mixed $oldPrice
+     *
+     * @return ItemPrice
+     */
+    public function setOldPrice($oldPrice)
+    {
+        $this->oldPrice = $oldPrice;
+
+        return $this;
     }
 
     /**

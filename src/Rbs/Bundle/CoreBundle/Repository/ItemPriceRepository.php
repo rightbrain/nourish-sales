@@ -39,7 +39,7 @@ class ItemPriceRepository extends EntityRepository
 
         /** @var ItemPrice $item */
         foreach ($this->getAllCurrentPrice($item) as $item) {
-            $output[$item->getLocation()->getId()] = $item->getAmount();
+            $output[$item->getLocation()->getId()] = $item->getPrice();
         }
 
         return $output;
@@ -65,14 +65,13 @@ class ItemPriceRepository extends EntityRepository
 
                 $itemPrice = new ItemPrice();
                 $itemPrice->setLocation($location);
-                $itemPrice->setAmount($amount[$location->getId()]);
+                $itemPrice->setPrice($amount[$location->getId()]);
+                $itemPrice->setOldPrice($oldItemPrice->getPrice());
                 $itemPrice->setItem($item);
                 $itemPrice->setActive(true);
                 $this->_em->persist($itemPrice);
             }
         }
-        print_r($itemPrices);
-        print_r($amount);
 
         $this->_em->flush();
     }

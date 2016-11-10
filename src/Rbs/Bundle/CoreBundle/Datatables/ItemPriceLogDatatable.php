@@ -79,7 +79,8 @@ class ItemPriceLogDatatable extends BaseDatatable
                 )
             ))*/
             ->add('location.name', 'column', array('title' => 'District'))
-            ->add('amount', 'column', array('title' => 'Amount'))
+            ->add('price', 'column', array('title' => 'Price'))
+            ->add('oldPrice', 'column', array('title' => 'Old Price'))
             ->add('active', 'boolean', array('title' => 'Active', 'true_label' => 'Yes', 'false_label' => 'No'))
             ->add('updatedAt', 'datetime', array('title' => 'Update Date',
                     'date_format' => 'LLL' ))
