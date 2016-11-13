@@ -66,7 +66,7 @@ class ItemPriceRepository extends EntityRepository
                 $itemPrice = new ItemPrice();
                 $itemPrice->setLocation($location);
                 $itemPrice->setPrice($amount[$location->getId()]);
-                $itemPrice->setOldPrice($oldItemPrice->getPrice());
+                $itemPrice->setOldPrice($oldItemPrice ? $oldItemPrice->getPrice() : 0);
                 $itemPrice->setItem($item);
                 $itemPrice->setActive(true);
                 $this->_em->persist($itemPrice);
