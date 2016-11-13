@@ -25,7 +25,7 @@ class ItemPriceRepository extends EntityRepository
     {
         $itemPrice = $this->findOneBy(array('active' => 1, 'item' => $item, 'location' => $location));
 
-        return $itemPrice ? $itemPrice->getAmount() : 0;
+        return $itemPrice ? $itemPrice->getPrice() : 0;
     }
 
     public function getAllCurrentPrice(Item $item)
