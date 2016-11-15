@@ -72,10 +72,11 @@ var Order = function()
             overlayColor: 'black'
         });
 
+        var orderId = $('#order_id').length ? $('#order_id').val() : 0;
         $.ajax({
             type: "post",
             url: Routing.generate('find_assigned_item_ajax'),
-            data: "item=" + item + "&agent=" + $('#order_agent').val(),
+            data: "item=" + item + "&agent=" + $('#order_agent').val()+ "&order=" + orderId,
             dataType: 'json',
             success: function (response) {
                 var onHand = response.onHand;

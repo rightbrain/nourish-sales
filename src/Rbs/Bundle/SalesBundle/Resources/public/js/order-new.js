@@ -112,12 +112,19 @@ var Order = function()
         $("#order_totalAmount").val(totalAmount.toFixed(2));
     }
 
+    function recalculateItemPriceOnEdit() {
+        setTimeout(function(){
+            //$('.order-item-list tbody .quantity').each(totalPriceCalculation);
+        }, 100);
+    }
+
     function totalPriceCalculation() {
-        var price = parseFloat($(this).closest('td').parent('tr').find('.price').val());
-        var quantity = parseFloat($(this).closest('td').parent('tr').find('.quantity').val());
+        var row = $(this).closest('td').parent('tr');
+        var price = parseFloat(row.find('.price').val());
+        var quantity = parseFloat(row.find('.quantity').val());
         if (!price) { price = 0; }
         if (!quantity) { quantity = 0; }
-        $(this).closest('td').parent('tr').find('.total_price').val((price * quantity).toFixed(2));
+        row.find('.total_price').val((price * quantity).toFixed(2));
         totalAmountCalculate();
     }
 
@@ -205,6 +212,7 @@ var Order = function()
         });
 
         $('.order-item-list tbody').on("click keyup", ".quantity", (totalPriceCalculation));
+        recalculateItemPriceOnEdit();
     }
 
     function filterInit(){

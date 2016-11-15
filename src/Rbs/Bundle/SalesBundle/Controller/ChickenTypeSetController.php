@@ -120,16 +120,34 @@ class ChickenTypeSetController extends BaseController
     public function findItemAction(Request $request)
     {
         $item = $request->request->get('item');
-        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($request->request->get('agent'));
+        $em = $this->getDoctrine()->getManager();
+        $agent = $em->getRepository('RbsSalesBundle:Agent')->find($request->request->get('agent'));
+        $order = $em->getRepository('RbsSalesBundle:Order')->find($request->request->get('order'));
 
-        $chickenSetForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(array(
+        $chickenSetForAgent = $em->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(array(
             'item' => $item,
             'agent' => $agent
         ));
-        
+
+        /** Getting Item Price */
+        $price = 0;
+        if ($order) { // edit mode and item already added
+            $orderItem = $em->getRepository('RbsSalesBundle:OrderItem')->findOneBy(
+                array('order' => $order, 'item' => $item)
+            );
+            $price = $orderItem ? $orderItem->getPrice() : 0;
+        }
+
+        // new entry or new item add to edit mode
+        if (!$price) {
+            $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+                $item, $agent->getUser()->getZilla()
+            );
+        }
+
         $response = array(
             'onHand'    => $chickenSetForAgent->getQuantity(),
-            'price'     => $chickenSetForAgent->getItem()->getPrice(),
+            'price'     => $price,
             'itemUnit'  => $chickenSetForAgent->getItem()->getItemUnit(),
         );
 
