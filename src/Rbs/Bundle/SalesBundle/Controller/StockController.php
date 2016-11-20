@@ -141,7 +141,7 @@ class StockController extends Controller
         if ($depo == null) {
             $depo = $agent->getDepo()->getId();
         }
-        var_dump($depo);
+
         /** Getting Item Price */
         $price = 0;
         $order = $em->getRepository('RbsSalesBundle:Order')->find($orderId);
