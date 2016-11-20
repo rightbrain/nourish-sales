@@ -130,20 +130,21 @@ class StockController extends Controller
 
     /**
      * find stock item ajax
-     * @Route("find_stock_item_depo_ajax/{item}/{agent}/{depo}/{order}", name="find_stock_item_depo_ajax", options={"expose"=true})
+     * @Route("find_stock_item_depo_ajax/{item}/{agent}/{depo}/{orderId}", name="find_stock_item_depo_ajax", options={"expose"=true})
      * @param Request $request
      * @return Response
      * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
      */
-    public function findItemDepoAction(Request $request, Item $item, Agent $agent, Depo $depo, Order $order = null)
+    public function findItemDepoAction(Request $request, Item $item, Agent $agent, Depo $depo, $orderId = 0)
     {
         $em = $this->getDoctrine()->getManager();
         if ($depo == null) {
             $depo = $agent->getDepo()->getId();
         }
-
+        var_dump($depo);
         /** Getting Item Price */
         $price = 0;
+        $order = $em->getRepository('RbsSalesBundle:Order')->find($orderId);
         if ($order) { // edit mode and item already added
             $orderItem = $em->getRepository('RbsSalesBundle:OrderItem')->findOneBy(
                 array('order' => $order, 'item' => $item)

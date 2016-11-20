@@ -32,6 +32,11 @@ var Order = function()
             return false;
         }
 
+        if ($('#order_depo').val() == '') {
+            toastr.error("Please select a depo.");
+            return false;
+        }
+
         var prototype = $collectionHolder.data('prototype');
         var index = $collectionHolder.data('index');
         var $newForm = prototype.replace(/__name__/g, index);
