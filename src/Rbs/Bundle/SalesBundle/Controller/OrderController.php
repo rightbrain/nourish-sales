@@ -265,7 +265,7 @@ class OrderController extends BaseController
 
         $deliveredItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItems($order);
         $auditLogs = $this->getDoctrine()->getRepository('RbsCoreBundle:AuditLog')->getByTypeOrObjectId(array(
-            'order.verified', 'order.hold', 'order.canceled', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
+            'order.approved', 'order.verified', 'order.hold', 'order.canceled', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
 
         return $this->render('RbsSalesBundle:Order:details.html.twig', array(
             'order' => $order,
@@ -305,7 +305,7 @@ class OrderController extends BaseController
         }
 
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getAgent()->getDepo());
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getDepo());
         }
 
         $order->setOrderState(Order::ORDER_STATE_PROCESSING);
