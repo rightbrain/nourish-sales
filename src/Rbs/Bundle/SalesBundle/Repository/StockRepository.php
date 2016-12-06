@@ -62,7 +62,7 @@ class StockRepository extends EntityRepository
         }
     }
 
-    public function removeStockFromOnHold(Delivery $delivery)
+    public function removeStock(Delivery $delivery)
     {
         /** @var DeliveryItem $deliveryItem */
         foreach ($delivery->getDeliveryItems() as $deliveryItem) {
@@ -73,8 +73,13 @@ class StockRepository extends EntityRepository
                     'depo' => $delivery->getDepo()->getId(),
                 )
             );
-            $stockQty = $stock->getOnHold() - $deliveryItem->getQty();
-            $stock->setOnHold($stockQty); // $stockQty > 0 ? $stockQty : 0
+
+            $stockOnHoldQty = $stock->getOnHold() - $deliveryItem->getQty();
+            $stockOnHandQty = $stock->getOnHand() - $deliveryItem->getQty();
+
+            $stock->setOnHold($stockOnHoldQty > 0 ? $stockOnHoldQty : 0); // $stockQty > 0 ? $stockQty : 0
+            $stock->setOnHand($stockOnHandQty > 0 ? $stockOnHandQty : 0); // $stockQty > 0 ? $stockQty : 0
+
             $this->_em->persist($stock);
             $this->_em->flush();
         }
