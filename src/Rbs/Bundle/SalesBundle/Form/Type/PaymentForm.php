@@ -31,7 +31,11 @@ class PaymentForm extends AbstractType
         $agent = $this->request->request->get('payment[agent]', null, true);
 
         $builder
-            ->add('amount')
+            ->add('amount', null, array(
+                'attr' => array(
+                    'class' => 'input-mask-amount'
+                )
+            ))
             ->add('bankName', 'text', array(
                 'required' => true,
                 'constraints' => array(

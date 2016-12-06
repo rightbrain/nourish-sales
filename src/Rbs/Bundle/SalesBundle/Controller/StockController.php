@@ -168,11 +168,11 @@ class StockController extends Controller
             );
 
             $response = array(
-                'onHand'    => $chickenSetForAgent->getQuantity(),
+                'onHand'    => $chickenSetForAgent ? $chickenSetForAgent->getQuantity() : 0,
                 'onHold'    => 0,
                 'available' => 0,
                 'price'     => number_format($price, 2),
-                'itemUnit'  => $chickenSetForAgent->getItem()->getItemUnit(),
+                'itemUnit'  => $chickenSetForAgent ? $chickenSetForAgent->getItem()->getItemUnit() : '',
             );
         } else {
             $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(

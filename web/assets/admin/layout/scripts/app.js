@@ -127,6 +127,23 @@ var App = function() {
             });
             //$('body').removeClass("modal-open"); // fix bug when inline picker is used in modal
         }
+
+        $('body').on('focus', '.input-mask-number, .input-mask-amount', function(){
+            if ($(this).hasClass('input-mask-amount')) {
+                $(this).inputmask({
+                    alias: "numeric",
+                    placeholder: "0",
+                    autoGroup: !0,
+                    digits: 2,
+                    digitsOptional: !1,
+                    clearMaskOnLostFocus: !1,
+                    prefix: "",
+                    groupSeparator: ""
+                });
+            } else {
+                $(this).inputmask("integer");
+            }
+        });
     }
 
     return {

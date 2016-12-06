@@ -175,7 +175,7 @@ class Delivery
     }
 
     /**
-     * @return DeliveryItem
+     * @return ArrayCollection
      */
     public function getDeliveryItems()
     {
