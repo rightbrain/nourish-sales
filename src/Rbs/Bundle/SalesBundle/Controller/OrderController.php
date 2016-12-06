@@ -207,9 +207,17 @@ class OrderController extends BaseController
      */
     public function updateAction(Request $request, Order $order)
     {
-        if($request->query->get('sms')){
+        if ($request->query->get('sms')) {
             $refSms = $request->query->get('sms');
-        }else{ $refSms = 0; }
+        } else {
+            $refSms = 0;
+        }
+
+        if (in_array($order->getOrderState(), array('CANCEL'))
+            || in_array($order->getDeliveryState(), array('READY'))) {
+            $this->flashMessage('error', 'Invalid Operation');
+            return $this->redirectToRoute('orders_home');
+        }
 
         $form = $this->createForm(new OrderForm($refSms), $order);
         $em = $this->getDoctrine()->getManager();
