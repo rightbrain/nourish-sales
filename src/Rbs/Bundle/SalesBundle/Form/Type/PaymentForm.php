@@ -33,7 +33,7 @@ class PaymentForm extends AbstractType
         $builder
             ->add('amount', null, array(
                 'attr' => array(
-                    'class' => 'input-mask-amount'
+                    'class' => 'input-small input-mask-amount'
                 )
             ))
             ->add('bankName', 'text', array(

@@ -340,11 +340,32 @@ var Order = function()
         return data;
     }
 
+    function paymentConfirmationOnModal() {
+        $("#ajaxSummeryView").on('click', '.payment-action-buttons button',function () {
+            var paymentId = $(this).val();
+            var isVerified = $(this).attr('id') == 'payment-amount-verified';
+            $.ajax({
+                type: "get",
+                url: Routing.generate('payment_amount_verified', { id : paymentId, verified: isVerified }),
+                dataType: 'json',
+                success: function (response) {
+                    $('.payment-action-buttons').html(response.message);
+                    if (!isVerified) {
+                        setTimeout(function(){
+                            $('.payment-action-buttons').closest('tr').remove();
+                        }, 5000);
+                    }
+                }
+            });
+        });
+    }
+
     return {
         init: init,
         filterInit: filterInit,
         formValidateInit: formValidateInit,
         OrderStateFormat: OrderStateFormat,
-        OrderPaymentFormat: OrderPaymentFormat
+        OrderPaymentFormat: OrderPaymentFormat,
+        PaymentConfirmationOnModal: paymentConfirmationOnModal
     }
 }();

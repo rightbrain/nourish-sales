@@ -27,7 +27,7 @@ class Payment
     const CR = 'CR';
 
     use ORMBehaviors\Timestampable\Timestampable,
-        ORMBehaviors\SoftDeletable\SoftDeletable,
+        //ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
 
     /**

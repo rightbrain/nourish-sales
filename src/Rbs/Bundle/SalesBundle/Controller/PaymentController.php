@@ -234,11 +234,20 @@ class PaymentController extends BaseController
      * @param Payment $payment
      * @return Response
      */
-    public function verifyAction(Payment $payment)
+    public function verifyAction(Request $request, Payment $payment)
     {
-        $payment->setVerified(true);
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->update($payment);
+        $em = $this->getDoctrine()->getManager();
+        $verified = $request->query->get('verified');
+        if ($verified == 'true') {
+            $payment->setVerified(true);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->update($payment);
+            $data["message"] = 'VERIFIED';
+        } else {
+            $em->remove($payment);
+            $em->flush();
+            $data["message"] = 'Payment Reject and will deleted shortly';
+        }
 
-        return new Response(json_encode(array("message" => 'Payment Verified')), 200);
+        return new JsonResponse($data);
     }
 }

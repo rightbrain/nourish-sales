@@ -45,7 +45,8 @@ var App = function() {
 
     function initConfirmationButton()
     {
-        $('body').on('click', '.confirmation-btn', function(){
+        $('body').on('click', '.confirmation-btn', function(e){
+            e.preventDefault();
             var url = $(this).attr('href');
             var msg = $(this).attr('data-title') != '' ? $(this).attr('data-title') : 'Are you sure?';
             bootbox.confirm(msg, function(result) {
@@ -100,12 +101,21 @@ var App = function() {
 
     function init()
     {
+        $('body').on('click', '.order-cancel-modal-action, .confirmation-btn', function(e){
+            e.preventDefault();
+            if ($('.payment-action-buttons button').length){
+                toastr.error("Please Approve or Reject payment first.");
+                e.stopImmediatePropagation();
+            }
+        });
+
         initDeleteButton();
         initConfirmationButton();
         handleMultiSelect();
         handleAjaxModal();
 
-        $('body').on('click', '.order-cancel-modal-action', function(){
+        $('body').on('click', '.order-cancel-modal-action', function(e){
+            e.stopPropagation();
             $('.main-content').slideUp();
             $('.action-content-cancel').slideDown();
         }).on('click', '.order-hold-modal-action', function(){

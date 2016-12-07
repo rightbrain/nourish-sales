@@ -274,4 +274,26 @@ class PaymentRepository extends EntityRepository
             $query->setParameter('startDate', $startDate.' 00:00:01');
         }
     }
+
+    public function getPaymentsBy($params){
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('p');
+
+        if (isset($params['orders'])) {
+            $orderId = is_array($params['orders']) ? $params['orders'] : array($params['orders']);
+            $qb->join('p.orders', 'o');
+            $qb->andWhere($qb->expr()->in('o.id', $orderId));
+        }
+
+        if (isset($params['verified'])) {
+            $qb->andWhere($qb->expr()->eq('p.verified', $params['verified']));
+        }
+
+        if (isset($params['transactionType'])) {
+            $qb->andWhere($qb->expr()->eq('p.transactionType', '?1'));
+            $qb->setParameter('1', $params['transactionType']);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

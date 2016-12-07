@@ -35,7 +35,8 @@
                                 </thead>
                                 <tbody>
                                 {% set available = true %}
-                                {% for index, payment in order.payments %}
+                                {% for index, payment in payments %}
+                                    {% if payment.transactionType == 'CR' %}
                                     <tr>
                                         <td>{{ payment.depositDate|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                         <td>{{ payment.bankName }}</td>
@@ -45,13 +46,16 @@
                                             {% if payment.verified %}
                                                 {{ 'VERIFIED' }}
                                             {% else %}
-                                                <button value="{{ payment.id }}" id="{{ 'payment-amount-verified-'~payment.id }}" class="payment-amount-verified btn red">APPROVE</button>
+                                                <div class="btn-group-vertical btn-group-solid btn-group btn-group-xs payment-action-buttons">
+                                                    <button type="button" value="{{ payment.id }}" id="{{ 'payment-amount-verified' }}" class="btn blue">Approve</button>
+                                                    <button type="button" value="{{ payment.id }}" id="{{ 'payment-delete' }}" class="btn red">Reject</button>
+                                                </div>
                                             {% endif %}
-                                            <span id="{{ 'verified-amount-'~payment.id }}"></span>
                                         </td>
                                     </tr>
+                                    {% endif %}
                                 {% endfor %}
-                                {% if order.payments is empty %}
+                                {% if payments is empty %}
                                     <tr><td colspan="5">No Payment Added. <a href="{{ path('payment_create') }}">Click Here to Add a Payment</a></td></tr>
                                 {% endif %}
                                 </tbody>
@@ -115,24 +119,5 @@
         {% endif %}
     </div>
 </div>
-
-<script type="text/javascript">
-    jQuery(document).ready(function () {
-        $(".payment-amount-verified").click(function () {
-            var paymentId = $(this).val();
-
-            $.ajax({
-                type: "get",
-                url: Routing.generate('payment_amount_verified', {id:paymentId}),
-                dataType: 'json',
-                success: function (response) {
-                    $("#payment-amount-verified-"+paymentId).hide();
-                    document.getElementById("verified-amount-"+paymentId).innerHTML = 'VERIFIED';
-                }
-            });
-        })
-    });
-
-</script>
 
 {{ include('RbsSalesBundle:Order:_orderModalActionForm.html.twig') }}

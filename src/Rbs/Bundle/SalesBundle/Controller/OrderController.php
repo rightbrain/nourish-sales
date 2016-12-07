@@ -437,9 +437,14 @@ class OrderController extends BaseController
         $categoryWiseCreditSummary = $creditLimitRepo->getCategoryWiseCreditLimit($order);
         $orderItemCategoryTotal = $order->categorySum();
         $isOverCredit = $creditLimitRepo->isOverCreditLimitInAnyCategory($orderItemCategoryTotal, $categoryWiseCreditSummary);
+        $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getPaymentsBy(array(
+            'orders' => array($order->getId()),
+            'transactionType' => 'CR'
+        ));
 
         return $this->render('RbsSalesBundle:Order:paymentReview.html.twig', array(
             'order' => $order,
+            'payments' => $payments,
             'creditSummary' => $categoryWiseCreditSummary,
             'isOverCredit' => $isOverCredit,
             'orderItemCategoryTotal' => $orderItemCategoryTotal
@@ -474,6 +479,8 @@ class OrderController extends BaseController
         $creditLimitRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:CreditLimit');
         $categoryWiseCreditSummary = $creditLimitRepo->getCategoryWiseCreditLimit($order);
         $isOverCredit = $creditLimitRepo->isOverCreditLimitInAnyCategory($order, $categoryWiseCreditSummary);
+        $verifiedPayments = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->findBy(array('orders' => $order, 'verified' => true));
+        $unVerifiedPayments = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->findBy(array('orders' => $order, 'verified' => true));
 
         if (!$agent->isVIP() && $isOverCredit) {
             $order->setPaymentState(Order::PAYMENT_STATE_CREDIT_APPROVAL);
@@ -490,7 +497,7 @@ class OrderController extends BaseController
         $payment->setAgent($order->getAgent());
         $payment->setAmount($order->getTotalAmount());
         $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
-        $payment->setRemark('A new order create.');
+        $payment->setRemark('Order: ' . $order->getId());
         $payment->setDepositDate(new \DateTime());
         $payment->setTransactionType(Payment::DR);
         $payment->setVerified(true);
@@ -529,7 +536,7 @@ class OrderController extends BaseController
             $payment->setAgent($order->getAgent());
             $payment->setAmount($order->getTotalAmount());
             $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
-            $payment->setRemark('A new order create.');
+            $payment->setRemark('Order: ' . $order->getId());
             $payment->setDepositDate(new \DateTime());
             $payment->setTransactionType(Payment::DR);
             $payment->setVerified(true);

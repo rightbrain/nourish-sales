@@ -201,8 +201,21 @@ class OrderRepository extends EntityRepository
 
         /** @var Payment $payment */
         foreach ($order->getPayments() as $payment) {
-            if ($payment->getPaymentVia() == 'SMS') {
+            if ($payment->getPaymentVia() == 'SMS' & !$payment->isVerified() && $payment->getTransactionType() == Payment::CR) {
                 $this->_em->remove($payment);
+            } else if ($payment->getTransactionType() == Payment::DR) {
+                $this->_em->remove($payment);
+                // Instead of delete DR payment, first though was insert another positive payment
+                /*$payment = new Payment();
+                $payment->setAgent($payment->getAgent());
+                $payment->setAmount($payment->getAmount());
+                $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+                $payment->setRemark('Return due to cancel order: ' . $order->getId());
+                $payment->setDepositDate(new \DateTime());
+                $payment->setTransactionType(Payment::CR);
+                $payment->setVerified(true);
+                $payment->addOrder($order);
+                $this->_em->getRepository('RbsSalesBundle:Payment')->create($payment);*/
             }
         }
 
