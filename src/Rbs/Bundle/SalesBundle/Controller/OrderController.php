@@ -387,8 +387,13 @@ class OrderController extends BaseController
                 $chickenCheckForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(array(
                     'item' => $item->getItem()->getId(), 'agent' => $order->getAgent()->getId()
                 ));
-                $availableCheck = $chickenCheckForAgent->isStockAvailable($item->getQuantity());
-                $item->isAvailableQty = $chickenCheckForAgent->getQuantity();
+                if ($chickenCheckForAgent) {
+                    $availableCheck = $chickenCheckForAgent->isStockAvailable($item->getQuantity());
+                    $item->isAvailableQty = $chickenCheckForAgent->getQuantity();
+                } else {
+                    $availableCheck = false;
+                    $item->isAvailableQty = 0;
+                }
                 $chickenCheck = 1;
             }
         }
