@@ -28,7 +28,11 @@ class CreditLimitWithAgentForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('amount', 'text')
+            ->add('amount', 'text', array(
+                'attr' => array(
+                    'class' => 'input-small input-mask-amount'
+                )
+            ))
             ->add('startDate', 'date', array(
                 'widget' => 'single_text',
                 'html5' => false,

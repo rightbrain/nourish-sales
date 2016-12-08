@@ -75,7 +75,11 @@ class CashReceiveForm extends AbstractType
             ));
         }
         $builder
-            ->add('amount')
+            ->add('amount', null, array(
+                'attr' => array(
+                    'class' => 'input-small input-mask-amount'
+                )
+            ))
             ->add('depositor')
             ->add('remark')
             ->add('submit', 'submit', array(

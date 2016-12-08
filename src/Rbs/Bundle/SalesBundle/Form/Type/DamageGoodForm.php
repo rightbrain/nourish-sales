@@ -30,6 +30,9 @@ class DamageGoodForm extends AbstractType
                     new NotBlank(array(
                         'message'=>'Order should not be blank'
                     ))
+                ),
+                'attr' => array(
+                    'class' => 'input-small input-mask-amount'
                 )
             ))
             ->add('remark')

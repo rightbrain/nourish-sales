@@ -23,7 +23,11 @@ class AgentsBankInfoForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('amount')
+            ->add('amount', null, array(
+                'attr' => array(
+                    'class' => 'input-small input-mask-amount'
+                )
+            ))
             ->add('bankName')
             ->add('branchName')
             ->add('remark')
