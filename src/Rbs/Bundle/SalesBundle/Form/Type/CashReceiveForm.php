@@ -40,7 +40,9 @@ class CashReceiveForm extends AbstractType
                 {
                     return $repository->createQueryBuilder('o')
                         ->join('o.agent', 'a')
-                        ->where('o.deliveryState <> :deliveryState OR o.orderState <> :orderState OR o.paymentState <> :paymentState')
+                        ->where('o.deliveryState <> :deliveryState')
+                        ->andWhere('o.orderState <> :orderState')
+                        ->andWhere('o.paymentState <> :paymentState')
                         ->andWhere('o.depo = :depoId')
                         ->orderBy('o.id', 'DESC')
                         ->setParameters(
