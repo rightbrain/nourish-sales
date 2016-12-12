@@ -2,7 +2,6 @@
 
 namespace Rbs\Bundle\CoreBundle\Form\Type;
 
-use Proxies\__CG__\Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\CoreBundle\Repository\CategoryRepository;
 use Rbs\Bundle\CoreBundle\Repository\ItemTypeRepository;
 use Symfony\Component\Form\AbstractType;
