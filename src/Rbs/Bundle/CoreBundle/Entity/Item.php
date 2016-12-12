@@ -80,8 +80,7 @@ class Item
     /**
      * @var float
      *
-     * @ORM\Column(name="prices", type="float")
-     * @Assert\NotBlank()
+     * @ORM\Column(name="prices", type="float", nullable=true)
      */
     private $price;
 
