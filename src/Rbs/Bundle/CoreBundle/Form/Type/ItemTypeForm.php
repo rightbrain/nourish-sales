@@ -18,9 +18,10 @@ class ItemTypeForm extends AbstractType
         $builder
             ->add('itemType', 'choice', array(
                 'choices'  => array(
-                    'Floating' => ItemType::Floating,
+                    'Chick' => ItemType::Chick,
+                    'Cattle' => ItemType::Cattle,
+                    'Fish' => ItemType::Fish,
                     'Poultry' => ItemType::Poultry,
-                    'Chicken' => ItemType::Chicken
                 )
             ))
             ->add('bundles', null, array('label' => 'Modules'))

@@ -86,7 +86,7 @@ class StockController extends Controller
             $qb->join("i.bundles", 'bundles');
             $qb->join('d.users', 'u');
             $qb->andWhere("sales_stocks.deletedAt IS NULL");
-            $qb->andWhere("it.itemType != :chicken")->setParameter('chicken', ItemType::Chicken);
+            $qb->andWhere("it.itemType != :chicken")->setParameter('chicken', ItemType::Chick);
             $qb->andWhere("d.deletedAt IS NULL");
             // Show only Sales Bundle
             $qb->andWhere("bundles.id = :bundle")->setParameter('bundle', RbsSalesBundle::ID);
@@ -159,7 +159,7 @@ class StockController extends Controller
             );
         }
 
-        if ($item->getItemType() == ItemType::Chicken) {
+        if ($item->getItemType() == ItemType::Chick) {
             $chickenSetForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(
                 array(
                     'item'  => $item,

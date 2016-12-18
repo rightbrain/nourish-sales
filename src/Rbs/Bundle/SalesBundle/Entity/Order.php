@@ -416,7 +416,7 @@ class Order
     public function getOrderItemType()
     {
         foreach ($this->orderItems as $item){
-            if($item->getItem()->getItemType()->getItemType() == ItemType::Chicken){
+            if($item->getItem()->getItemType()->getItemType() == ItemType::Chick){
                 return false;
             }
         }

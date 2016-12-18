@@ -29,7 +29,7 @@ class ChickenSetForLocationForm extends AbstractType
                     return $repository->createQueryBuilder('i')
                         ->join('i.itemType', 'it')
                         ->where('i.deletedAt IS NULL')
-                        ->andWhere('it.itemType = :chicken')->setParameter('chicken', ItemType::Chicken)
+                        ->andWhere('it.itemType = :chicken')->setParameter('chicken', ItemType::Chick)
                         ->orderBy('i.name','ASC')
                         ->join('i.bundles', 'bundles')
                         ->andWhere('bundles.id = :saleBundleId')->setParameter('saleBundleId', RbsSalesBundle::ID);

@@ -53,7 +53,7 @@ class ChickenTypeSetForm extends AbstractType
                         ->andWhere('u.userType = :AGENT')
                         ->andWhere('it.itemType = :itemType')
                         ->setParameter('AGENT', User::AGENT)
-                        ->setParameter('itemType', ItemType::Chicken)
+                        ->setParameter('itemType', ItemType::Chick)
                         ->setParameter('zilla', $this->user->getZilla())
                         ->orderBy('p.fullName','ASC');
                 }
@@ -68,7 +68,7 @@ class ChickenTypeSetForm extends AbstractType
                     return $repository->createQueryBuilder('i')
                         ->join('i.itemType', 'it')
                         ->where('i.deletedAt IS NULL')
-                        ->andWhere('it.itemType = :chicken')->setParameter('chicken', ItemType::Chicken)
+                        ->andWhere('it.itemType = :chicken')->setParameter('chicken', ItemType::Chick)
                         ->orderBy('i.name','ASC')
                         ->join('i.bundles', 'bundles')
                         ->andWhere('bundles.id = :saleBundleId')->setParameter('saleBundleId', RbsSalesBundle::ID);

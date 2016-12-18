@@ -383,7 +383,7 @@ class OrderController extends BaseController
                 array('item' => $item->getItem()->getId(), 'depo' => $order->getDepo()->getId())
             );
             $item->isAvailable = $stockItem->isStockAvailable($item->getQuantity());
-            if($item->getItem()->getItemType() == ItemType::Chicken){
+            if($item->getItem()->getItemType() == ItemType::Chick){
                 $chickenCheckForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(array(
                     'item' => $item->getItem()->getId(), 'agent' => $order->getAgent()->getId()
                 ));
