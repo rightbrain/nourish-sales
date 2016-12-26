@@ -18,7 +18,7 @@
 <div class="form-group">
     <label class="col-md-2 control-label">Depo</label>
     <div class="col-md-6" style="margin-top: 10px;">
-        {{ form_widget(form.depo) }}
+        {{ form_widget(form.depo, {'attr' : depoAttr}) }}
         {{ form_errors(form.depo) }}
     </div>
 </div>

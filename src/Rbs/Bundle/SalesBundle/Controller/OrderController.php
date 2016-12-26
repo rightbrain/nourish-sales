@@ -221,6 +221,9 @@ class OrderController extends BaseController
 
         $form = $this->createForm(new OrderForm($refSms), $order);
         $em = $this->getDoctrine()->getManager();
+
+        $depoAttr = Order::ORDER_STATE_PROCESSING == $order->getOrderState() ? array('disabled'=>'disabled') : array();
+
         if ('POST' === $request->getMethod()) {
             $sms = $order->getRefSMS();
             $stockRepo = $em->getRepository('RbsSalesBundle:Stock');
@@ -255,6 +258,7 @@ class OrderController extends BaseController
         return array(
             'form' => $form->createView(),
             'order' => $order,
+            'depoAttr' => $depoAttr,
         );
     }
 
