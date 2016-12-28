@@ -146,9 +146,9 @@ class ChickenTypeSetController extends BaseController
         }
 
         $response = array(
-            'onHand'    => $chickenSetForAgent->getQuantity(),
+            'onHand'    => $chickenSetForAgent ? $chickenSetForAgent->getQuantity() : 0,
             'price'     => $price,
-            'itemUnit'  => $chickenSetForAgent->getItem()->getItemUnit(),
+            'itemUnit'  => $chickenSetForAgent ? $chickenSetForAgent->getItem()->getItemUnit() : '',
         );
 
         return new JsonResponse($response);
