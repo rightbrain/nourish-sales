@@ -42,7 +42,8 @@ class Item
      * )
      * @ORM\JoinColumn(name="categories")
      * @Assert\NotBlank()
-     * @Assert\Count(min = 1, minMessage = "Please select at least {{ limit }} module")
+     * @Assert\Count(min = 1, minMessage = "Please select a category")
+     * @Assert\Count(max = 1, maxMessage = "Please select a category only")
      */
     private $category;
 
