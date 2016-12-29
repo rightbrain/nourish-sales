@@ -46,4 +46,30 @@ class AgentRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function getAgentListKeyValue()
+    {
+        $query = $this->createQueryBuilder('a');
+        $query->select('a.id, p.fullName');
+        $query->join('a.user', 'u');
+        $query->join('u.profile', 'p');
+        $query->where('u.userType = :AGENT');
+        $query->andWhere('u.enabled = 1');
+        $query->andWhere('u.deletedAt IS NULL');
+
+        $query->setParameter('AGENT', User::AGENT);
+        $query->orderBy('p.fullName','ASC');
+
+        $result = $query->getQuery()->getResult();
+
+        $output = array();
+
+        $output[''] = 'Select';
+        foreach ($result as $agent) {
+            $output[$agent['id']] = $agent['fullName'];
+        }
+
+        return $output;
+    }
+
 }

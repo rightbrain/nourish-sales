@@ -9,6 +9,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class AgentSearchType extends AbstractType
 {
+    private $agents;
+    function __construct($agents)
+    {
+        $this->agents = $agents;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -16,36 +22,20 @@ class AgentSearchType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('agent', 'entity', array(
-                'class' => 'RbsSalesBundle:Agent',
+            ->add('agent', 'choice', array(
+                'choices' => $this->agents,
                 'attr' => array(
-                    'class' => 'select2me'
-                ),
-                'property' => 'user.profile.fullName',
-                'required' => false,
-                'empty_value' => 'Select Agent',
-                'empty_data' => null,
-                'mapped' => false,
-                'query_builder' => function (AgentRepository $repository)
-                {
-                    return $repository->createQueryBuilder('c')
-                        ->join('c.user', 'u')
-                        ->join('u.profile', 'p')
-                        ->where('u.deletedAt IS NULL')
-                        ->andWhere('u.enabled = 1')
-                        ->andWhere('u.userType = :AGENT')
-                        ->setParameter('AGENT', 'AGENT')
-                        ->orderBy('p.fullName','ASC');
-                }
+                    'class' => 'select2me input-medium'
+                )
             ))
             ->add('start_date', 'text', array(
                 'attr' => array(
-                    'class' => 'date-picker'
+                    'class' => 'date-picker input-small form-control'
                 )
             ))
             ->add('end_date', 'text', array(
                 'attr' => array(
-                    'class' => 'date-picker'
+                    'class' => 'date-picker input-small form-control'
                 )
             ))
         ;

@@ -15,36 +15,24 @@
                 <div class="dataTables_wrapper no-footer">
 
                     <div class="col-md-12" style="margin-top: 25px;">
-                        <form method="get" novalidate="novalidate">
+                        <form method="get" novalidate="novalidate" class="form-inline">
 
                             <div class="form-group">
-                                <div class="col-md-3">
-                                    <div class="input-icon right">
-                                        {{ form_widget(formSearch.agent) }}
+                                {{ form_widget(formSearch.agent) }}
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-icon right">
+                                    <div class="input-group input-daterange">
+                                        {{ form_widget(formSearch.start_date) }}
+                                        <span class="input-group-addon">to</span>
+                                        {{ form_widget(formSearch.end_date) }}
                                     </div>
                                 </div>
                             </div>
 
                             <div class="form-group">
-                                <div class="col-md-3">
-                                    <div class="input-icon right">
-                                        {{ form_widget(formSearch.start_date, { 'attr': {'placeholder': 'Select Start Date'}}) }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-md-3">
-                                    <div class="input-icon right">
-                                        {{ form_widget(formSearch.end_date, { 'attr': {'placeholder': 'Select End Date'}}) }}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <div class="col-md-1">
-                                    <input type="submit" value="Search" class="btn blue">
-                                </div>
+                                <input type="submit" value="Search" class="btn blue">
                             </div>
                         </form>
                     </div>
@@ -106,21 +94,3 @@
     </div>
     <div style="clear: both"></div>
 {% endblock %}
-{% block stylesheets %}
-    {{ parent() }}
-    {% stylesheets
-    'assets/global/plugins/select2/select2.css'
-    filter='cssrewrite'%}
-    <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-    {% javascripts
-    'assets/global/plugins/select2/select2.min.js'
-     %}
-    <script src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-{% endblock %}
-

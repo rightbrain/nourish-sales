@@ -149,14 +149,20 @@ class PaymentController extends BaseController
      */
     public function laserAction(Request $request)
     {
-        $form = new AgentSearchType();
+        $agents = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getAgentListKeyValue();
+        $form = new AgentSearchType($agents);
         $data = $request->query->get($form->getName());
         $formSearch = $this->createForm($form, $data);
 
-        if(!empty($data['start_date'])){
+        if ($request->query->get('search[start_date]', null, true)){
+            $data['start_date'] = date('Y-m-d', strtotime($data['start_date']));
+            $data['end_date'] = date('Y-m-d', strtotime($data['end_date']));
+        }
+
+        if (!empty($data['start_date'])) {
             $agentPreviousDebitLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentPreviousDebitLaserTotal($data);
             $agentPreviousCreditLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentPreviousCreditLaserTotal($data);
-        }else{
+        } else {
             $agentPreviousDebitLaserTotal = 0;
             $agentPreviousCreditLaserTotal = 0;
         }
@@ -167,9 +173,9 @@ class PaymentController extends BaseController
         $currentBalance = $agentCreditLaserTotal - $agentDebitLaserTotal;
 
         $agentLaser = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentLaser($data);
-        if($data['agent'] != null){
+        if ($data['agent']) {
             $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($data['agent']);
-        }else{
+        } else {
             $agent = null;
         }
 

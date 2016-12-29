@@ -133,7 +133,8 @@ var App = function() {
                 rtl: Metronic.isRTL(),
                 //orientation: "left",
                 autoclose: true,
-                format: "yyyy-mm-dd"
+                format: "dd-mm-yyyy",
+                todayBtn: "linked"
             });
             //$('body').removeClass("modal-open"); // fix bug when inline picker is used in modal
         }
