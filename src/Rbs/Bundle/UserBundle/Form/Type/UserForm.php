@@ -43,7 +43,10 @@ class UserForm extends AbstractType
                 'type' => 'password',
                 'options' => array('translation_domain' => 'FOSUserBundle'),
                 'first_options' => array('label' => 'form.password'),
-                'second_options' => array('label' => 'form.password_confirmation'),
+                'second_options' => array(
+                    'label' => 'form.password_confirmation',
+                    'constraints' => new NotBlank()
+                ),
                 'invalid_message' => 'fos_user.password.mismatch',
                 'constraints' => array(
                     new NotBlank(array(
