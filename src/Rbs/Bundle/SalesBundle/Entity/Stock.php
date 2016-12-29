@@ -215,6 +215,6 @@ class Stock
             return true;
         }
 
-        return $quantity <= ($this->getOnHand() - $this->getOnHold());
+        return ($this->getOnHand() - $this->getOnHold()) > 0 && $quantity <= ($this->getOnHand() - $this->getOnHold());
     }
 }

@@ -4,6 +4,10 @@ namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
+use Rbs\Bundle\CoreBundle\Entity\Item;
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
+use Rbs\Bundle\SalesBundle\Entity\ChickenSetForAgent;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\DeliveryItem;
 use Rbs\Bundle\SalesBundle\Entity\Order;
@@ -121,6 +125,30 @@ class StockRepository extends EntityRepository
 
         $stockRepo->update($stock);
         $this->create($stockHistory);
+    }
+
+    // TODO: Need to implement on order approve 1st step
+    public function hasStock(OrderItem $orderItem, Depo $depo, Agent $agent = null) {
+
+        $item = $orderItem->getItem();
+
+        if ($orderItem->getItem()->getItemType() == ItemType::Chick) {
+            /** @var ChickenSetForAgent $chickenCheckForAgent */
+            $chickenCheckForAgent = $this->_em->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(array(
+                'item' => $item->getId(), 'agent' => $agent->getId(),
+            ));
+
+            return array(
+                'availableChick' => $chickenCheckForAgent ? $chickenCheckForAgent->isStockAvailable($orderItem->getQuantity()) : 0,
+                'isAvailableQty' => $chickenCheckForAgent ? $chickenCheckForAgent->getQuantity() : false
+            );
+        }
+
+        $stockItem = $this->findOneBy(
+            array('item' => $orderItem->getItem()->getId(), 'depo' => $depo)
+        );
+
+        return $stockItem && $stockItem->isStockAvailable($orderItem->getQuantity());
     }
 
 }
