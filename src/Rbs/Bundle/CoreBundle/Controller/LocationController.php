@@ -24,17 +24,20 @@ class LocationController extends BaseController
     public function areaFilterAction(Request $request)
     {
         $locations = array();
-        if ($request->query->get('id')) {
+        $zillaId = $request->query->get('id');
+        $upozillaId = $request->query->get('upozila_id');
+        if ($zillaId) {
             $locations = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findBy(
                 array(
-                    'parentId' => $request->query->get('id')
+                    'parentId' => $zillaId,
                 )
             );
         }
 
         $html = '<option value="">Choose an option</option>';
         foreach ($locations as $r) {
-            $html .= '<option value="'.$r->getId().'">'.$r->getName().'</option>';
+            $selected = $upozillaId == $r->getId() ? ' selected="selected"' : '';
+            $html .= '<option value="' . $r->getId() . '" ' . $selected . '>' . $r->getName() . '</option>';
         }
 
         return new Response($html);
