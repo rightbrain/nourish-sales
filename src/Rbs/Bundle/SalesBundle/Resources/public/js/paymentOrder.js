@@ -57,6 +57,8 @@ var Payment = function()
 
             if (startDate && endDate) {
                 table.columns(0).search(fromDate+'--'+toDate);
+            } else {
+                table.columns(0).search('');
             }
             if (allowAgentSearch) {
                 table.columns(1).search($("#agent-filter").val());
