@@ -282,8 +282,11 @@ var Order = function()
         if (!form.length) return;
 
         form.submit(function(){
-            var isFormValid = true;
-            var orderItem = $('#orderItems');
+            var isFormValid = true,
+                orderItem = $('#orderItems'),
+                qtyError = false,
+                priceError = false;
+
 
             if ($('#order_agent').val() == '') {
                 toastr.error("Please select an agent");
@@ -310,12 +313,19 @@ var Order = function()
                 var item = elm.find('td:eq(0)');
                 var qty = elm.find('td:eq(1)');
                 var stock = elm.find('td:eq(3)').text();
+                var price = elm.find('td:eq(4)');
 
                 item.removeClass('has-error');
                 qty.removeClass('has-error');
                 if (item.find('select').val() == '') {
                     item.addClass('has-error');
                     isFormValid = false;
+                }
+
+                if (!parseFloat(price.find('input').val())) {
+                    price.addClass('has-error');
+                    isFormValid = false;
+                    priceError = true;
                 }
 
                 if (
@@ -325,9 +335,18 @@ var Order = function()
                 ) {
                     qty.addClass('has-error');
                     isFormValid = false;
+                    qtyError = true;
                 }
 
             });
+
+            if (qtyError) {
+                toastr.error("Invalid Item Quantity");
+            }
+
+            if (priceError) {
+                toastr.error("Invalid Price");
+            }
 
             return isFormValid;
         });

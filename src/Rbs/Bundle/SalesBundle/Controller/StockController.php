@@ -139,7 +139,7 @@ class StockController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
         if ($depo == null) {
-            $depo = $agent->getDepo()->getId();
+            $depo = $agent->getDepo();
         }
 
         /** Getting Item Price */
@@ -155,7 +155,7 @@ class StockController extends Controller
         // new entry or new item add to edit mode
         if (!$price) {
             $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
-                $item, $agent->getUser()->getZilla()
+                $item, $depo->getLocation()
             );
         }
 

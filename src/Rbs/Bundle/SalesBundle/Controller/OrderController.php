@@ -168,9 +168,21 @@ class OrderController extends BaseController
 
         $form = $this->createForm(new OrderForm($refSms), $order);
         if ('POST' === $request->getMethod()) {
-            foreach ($request->request->get('order')['orderItems'] as $orderItem){
-                if($orderItem['quantity'] <=0){
-                    $this->flashMessage('error', 'Quantity Should Not Be Zero');
+
+            $form->handleRequest($request);
+
+            /** @var OrderItem $item */
+            foreach ($order->getOrderItems() as $item){
+                if ($item->getQuantity() < 1) {
+                    $this->flashMessage('error', 'Invalid Item Quantity');
+                    goto a;
+                }
+
+                $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+                    $item->getItem(), $order->getDepo()->getLocation()
+                );
+                if ($price < 1) {
+                    $this->flashMessage('error', 'Invalid Item Price');
                     goto a;
                 }
             }
@@ -190,6 +202,7 @@ class OrderController extends BaseController
                 return $this->redirect($this->generateUrl('orders_home'));
             }
             a:
+            return $this->redirect($this->generateUrl('order_create'));
         }
 
         return array(
@@ -229,9 +242,19 @@ class OrderController extends BaseController
             $stockRepo = $em->getRepository('RbsSalesBundle:Stock');
             $oldQty = $stockRepo->extractOrderItemQuantity($order);
             $form->handleRequest($request);
-            foreach ($request->request->get('order')['orderItems'] as $orderItem){
-                if($orderItem['quantity'] <=0){
-                    $this->flashMessage('error', 'Quantity Should Not Be Zero');
+
+            /** @var OrderItem $item */
+            foreach ($order->getOrderItems() as $item){
+                if ($item->getQuantity() < 1) {
+                    $this->flashMessage('error', 'Invalid Item Quantity');
+                    goto a;
+                }
+
+                $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+                    $item->getItem(), $order->getDepo()->getLocation()
+                );
+                if ($price < 1) {
+                    $this->flashMessage('error', 'Invalid Item Price');
                     goto a;
                 }
             }
@@ -253,6 +276,7 @@ class OrderController extends BaseController
                 return $this->redirect($this->generateUrl('orders_home'));
             }
             a:
+            return $this->redirect($this->generateUrl('order_update', array('id' => $order->getId())));
         }
 
         return array(
@@ -380,25 +404,35 @@ class OrderController extends BaseController
         $chickenCheck = 0;
         $chickenCheckForAgent = null;
         $availableCheck = false;
+        $orderInfoValid = true;
+        $invalidMessage = '';
         $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
         /** @var OrderItem $item */
         foreach ($order->getOrderItems() as $item) {
             $stockItem = $stockRepo->findOneBy(
                 array('item' => $item->getItem()->getId(), 'depo' => $order->getDepo()->getId())
             );
-            $item->isAvailable = $stockItem->isStockAvailable($item->getQuantity());
-            if($item->getItem()->getItemType() == ItemType::Chick){
-                $chickenCheckForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(array(
-                    'item' => $item->getItem()->getId(), 'agent' => $order->getAgent()->getId()
-                ));
+            $orderInfoValid = $item->isAvailable = $stockItem && $stockItem->isStockAvailable($item->getQuantity());
+            if ($item->getItem()->getItemType() == ItemType::Chick) {
+                $chickenCheckForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(
+                    array(
+                        'item' => $item->getItem()->getId(),
+                        'agent' => $order->getAgent()->getId(),
+                    )
+                );
                 if ($chickenCheckForAgent) {
                     $availableCheck = $chickenCheckForAgent->isStockAvailable($item->getQuantity());
-                    $item->isAvailableQty = $chickenCheckForAgent->getQuantity();
+                    $orderInfoValid = $item->isAvailableQty = $chickenCheckForAgent->getQuantity();
                 } else {
                     $availableCheck = false;
-                    $item->isAvailableQty = 0;
+                    $orderInfoValid = $item->isAvailableQty = 0;
                 }
                 $chickenCheck = 1;
+            }
+
+            if ($item->getPrice() < 1) {
+                $orderInfoValid = false;
+                $invalidMessage = 'Invalid Item Price';
             }
         }
 
@@ -407,6 +441,8 @@ class OrderController extends BaseController
             'chickenCheck' => $chickenCheck,
             'chickenCheckForAgent' => $chickenCheckForAgent,
             'availableCheck' => $availableCheck,
+            'orderInfoValid' => $orderInfoValid,
+            'invalidMessage' => $invalidMessage,
         ));
     }
 
@@ -443,7 +479,7 @@ class OrderController extends BaseController
         $isOverCredit = $creditLimitRepo->isOverCreditLimitInAnyCategory($orderItemCategoryTotal, $categoryWiseCreditSummary);
         $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getPaymentsBy(array(
             'orders' => array($order->getId()),
-            'transactionType' => 'CR'
+            'transactionType' => 'CR',
         ));
 
         return $this->render('RbsSalesBundle:Order:paymentReview.html.twig', array(
@@ -451,7 +487,7 @@ class OrderController extends BaseController
             'payments' => $payments,
             'creditSummary' => $categoryWiseCreditSummary,
             'isOverCredit' => $isOverCredit,
-            'orderItemCategoryTotal' => $orderItemCategoryTotal
+            'orderItemCategoryTotal' => $orderItemCategoryTotal,
         ));
     }
 
