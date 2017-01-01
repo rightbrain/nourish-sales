@@ -28,12 +28,10 @@ class UserController extends Controller
      */
     public function indexAction()
     {
-        $users = $this->getDoctrine()->getRepository('RbsUserBundle:User')->users();
         $datatable = $this->get('rbs_erp.user.datatable.user');
         $datatable->buildDatatable();
 
         return $this->render('RbsUserBundle:User:index.html.twig', array(
-            'users' => $users,
             'datatable' => $datatable
         ));
     }
