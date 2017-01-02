@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\Location;
 use Rbs\Bundle\SalesBundle\Entity\DamageGood;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\DamageGoodForm;
@@ -72,15 +73,10 @@ class DamageGoodController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
         $damageGood = new DamageGood();
-        $userAgents = $em->getRepository('RbsUserBundle:User')->findAgentsUsingParentId($this->getUser()->getId());
+        /** @var Location $location */
+        $location = $this->getUser()->getZilla();
 
-        foreach ($userAgents as $userAgent){
-            $user = $userAgent;
-        }
-        $agent = $em->getRepository('RbsSalesBundle:Agent')->findOneBy(array(
-            'user' => $user
-        ));
-        $form = $this->createForm(new DamageGoodForm($agent->getDepo()->getId()), $damageGood, array(
+        $form = $this->createForm(new DamageGoodForm($location), $damageGood, array(
             'action' => $this->generateUrl('damage_good_form'), 'method' => 'POST',
             'attr' => array('novalidate' => 'novalidate')
         ));

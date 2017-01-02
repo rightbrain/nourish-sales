@@ -11,11 +11,11 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class DamageGoodForm extends AbstractType
 {
-    private $depo;
+    private $location;
 
-    public function __construct($depo)
+    public function __construct($location)
     {
-        $this->depo = $depo;
+        $this->location = $location;
     }
 
     /**
@@ -48,11 +48,12 @@ class DamageGoodForm extends AbstractType
                 'query_builder' => function (OrderRepository $repository)
                 {
                     return  $repository->createQueryBuilder('o')
-                        ->join('o.depo', 'd')
+                        ->join('o.agent', 'a')
+                        ->join('a.user', 'u')
                         ->where('o.orderState = :COMPLETE')
-                        ->andWhere('d.id = :depo')
+                        ->andWhere('u.zilla = :location')
                         ->orderBy('o.id', 'DESC')
-                        ->setParameter('depo', $this->depo)
+                        ->setParameter('location', $this->location)
                         ->setParameter('COMPLETE', Order::ORDER_STATE_COMPLETE);
                 },
                 'constraints' => array(
