@@ -207,10 +207,15 @@ class PaymentController extends BaseController
         $data = $request->query->get($form->getName());
         $formSearch = $this->createForm($form, $data);
 
-        if(!empty($data['start_date'])){
+        if ($request->query->get('search[start_date]', null, true)) {
+            $data['start_date'] = date('Y-m-d', strtotime($data['start_date']));
+            $data['end_date'] = date('Y-m-d', strtotime($data['end_date']));
+        }
+
+        if (!empty($data['start_date'])) {
             $agentPreviousDebitLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getMyPreviousDebitLaserTotal($agent->getId(), $data);
             $agentPreviousCreditLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getMyPreviousCreditLaserTotal($agent->getId(), $data);
-        }else{
+        } else {
             $agentPreviousDebitLaserTotal = 0;
             $agentPreviousCreditLaserTotal = 0;
         }

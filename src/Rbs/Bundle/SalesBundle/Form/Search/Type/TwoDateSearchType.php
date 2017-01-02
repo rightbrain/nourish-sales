@@ -17,12 +17,12 @@ class TwoDateSearchType extends AbstractType
         $builder
             ->add('start_date', 'text', array(
                 'attr' => array(
-                    'class' => 'date-picker'
+                    'class' => 'date-picker input-small form-control'
                 )
             ))
             ->add('end_date', 'text', array(
                 'attr' => array(
-                    'class' => 'date-picker'
+                    'class' => 'date-picker input-small form-control'
                 )
             ))
         ;
