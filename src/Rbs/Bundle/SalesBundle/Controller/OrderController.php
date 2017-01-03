@@ -187,8 +187,6 @@ class OrderController extends BaseController
                 }
             }
 
-            $form->handleRequest($request);
-
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $order->setLocation($order->getAgent()->getUser()->getUpozilla());
