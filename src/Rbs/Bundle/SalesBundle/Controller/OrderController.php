@@ -224,8 +224,8 @@ class OrderController extends BaseController
             $refSms = 0;
         }
 
-        if (in_array($order->getOrderState(), array('CANCEL'))
-            || in_array($order->getDeliveryState(), array('READY'))) {
+        if (in_array($order->getOrderState(), array(ORDER::ORDER_STATE_CANCEL, ORDER::ORDER_STATE_COMPLETE))
+            || in_array($order->getDeliveryState(), array(ORDER::DELIVERY_STATE_READY))) {
             $this->flashMessage('error', 'Invalid Operation');
             return $this->redirectToRoute('orders_home');
         }

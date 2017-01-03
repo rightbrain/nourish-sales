@@ -144,6 +144,7 @@ class StockController extends Controller
 
         /** Getting Item Price */
         $price = 0;
+        $orderItem = null;
         $order = $em->getRepository('RbsSalesBundle:Order')->find($request->query->get('order', 0));
         if ($order) { // edit mode and item already added
             $orderItem = $em->getRepository('RbsSalesBundle:OrderItem')->findOneBy(
@@ -167,6 +168,7 @@ class StockController extends Controller
                 )
             );
 
+            // If edit mode, add current qty
             $response = array(
                 'onHand'    => $chickenSetForAgent ? $chickenSetForAgent->getQuantity() : 0,
                 'onHold'    => 0,
@@ -182,8 +184,10 @@ class StockController extends Controller
                 )
             );
 
+            // If edit mode, add current qty
+            $qtyInThisOrder = $orderItem && $order->getOrderState() == Order::ORDER_STATE_PROCESSING ? $orderItem->getQuantity() : 0;
             $response = array(
-                'onHand'    => $stock->getOnHand(),
+                'onHand'    => $stock->getOnHand() + $qtyInThisOrder,
                 'onHold'    => $stock->getOnHold(),
                 'available' => $stock->isAvailableOnDemand(),
                 'price'     => number_format($price, 2),
