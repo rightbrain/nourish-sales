@@ -26,7 +26,7 @@
                         <td class="numeric">{{ history.updatedAt | date('d-m-Y') }}</td>
                         <td class="numeric">{{ history.updatedBy }}</td>
                         <td class="numeric">{{ history.category.name }}</td>
-                        <td class="numeric">{{ history.quantity }}</td>
+                        <td class="numeric">{{ history.quantity / 1000 }} {{ labelTon }}</td>
                         <td class="numeric">{{ history.amount | number_format(2, '.', ',') }}</td>
                     </tr>
                 {% endfor %}

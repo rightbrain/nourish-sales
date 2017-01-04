@@ -27,7 +27,10 @@ class SaleIncentive
     
     const CURRENT = 'CURRENT';
     const ARCHIVED = 'ARCHIVED';
-    
+
+    const LABEL_TON = 'Ton';
+    const LABEL_PER_KG = '(Per Kg)';
+
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;

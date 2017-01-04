@@ -48,12 +48,12 @@
                                     <tbody>
                                         <tr>
                                             {% for group in saleIncentives %}
-                                                <td class="col-md-1">{{ group['quantity']/1000 }}</td>
+                                                <td class="col-md-1">{{ group['quantity']/1000 }} {{ labelTon }}</td>
                                             {% endfor %}
                                         </tr>
                                         <tr>
                                             {% for group in saleIncentives %}
-                                                <td class="col-md-1">{{ group['amount'] }}</td>
+                                                <td class="col-md-1">{{ group['amount'] }} {{ labelPerKg }}</td>
                                             {% endfor %}
                                         </tr>
                                     </tbody>
@@ -91,12 +91,12 @@
                                     <tbody>
                                         <tr>
                                             {% for group in saleIncentives %}
-                                                <td class="col-md-1">{{ group['quantity']/1000 }}</td>
+                                                <td class="col-md-1">{{ group['quantity']/1000 }} {{ labelTon }}</td>
                                             {% endfor %}
                                         </tr>
                                         <tr>
                                             {% for group in saleIncentives %}
-                                                <td class="col-md-1">{{ group['amount'] }}</td>
+                                                <td class="col-md-1">{{ group['amount'] }} {{ labelPerKg }}</td>
                                             {% endfor %}
                                         </tr>
                                     </tbody>

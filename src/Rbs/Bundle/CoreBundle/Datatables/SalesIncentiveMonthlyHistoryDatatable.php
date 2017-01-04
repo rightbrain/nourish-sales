@@ -2,6 +2,8 @@
 
 namespace Rbs\Bundle\CoreBundle\Datatables;
 
+use Rbs\Bundle\CoreBundle\Entity\SaleIncentive;
+
 /**
  * Class SalesIncentiveMonthlyHistoryDatatable
  *
@@ -9,6 +11,15 @@ namespace Rbs\Bundle\CoreBundle\Datatables;
  */
 class SalesIncentiveMonthlyHistoryDatatable extends BaseDatatable
 {
+    public function getLineFormatter()
+    {
+        $formatter = function($line){
+            $line['quantity2'] = ($line['quantity'] / 1000) . SaleIncentive::LABEL_TON;
+            return $line;
+        };
+
+        return $formatter;
+    }
     /**
      * {@inheritdoc}
      */
@@ -26,7 +37,8 @@ class SalesIncentiveMonthlyHistoryDatatable extends BaseDatatable
             ->add('updatedAt', 'datetime', array('title' => 'Date', 'date_format' => 'LLL' ))
             ->add('updatedBy.username', 'column', array('title' => 'Created By'))
             ->add('category.name', 'column', array('title' => 'Category'))
-            ->add('quantity', 'column', array('title' => 'Quantity'))
+            ->add('quantity', 'column', array('visible' => false))
+            ->add('quantity2', 'virtual', array('title' => 'Quantity'))
             ->add('amount', 'column', array('title' => 'Amount'))
         ;
     }

@@ -67,6 +67,8 @@ class SaleIncentiveController extends BaseController
             'groupYear' => $groupYear,
             'saleIncentiveA' => $saleIncentiveA,
             'saleIncentiveB' => $saleIncentiveB,
+            'labelTon' => SaleIncentive::LABEL_TON,
+            'labelPerKg' => SaleIncentive::LABEL_PER_KG
         ));
     }
 
@@ -83,7 +85,9 @@ class SaleIncentiveController extends BaseController
 
         return $this->render('RbsCoreBundle:SaleIncentive:history.html.twig', array(
             'salesIncentiveHistories' => $salesIncentiveHistories,
-            'group' => 'Monthly'
+            'group' => 'Monthly',
+            'labelTon' => SaleIncentive::LABEL_TON,
+            'labelPerKg' => SaleIncentive::LABEL_PER_KG
         ));
     }
     
