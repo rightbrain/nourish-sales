@@ -174,7 +174,7 @@ class StockController extends Controller
                 'onHold'    => 0,
                 'available' => 0,
                 'price'     => number_format($price, 2),
-                'itemUnit'  => $chickenSetForAgent ? $chickenSetForAgent->getItem()->getItemUnit() : '',
+                'itemUnit'  => $chickenSetForAgent ? $chickenSetForAgent->getItem()->getItemUnit() : 'Pc',
             );
         } else {
             $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(

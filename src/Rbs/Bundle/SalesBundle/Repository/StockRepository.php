@@ -49,8 +49,10 @@ class StockRepository extends EntityRepository
         return $this->_em;
     }
 
-    public function addStockToOnHold(Order $order, Depo $depo)
+    public function addStockToOnHold(Order $order, Depo $depo = null)
     {
+        if (!$depo) $depo = $order->getDepo();
+
         /** @var OrderItem $orderItem */
         foreach ($order->getOrderItems() as $orderItem) {
             /** @var Stock $stock */
@@ -62,40 +64,54 @@ class StockRepository extends EntityRepository
             );
             $stock->setOnHold($stock->getOnHold() + $orderItem->getQuantity());
             $this->_em->persist($stock);
-            $this->_em->flush();
         }
+
+        $this->_em->flush();
     }
 
     public function removeStock(Delivery $delivery)
     {
         /** @var DeliveryItem $deliveryItem */
         foreach ($delivery->getDeliveryItems() as $deliveryItem) {
-            /** @var Stock $stock */
-            $stock = $this->findOneBy(
-                array(
-                    'item' => $deliveryItem->getOrderItem()->getItem()->getId(),
-                    'depo' => $delivery->getDepo()->getId(),
-                )
-            );
-
-            $stockOnHoldQty = $stock->getOnHold() - $deliveryItem->getQty();
-            $stockOnHandQty = $stock->getOnHand() - $deliveryItem->getQty();
-
-            $stock->setOnHold($stockOnHoldQty > 0 ? $stockOnHoldQty : 0); // $stockQty > 0 ? $stockQty : 0
-            $stock->setOnHand($stockOnHandQty > 0 ? $stockOnHandQty : 0); // $stockQty > 0 ? $stockQty : 0
-
-            $this->_em->persist($stock);
-            $this->_em->flush();
+            $this->removeStockFromDepo($deliveryItem->getOrderItem()->getItem(), $delivery->getDepo(), $deliveryItem->getQty());
         }
     }
 
-    public function subtractFromOnHold(array $items)
+    public function removeStockFromDepo($item, Depo $depo, $qty, $removeFrom = array('hand', 'hold'))
+    {
+        $stock = $this->findOneBy(
+            array(
+                'item' => $item instanceof Item ? $item->getId() : $item,
+                'depo' => $depo->getId(),
+            )
+        );
+
+        if (!$stock) return;
+
+        if (in_array('hold', $removeFrom)) {
+            $stockOnHoldQty = $stock->getOnHold() - $qty;
+            $stock->setOnHold($stockOnHoldQty > 0 ? $stockOnHoldQty : 0); // $stockQty > 0 ? $stockQty : 0
+        }
+
+        if (in_array('hand', $removeFrom)) {
+            $stockOnHandQty = $stock->getOnHand() - $qty;
+            $stock->setOnHand($stockOnHandQty > 0 ? $stockOnHandQty : 0); // $stockQty > 0 ? $stockQty : 0
+        }
+
+        $this->_em->persist($stock);
+        $this->_em->flush($stock);
+    }
+
+    public function updateStock(Order $order, Depo $depo, $oldOrderItems)
+    {
+        $this->subtractFromOnHold($oldOrderItems, $depo);
+        $this->addStockToOnHold($order, $depo);
+    }
+
+    public function subtractFromOnHold(array $items, $depo)
     {
         foreach ($items as $itemId => $qty) {
-            $stock = $this->findOneBy(array('item' => $itemId));
-            $stock->setOnHold($stock->getOnHold() - $qty);
-            $this->_em->persist($stock);
-            $this->_em->flush();
+            $this->removeStockFromDepo($itemId, $depo, $qty, array('hold'));
         }
     }
 
@@ -140,7 +156,7 @@ class StockRepository extends EntityRepository
 
             return array(
                 'availableChick' => $chickenCheckForAgent ? $chickenCheckForAgent->isStockAvailable($orderItem->getQuantity()) : 0,
-                'isAvailableQty' => $chickenCheckForAgent ? $chickenCheckForAgent->getQuantity() : false
+                'isAvailableQty' => $chickenCheckForAgent ? $chickenCheckForAgent->getQuantity() : false,
             );
         }
 

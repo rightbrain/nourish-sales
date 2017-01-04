@@ -217,7 +217,7 @@ class Order
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getDeliveryState()
     {
@@ -225,7 +225,7 @@ class Order
     }
 
     /**
-     * @param array $deliveryState
+     * @param string $deliveryState
      */
     public function setDeliveryState($deliveryState)
     {
@@ -233,7 +233,7 @@ class Order
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getPaymentState()
     {
@@ -241,7 +241,7 @@ class Order
     }
 
     /**
-     * @param array $paymentState
+     * @param string $paymentState
      */
     public function setPaymentState($paymentState)
     {
@@ -249,7 +249,7 @@ class Order
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getOrderState()
     {
@@ -257,7 +257,7 @@ class Order
     }
 
     /**
-     * @param array $orderState
+     * @param string $orderState
      */
     public function setOrderState($orderState)
     {

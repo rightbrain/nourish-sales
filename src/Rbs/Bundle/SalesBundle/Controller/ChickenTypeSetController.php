@@ -140,6 +140,7 @@ class ChickenTypeSetController extends BaseController
 
         // new entry or new item add to edit mode
         if (!$price) {
+            $item = $price = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->find($item);
             $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
                 $item, $agent->getUser()->getZilla()
             );

@@ -49,6 +49,7 @@ class DamageGoodDatatable extends BaseDatatable
             ->add('orderRef.id', 'column', array('title' => 'Order Number'))
             ->add('remark', 'column', array('title' => 'Remark'))
             ->add('status', 'column', array('title' => 'Status'))
+            ->add('rejectReason', 'column', array('title' => 'Reason for Reject (if reject)'))
             ->add('amount', 'column', array('title' => 'Claim'))
             ->add('refundAmount', 'column', array('title' => 'Refund'))
             ->add('isPathExist', 'virtual', array('visible' => false))

@@ -12,6 +12,7 @@ use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation as JMS;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -234,12 +235,14 @@ class OrderController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         $depoAttr = Order::ORDER_STATE_PROCESSING == $order->getOrderState() ? array('disabled'=>'disabled') : array();
-
         if ('POST' === $request->getMethod()) {
             $sms = $order->getRefSMS();
             $stockRepo = $em->getRepository('RbsSalesBundle:Stock');
-            $oldQty = $stockRepo->extractOrderItemQuantity($order);
+            $prevDepo = clone $order->getDepo();
+            $prevOrderItems = $stockRepo->extractOrderItemQuantity($order);
             $form->handleRequest($request);
+
+            $depo = $order->getDepo() ? $order->getDepo() : $prevDepo;
 
             /** @var OrderItem $item */
             foreach ($order->getOrderItems() as $item){
@@ -248,25 +251,21 @@ class OrderController extends BaseController
                     goto a;
                 }
 
-                $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
-                    $item->getItem(), $order->getDepo()->getLocation()
-                );
-                if ($price < 1) {
+                /*$price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+                    $item->getItem(), $depo->getLocation()
+                );*/
+                if ($item->getPrice() < 1) {
                     $this->flashMessage('error', 'Invalid Item Price');
                     goto a;
                 }
             }
 
             if ($form->isValid()) {
-                $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('order')['depo']);
                 if ($sms) {
                     $em->getRepository('RbsSalesBundle:Sms')->removeOrder($sms);
                 }
 
-                if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
-                    $stockRepo->subtractFromOnHold($oldQty);
-                }
-                $stockRepo->addStockToOnHold($order, $depo);
+                $stockRepo->updateStock($order, $depo, $prevOrderItems);
                 $em->getRepository('RbsSalesBundle:Order')->update($order, true);
 
                 $this->flashMessage('success', 'Order Updated Successfully');
@@ -606,5 +605,41 @@ class OrderController extends BaseController
         }
 
         return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+    /**
+     * @Route("/order/order-search", name="order_search", options={"expose"=true})
+     * @param Request $request
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_USER")
+     */
+    public function getCompleteOrderList(Request $request)
+    {
+        $location = $this->getUser()->getZilla();
+        $qb = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->createQueryBuilder('o')
+            ->select('o.id, d.name as depo, p.fullName as agentName, o.createdAt')
+            ->join('o.agent', 'a')
+            ->join('a.user', 'u')
+            ->join('u.profile', 'p')
+            ->join('o.depo', 'd')
+            ->where('o.orderState = :COMPLETE')
+            ->andWhere('u.zilla = :location')
+            ->orderBy('o.id', 'DESC')
+            ->setParameter('location', $location)
+            ->setParameter('COMPLETE', Order::ORDER_STATE_COMPLETE);
+        $qb->setMaxResults(10);
+        if ($orderId = $request->query->get('q')) {
+            $qb->andWhere("o.id LIKE '%{$orderId}%'");
+        }
+
+        $output = [];
+        foreach ($qb->getQuery()->getResult() as $row) {
+            $output[] = [
+                'id' => $row['id'],
+                'text' => 'Order Id: '.$row['id'].', Depo: '.$row['depo']. ', Agent: ' . $row['agentName'] . ', Date: ' . $row['createdAt']->format('d-m-Y')
+            ];
+        }
+
+        return new JsonResponse($output);
     }
 }

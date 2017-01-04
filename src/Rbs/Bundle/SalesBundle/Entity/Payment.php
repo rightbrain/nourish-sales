@@ -178,7 +178,7 @@ class Payment
     }
 
     /**
-     * @param array $paymentMethod
+     * @param string $paymentMethod
      */
     public function setPaymentMethod($paymentMethod)
     {
@@ -314,7 +314,7 @@ class Payment
     }
 
     /**
-     * @param array $transactionType
+     * @param string $transactionType
      */
     public function setTransactionType($transactionType)
     {

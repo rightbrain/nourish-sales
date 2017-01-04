@@ -185,7 +185,7 @@ class OrderRepository extends EntityRepository
         if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
             $stockRepo = $this->_em->getRepository('RbsSalesBundle:Stock');
             $oldQty = $stockRepo->extractOrderItemQuantity($order);
-            $stockRepo->subtractFromOnHold($oldQty);
+            $stockRepo->subtractFromOnHold($oldQty, $order->getDepo());
         }
 
         $order->setOrderState(Order::ORDER_STATE_CANCEL);

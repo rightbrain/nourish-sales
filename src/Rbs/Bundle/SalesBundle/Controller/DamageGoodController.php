@@ -22,7 +22,7 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
 class DamageGoodController extends BaseController
 {
     /**
-     * @Route("/damage/good/list", name="damage_good_list")
+     * @Route("/damage-good/list", name="damage_good_list")
      * @Method("GET")
      * @Template()
      * @JMS\Secure(roles="ROLE_SR_GROUP")
@@ -63,20 +63,20 @@ class DamageGoodController extends BaseController
     }
 
     /**
-     * @Route("/damage/good/form", name="damage_good_form", options={"expose"=true})
+     * @Route("/damage-good/create", name="damage_good_form", options={"expose"=true})
      * @Template("RbsSalesBundle:DamageGood:form.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
      * @JMS\Secure(roles="ROLE_SR_GROUP")
      */
-    public function agentBankInfoCreateAction(Request $request)
+    public function damageGoodCreateAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
         $damageGood = new DamageGood();
         /** @var Location $location */
         $location = $this->getUser()->getZilla();
 
-        $form = $this->createForm(new DamageGoodForm($location), $damageGood, array(
+        $form = $this->createForm(new DamageGoodForm($location, $em), $damageGood, array(
             'action' => $this->generateUrl('damage_good_form'), 'method' => 'POST',
             'attr' => array('novalidate' => 'novalidate')
         ));
@@ -99,7 +99,7 @@ class DamageGoodController extends BaseController
     }
 
     /**
-     * @Route("/damage/good/admin/list", name="damage_good_admin_list")
+     * @Route("/damage-good/admin/list", name="damage_good_admin_list")
      * @Method("GET")
      * @Template()
      * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
@@ -146,7 +146,7 @@ class DamageGoodController extends BaseController
     }
 
     /**
-     * @Route("/damage/good/verify/{id}", name="damage_goods_verify", options={"expose"=true})
+     * @Route("/damage-good/verify/{id}", name="damage_goods_verify", options={"expose"=true})
      * @param DamageGood $damageGood
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_DAMAGE_GOODS_VERIFY")
@@ -167,7 +167,42 @@ class DamageGoodController extends BaseController
     }
 
     /**
-     * @Route("/damage/good/approve/{id}", name="damage_goods_approve", options={"expose"=true})
+     * @Route("/damage-good/reject-modal/{id}", name="damage_goods_reject_form", options={"expose"=true})
+     * @param DamageGood $damageGood
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DAMAGE_GOODS_VERIFY")
+     */
+    public function rejectModalAction(DamageGood $damageGood)
+    {
+        return $this->render('RbsSalesBundle:DamageGood:_rejectForm.html.twig', array(
+            'id' => $damageGood->getId()
+        ));
+    }
+
+    /**
+     * @Route("/damage-good/reject/{id}", name="damage_goods_reject", options={"expose"=true})
+     * @param DamageGood $damageGood
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_DAMAGE_GOODS_VERIFY")
+     */
+    public function verifyRejectAction(Request $request, DamageGood $damageGood)
+    {
+        $damageGood->setRejectReason($request->request->get('reason'));
+        $damageGood->setStatus(DamageGood::REJECTED);
+        $damageGood->setVerifiedAt(new \DateTime());
+        $damageGood->setVerifiedBy($this->getUser());
+        $this->getDoctrine()->getRepository('RbsSalesBundle:DamageGood')->update($damageGood);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Damage Goods Rejected'
+        );
+
+        return $this->redirect($this->generateUrl('damage_good_admin_list'));
+    }
+
+    /**
+     * @Route("/damage-good/approve/{id}", name="damage_goods_approve", options={"expose"=true})
      * @param Request $request
      * @param DamageGood $damageGood
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
@@ -204,9 +239,9 @@ class DamageGoodController extends BaseController
     }
 
     /**
-     * @Route("/damage/good/view/{id}", name="damage_goods_view", options={"expose"=true})
+     * @Route("/damage-good/view/{id}", name="damage_goods_view", options={"expose"=true})
      * @param DamageGood $damageGood
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return \Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
      */
     public function viewAction(DamageGood $damageGood)

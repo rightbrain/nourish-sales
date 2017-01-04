@@ -22,6 +22,7 @@ class DamageGood
     const INACTIVE = 'INACTIVE';
     const APPROVED = 'APPROVED';
     const VERIFIED = 'VERIFIED';
+    const REJECTED = 'REJECTED';
     const PAID = 'PAID';
 
     use ORMBehaviors\Timestampable\Timestampable,
@@ -94,7 +95,7 @@ class DamageGood
     /**
      * @var array $type
      *
-     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE', 'APPROVED', 'VERIFIED', 'PAID')", nullable=false)
+     * @ORM\Column(name="status", type="string", length=255, columnDefinition="ENUM('ACTIVE', 'INACTIVE', 'APPROVED', 'VERIFIED', 'PAID', 'REJECTED')", nullable=false)
      */
     private $status = 'ACTIVE';
 
@@ -127,6 +128,14 @@ class DamageGood
      * @ORM\Column(name="path", type="string", length=255, nullable=true)
      */
     protected $path;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="reject_reason", type="text", nullable=true)
+     */
+    private $rejectReason;
+
 
     /**
      * @Assert\File(maxSize="5M")
@@ -202,7 +211,7 @@ class DamageGood
     }
 
     /**
-     * @param array $status
+     * @param string $status
      */
     public function setStatus($status)
     {
@@ -455,5 +464,25 @@ class DamageGood
             return true;
         }
         return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRejectReason()
+    {
+        return $this->rejectReason;
+    }
+
+    /**
+     * @param string $rejectReason
+     *
+     * @return DamageGood
+     */
+    public function setRejectReason($rejectReason)
+    {
+        $this->rejectReason = $rejectReason;
+
+        return $this;
     }
 }

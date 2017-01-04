@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Form\DataTransformer\OrderIdDataTransformer;
 use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -12,10 +13,12 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 class DamageGoodForm extends AbstractType
 {
     private $location;
+    private $em;
 
-    public function __construct($location)
+    public function __construct($location, $em)
     {
         $this->location = $location;
+        $this->em = $em;
     }
 
     /**
@@ -36,7 +39,8 @@ class DamageGoodForm extends AbstractType
                 )
             ))
             ->add('remark')
-            ->add('orderRef', 'entity', array(
+            ->add('orderRef', 'text')
+            /*->add('orderRef', 'entity', array(
                 'class' => 'RbsSalesBundle:Order',
                 'attr' => array(
                     'class' => 'select2me'
@@ -61,12 +65,14 @@ class DamageGoodForm extends AbstractType
                         'message'=>'Order should not be blank'
                     )),
                 )
-            ))
+            ))*/
             ->add('file')
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')
             ))
         ;
+
+        $builder->get('orderRef')->addModelTransformer(new OrderIdDataTransformer($this->em));
     }
 
     /**

@@ -54,14 +54,6 @@ class DamageGoodAdminDatatable extends BaseDatatable
             ->add('isPathExist', 'virtual', array('visible' => false))
             ->add('path', 'column', array('visible' => false))
             ->add(null, 'action', array(
-                'width' => '180px',
-                'title' => 'Action',
-                'actions' => array(
-                    $this->makeActionButton('damage_goods_verify', array('id' => 'id'), 'ROLE_DAMAGE_GOODS_VERIFY', 'Verify', 'Verify', 'fa fa-pencil-square-o'),
-                    $this->makeActionButton('damage_goods_view', array('id' => 'id'), 'ROLE_DAMAGE_GOODS_APPROVE', 'View', 'View', 'fa fa-eye'),
-                )
-            ))
-            ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'File',
                 'start_html' => '<div class="wrapper">',
@@ -82,6 +74,31 @@ class DamageGoodAdminDatatable extends BaseDatatable
                             'target'=> '_blank'
                         ),
                         'render_if' => array('isPathExist')
+                    )
+                )
+            ))
+            ->add(null, 'action', array(
+                'width' => '180px',
+                'title' => 'Action',
+                'actions' => array(
+                    $this->makeActionButton('damage_goods_verify', array('id' => 'id'), 'ROLE_DAMAGE_GOODS_VERIFY', 'Verify', 'Verify', 'fa fa-thumbs-up', 'btn btn-primary btn-xs delete-list-btn'),
+                    $this->makeActionButton('damage_goods_view', array('id' => 'id'), 'ROLE_DAMAGE_GOODS_APPROVE', 'View', 'View', 'fa fa-eye'),
+                    array(
+                        'route' => 'damage_goods_reject_form',
+                        'route_parameters' => array('id' => 'id'),
+                        'label' => 'Reject',
+                        'icon' => 'fa fa-thumbs-down',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'Reject',
+                            'class' => 'btn btn-danger btn-xs',
+                            'role' => 'button',
+                            'data-toggle' => 'modal',
+                            'data-target' => '#damageGoodReject'
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_DAMAGE_GOODS_VERIFY',
                     )
                 )
             ))
