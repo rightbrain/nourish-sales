@@ -134,3 +134,10 @@ ul.sub-menu span span.title{
     margin: 0 0 7px 45px;
     display: block;
 }
+
+input.price{
+    min-width: 65px;
+}
+input.total_price{
+    min-width: 100px;
+}
