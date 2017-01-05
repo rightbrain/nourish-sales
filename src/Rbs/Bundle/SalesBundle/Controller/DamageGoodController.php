@@ -250,14 +250,4 @@ class DamageGoodController extends BaseController
             'damageGood' => $damageGood
         ));
     }
-
-    /**
-     * @Route("/uploads/sales/damage-goods/{path}", name="damage_good_doc_view", options={"expose"=true})
-     * @return Response
-     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_SR_GROUP, ROLE_DAMAGE_GOODS_VERIFY, ROLE_DAMAGE_GOODS_APPROVE")
-     */
-    public function viewDocAction()
-    {
-        //nothing to have
-    }
 }
