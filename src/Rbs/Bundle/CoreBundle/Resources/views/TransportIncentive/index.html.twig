@@ -1,6 +1,6 @@
 {% extends '::base.html.twig' %}
 
-{% block title %}{{ parent() }} : Transport Incentives {% endblock %}
+{% block title %}{{ parent() }} : Transport Commission Chart {% endblock %}
 
 {% block body %}
     <div class="modal fade" id="ajaxHistory" role="basic" aria-hidden="true">
@@ -26,30 +26,20 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <td style="width: 40px;">SL</td>
-                                    <td style="width: 150px;">District</td>
-                                    <td style="width: 150px;">History</td>
-                                    <td>
-                                        <table class="table table-bordered table-striped">
-                                            <tr>
-                                                <td style="width: 250px;">Station</td>
-                                                {% for depo in depos %}
-                                                    <td>
-                                                        <table class="table table-bordered table-striped" style="padding: 0;margin: 0;">
-                                                            <tr>
-                                                                <td colspan="{{ itemTypeCount }}">{{ depo['name'] }}</td>
-                                                            </tr>
-                                                            <tr>
-                                                                {% for itemType in itemTypes %}
-                                                                    <td>{{ itemType['itemType'] }}</td>
-                                                                {% endfor %}
-                                                            </tr>
-                                                        </table>
-                                                    </td>
-                                                {% endfor %}
-                                            </tr>
-                                        </table>
-                                    </td>
+                                    <th style="width: 40px;" rowspan="2">SL</th>
+                                    <th style="width: 150px;" rowspan="2">District</th>
+                                    <th style="width: 150px;" rowspan="2">History</th>
+                                    <th style="width: 150px;" rowspan="2">Station</th>
+                                    {% for depo in depos %}
+                                        <th colspan="{{ itemTypeCount }}">{{ depo['name'] }}</th>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                {% for depo in depos %}
+                                    {% for itemType in itemTypes %}
+                                        <th>{{ itemType['itemType'] }}</th>
+                                    {% endfor %}
+                                {% endfor %}
                                 </tr>
                             </thead>
                             <tbody>
@@ -59,20 +49,14 @@
                                         <td style="width: 40px;">{{ i }}</td>
                                         <td style="width: 150px;">{{ district }}</td>
                                         <td style="width: 150px;"><a data-target="#ajaxHistory" data-toggle="modal" href="{{ path('transport_commission_history', {"district":district}) }}">History</a></td>
-                                        <td>
-                                            <table class="table table-bordered table-striped">
-                                                {% for station, transport in transportIncentive %}
-                                                    <tr>
-                                                        <td style="width: 250px;">{{ station }}</td>
-                                                        {% for depo, trans in transport['data'] %}
-                                                            {% for type, tran in trans %}
-                                                                <td>{{ tran }}</td>
-                                                            {% endfor %}
-                                                        {% endfor %}
-                                                    </tr>
+                                        {% for station, transport in transportIncentive %}
+                                            <td style="width: 150px;">{{ station }}</td>
+                                            {% for depo, trans in transport['data'] %}
+                                                {% for type, tran in trans %}
+                                                    <td>{{ tran }}</td>
                                                 {% endfor %}
-                                            </table>
-                                        </td>
+                                            {% endfor %}
+                                        {% endfor %}
                                     </tr>
                                 {% set i = i+1 %}
                                 {% endfor %}
@@ -84,12 +68,3 @@
         </div>
     <div style="clear: both"></div>
 {% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-{% endblock %}
-
-{% block javascripts %}
-    {{ parent() }}
-{% endblock %}
-
