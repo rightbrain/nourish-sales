@@ -6,6 +6,7 @@ use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\GreaterThan;
 
 class AgentsBankInfoForm extends AbstractType
 {
@@ -26,6 +27,12 @@ class AgentsBankInfoForm extends AbstractType
             ->add('amount', null, array(
                 'attr' => array(
                     'class' => 'input-small input-mask-amount'
+                ),
+                'constraints' => array(
+                    new GreaterThan(array(
+                        'value' => 0,
+                        'message' => 'This value should be greater than {{ compared_value }}.'
+                    ))
                 )
             ))
             ->add('bankName')
