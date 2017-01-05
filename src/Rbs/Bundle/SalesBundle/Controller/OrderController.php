@@ -516,8 +516,6 @@ class OrderController extends BaseController
         $creditLimitRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:CreditLimit');
         $categoryWiseCreditSummary = $creditLimitRepo->getCategoryWiseCreditLimit($order);
         $isOverCredit = $creditLimitRepo->isOverCreditLimitInAnyCategory($order, $categoryWiseCreditSummary);
-        $verifiedPayments = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->findBy(array('orders' => $order, 'verified' => true));
-        $unVerifiedPayments = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->findBy(array('orders' => $order, 'verified' => true));
 
         if (!$agent->isVIP() && $isOverCredit) {
             $order->setPaymentState(Order::PAYMENT_STATE_CREDIT_APPROVAL);
