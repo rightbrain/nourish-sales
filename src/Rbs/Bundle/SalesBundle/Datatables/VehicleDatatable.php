@@ -38,7 +38,7 @@ class VehicleDatatable extends BaseDatatable
     public function buildDatatable()
     {
         $this->features->setFeatures($this->defaultFeatures());
-        $this->options->setOptions($this->defaultOptions());
+        $this->options->setOptions(array_merge($this->defaultOptions(), array('order' => [[0, 'desc']])));
 
         $this->ajax->setOptions(array(
             'url' => $this->router->generate('truck_info_list_ajax'),

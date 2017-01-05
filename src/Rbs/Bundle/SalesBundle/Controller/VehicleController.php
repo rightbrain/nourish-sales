@@ -49,13 +49,7 @@ class VehicleController extends BaseController
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
-        /** @var QueryBuilder $qb */
-        $function = function($qb)
-        {
 
-        };
-        $query->addWhereAll($function);
-        
         return $query->getResponse();
     }
 
