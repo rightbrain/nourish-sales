@@ -56,7 +56,8 @@ class VehicleDeliverySetForm extends AbstractType
                         ->where('o.deliveryState = :PARTIALLY_SHIPPED OR o.deliveryState = :READY')
                         ->andWhere('u.id = :user')
                         ->setParameters(array('PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED, 'READY'=>Order::DELIVERY_STATE_READY,
-                            'user' => $this->user->getId()));
+                            'user' => $this->user->getId()))
+                        ->orderBy('o.id', 'desc');
                 }
             ))
             ->add('submit', 'submit', array(
