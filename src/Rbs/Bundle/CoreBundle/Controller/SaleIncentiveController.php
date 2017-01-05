@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
+use Doctrine\DBAL\Driver\Connection;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Entity\SaleIncentive;
 use Rbs\Bundle\CoreBundle\Entity\Upload;
@@ -27,6 +28,9 @@ class SaleIncentiveController extends BaseController
      */
     public function listAction()
     {
+        /** Disable ONLY_FULL_GROUP_BY for mysql 5.6 or higher */
+        $this->getDoctrine()->getConnection()->exec("SET sql_mode = ''");
+
         $groupMonth = array();
         $groupYear = array();
 
