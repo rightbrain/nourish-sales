@@ -178,7 +178,7 @@
                                             <tbody>
                                             {% set index = 1 %}
                                             {% for payment in order.payments %}
-                                                {% if payment.paymentMethod == 'BANK' %}
+                                                {% if payment.paymentMethod == 'BANK' and payment.verified %}
                                                 <tr>
                                                     <td>{{ index }}.</td>
                                                     <td>{{ payment.depositDate | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>

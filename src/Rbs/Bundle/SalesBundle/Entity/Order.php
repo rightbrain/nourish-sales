@@ -57,6 +57,7 @@ class Order
 
     /**
      * @ORM\ManyToMany(targetEntity="Payment", mappedBy="orders")
+     * @ORM\OrderBy({"createdAt" = "DESC"})
      **/
     protected $payments;
 
