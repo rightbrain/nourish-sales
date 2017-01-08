@@ -250,7 +250,7 @@ class Profile
         // check if we have an old image
         if (isset($this->temp)) {
             // delete the old image
-            unlink($this->getUploadRootDir() . '/' . $this->temp);
+            @unlink($this->getUploadRootDir() . '/' . $this->temp);
             // clear the temp image path
             $this->temp = null;
         }
@@ -303,7 +303,7 @@ class Profile
     }
 
     /**
-     * @return text
+     * @return string
      */
     public function getAddress()
     {
@@ -311,7 +311,7 @@ class Profile
     }
 
     /**
-     * @param text $address
+     * @param string $address
      */
     public function setAddress($address)
     {
