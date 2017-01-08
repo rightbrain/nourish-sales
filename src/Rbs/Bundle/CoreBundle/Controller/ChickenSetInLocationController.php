@@ -20,6 +20,7 @@ class ChickenSetInLocationController extends BaseController
      * @Route("/chicken/set/in/location", name="chicken_set_in_location")
      * @Template("RbsCoreBundle:Chicken:index.html.twig")
      * @return array
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER")
      */
     public function indexAction()
     {
@@ -35,6 +36,7 @@ class ChickenSetInLocationController extends BaseController
      * @Template("RbsCoreBundle:Chicken:add.html.twig")
      * @param ChickenSet $chickenSet
      * @return array
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER")
      */
     public function addAction(ChickenSet $chickenSet)
     {
@@ -48,6 +50,7 @@ class ChickenSetInLocationController extends BaseController
      * @param Request $request
      * @param ChickenSet $chickenSet
      * @return array
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER")
      */
     public function saveAction(Request $request, ChickenSet $chickenSet)
     {
@@ -69,6 +72,7 @@ class ChickenSetInLocationController extends BaseController
      * @Template("RbsCoreBundle:Chicken:new.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER")
      */
     public function agentBankInfoCreateAction(Request $request)
     {
