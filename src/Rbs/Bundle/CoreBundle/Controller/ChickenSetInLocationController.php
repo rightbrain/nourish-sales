@@ -84,30 +84,43 @@ class ChickenSetInLocationController extends BaseController
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
-            if($request->request->get('sale_chicken_set')['item'] == null){
+            if ($request->request->get('sale_chicken_set')['item'] == null) {
                 $this->flashMessage('error', 'Item Should Not Be Blank');
+
                 return $this->redirect($this->generateUrl('chicken_set_in_location'));
             }
             if ($form->isValid()) {
-                $locations = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findBy(array(
-                    'level' => 4
-                ));
-                $itemCheck = $this->getDoctrine()->getManager()->getRepository('RbsCoreBundle:ChickenSet')->findOneBy(array(
-                    'item' => $request->request->get('sale_chicken_set')['item']
-                ));
-                if($itemCheck == null){
-                foreach ($locations as $location){
+                $locations = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findBy(
+                    array(
+                        'level' => 4,
+                    )
+                );
+                $itemCheck = $this->getDoctrine()->getManager()->getRepository('RbsCoreBundle:ChickenSet')->findOneBy(
+                    array(
+                        'item' => $request->request->get('sale_chicken_set')['item'],
+                    )
+                );
+                if ($itemCheck == null) {
+                    foreach ($locations as $location) {
                         $chickenSet = new ChickenSet();
                         $chickenSet->setLocation($location);
                         $chickenSet->setStatus(1);
-                        $chickenSet->setItem($this->getDoctrine()->getManager()->getRepository('RbsCoreBundle:Item')->find($request->request->get('sale_chicken_set')['item']));
-                        $this->getDoctrine()->getManager()->getRepository('RbsCoreBundle:ChickenSet')->create($chickenSet);
+                        $chickenSet->setItem(
+                            $this->getDoctrine()->getManager()->getRepository('RbsCoreBundle:Item')->find(
+                                $request->request->get('sale_chicken_set')['item']
+                            )
+                        );
+                        $this->getDoctrine()->getManager()->getRepository('RbsCoreBundle:ChickenSet')->create(
+                            $chickenSet
+                        );
                     }
-                }else{
+                } else {
                     $this->flashMessage('success', 'This Item Is Already Added!');
+
                     return $this->redirect($this->generateUrl('chicken_set_in_location'));
                 }
                 $this->flashMessage('success', 'Location Wise Chicken Set Assigned Successfully');
+
                 return $this->redirect($this->generateUrl('chicken_set_in_location'));
             }
         }
