@@ -139,26 +139,38 @@ var App = function() {
             //$('body').removeClass("modal-open"); // fix bug when inline picker is used in modal
         }
 
-        $('body').on('focus', '.input-mask-number, .input-mask-amount', function(){
-            if ($(this).hasClass('input-mask-amount')) {
-                $(this).inputmask({
-                    alias: "numeric",
-                    placeholder: "0",
-                    autoGroup: !0,
-                    digits: 2,
-                    digitsOptional: !1,
-                    clearMaskOnLostFocus: !1,
-                    prefix: "",
-                    groupSeparator: ""
-                });
-            } else {
-                $(this).inputmask("integer");
-            }
+        initIntergerMask($('.input-mask-number'));
+        initAmountMask($('.input-mask-amount'));
+        initPhoneMask($('.input-mask-phone'));
+    }
+
+    function initAmountMask(el){
+        $(el).inputmask({
+            alias: "numeric",
+            placeholder: "0",
+            autoGroup: !0,
+            digits: 2,
+            digitsOptional: !1,
+            clearMaskOnLostFocus: !1,
+            prefix: "",
+            groupSeparator: "",
+            removeMaskOnSubmit: false
         });
     }
 
+    function initIntergerMask(el){
+        $(el).inputmask("integer", {removeMaskOnSubmit: false});
+    }
+
+    function initPhoneMask(el){
+        $(el).inputmask("+8801999999999", {removeMaskOnSubmit: false, placeholder: '+8801xxxxxxxxx'});
+    }
+
     return {
-        init: init
+        init: init,
+        phoneMask: initPhoneMask,
+        integerMask: initIntergerMask,
+        amountMask: initAmountMask
     }
 }();
 

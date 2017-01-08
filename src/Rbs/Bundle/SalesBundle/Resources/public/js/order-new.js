@@ -53,6 +53,8 @@ var Order = function()
         $("#order_orderItems_" + index + "_remove").click(function () {
             deleteOrderItemHandler($collectionHolder, index);
         });
+
+        App.integerMask($collectionHolder.find('tr:eq('+index+')').find('.quantity'));
     }
 
     function findStockItem(item, index) {

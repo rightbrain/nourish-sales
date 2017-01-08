@@ -26,7 +26,8 @@ class AgentProfileForm extends AbstractType
                 'label' => 'Cell Phone',
                 'constraints' => array(
                     new NotBlank()
-                )
+                ),
+                'attr' => array('class' => 'input-mask-phone')
             ))
             ->add('address', 'textarea', array(
                 'constraints' => array(

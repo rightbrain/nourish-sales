@@ -6,7 +6,7 @@
         <label for="inputEmail12" class="col-md-2 control-label">VIP</label>
         <div class="col-md-2">
             <div class="input-icon">
-                {{ form_widget(form.VIP, { 'attr': {'class': ''} }) }}
+                {{ form_widget(form.VIP) }}
             </div>
         </div>
     </div>
@@ -15,25 +15,25 @@
         <label for="inputEmail12" class="col-md-2 control-label">Agent ID</label>
         <div class="col-md-10">
             <div class="input-icon">
-                {{ form_widget(form.agentID, { 'attr': {'class': ''} }) }}
+                {{ form_widget(form.agentID) }}
             </div>
         </div>
     </div>
 
-        {{ form_row(form.itemType, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.itemType) }}
 
-        {{ form_row(form.user.profile.fullName, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.user.profile.fullName) }}
         {% if agent.openingBalanceFlag != 1 %}
-            {{ form_row(form.openingBalance, { 'attr': {'class': ''} }) }}
-            {{ form_row(form.openingBalanceType, { 'attr': {'class': ''} }) }}
+            {{ form_row(form.openingBalance) }}
+            {{ form_row(form.openingBalanceType) }}
         {% endif %}
-        {{ form_row(form.depo, { 'attr': {'class': ''} }) }}
-        {{ form_row(form.user.profile.cellphone, { 'attr': {'class': ''} }) }}
-        {{ form_row(form.user.profile.address, { 'attr': {'class': ''} }) }}
-        {{ form_row(form.agentGroup, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.depo) }}
+        {{ form_row(form.user.profile.cellphone) }}
+        {{ form_row(form.user.profile.address) }}
+        {{ form_row(form.agentGroup) }}
 
-        {{ form_row(form.user.email, { 'attr': {'class': ''} }) }}
+        {{ form_row(form.user.email) }}
 
-    {{ form_row(form.submit, { 'attr': {'class': ''} }) }}
+    {{ form_row(form.submit) }}
 
 {{ form_end(form) }}

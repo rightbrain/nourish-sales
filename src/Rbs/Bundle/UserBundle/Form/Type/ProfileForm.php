@@ -27,6 +27,9 @@ class ProfileForm extends AbstractType
                         'match'     => true,
                         'message' =>'Wrong phone number'
                     ))
+                ),
+                'attr' => array(
+                    'class' => 'input-mask-phone'
                 )
             ))
             ->add('designation')
