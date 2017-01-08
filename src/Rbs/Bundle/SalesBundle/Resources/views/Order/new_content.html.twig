@@ -9,7 +9,7 @@
         {#</div>#}
     {#{% else %}#}
         <div class="form-group">
-            <label class="col-md-2 control-label">Agent</label>
+            <label class="col-md-2 control-label">Agent *</label>
             <div class="col-md-6" style="margin-top: 10px;">
                 {{ form_widget(form.agent) }}
                 {{ form_errors(form.agent) }}
@@ -18,7 +18,7 @@
     {#{% endif %}#}
 
     <div class="form-group">
-        <label class="col-md-2 control-label">Ref. SMS</label>
+        <label class="col-md-2 control-label">Ref. SMS *</label>
         <div class="col-md-6" style="margin-top: 10px;">
             {{ form_widget(form.refSMS) }}
             {{ form_errors(form.refSMS) }}
@@ -26,7 +26,7 @@
     </div>
 
     <div class="form-group">
-        <label class="col-md-2 control-label">Depo</label>
+        <label class="col-md-2 control-label">Depo *</label>
         <div class="col-md-6" style="margin-top: 10px;">
             {{ form_widget(form.depo) }}
             {{ form_errors(form.depo) }}

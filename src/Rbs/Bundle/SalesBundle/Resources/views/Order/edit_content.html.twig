@@ -1,14 +1,14 @@
 {{ form_start(form, {'method': 'POST', attr: { novalidate: 'novalidate'}}) }}
 
 <div class="form-group">
-    <label class="col-md-2 control-label">Agent</label>
+    <label class="col-md-2 control-label">Agent *</label>
     <div class="col-md-6" style="margin-top: 10px;">
         {{ order.agent.user.profile.fullName }}
     </div>
 </div>
 
 <div class="form-group">
-    <label class="col-md-2 control-label">Ref. SMS</label>
+    <label class="col-md-2 control-label">Ref. SMS *</label>
     <div class="col-md-6" style="margin-top: 10px;">
         {{ form_widget(form.refSMS) }}
         {{ form_errors(form.refSMS) }}
@@ -16,7 +16,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-md-2 control-label">Depo</label>
+    <label class="col-md-2 control-label">Depo *</label>
     <div class="col-md-6" style="margin-top: 10px;">
         {{ form_widget(form.depo, {'attr' : depoAttr}) }}
         {{ form_errors(form.depo) }}
