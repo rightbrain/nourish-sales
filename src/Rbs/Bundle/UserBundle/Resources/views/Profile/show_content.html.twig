@@ -21,7 +21,7 @@
                                         <th colspan="3">
                                             {% if user.profile != null %}
                                                 {% if user.profile.path != null %}
-                                                    <img src='{{ asset('uploads/user/'~agent.user.profile.path) }}' style="width: 60px;height: 60px;"/>
+                                                    <img src='{{ asset(user.profile.getWebPath) }}' style="width: 60px;height: 60px;"/>
                                                 {% else %}
                                                     <img src='{{ asset('assets/admin/layout/img/avatar.png') }}' style="width: 60px;height: 60px;"/>
                                                 {% endif %}

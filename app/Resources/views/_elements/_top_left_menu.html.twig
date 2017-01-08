@@ -2,7 +2,7 @@
     <ul class="nav navbar-nav pull-right">
         <li class="dropdown dropdown-user">
             <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-                {#<img alt="" class="img-circle" src="../../assets/admin/layout/img/avatar3_small.jpg"/>#}
+                {% if app.user.profile and app.user.profile.path %} <img src='{{ asset(app.user.profile.getWebPath) }}' class="img-circle"/> {% endif %}
 					<span class="username username-hide-on-mobile">
 					{{ app.user.profile.fullName is defined ? app.user.profile.fullName : app.user.username }} </span>
                 <i class="fa fa-angle-down"></i>
