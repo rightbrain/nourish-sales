@@ -45,7 +45,7 @@
                                         <td class="col-md-1 bold">File:</td>
                                         <td class="col-md-1 bold">
                                             {% if damageGood.path != null %}
-                                            <a class="btn btn-xs" href="#" onclick="javascript: window.open('/damage/good/doc/view/{{ damageGood.id }}')">
+                                            <a class="btn btn-xs" href="{{ damageGood.getDownloadFilePath }}" target="_blank">
                                                 <i class="fa fa-file"></i>
                                             </a>
                                             {% else %} N/A

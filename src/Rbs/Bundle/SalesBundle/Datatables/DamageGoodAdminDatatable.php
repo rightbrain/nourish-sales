@@ -16,10 +16,11 @@ class DamageGoodAdminDatatable extends BaseDatatable
          * @return mixed
          */
         $formatter = function($line){
+            /** @var DamageGood $damageGood */
             $damageGood = $this->em->getRepository('RbsSalesBundle:DamageGood')->find($line['id']);
             $line['isPathExist'] = !$damageGood->isPathExist();
             $line['isApproved'] = $damageGood->isApproved();
-            $line['attachFile'] = empty($line['path']) ? '' : '<a href="/uploads/sales/damage-goods/'.$line['path'].'" rel="tooltip" title="view" class="btn btn-xs" role="button" target="_blank"><i class="fa fa-file"></i> View</a>';
+            $line['attachFile'] = empty($line['path']) ? '' : '<a href="'.$damageGood->getDownloadFilePath().'" rel="tooltip" title="view" class="btn btn-xs" role="button" target="_blank"><i class="fa fa-file"></i> View</a>';
 
             return $line;
         };

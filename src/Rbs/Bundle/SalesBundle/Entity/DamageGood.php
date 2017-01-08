@@ -485,4 +485,9 @@ class DamageGood
 
         return $this;
     }
+
+    public function getDownloadFilePath()
+    {
+        return empty($this->path) ? '#' : '/'.$this->getUploadDir() . '/' . $this->path;
+    }
 }
