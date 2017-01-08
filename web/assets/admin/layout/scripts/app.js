@@ -122,7 +122,7 @@ var App = function() {
             $('.main-content').slideUp();
             $('.action-content-hold').slideDown();
         }).on('click', '.cancel-submit', function(){
-            $('[class^=action-content]').slideUp();
+            $('.order-hold-modal-action, .action-content-cancel').slideUp();
             $('.main-content').slideDown();
         }).on('submit', '.action-content-form', function(){
             $(this).find('input[type=submit], button[type=submit]').attr('disabled', true);
