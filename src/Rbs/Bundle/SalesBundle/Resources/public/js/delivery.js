@@ -141,6 +141,7 @@ var Delivery = function()
                 orderItemRemainingHandle();
                 orderProgressHandle();
                 $('#process-actions span').tooltip();
+                App.integerMask($('#delivery-item-form').find('.orderItems .deliver-qty'));
             }, 500);
         });
 
