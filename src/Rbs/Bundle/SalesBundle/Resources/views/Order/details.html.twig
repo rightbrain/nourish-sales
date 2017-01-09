@@ -66,8 +66,10 @@
                                     <table class="table">
                                         <tr>
                                             <th class="text-center col-md-4">Order State</th>
+                                            {% if order.orderState != 'CANCEL' %}
                                             <th class="text-center col-md-4">Payment State</th>
                                             <th class="text-center col-md-4">Delivery State</th>
+                                            {% endif %}
                                         </tr>
                                         <tr id="process-actions">
                                             <td class="text-center">
@@ -85,6 +87,7 @@
 
                                                 <span class="{{ 'label label-sm label-'~ orderStateColor }}">{{ order.orderState }}</span>
                                             </td>
+                                            {% if order.orderState != 'CANCEL' %}
                                             <td class="text-center">
                                                 {% if order.paymentState == 'PENDING' %}
                                                     {% set paymentStateColor = 'warning' %}
@@ -115,6 +118,7 @@
 
                                                 <span class="{{ 'label label-sm label-'~ deliveryStateColor }}">{{ order.deliveryState }}</span>
                                             </td>
+                                            {% endif %}
                                         </tr>
                                     </table>
                                 </div>
