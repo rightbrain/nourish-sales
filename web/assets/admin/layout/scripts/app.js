@@ -91,9 +91,10 @@ var App = function() {
         // Datepicker Init on Modal
         $(modals).on('shown.bs.modal', function (e) {
             setTimeout(function(){
-                $('.date-picker').datepicker({
-                    format: "yyyy-mm-dd",
-                    autoclose: true
+                $('div.modal').find('.date-picker').datepicker({
+                    format: "dd-mm-yyyy",
+                    autoclose: true,
+                    todayBtn: "linked"
                 }).datepicker('setDate', new Date());
             }, 200);
         });
