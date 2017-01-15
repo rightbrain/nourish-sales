@@ -26,7 +26,7 @@ class AgentUpdateForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $agentId = $builder->getData()->getAgentID();
-        $isAgentIdDisabled = !empty($agentId);
+        $isAgentIdDisabled = false;//!empty($agentId);
         $builder
             ->add('VIP', 'choice', array(
                     'choices' => array(
