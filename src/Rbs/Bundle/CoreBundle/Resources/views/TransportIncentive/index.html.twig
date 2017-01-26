@@ -22,7 +22,7 @@
             </div>
             <div class="portlet-body">
                 {{ include('_elements/_back_to_list_button.html.twig', {url: path('transport_incentive_import'), label: 'Import Commission', 'icon': 'plus'}) }}
-                    <div class="dataTables_wrapper no-footer">
+                    <div class="dataTables_wrapper no-footer" style="overflow-y: scroll">
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
@@ -43,23 +43,31 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% set i = 1 %}
-                                {% for district, transportIncentive in transportIncentivesArr %}
+                            {% set i = 1 %}
+                            {% for district, transportIncentive in transportIncentivesArr %}
+                                {% set districtRowId = 1 %}
+                                {% set rows = transportIncentive|length %}
+                                {% for station, transport in transportIncentive %}
                                     <tr>
-                                        <td style="width: 40px;">{{ i }}</td>
-                                        <td style="width: 150px;">{{ district }}</td>
-                                        <td style="width: 150px;"><a data-target="#ajaxHistory" data-toggle="modal" href="{{ path('transport_commission_history', {"district":district}) }}">History</a></td>
-                                        {% for station, transport in transportIncentive %}
-                                            <td style="width: 150px;">{{ station }}</td>
-                                            {% for depo, trans in transport['data'] %}
-                                                {% for type, tran in trans %}
-                                                    <td>{{ tran }}</td>
-                                                {% endfor %}
+                                        {% if districtRowId == 1 %}
+                                        <td style="width: 40px;" rowspan="{{ rows }}">{{ i }}</td>
+                                        <td style="width: 150px;" rowspan="{{ rows }}">{{ district }}</td>
+                                        <td style="width: 150px;" rowspan="{{ rows }}"><a data-target="#ajaxHistory" data-toggle="modal"
+                                                                     href="{{ path('transport_commission_history', {"district":district}) }}">History</a>
+                                        </td>
+                                        {% endif %}
+                                        <td style="width: 150px;">{{ station }}</td>
+                                        {% for depo, trans in transport['data'] %}
+                                            {% for type, tran in trans %}
+                                                <td>{{ tran }}</td>
                                             {% endfor %}
                                         {% endfor %}
                                     </tr>
-                                {% set i = i+1 %}
+                                {% set districtRowId = districtRowId+1 %}
+
                                 {% endfor %}
+                                {% set i = i+1 %}
+                            {% endfor %}
                             </tbody>
                         </table>
                     </div>

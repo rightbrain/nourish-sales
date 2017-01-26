@@ -174,6 +174,9 @@ class TransportIncentiveController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            set_time_limit(0);
+            ini_set('memory_limit', '1014M');
             $file = $upload->getFile();
             $fileName = md5(uniqid()).'.csv';
             $file->move(
@@ -197,12 +200,23 @@ class TransportIncentiveController extends BaseController
                     }
                     $transportIncentive = new TransportIncentive();
                     $transportIncentive->setStatus(TransportIncentive::CURRENT);
-                    $transportIncentive->setDistrict($this->getLocationByName($col[0]));
-                    $transportIncentive->setStation($this->getLocationByName($col[1]));
-                    $transportIncentive->setDepo($this->getDepoByName($col));
+
+                    $district = $this->getLocationByName($col[0]);
+                    if (!$district) continue;
+                    $transportIncentive->setDistrict($district);
+
+                    $station = $this->getLocationByName($col[1]);
+                    if (!$station) continue;
+                    $transportIncentive->setStation($station);
+
+                    $depo = $this->getDepoByName($col);
+                    if (!$depo) continue;
+                    $transportIncentive->setDepo($depo);
+
                     $transportIncentive->setItemType($this->getItemTypeByName($col));
-                    $transportIncentive->setAmount($col[4]);
-                    $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->create($transportIncentive);
+                    $transportIncentive->setAmount((float)$col[4]);
+                    $em->persist($transportIncentive);
+                    $em->flush();
                 }
                 fclose($handle);
             }
