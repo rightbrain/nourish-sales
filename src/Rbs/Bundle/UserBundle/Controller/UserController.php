@@ -302,6 +302,10 @@ class UserController extends Controller
             $user->getProfile()->removeFile($user->getProfile()->getPath());
         }
 
+        $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array('user' => $user));
+        if ($agent) {
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->delete($agent);
+        }
         $this->getDoctrine()->getRepository('RbsUserBundle:User')->delete($user);
 
         $this->get('session')->getFlashBag()->add(

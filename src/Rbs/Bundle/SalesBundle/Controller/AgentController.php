@@ -193,9 +193,10 @@ class AgentController extends BaseController
         }
 
         $this->getDoctrine()->getManager()->remove($agent);
+        $this->getDoctrine()->getManager()->remove($agent->getUser());
         $this->getDoctrine()->getManager()->flush();
 
-        $this->get('session')->getFlashBag()->add('success','Agent Successfully Delete');
+        $this->get('session')->getFlashBag()->add('success','Agent Successfully Deleted');
         return $this->redirect($this->generateUrl('agents_home'));
     }
 
