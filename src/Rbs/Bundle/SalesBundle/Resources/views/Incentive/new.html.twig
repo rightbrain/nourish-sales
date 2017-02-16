@@ -12,11 +12,13 @@
                 <tr>
                     <td>Agent : </td>
                     <td>
-                        <select class="form-control select2me" name="agent">
-                            {% for agent in agents %}
-                            <option value="{{ agent.id }}">{{ agent.user.profile.fullName | default('') }}</option>
-                            {% endfor %}
-                        </select>
+                        <div class="form-group">
+                            <select class="form-control select2me" name="agent">
+                                {% for agent in agents %}
+                                    <option value="{{ agent.id }}">{{ agent.getIdName | default('') }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -79,4 +81,5 @@
     %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
+    <script>$('.select2me').select2();</script>
 {% endblock %}

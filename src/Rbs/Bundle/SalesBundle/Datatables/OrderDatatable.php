@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\UserBundle\Entity\User;
 
@@ -33,7 +34,7 @@ class OrderDatatable extends BaseDatatable
             $line["totalAmount"] = number_format($order->getTotalAmount(), 2);
             $line["paidAmount"] = number_format($order->getPaidAmount(), 2);
             if ($this->showAgentName) {
-                $line["fullName"] = $order->getAgent()->getUser()->getProfile()->getFullName();
+                $line["fullName"] = Agent::agentIdNameFormat($order->getAgent()->getAgentID(), $order->getAgent()->getUser()->getProfile()->getFullName());
             }
 
             $line["actionButtons"] = $this->generateActionList($order);

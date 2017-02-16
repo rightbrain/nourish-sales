@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\UserBundle\Entity\User;
 
 /**
@@ -50,7 +51,7 @@ class AgentRepository extends EntityRepository
     public function getAgentListKeyValue()
     {
         $query = $this->createQueryBuilder('a');
-        $query->select('a.id, p.fullName');
+        $query->select('a.id, a.agentID, p.fullName');
         $query->join('a.user', 'u');
         $query->join('u.profile', 'p');
         $query->where('u.userType = :AGENT');
@@ -66,7 +67,7 @@ class AgentRepository extends EntityRepository
 
         $output[''] = 'Select';
         foreach ($result as $agent) {
-            $output[$agent['id']] = $agent['fullName'];
+            $output[$agent['id']] = Agent::agentIdNameFormat($agent['agentID'], $agent['fullName']);
         }
 
         return $output;

@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\CreditLimit;
 use Rbs\Bundle\UserBundle\Entity\User;
 
@@ -19,7 +20,7 @@ class CreditLimitDatatable extends BaseDatatable
          */
         $formatter = function($line){
             $creditLimit = $this->em->getRepository('RbsSalesBundle:CreditLimit')->find($line['id']);
-            $line['fullName'] = $creditLimit->getAgent()->getUser()->getProfile()->getFullName();
+            $line['fullName'] = Agent::agentIdNameFormat($creditLimit->getAgent()->getAgentID(), $creditLimit->getAgent()->getUser()->getProfile()->getFullName());
 
             return $line;
         };

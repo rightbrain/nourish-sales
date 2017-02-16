@@ -66,7 +66,7 @@ class PaymentForm extends AbstractType
                 'attr' => array(
                     'class' => 'select2me'
                 ),
-                'property' => 'user.profile.fullName',
+                'property' => 'getIdName',
                 'empty_value' => 'Select Agent',
                 'empty_data' => null,
                 'query_builder' => function (AgentRepository $repository)

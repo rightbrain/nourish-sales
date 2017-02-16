@@ -20,7 +20,7 @@ class CreditLimitForm extends AbstractType
         $builder
             ->add('agent', 'entity', array(
                 'class' => 'RbsSalesBundle:Agent',
-                'property' => 'user.profile.fullName',
+                'property' => 'getIdName',
                 'required' => false,
                 'attr' => array(
                     'class' => 'select2me'

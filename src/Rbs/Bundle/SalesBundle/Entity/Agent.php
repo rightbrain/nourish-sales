@@ -383,4 +383,14 @@ class Agent
             ? $this->getUser()->getProfile()->getFullName()
             : $this->getUser()->getUsername();
     }
+
+    public static function agentIdNameFormat($id, $name)
+    {
+        return $id . ' - ' . $name;
+    }
+
+    public function getIdName()
+    {
+        return Agent::agentIdNameFormat($this->getAgentID(), $this->getUser()->getProfile()->getFullName());
+    }
 }

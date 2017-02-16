@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Incentive;
 use Rbs\Bundle\UserBundle\Entity\User;
 
@@ -24,7 +25,7 @@ class IncentiveDatatable extends BaseDatatable
             $incentive = $this->em->getRepository('RbsSalesBundle:Incentive')->find($line['id']);
             $line["isActive"] = $incentive->isActive();
             if ($this->showAgentName) {
-                $line["fullName"] = $incentive->getAgent()->getUser()->getProfile()->getFullName();
+                $line["fullName"] = Agent::agentIdNameFormat($incentive->getAgent()->getAgentID(), $incentive->getAgent()->getUser()->getProfile()->getFullName());
             }
             return $line;
         };

@@ -26,7 +26,7 @@ var Payment = function()
             $("#agent-filter").select2({
                 placeholder: "Agents",
                 allowClear: true,
-                minimumInputLength: 3,
+                minimumInputLength: 2,
                 ajax: {
                     url: Routing.generate('agent_search'),
                     dataType: 'json',

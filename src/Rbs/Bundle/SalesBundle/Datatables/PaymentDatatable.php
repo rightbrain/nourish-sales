@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\UserBundle\Entity\Profile;
 use Rbs\Bundle\UserBundle\Entity\User;
@@ -29,7 +30,7 @@ class PaymentDatatable extends BaseDatatable
             $line['isVerifiedTrue'] = $payment->isVerifiedTrue();
             if ($this->allowAgentSearch) {
                 $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $payment->getAgent()->getUser()->getId()));
-                $line["fullName"] = $profile->getFullName();
+                $line["fullName"] = Agent::agentIdNameFormat($payment->getAgent()->getAgentID(), $profile->getFullName());
             }
 
             return $line;

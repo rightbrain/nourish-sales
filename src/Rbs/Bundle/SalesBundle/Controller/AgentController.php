@@ -231,11 +231,11 @@ class AgentController extends BaseController
         $qb = $this->agentRepository()->createQueryBuilder('c');
         $qb->join('c.user', 'u');
         $qb->join('u.profile', 'p');
-        $qb->select('u.id, p.fullName AS text');
+        $qb->select("u.id, CONCAT(c.agentID, ' - ', p.fullName) AS text");
         $qb->setMaxResults(100);
 
-        if ($agentName = $request->query->get('q')) {
-            $qb->where("p.fullName LIKE '%{$agentName}%'");
+        if ($q = $request->query->get('q')) {
+            $qb->where("c.agentID LIKE '%{$q}%' OR p.fullName LIKE '%{$q}%'");
         }
 
         return new JsonResponse($qb->getQuery()->getResult());
