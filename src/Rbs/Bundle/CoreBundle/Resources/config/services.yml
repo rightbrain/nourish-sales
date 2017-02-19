@@ -28,42 +28,67 @@ services:
         class: Rbs\Bundle\CoreBundle\Datatables\AuditLogDatatable
         tags:
             - { name: sg.datatable.view }
+
     rbs_erp.core.datatable.sub_category:
         class: Rbs\Bundle\CoreBundle\Datatables\SubCategoryDatatable
         tags:
             - { name: sg.datatable.view }
+
     rbs_erp.core.datatable.project:
         class: Rbs\Bundle\CoreBundle\Datatables\ProjectDatatable
         tags:
             - { name: sg.datatable.view }
+
     rbs_erp.core.datatable.project_type:
         class: Rbs\Bundle\CoreBundle\Datatables\ProjectTypeDatatable
         tags:
             - { name: sg.datatable.view }
+
     rbs_erp.core.datatable.item_type:
         class: Rbs\Bundle\CoreBundle\Datatables\ItemTypeDatatable
         tags:
             - { name: sg.datatable.view }
+
     rbs_erp.core.datatable.item:
         class: Rbs\Bundle\CoreBundle\Datatables\ItemDatatable
         tags:
             - { name: sg.datatable.view }
+
     rbs_erp.core.datatable.vendor:
         class: Rbs\Bundle\CoreBundle\Datatables\VendorDatatable
         tags:
             - { name: sg.datatable.view }
+
     rbs_erp.core.datatable.depo:
         class: Rbs\Bundle\CoreBundle\Datatables\DepoDatatable
         tags:
             - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.sale.incentive.monthly.history:
         class: Rbs\Bundle\CoreBundle\Datatables\SalesIncentiveMonthlyHistoryDatatable
         tags:
             - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.sale.incentive.yearly.history:
         class: Rbs\Bundle\CoreBundle\Datatables\SalesIncentiveYearlyHistoryDatatable
         tags:
             - { name: sg.datatable.view }
+
+    rbs_erp.core.datatable.bank:
+        class: Rbs\Bundle\CoreBundle\Datatables\BankDatatable
+        tags:
+            - { name: sg.datatable.view }
+
+    rbs_erp.core.datatable.bank_branch:
+        class: Rbs\Bundle\CoreBundle\Datatables\BankBranchDatatable
+        tags:
+            - { name: sg.datatable.view }
+
+    rbs_erp.core.datatable.bank_account:
+        class: Rbs\Bundle\CoreBundle\Datatables\BankAccountDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.transport.commission.history:
         class: Rbs\Bundle\CoreBundle\Datatables\TransportCommissionHistoryDatatable
         tags:

@@ -91,6 +91,27 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
+
+            if ($this->authorizationChecker->isGranted('ROLE_HEAD_OFFICE_USER')) {
+                /** @var \Knp\Menu\MenuItem $menu2 */
+                $menu2 = $menu['Settings']->addChild('Bank Accounts', array('route' => 'bank_account'))
+                    ->setAttribute('icon', 'fa fa-th-list')
+                    ->setChildrenAttribute('class', 'sub-menu');
+                $menu2->addChild('Accounts', array('route' => 'bank_account'))->setAttribute('icon', 'fa fa-th-list');
+                $menu2->addChild('Banks', array('route' => 'bank'))->setAttribute('icon', 'fa fa-th-list');
+                $menu2->addChild('Branches', array('route' => 'bankbranch'))->setAttribute('icon', 'fa fa-th-list');
+
+                if ($this->isMatch('bank_create') || $this->isMatch('bank_update')) {
+                    $menu2['Banks']->setCurrent(true);
+                }
+                if ($this->isMatch('bankbranch_create') || $this->isMatch('bankbranch_update')) {
+                    $menu2['Branches']->setCurrent(true);
+                }
+                if ($this->isMatch('bank_account_create') || $this->isMatch('bank_account_update')) {
+                    $menu2['Accounts']->setCurrent(true);
+                }
+            }
+
             if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
                 $menu['Settings']->addChild('SMS Emulator', array('route' => 'order_via_sms'))
                     ->setAttribute('icon', 'fa fa-th-list');
@@ -98,7 +119,8 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Settings']->getChild('SMS Emulator')->setCurrent(true);
                 }
             }
-/* Report Menu*/
+
+            /* Report Menu*/
             $menu->addChild('Report', array())
                 ->setAttribute('dropdown', true)
                 ->setAttribute('icon', 'fa fa-cog')
