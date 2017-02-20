@@ -12,4 +12,21 @@ use Doctrine\ORM\EntityRepository;
  */
 class BankAccountRepository extends EntityRepository
 {
+    public function getAccountListWithBankBranch()
+    {
+        $qb = $this->createQueryBuilder('account')
+            ->select("bank.name AS bankName, branch.name as branchName, account.id, account.name as accountName")
+            ->join('account.branch', 'branch')
+            ->join('branch.bank', 'bank')
+            ->addOrderBy('bank.name', 'asc')
+            ->addOrderBy('branch.name', 'asc')
+            ->getQuery()->getResult();
+
+        $data = array();
+        foreach ($qb as $row) {
+            $data[$row['id']] = $row['accountName'] . ' - ' . $row['bankName'] . ' - ' . $row['branchName'];
+        }
+
+        return $data;
+    }
 }

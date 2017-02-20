@@ -3,6 +3,7 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Rbs\Bundle\CoreBundle\Entity\BankAccount;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
@@ -73,18 +74,13 @@ class Payment
     private $transactionType;
 
     /**
-     * @var string
+     * @var BankAccount
      *
-     * @ORM\Column(name="bank_name", type="string", length=250, nullable=true)
-     */
-    private $bankName;
-
-    /**
-     * @var string
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\BankAccount", inversedBy="payments", cascade={"persist"})
+     * @ORM\JoinColumn(name="bank_account_id", nullable=true)
      *
-     * @ORM\Column(name="branch_name", type="string", length=250, nullable=true)
      */
-    private $branchName;
+    private $bankAccount;
 
     /**
      * @var float
@@ -183,38 +179,6 @@ class Payment
     public function setPaymentMethod($paymentMethod)
     {
         $this->paymentMethod = $paymentMethod;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBankName()
-    {
-        return $this->bankName;
-    }
-
-    /**
-     * @param string $bankName
-     */
-    public function setBankName($bankName)
-    {
-        $this->bankName = $bankName;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBranchName()
-    {
-        return $this->branchName;
-    }
-
-    /**
-     * @param string $branchName
-     */
-    public function setBranchName($branchName)
-    {
-        $this->branchName = $branchName;
     }
 
     /**
@@ -343,5 +307,25 @@ class Payment
             return 'VERIFIED';
         }
         return 'NOT VERIFIED';
+    }
+
+    /**
+     * @return BankAccount
+     */
+    public function getBankAccount()
+    {
+        return $this->bankAccount;
+    }
+
+    /**
+     * @param $bankAccount
+     *
+     * @return Payment
+     */
+    public function setBankAccount($bankAccount)
+    {
+        $this->bankAccount = $bankAccount;
+
+        return $this;
     }
 }

@@ -25,7 +25,7 @@ class PaymentDatatable extends BaseDatatable
          */
         $formatter = function($line){
             $payment = $this->em->getRepository('RbsSalesBundle:Payment')->find($line['id']);
-            $line['bankInfo'] = 'Payment Method:'.$payment->getPaymentMethod().', Bank Name:'.$payment->getBankName().', Branch Name:'.$payment->getBranchName();
+            //$line['bankInfo'] = 'Payment Method:'.$payment->getPaymentMethod().', Bank Name:'.$payment->getBankName().', Branch Name:'.$payment->getBranchName();
             $line['totalAmount'] = '<div style="text-align: right;">'. number_format($payment->getAmount(), 2) .'</div>';
             $line['isVerifiedTrue'] = $payment->isVerifiedTrue();
             if ($this->allowAgentSearch) {
@@ -79,9 +79,9 @@ class PaymentDatatable extends BaseDatatable
         $this->columnBuilder->add('amount', 'column', array('visible' => false))
             ->add('totalAmount', 'virtual', array('title' => 'Amount'))
             ->add('paymentMethod', 'column', array('visible' => false))
-            ->add('bankName', 'column', array('visible' => false))
-            ->add('branchName', 'column', array('visible' => false))
-            ->add('bankInfo', 'virtual', array('title' => 'Bank Info'))
+            ->add('bankAccount.name', 'column', array('title' => 'Account'))
+            //->add('branchName', 'column', array('visible' => false))
+            //->add('bankInfo', 'virtual', array('title' => 'Bank Info'))
             ->add('isVerifiedTrue', 'virtual', array('title' => 'Verified', 'visible' => true))
             ->add('orders.id', 'array', array(
                 'title' => 'Orders',

@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\CoreBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -49,6 +50,13 @@ class BankAccount
      * @ORM\JoinColumn(name="bank_branch_id")
      */
     private $branch;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\Payment", mappedBy="payments")
+     */
+    private $payments;
 
     /**
      * Get id
@@ -150,5 +158,14 @@ class BankAccount
     public function getBranch()
     {
         return $this->branch;
+    }
+
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
     }
 }

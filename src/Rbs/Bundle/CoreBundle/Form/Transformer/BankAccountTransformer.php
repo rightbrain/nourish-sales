@@ -1,13 +1,13 @@
 <?php
 
-namespace Rbs\Bundle\SalesBundle\Form\DataTransformer;
+namespace Rbs\Bundle\CoreBundle\Form\Transformer;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 
-class OrderIdDataTransformer implements DataTransformerInterface
+class BankAccountTransformer implements DataTransformerInterface
 {
     private $manager;
 
@@ -45,22 +45,22 @@ class OrderIdDataTransformer implements DataTransformerInterface
             return;
         }
 
-        $order = $this->manager
-            ->getRepository('RbsSalesBundle:Order')
+        $bankAccount = $this->manager
+            ->getRepository('RbsCoreBundle:BankAccount')
             // query for the issue with this id
             ->find($bankAccountId)
         ;
 
-        if (null === $order) {
+        if (null === $bankAccount) {
             // causes a validation error
             // this message is not shown to the user
             // see the invalid_message option
             throw new TransformationFailedException(sprintf(
-                'An order with number "%s" does not exist!',
+                'An bank account with number "%s" does not exist!',
                 $bankAccountId
             ));
         }
 
-        return $order;
+        return $bankAccount;
     }
 }

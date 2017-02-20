@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Doctrine\ORM\EntityManager;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
@@ -11,14 +12,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Rbs\Bundle\CoreBundle\Form\Transformer\BankAccountTransformer;
 
 class PaymentForm extends AbstractType
 {
     /** @var Request */
     private $request;
 
-    public function __construct($request = null)
+    /** @var  EntityManager */
+    private $em;
+
+    public function __construct($entityManager, $request = null)
     {
+        $this->em = $entityManager;
         $this->request = $request;
     }
 
@@ -36,21 +42,10 @@ class PaymentForm extends AbstractType
                     'class' => 'input-small input-mask-amount'
                 )
             ))
-            ->add('bankName', 'text', array(
-                'required' => true,
-                'constraints' => array(
-                    new NotBlank(array(
-                        'message'=>'Bank Name should not be blank'
-                    )),
-                )
-            ))
-            ->add('branchName', 'text', array(
-                'required' => true,
-                'constraints' => array(
-                    new NotBlank(array(
-                        'message'=>'Branch Name should not be blank'
-                    )),
-                )
+            ->add('bankAccount', 'choice', array(
+                'required' => false,
+                'choices' => $this->getAccountList(),
+                'attr' => array('class' => 'select2me')
             ))
             ->add('paymentMethod', 'choice', array(
                 'empty_value' => 'Select Payment Method',
@@ -108,6 +103,9 @@ class PaymentForm extends AbstractType
                 'attr'     => array('class' => 'btn green')
             ))
         ;
+
+        $builder->get('bankAccount')
+            ->addModelTransformer(new BankAccountTransformer($this->em));
     }
 
     /**
@@ -123,5 +121,10 @@ class PaymentForm extends AbstractType
     public function getName()
     {
         return 'payment';
+    }
+
+    private function getAccountList()
+    {
+        return $this->em->getRepository('RbsCoreBundle:BankAccount')->getAccountListWithBankBranch();
     }
 }

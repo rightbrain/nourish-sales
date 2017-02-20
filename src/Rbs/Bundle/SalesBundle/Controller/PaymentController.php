@@ -97,7 +97,7 @@ class PaymentController extends BaseController
     public function createAction(Request $request)
     {
         $payment = new Payment();
-        $form = $this->createForm(new PaymentForm($this->get('request')), $payment, array(
+        $form = $this->createForm(new PaymentForm($this->getDoctrine()->getManager(), $this->get('request')), $payment, array(
             'action' => $this->generateUrl('payment_create'),
             'method' => 'POST',
             'attr' => array('novalidate' => 'novalidate')

@@ -16,6 +16,10 @@ var Payment = function()
 
         var table = $('#payment_datatable').DataTable();
 
+        // Bangla hack to fix datatable break layout
+        $(window).trigger('resize');
+        $(window).trigger('resize');
+
         $('.input-daterange').datepicker({
             autoclose: true,
             todayBtn: "linked",
