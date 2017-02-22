@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
+use Rbs\Bundle\CoreBundle\Entity\BankAccount;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\UserBundle\Entity\Profile;
@@ -24,13 +25,10 @@ class PaymentDatatable extends BaseDatatable
          * @return mixed
          */
         $formatter = function($line){
-            $payment = $this->em->getRepository('RbsSalesBundle:Payment')->find($line['id']);
-            //$line['bankInfo'] = 'Payment Method:'.$payment->getPaymentMethod().', Bank Name:'.$payment->getBankName().', Branch Name:'.$payment->getBranchName();
-            $line['totalAmount'] = '<div style="text-align: right;">'. number_format($payment->getAmount(), 2) .'</div>';
-            $line['isVerifiedTrue'] = $payment->isVerifiedTrue();
+            $line['bankInfo'] = $this->formatBankInfo($line['bankAccount'], $line['transactionType'], $line['paymentMethod']);
+            $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
             if ($this->allowAgentSearch) {
-                $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $payment->getAgent()->getUser()->getId()));
-                $line["fullName"] = Agent::agentIdNameFormat($payment->getAgent()->getAgentID(), $profile->getFullName());
+                $line["fullName"] = $this->resolveAgentName($line['agent']);
             }
 
             return $line;
@@ -73,21 +71,24 @@ class PaymentDatatable extends BaseDatatable
 
         $this->columnBuilder->add('createdAt', 'datetime', array( 'title' => 'Date', 'date_format' => $dateFormat ));
         if ($this->allowAgentSearch) {
-            $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName'));
+            //$this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName'));
         }
 
-        $this->columnBuilder->add('amount', 'column', array('visible' => false))
+        $this->columnBuilder
+            ->add('fullName', 'virtual', array('visible' => true, 'title' => 'Agent Name'))
+            ->add('amount', 'column', array('visible' => false))
             ->add('totalAmount', 'virtual', array('title' => 'Amount'))
             ->add('paymentMethod', 'column', array('visible' => false))
-            ->add('bankAccount.name', 'column', array('title' => 'Account'))
-            //->add('branchName', 'column', array('visible' => false))
-            //->add('bankInfo', 'virtual', array('title' => 'Bank Info'))
-            ->add('isVerifiedTrue', 'virtual', array('title' => 'Verified', 'visible' => true))
+            ->add('bankInfo', 'virtual', array('title' => 'Bank Info'))
             ->add('orders.id', 'array', array(
                 'title' => 'Orders',
                 'data' => 'orders[, ].id'
             ))
             ->add('remark', 'column', array('title' => 'Remarks'))
+            ->add('transactionType', 'column', array('visible' => false))
+            ->add('bankAccount.id', 'column', array('visible' => false))
+            ->add('amount', 'column', array('visible' => false))
+            ->add('agent.user.id', 'column', array('visible' => false))
         ;
     }
 
@@ -105,5 +106,28 @@ class PaymentDatatable extends BaseDatatable
     public function getName()
     {
         return 'payment_datatable';
+    }
+
+    private function formatBankInfo($bankAccount, $transactionType, $paymentMethod)
+    {
+        if ($transactionType == Payment::DR) return '';
+
+        $data = 'Payment Method: ' . $paymentMethod;
+
+        if (!empty($bankAccount)) {
+            $bankAccount = $this->em->getRepository('RbsCoreBundle:BankAccount')->find($bankAccount['id']);
+            if ($bankAccount) {
+                $data .= ', Bank Name:'.$bankAccount->getBranch()->getBank()->getName().', Branch Name:'.$bankAccount->getBranch()->getName();
+            }
+        }
+
+        return $data;
+    }
+
+    private function resolveAgentName($agent)
+    {
+        $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $agent['user']['id']));
+
+        return Agent::agentIdNameFormat($agent['id'], $profile->getFullName());
     }
 }

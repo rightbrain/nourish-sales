@@ -96,7 +96,7 @@ class DeliveryItem
     }
 
     /**
-     * @return mixed
+     * @return Order
      */
     public function getOrder()
     {
@@ -104,7 +104,7 @@ class DeliveryItem
     }
 
     /**
-     * @param mixed $order
+     * @param Order $order
      *
      * @return DeliveryItem
      */

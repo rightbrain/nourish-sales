@@ -54,6 +54,7 @@ class PaymentController extends BaseController
         $datatable->buildDatatable();
 
         $dateFilter = $request->query->get('columns[0][search][value]', null, true);
+        $agentFilter = $request->query->get('columns[1][search][value]', null, true);
 
         // Reset Date Column search's value to Skip DataTable native search functionality for Date Column
         $columns = $request->query->get('columns');
@@ -62,7 +63,7 @@ class PaymentController extends BaseController
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
-        $function = function($qb) use ($dateFilter, $user, $agentRepository)
+        $function = function($qb) use ($dateFilter, $agentFilter, $user, $agentRepository)
         {
             if ($dateFilter) {
                 list($fromDate, $toDate) = explode('--', $dateFilter);
@@ -77,9 +78,15 @@ class PaymentController extends BaseController
                         ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($fromDate)));
                 }
             }
+
+            if ($agentFilter) {
+                $agent = $agentRepository->findOneBy(array('user' => $agentFilter));
+                $qb->andWhere('sales_payments.agent = :agent')->setParameter('agent', $agent->getId());
+            }
+
             if ($user->getUserType() == User::AGENT) {
                 $agent = $agentRepository->findOneBy(array('user' => $user->getId()));
-                $qb->andWhere('sales_payments.agent = :agent')->setParameter('agent', array($agent));
+                $qb->andWhere('sales_payments.agent = :agent')->setParameter('agent', $agent->getId());
             }
         };
         $query->addWhereAll($function);

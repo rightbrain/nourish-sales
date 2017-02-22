@@ -526,7 +526,7 @@ class OrderController extends BaseController
             $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
         }
 
-        $em = $this->getDoctrine()->getManager();
+        /*$em = $this->getDoctrine()->getManager();
         $payment = new Payment();
         $payment->setAgent($order->getAgent());
         $payment->setAmount($order->getTotalAmount());
@@ -538,7 +538,7 @@ class OrderController extends BaseController
         $payment->addOrder($order);
         $em->getRepository('RbsSalesBundle:Payment')->create($payment);
 
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);*/
 
         $this->dispatchApproveProcessEvent('payment.approved', $order);
         $this->flashMessage('success', 'Payment Approved Successfully');
@@ -562,7 +562,7 @@ class OrderController extends BaseController
             $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
         }
 
-        $em = $this->getDoctrine()->getManager();
+        /*$em = $this->getDoctrine()->getManager();
         $payment = $em->getRepository('RbsSalesBundle:Payment')->findByOrdersVerifiedType($order->getId(),Payment::DR, true);
 
         if($payment == null){
@@ -576,7 +576,7 @@ class OrderController extends BaseController
             $payment->setVerified(true);
             $payment->addOrder($order);
             $em->getRepository('RbsSalesBundle:Payment')->create($payment);
-        }
+        }*/
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
         $this->dispatchApproveProcessEvent('payment.over.credit.approved', $order);

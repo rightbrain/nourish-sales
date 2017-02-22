@@ -3,6 +3,9 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\Delivery;
+use Rbs\Bundle\SalesBundle\Entity\DeliveryItem;
+use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\UserBundle\Entity\User;
 
@@ -127,11 +130,15 @@ class PaymentRepository extends EntityRepository
         $query = $this->createQueryBuilder('p');
         $query->join('p.agent', 'a');
         $query->join('a.user', 'u');
+        $query->leftJoin('p.bankAccount', 'bankAccount');
+        $query->leftJoin('bankAccount.branch', 'branch');
+        $query->leftJoin('branch.bank', 'bank');
         $query->select('u.username');
         $query->addSelect('p.amount');
         $query->addSelect('p.transactionType');
         $query->addSelect('p.remark');
         $query->addSelect('p.depositDate');
+        $query->addSelect('bankAccount.name AS bankAccountName, bank.name AS bankName, branch.name AS branchName');
         $query->where('u.userType = :AGENT');
         $query->andWhere('a.id = :agentId');
         $query->andWhere('p.verified = 1');
@@ -295,5 +302,60 @@ class PaymentRepository extends EntityRepository
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function createDeliveredProductValue(Delivery $delivery)
+    {
+        $this->addPaymentByDeliveryItemExtractedSummary(
+            $this->extractDeliveryItemSummary($delivery)
+        );
+    }
+
+    private function extractDeliveryItemSummary(Delivery $delivery)
+    {
+        $data = [];
+
+        /** @var DeliveryItem $deliveryItem */
+        foreach ($delivery->getDeliveryItems() as $deliveryItem) {
+            $order = $deliveryItem->getOrder();
+            $itemPrice = $deliveryItem->getOrderItem()->getPrice();
+            $itemQty = $deliveryItem->getQty();
+            $amount = $itemPrice * $itemQty;
+
+            if (!array_key_exists($order->getId(), $data)) {
+                $data[$order->getId()] = [];
+            }
+
+            $item = $deliveryItem->getOrderItem()->getItem();
+            $data[$order->getId()][$item->getId()] = [
+                'name' => $item->getName(),
+                'qty' => $itemQty,
+                'price' => $itemPrice,
+                'amount' => $amount,
+                'unit' => $item->getItemUnit(),
+            ];
+        }
+
+        return $data;
+    }
+
+    private function addPaymentByDeliveryItemExtractedSummary($data)
+    {
+        foreach ($data as $orderId => $deliveryItemSummaries) {
+            $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
+            $total = array_sum(array_column($data[$orderId], 'amount'));
+            $payment = new Payment();
+            $payment->setAgent($order->getAgent());
+            $payment->setAmount($total);
+            $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+            $payment->setRemark(json_encode($deliveryItemSummaries));
+            $payment->setDepositDate(new \DateTime());
+            $payment->setTransactionType(Payment::DR);
+            $payment->setVerified(true);
+            $payment->addOrder($order);
+
+            $this->_em->persist($payment);
+            $this->_em->flush();
+        }
     }
 }

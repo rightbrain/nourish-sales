@@ -94,3 +94,9 @@ services:
         tags:
             - { name: sg.datatable.view }
         arguments: [@security.authorization_checker, @security.token_storage, @twig, @translator, @router, @doctrine.orm.entity_manager, @service_container]
+
+    rbs_erp.core.twig_decode_extension:
+            class: Rbs\Bundle\CoreBundle\Twig\Extension\JsonDecodeExtension
+            public: false
+            tags:
+                - { name: twig.extension }

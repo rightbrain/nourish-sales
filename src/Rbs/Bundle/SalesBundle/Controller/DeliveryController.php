@@ -153,6 +153,7 @@ class DeliveryController extends BaseController
         $data = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->save($delivery, $this->get('request')->request->all());
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStock($delivery);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->createDeliveredProductValue($delivery);
 
         if (!empty($this->get('request')->request->get('checked-vehicles'))) {
             foreach ($this->get('request')->request->get('checked-vehicles') as $vehicleId => $vehicle) {
@@ -161,7 +162,7 @@ class DeliveryController extends BaseController
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicleObj);
             }
         }
-        
+
         $this->dispatch('delivery.delivered', new DeliveryEvent($delivery));
 
         $this->flashMessage('success', 'Delivery Completed Successfully');

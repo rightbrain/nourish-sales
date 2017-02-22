@@ -42,7 +42,7 @@
                             <div class="col-md-5">
                                 <div class="input-icon right">
                                     {% if agent != null %}
-                                        Agent Name: {{ agent.user.profile.fullName ? agent.user.profile.fullName : agent.user.username }}
+                                        Agent Name: {{ agent.agentID }} - {{ agent.user.profile.fullName ? agent.user.profile.fullName : agent.user.username }}
                                     {% endif %}
                                 </div>
                             </div>
@@ -55,8 +55,10 @@
                                 <tr>
                                     <th>Transaction Date</th>
                                     <th>Details</th>
-                                    <th>Debit Amount</th>
-                                    <th>Credit Amount</th>
+                                    <th>Delivered Product Value</th>
+                                    <th>Collection</th>
+                                    <th>Bank Info</th>
+                                    <th>Balance</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,23 +66,45 @@
                                 <td colspan="2" style="text-align: right">Previous Balance: </td>
                                 <td style="text-align: right">{{ agentPreviousDebitLaserTotal|number_format(2, '.', ',') }}</td>
                                 <td style="text-align: right">{{ agentPreviousCreditLaserTotal|number_format(2, '.', ',') }}</td>
+                                <td></td>
+                                <td style="text-align: right">
+                                    {% set balance = agentPreviousCreditLaserTotal - agentPreviousDebitLaserTotal %}
+                                    {{ balance|number_format(2, '.', ',') }}
+                                </td>
                             </tr>
                             {% for laser in agentLaser %}
+                                {% if laser['transactionType'] == 'DR' %}
+                                    {% set balance = balance - laser['amount'] %}
+                                {% else %}
+                                    {% set balance = balance + laser['amount'] %}
+                                {% endif %}
                                 <tr>
                                     <td class="col-md-1">{{ laser['depositDate'] | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
-                                    <td class="col-md-1">{{ laser['remark'] | default('') }}</td>
+                                    <td class="col-md-1">
+                                        {% if laser['transactionType'] == 'CR' %}
+                                            {{ laser['remark'] | default('') }}
+                                        {% else %}
+                                            {% for id, item in json_decode(laser['remark']) %}
+                                                <div>{{ item.name ~ '(' ~ item.qty ~ 'Kg ' ~ item.amount|number_format(2, '.', ',') ~ 'Tk)'}}</div>
+                                            {% endfor %}
+                                        {% endif %}</td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'CR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
+                                    <td class="col-md-1">
+                                    {% if laser['transactionType'] == 'CR' and laser['bankAccountName'] %}
+                                        Bank: {{ laser['bankName'] }}, Branch: {{ laser['branchName'] }}
+                                    {% endif %}
+                                    </td>
+                                    <td class="col-md-1" style="text-align: right">{% if balance < 0 %}{{ '('~balance|number_format(2, '.', ',')~')' }}{% else %}{{ balance|number_format(2, '.', ',') }}{% endif %}</td>
                                 </tr>
                             {% endfor %}
                             <tr>
                                 <td class="bold" colspan="2" style="text-align: right">Total: </td>
                                 <td class="bold" style="text-align: right">{{ agentDebitLaserTotal|number_format(2, '.', ',') }}</td>
                                 <td class="bold" style="text-align: right">{{ agentCreditLaserTotal|number_format(2, '.', ',') }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">
-                                    Current Balance:  {{ currentBalance|number_format(2, '.', ',') }} tk
+                                <td class="bold">Current Balance:</td>
+                                <td class="bold" style="text-align: right">
+                                    {% if balance < 0 %}{{ '('~balance|number_format(2, '.', ',')~')' }}{% else %}{{ balance|number_format(2, '.', ',') }}{% endif %}
                                 </td>
                             </tr>
                             </tbody>
