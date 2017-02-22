@@ -70,6 +70,8 @@ class SalesIncentiveGenerateCommand extends ContainerAwareCommand
             $orderIncentiveFlag->setMonthFlag(true);
         }
 
+        if (empty($amount)) return '';
+
         $incentive->setAmount(floatval($orderIncentive[0]['quantity']) * floatval($amount[0]['amount']));
         $details = "Total quantity ".$orderIncentive[0]['quantity'].", item type ".$orderIncentive[0]['categoryName'];
         $incentive->setDetails($details);
