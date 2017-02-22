@@ -70,13 +70,12 @@ class SmsParse
 
         $agentId = isset($splitMsg[0]) ? trim($splitMsg[0]) : 0;
         $orderInfo = isset($splitMsg[1]) ? trim($splitMsg[1]) : '';
-        $bankName = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
-        $bankBranch = isset($splitMsg[3]) ? trim($splitMsg[3]) : '';
-        $amount = isset($splitMsg[4]) ? trim($splitMsg[4]) : '';
+        $bankAccountCode = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
+        $amount = isset($splitMsg[3]) ? trim($splitMsg[3]) : '';
 
         $this->setAgent($agentId);
         $this->setOrderItems($orderInfo);
-        $this->setPayment($bankName, $bankBranch, $amount);
+        $this->setPayment($bankAccountCode, $amount);
     }
 
     public function createOrder()
@@ -210,7 +209,7 @@ class SmsParse
         }
     }
 
-    protected function setPayment($bankName = '', $bankBranch = '', $amount = '')
+    protected function setPayment($bankAccountCode, $amount = '')
     {
         if ($this->hasError()) {
             return;
@@ -222,16 +221,23 @@ class SmsParse
             return;
         }
 
-        if (!empty($amount) && (empty(trim($bankName)) || empty(trim($bankBranch)))) {
+        if (!empty($amount) && (empty(trim($bankAccountCode)))) {
             $this->setError('Invalid Bank or Branch Name');
+            return;
+        }
+
+        $bankAccount = $this->em->getRepository('RbsCoreBundle:BankAccount')->findOneBy(array('code' => $bankAccountCode));
+
+        if (!$bankAccount) {
+            $this->setError('Invalid Bank Account Code');
+            $this->markError($bankAccountCode);
             return;
         }
 
         if (!empty($amount)) {
             $this->payment = new Payment();
             $this->payment->setAmount($amount);
-            $this->payment->setBankName($bankName);
-            $this->payment->setBranchName($bankBranch);
+            $this->payment->setBankAccount($bankAccount);
             $this->payment->setVerified(false);
             $this->payment->setDepositDate(new \DateTime());
             $this->payment->setPaymentVia('SMS');
