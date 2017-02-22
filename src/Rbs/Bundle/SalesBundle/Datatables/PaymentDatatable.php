@@ -31,6 +31,8 @@ class PaymentDatatable extends BaseDatatable
                 $line["fullName"] = $this->resolveAgentName($line['agent']);
             }
 
+            $line['remarkText'] = $line['transactionType'] == Payment::CR ? $line['remark'] : '';
+
             return $line;
         };
 
@@ -84,7 +86,8 @@ class PaymentDatatable extends BaseDatatable
                 'title' => 'Orders',
                 'data' => 'orders[, ].id'
             ))
-            ->add('remark', 'column', array('title' => 'Remarks'))
+            ->add('remarkText', 'virtual', array('title' => 'Remarks'))
+            ->add('remark', 'column', array('visible' => false))
             ->add('transactionType', 'column', array('visible' => false))
             ->add('bankAccount.id', 'column', array('visible' => false))
             ->add('amount', 'column', array('visible' => false))
