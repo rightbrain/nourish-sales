@@ -191,7 +191,7 @@
                                                     <td>{{ payment.bankName | default('') }}</td>
                                                     <td>{{ payment.branchName | default('') }}</td>
                                                     <td>{{ payment.amount | default('') }}</td>
-                                                    <td>{{ payment.remark | default('') }}</td>
+                                                    <td>{{ payment.transactionType == 'CR' ? payment.remark : ''| default('') }}</td>
                                                 </tr>
                                                 {% set index = index + 1 %}
                                                 {% endif %}
