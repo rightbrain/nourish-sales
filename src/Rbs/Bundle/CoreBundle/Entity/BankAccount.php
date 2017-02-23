@@ -54,7 +54,7 @@ class BankAccount
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\Payment", mappedBy="payments")
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\Payment", mappedBy="bankAccount")
      */
     private $payments;
 
