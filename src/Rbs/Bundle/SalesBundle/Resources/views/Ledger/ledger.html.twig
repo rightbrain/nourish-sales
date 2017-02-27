@@ -95,7 +95,7 @@
                                         Bank: {{ laser['bankName'] }}, Branch: {{ laser['branchName'] }}
                                     {% endif %}
                                     </td>
-                                    <td class="col-md-1" style="text-align: right">{% if balance < 0 %}{{ '('~balance|number_format(2, '.', ',')~')' }}{% else %}{{ balance|number_format(2, '.', ',') }}{% endif %}</td>
+                                    <td class="col-md-1" style="text-align: right">{% if balance < 0 %}{{ '('~balance|abs|number_format(2, '.', ',')~')' }}{% else %}{{ balance|number_format(2, '.', ',') }}{% endif %}</td>
                                 </tr>
                             {% endfor %}
                             <tr>
@@ -104,7 +104,7 @@
                                 <td class="bold" style="text-align: right">{{ agentCreditLaserTotal|number_format(2, '.', ',') }}</td>
                                 <td class="bold">Current Balance:</td>
                                 <td class="bold" style="text-align: right">
-                                    {% if balance < 0 %}{{ '('~balance|number_format(2, '.', ',')~')' }}{% else %}{{ balance|number_format(2, '.', ',') }}{% endif %}
+                                    {% if balance < 0 %}{{ '('~balance|abs|number_format(2, '.', ',')~')' }}{% else %}{{ balance|number_format(2, '.', ',') }}{% endif %}
                                 </td>
                             </tr>
                             </tbody>
