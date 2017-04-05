@@ -28,12 +28,28 @@ class ConfigureMenuListener extends ContextAwareListener
         $sp5 = false;
 
         if ($this->user->getUserType() != User::AGENT) {
-            if ($this->authorizationChecker->isGranted(array('ROLE_DEPO_USER', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_DEPO_USER', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL', 'ROLE_CHICK_ORDER_MANAGE'))) {
+
                 $sp1 = true;
-                $menu['Sales']->addChild('Orders', array('route' => 'orders_home'))
-                    ->setAttribute('icon', 'fa fa-th-list');
-                if ($this->isMatch('orders') or $this->isMatch('order_details') or $this->isMatch('order_create') or $this->isMatch('order_update')) {
+                /** @var \Knp\Menu\MenuItem $menu2 */
+                $menu2 = $menu['Sales']->addChild('Orders', array('route' => 'orders_home'))
+                    ->setAttribute('icon', 'fa fa-th-list')
+                    ->setChildrenAttribute('class', 'sub-menu');
+                $menu2->addChild('All Orders', array('route' => 'orders_home'))->setAttribute('icon', 'fa fa-th-list');
+
+                if ($this->authorizationChecker->isGranted(array('ROLE_CHICK_ORDER_MANAGE'))) {
+                    $menu2->addChild('Manage Chick Order', array('route' => 'order_manage_chick'))->setAttribute('icon', 'fa fa-th-list');
+                }
+
+                if ($this->isMatch('order_create') || $this->isMatch('order_update') || $this->isMatch('order_details')) {
                     $menu['Sales']->getChild('Orders')->setCurrent(true);
+                }
+
+                if ($this->isMatch('orders_home')) {
+                    $menu2['All Orders']->setCurrent(true);
+                }
+                if ($this->isMatch('order_manage_chick')) {
+                    $menu2['Manage Chick Order']->setCurrent(true);
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {

@@ -558,4 +558,14 @@ class Order
     {
         $this->depo = $depo;
     }
+
+    public function calculateOrderAmount()
+    {
+        /** @var OrderItem $orderItems */
+        foreach ($this->getOrderItems() as $orderItems) {
+            $orderItems->setOrder($this);
+            $orderItems->calculateTotalAmount(true);
+        }
+        $this->setTotalAmount($this->getItemsTotalAmount());
+    }
 }

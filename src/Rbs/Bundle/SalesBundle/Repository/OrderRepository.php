@@ -50,7 +50,7 @@ class OrderRepository extends EntityRepository
         $this->_em->flush();
     }
 
-    protected function calculateOrderAmount(Order $order)
+    public function calculateOrderAmount(Order $order)
     {
         /** @var OrderItem $orderItems */
         foreach ($order->getOrderItems() as $orderItems) {

@@ -153,7 +153,7 @@ class Sms
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function getStatus()
     {
@@ -161,7 +161,7 @@ class Sms
     }
 
     /**
-     * @param array $status
+     * @param string $status
      */
     public function setStatus($status)
     {
