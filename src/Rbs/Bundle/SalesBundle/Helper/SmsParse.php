@@ -72,10 +72,12 @@ class SmsParse
         $orderInfo = isset($splitMsg[1]) ? trim($splitMsg[1]) : '';
         $bankAccountCode = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
         $amount = isset($splitMsg[3]) ? trim($splitMsg[3]) : '';
+        $agentBank = isset($splitMsg[4]) ? trim($splitMsg[4]) : '';
+        $agentBranch = isset($splitMsg[5]) ? trim($splitMsg[5]) : '';
 
         $this->setAgent($agentId);
         $this->setOrderItems($orderInfo);
-        $this->setPayment($bankAccountCode, $amount);
+        $this->setPayment($bankAccountCode, $amount, $agentBank, $agentBranch);
     }
 
     public function createOrder()
@@ -209,7 +211,7 @@ class SmsParse
         }
     }
 
-    protected function setPayment($bankAccountCode, $amount = '')
+    protected function setPayment($bankAccountCode, $amount = '', $agentBank = '', $agentBranch = '')
     {
         if ($this->hasError()) {
             return;
@@ -241,6 +243,8 @@ class SmsParse
             $this->payment->setVerified(false);
             $this->payment->setDepositDate(new \DateTime());
             $this->payment->setPaymentVia('SMS');
+            $this->payment->setAgentBank($agentBank);
+            $this->payment->setAgentBranch($agentBranch);
         }
     }
 

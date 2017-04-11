@@ -358,4 +358,61 @@ class PaymentRepository extends EntityRepository
             $this->_em->flush();
         }
     }
+
+    public function getPaymentReportData($type, $startDate, $endDate, $agent = null)
+    {
+        $startDateTime = new \DateTime($startDate);
+        $interval = date_diff($startDateTime, new \DateTime($endDate));
+        $diff = (int)$interval->format($type == 'monthly' ? '%m' : '%a');
+        $intervalType = $type == 'monthly' ? 'P01M' : 'P01D';
+
+        $reportData = [];
+        for ($i = 0; $i <= $diff; $i++) {
+
+            $key = $type == 'monthly' ? $startDateTime->format('F Y') : $startDateTime->format('d-m-Y');
+            $reportData[$key] = $this->getPaymentReportDateOf(
+                $type,
+                $i == 0 ? $startDateTime : $startDateTime->add(new \DateInterval($intervalType)),
+                $agent
+            );
+        }
+
+        return array_filter($reportData);
+    }
+
+    public function getPaymentReportDateOf($type, \DateTime $date, $agent)
+    {
+        if ($type == 'monthly') {
+            $start = $date->format('Y-m-1 00:00:00');
+            $end = $date->format('Y-m-t 23:59:59');
+        } else {
+            $start = $date->format('Y-m-d 00:00:00');
+            $end = $date->format('Y-m-d 23:59:59');
+        }
+
+        $qb = $this->createQueryBuilder('p');
+        $qb->join('p.agent', 'agent');
+        $qb->join('agent.user', 'user');
+        $qb->join('user.profile', 'profile');
+
+        $qb->select('p.createdAt, profile.fullName, agent.agentID, p.agentBank, p.agentBranch, p.amount');
+
+        $qb->where('p.verified = :verified')->setParameter('verified', true);
+        $qb->andWhere('p.transactionType = :transactionType')->setParameter('transactionType', Payment::CR);
+
+        $qb->andWhere('p.createdAt BETWEEN :start AND :end');
+        $qb->setParameter('start', $start);
+        $qb->setParameter('end', $end);
+
+        if ($agent) {
+            $qb->andWhere('p.agent = :agent')->setParameter('agent', $agent);
+        }
+
+        $result = $qb->getQuery()->getResult();
+
+        if (empty($result)) {
+            return [];
+        }
+        return ['data' => $qb->getQuery()->getResult(), 'start' => $start, 'end' => $end];
+    }
 }

@@ -117,6 +117,20 @@ class Payment
      * @ORM\Column(name="verified", type="boolean", nullable=true)
      */
     private $verified = false;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="agent_bank", type="string", length=255, nullable=true)
+     */
+    private $agentBank = '';
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="agent_branch", type="string", length=255, nullable=true)
+     */
+    private $agentBranch = '';
     
     /**
      * Get id
@@ -325,6 +339,46 @@ class Payment
     public function setBankAccount($bankAccount)
     {
         $this->bankAccount = $bankAccount;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAgentBank()
+    {
+        return $this->agentBank;
+    }
+
+    /**
+     * @param string $agentBank
+     *
+     * @return Payment
+     */
+    public function setAgentBank($agentBank)
+    {
+        $this->agentBank = $agentBank;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAgentBranch()
+    {
+        return $this->agentBranch;
+    }
+
+    /**
+     * @param string $agentBranch
+     *
+     * @return Payment
+     */
+    public function setAgentBranch($agentBranch)
+    {
+        $this->agentBranch = $agentBranch;
 
         return $this;
     }
