@@ -153,6 +153,14 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
+            if ($this->authorizationChecker->isGranted('ROLE_SALES_REPORT')) {
+                $menu['Report']->addChild('Payment Report', array('route' => 'report_payment'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('report_payment')) {
+                    $menu['Report']->getChild('Payment Report')->setCurrent(true);
+                }
+            }
+
             if (empty($menu->getChild('Report')->getChildren())) {
                 $menu->removeChild($menu['Report']);
             }

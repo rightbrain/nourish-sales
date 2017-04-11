@@ -21,7 +21,7 @@ class PaymentReportController extends Controller
 {
 
     /**
-     * @Route("/report/payment", name="payment_report")
+     * @Route("/report/payment", name="report_payment")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_SALES_REPORT")
