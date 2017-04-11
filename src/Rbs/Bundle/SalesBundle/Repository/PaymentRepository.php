@@ -364,15 +364,15 @@ class PaymentRepository extends EntityRepository
         $startDateTime = new \DateTime($startDate);
         $interval = date_diff($startDateTime, new \DateTime($endDate));
         $diff = (int)$interval->format($type == 'monthly' ? '%m' : '%a');
-        $intervalType = $type == 'monthly' ? 'P01M' : 'P01D';
+        $intervalType = $type == 'monthly' ? '+1 month' : '+1 day';
 
         $reportData = [];
         for ($i = 0; $i <= $diff; $i++) {
-
-            $key = $type == 'monthly' ? $startDateTime->format('F Y') : $startDateTime->format('d-m-Y');
+            $tempDate = $i == 0 ? $startDateTime : $startDateTime->modify($intervalType);
+            $key = $type == 'monthly' ? $tempDate->format('F Y') : $tempDate->format('d-m-Y');
             $reportData[$key] = $this->getPaymentReportDateOf(
                 $type,
-                $i == 0 ? $startDateTime : $startDateTime->add(new \DateInterval($intervalType)),
+                $tempDate,
                 $agent
             );
         }
