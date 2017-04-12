@@ -35,13 +35,13 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
-            if ($this->authorizationChecker->isGranted('ROLE_ITEM_TYPE_MANAGE')) {
+            /*if ($this->authorizationChecker->isGranted('ROLE_ITEM_TYPE_MANAGE')) {
                 $menu['Settings']->addChild('Item Types', array('route' => 'itemtype'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('itemtype')) {
                     $menu['Settings']->getChild('Item Types')->setCurrent(true);
                 }
-            }
+            }*/
 
             if ($this->authorizationChecker->isGranted('ROLE_ITEM_MANAGE')) {
                 $menu['Settings']->addChild('Categories', array('route' => 'category'))
