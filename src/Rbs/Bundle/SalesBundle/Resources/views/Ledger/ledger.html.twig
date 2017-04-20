@@ -72,15 +72,15 @@
                                 <td style="text-align: right">{{ agentPreviousCreditLaserTotal|number_format(2, '.', ',') }}</td>
                                 <td></td>
                                 <td style="text-align: right">
-                                    {% set balance = agentPreviousCreditLaserTotal - agentPreviousDebitLaserTotal %}
+                                    {% set balance = agentPreviousDebitLaserTotal - agentPreviousCreditLaserTotal %}
                                     {{ balance|number_format(2, '.', ',') }}
                                 </td>
                             </tr>
                             {% for laser in agentLaser %}
                                 {% if laser['transactionType'] == 'DR' %}
-                                    {% set balance = balance - laser['amount'] %}
-                                {% else %}
                                     {% set balance = balance + laser['amount'] %}
+                                {% else %}
+                                    {% set balance = balance - laser['amount'] %}
                                 {% endif %}
                                 <tr>
                                     <td class="col-md-1">{{ laser['depositDate'] | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
