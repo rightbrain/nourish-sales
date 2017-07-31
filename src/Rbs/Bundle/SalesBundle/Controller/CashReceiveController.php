@@ -101,16 +101,16 @@ class CashReceiveController extends BaseController
                 $form->handleRequest($request);
 
                 if ($form->isValid()) {
-                    $od = $em->getRepository('RbsSalesBundle:Order')->find($request->request->get('cash_receive')['orderRef']);
-
-                    $payment->setAgent($od->getAgent());
+//                    $od = $em->getRepository('RbsSalesBundle:Order')->find($request->request->get('cash_receive')['orderRef']);
+                    $agent = $em->getRepository('RbsSalesBundle:Agent')->find($request->request->get('cash_receive')['agent']);
+                    $payment->setAgent($agent);
                     $payment->setAmount($request->request->get('cash_receive')['amount']);
                     $payment->setPaymentMethod(Payment::PAYMENT_METHOD_CASH);
                     $payment->setRemark('Cash received by depo user.');
-                    $payment->setDepositDate(new \DateTime());
+                    $payment->setDepositDate(date("Y-m-d"));
                     $payment->setTransactionType(Payment::CR);
                     $payment->setVerified(true);
-                    $payment->addOrder($od);
+//                    $payment->addOrder($od);
                     $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
                     $em->getRepository('RbsSalesBundle:Payment')->create($payment);
 

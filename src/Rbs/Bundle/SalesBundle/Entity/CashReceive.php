@@ -76,9 +76,17 @@ class CashReceive
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order")
      * @ORM\JoinColumn(name="order_id")
-     * @Assert\NotBlank()
      */
     private $orderRef;
+
+    /**
+     * @var Agent
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent")
+     * @ORM\JoinColumn(name="agent_id")
+     * @Assert\NotBlank()
+     */
+    private $agent;
 
     /**
      * @var Depo
@@ -254,5 +262,21 @@ class CashReceive
     public function setRemark($remark)
     {
         $this->remark = $remark;
+    }
+
+    /**
+     * @return Agent
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param Agent $agent
+     */
+    public function setAgent($agent)
+    {
+        $this->agent = $agent;
     }
 }
