@@ -38,7 +38,7 @@ class OrderForm extends AbstractType
                     'attr' => array(
                         'class' => 'select2me'
                     ),
-                    'property' => 'user.profile.fullName',
+                    'property' => 'getIdName',
                     'required' => true,
                     'empty_value' => 'Select Agent',
                     'query_builder' => function (AgentRepository $repository)
