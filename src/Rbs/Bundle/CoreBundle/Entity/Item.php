@@ -353,6 +353,15 @@ class Item
         $this->dueAmount = $dueAmount;
     }
 
+    public static function itemCodeNameFormat($code, $name)
+    {
+        return $code . ' - ' . $name;
+    }
+
+    public function getItemCodeName()
+    {
+        return Item::itemCodeNameFormat($this->getSku(), $this->getName());
+    }
 
     /**
      * @return Category

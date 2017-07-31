@@ -32,7 +32,7 @@ class OrderItemForm extends AbstractType
         $builder
             ->add('item', 'entity', array(
                 'class' => 'RbsCoreBundle:Item',
-                'property' => 'name',
+                'property' => 'getItemCodeName',
                 'required' => true,
                 'empty_value' => 'Select Item',
                 'query_builder' => function (ItemRepository $repository) use ($itemTypeId)
