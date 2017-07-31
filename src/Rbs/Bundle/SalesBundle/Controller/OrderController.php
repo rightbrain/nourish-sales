@@ -532,7 +532,7 @@ class OrderController extends BaseController
         $payment->setAmount($order->getTotalAmount());
         $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
         $payment->setRemark('Order: ' . $order->getId());
-        $payment->setDepositDate(new \DateTime());
+        $payment->setDepositDate(date("Y-m-d"));
         $payment->setTransactionType(Payment::DR);
         $payment->setVerified(true);
         $payment->addOrder($order);
@@ -571,7 +571,7 @@ class OrderController extends BaseController
             $payment->setAmount($order->getTotalAmount());
             $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
             $payment->setRemark('Order: ' . $order->getId());
-            $payment->setDepositDate(new \DateTime());
+            $payment->setDepositDate(date("Y-m-d"));
             $payment->setTransactionType(Payment::DR);
             $payment->setVerified(true);
             $payment->addOrder($order);

@@ -211,7 +211,7 @@ class OrderRepository extends EntityRepository
                 $payment->setAmount($payment->getAmount());
                 $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
                 $payment->setRemark('Return due to cancel order: ' . $order->getId());
-                $payment->setDepositDate(new \DateTime());
+                $payment->setDepositDate(date("Y-m-d"));
                 $payment->setTransactionType(Payment::CR);
                 $payment->setVerified(true);
                 $payment->addOrder($order);

@@ -216,7 +216,7 @@ class DamageGoodController extends BaseController
         $payment->setAmount($request->request->get('refund'));
         $payment->setPaymentMethod(Payment::PAYMENT_METHOD_REFUND);
         $payment->setRemark('Refund for damage goods.');
-        $payment->setDepositDate(new \DateTime());
+        $payment->setDepositDate(date("Y-m-d"));
         $payment->setTransactionType(Payment::CR);
         $payment->setVerified(true);
         $payment->addOrder($damageGood->getOrderRef());
