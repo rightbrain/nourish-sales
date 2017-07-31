@@ -376,6 +376,6 @@ class Payment
      */
     public function setDepositDate($depositDate)
     {
-        $this->depositDate = new \DateTime($depositDate);
+        $this->depositDate = $depositDate = false ? "null" : new \DateTime($depositDate);
     }
 }
