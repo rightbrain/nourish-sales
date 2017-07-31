@@ -3,7 +3,7 @@
 <div class="form-group">
     <label class="col-md-2 control-label">Agent *</label>
     <div class="col-md-6" style="margin-top: 10px;">
-        {{ order.agent.user.profile.fullName }}
+        {{ order.agent.agentID ~ " - " ~ order.agent.user.profile.fullName }}
     </div>
 </div>
 
