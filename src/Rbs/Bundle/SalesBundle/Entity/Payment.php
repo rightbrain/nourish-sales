@@ -94,6 +94,7 @@ class Payment
      * @var \DateTime
      *
      * @ORM\Column(name="deposit_date", type="datetime", nullable=false)
+     * @Assert\NotBlank()
      */
     private $depositDate;
 
@@ -222,7 +223,6 @@ class Payment
     public function __construct()
     {
         $this->orders = new ArrayCollection();
-        $this->depositDate = new \DateTime();
     }
 
     /**
@@ -241,26 +241,6 @@ class Payment
     public function removeOrder($order)
     {
         $this->orders->removeElement($order);
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDepositDate()
-    {
-        return $this->depositDate;
-    }
-
-    /**
-     * @param \DateTime $depositDate
-     *
-     * @return Payment
-     */
-    public function setDepositDate($depositDate)
-    {
-        $this->depositDate = $depositDate;
-
-        return $this;
     }
 
     /**
@@ -381,5 +361,21 @@ class Payment
         $this->agentBranch = $agentBranch;
 
         return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDepositDate()
+    {
+        return $this->depositDate;
+    }
+
+    /**
+     * @param \DateTime $depositDate
+     */
+    public function setDepositDate($depositDate)
+    {
+        $this->depositDate = new \DateTime($depositDate);
     }
 }

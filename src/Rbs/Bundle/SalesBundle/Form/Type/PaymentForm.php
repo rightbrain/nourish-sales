@@ -47,6 +47,11 @@ class PaymentForm extends AbstractType
                 'choices' => $this->getAccountList(),
                 'attr' => array('class' => 'select2me')
             ))
+            ->add('depositDate', 'text', array(
+                'attr' => array(
+                    'class' => 'form-control input-medium date-month-year-picker'
+                )
+            ))
             ->add('paymentMethod', 'choice', array(
                 'empty_value' => 'Select Payment Method',
                 'choices'  => array(

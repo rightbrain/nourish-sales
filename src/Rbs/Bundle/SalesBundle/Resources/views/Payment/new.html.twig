@@ -16,6 +16,7 @@
 
                     {{ form_row(form.agent) }}
                     {{ form_row(form.amount) }}
+                    {{ form_row(form.depositDate) }}
                     {{ form_row(form.bankAccount) }}
                     {{ form_row(form.paymentMethod) }}
                     {{ form_row(form.remark) }}
@@ -53,6 +54,13 @@
 {#<script>#}
 {% block documentReady %}
     {{ parent() }}
+
+    $(".date-month-year-picker").datepicker( {
+    format: "dd-mm-yyyy",
+    viewMode: "default",
+    minViewMode: "default",
+    autoclose: true
+    });
 
     Payment.init();
 {% endblock documentReady %}
