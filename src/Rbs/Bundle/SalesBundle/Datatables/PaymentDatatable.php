@@ -2,7 +2,6 @@
 
 namespace Rbs\Bundle\SalesBundle\Datatables;
 
-use Rbs\Bundle\CoreBundle\Entity\BankAccount;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\UserBundle\Entity\Profile;
@@ -25,6 +24,7 @@ class PaymentDatatable extends BaseDatatable
          * @return mixed
          */
         $formatter = function($line){
+            $payment = $this->em->getRepository('RbsSalesBundle:Payment')->find($line['id']);
             $line['bankInfo'] = $this->formatBankInfo($line['bankAccount'], $line['transactionType'], $line['paymentMethod']);
             $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
             if ($this->allowAgentSearch) {
@@ -32,6 +32,7 @@ class PaymentDatatable extends BaseDatatable
             }
 
             $line['remarkText'] = $line['transactionType'] == Payment::CR ? $line['remark'] : '';
+            $line["actionButtons"] = $this->generateActionList($payment);
 
             return $line;
         };
@@ -92,6 +93,7 @@ class PaymentDatatable extends BaseDatatable
             ->add('bankAccount.id', 'column', array('visible' => false))
             ->add('amount', 'column', array('visible' => false))
             ->add('agent.user.id', 'column', array('visible' => false))
+            ->add('actionButtons', 'virtual', array('title' => 'Action'))
         ;
     }
 
@@ -132,5 +134,23 @@ class PaymentDatatable extends BaseDatatable
         $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $agent['user']['id']));
 
         return Agent::agentIdNameFormat($agent['id'], $profile->getFullName());
+    }
+
+    private function generateActionList(Payment $payment)
+    {
+//        $html = '<div class="actions">
+//                <div class="btn-group">
+//                    <a class="btn btn-sm btn-default" href="javascript:;" data-toggle="dropdown" data-hover="dropdown" data-close-others="true" aria-expanded="false">
+//                    Actions <i class="fa fa-angle-down"></i>
+//                    </a>
+//                    <ul class="dropdown-menu pull-right">
+//                    ';
+//
+//        $html .='</ul>
+//                </div>
+//            </div>';
+        $html = sprintf('<a href="%s" rel="tooltip" title="show-action" class="btn" role="button" data-target="#ajaxAmountEdit" data-toggle="modal"> <i class="i"></i> %s </a>', $this->router->generate('payment_edit', array('id'=> $payment->getId())), 'Amount Edit');
+
+        return $html;
     }
 }

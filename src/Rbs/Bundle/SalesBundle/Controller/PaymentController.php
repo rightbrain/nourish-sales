@@ -249,6 +249,7 @@ class PaymentController extends BaseController
 
     /**
      * @Route("/payment_amount_verified/{id}", name="payment_amount_verified", options={"expose"=true})
+     * @param Request $request
      * @param Payment $payment
      * @return Response
      */
@@ -256,8 +257,13 @@ class PaymentController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
         $verified = $request->query->get('verified');
+        $actualAmount = $request->query->get('actualAmount');
+        $depositedAmount = $request->query->get('depositedAmount');
+
         if ($verified == 'true') {
             $payment->setVerified(true);
+            $payment->setAmount($actualAmount);
+            $payment->setDepositedAmount($depositedAmount);
             $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->update($payment);
             $data["message"] = 'VERIFIED';
         } else {
@@ -267,5 +273,30 @@ class PaymentController extends BaseController
         }
 
         return new JsonResponse($data);
+    }
+
+    /**
+     * @Route("/payment/edit/{id}", name="payment_edit")
+     * @param Request $request
+     * @param Payment $payment
+     * @return Response
+     * @JMS\Secure(roles="ROLE_SUPER_ADMIN, ROLE_ADMIN")
+     */
+    public function paymentReviewAction(Request $request, Payment $payment)
+    {
+        if ('POST' === $request->getMethod()) {
+            if(is_numeric($request->request->get('amount'))) {
+                $payment->setAmount($request->request->get('amount'));
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->update($payment);
+                $this->get('session')->getFlashBag()->add(
+                    'success', 'Payment Updated Successfully');
+
+                return $this->redirect($this->generateUrl('payments_home'));
+            }
+        }
+
+        return $this->render('RbsSalesBundle:Payment:paymentEdit.html.twig', array(
+            'payment' => $payment,
+        ));
     }
 }

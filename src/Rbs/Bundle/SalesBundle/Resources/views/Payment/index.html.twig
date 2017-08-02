@@ -4,6 +4,17 @@
 
 {% block body %}
 
+    <div class="modal fade" id="ajaxAmountEdit" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="{{ asset('assets/global/img/loading-spinner-grey.gif') }}" alt="" class="loading">
+                    <span> &nbsp;&nbsp;Loading... </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="col-md-12">
         <div class="portlet box blue">
             <div class="portlet-title">

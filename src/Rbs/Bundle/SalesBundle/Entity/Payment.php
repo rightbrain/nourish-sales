@@ -91,6 +91,14 @@ class Payment
     private $amount;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="deposited_amounts", type="float", nullable=false)
+     * @Assert\NotBlank()
+     */
+    private $depositedAmount;
+
+    /**
      * @var \DateTime
      *
      * @ORM\Column(name="deposit_date", type="datetime", nullable=false)
@@ -377,5 +385,21 @@ class Payment
     public function setDepositDate($depositDate)
     {
         $this->depositDate = $depositDate = false ? "null" : new \DateTime($depositDate);
+    }
+
+    /**
+     * @return float
+     */
+    public function getDepositedAmount()
+    {
+        return $this->depositedAmount;
+    }
+
+    /**
+     * @param float $depositedAmount
+     */
+    public function setDepositedAmount($depositedAmount)
+    {
+        $this->depositedAmount = $depositedAmount;
     }
 }

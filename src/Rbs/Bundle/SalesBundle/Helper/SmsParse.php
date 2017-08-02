@@ -238,7 +238,9 @@ class SmsParse
 
         if (!empty($amount)) {
             $this->payment = new Payment();
-            $this->payment->setAmount($amount);
+//            $this->payment->setAmount($amount);
+            $this->payment->setAmount(0);
+            $this->payment->setDepositedAmount($amount);
             $this->payment->setBankAccount($bankAccount);
             $this->payment->setVerified(false);
             $this->payment->setDepositDate(date("Y-m-d"));

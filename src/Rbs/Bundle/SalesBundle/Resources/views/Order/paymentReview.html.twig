@@ -29,7 +29,7 @@
                                     <th class="col-md-2">Date</th>
                                     <th class="col-md-4">Bank</th>
                                     <th class="col-md-4">Branch</th>
-                                    <th class="text-right col-md-1">Amount</th>
+                                    <th class="text-right col-md-1">Deposited Amount</th>
                                     <th class="text-right col-md-1">Action</th>
                                 </tr>
                                 </thead>
@@ -41,16 +41,25 @@
                                         <td>{{ payment.depositDate|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                         <td>{{ payment.bankAccount.branch.bank.name }}</td>
                                         <td>{{ payment.bankAccount.branch.name }}</td>
-                                        <td class="text-right">{{ payment.amount|number_format(2) }}</td>
+                                        <td class="text-right"><span id="amount" class="hidden">{{ payment.depositedAmount }}</span>{{ payment.depositedAmount|number_format(2) }}</td>
                                         <td class="text-right">
-                                            {% if payment.verified %}
-                                                {{ 'VERIFIED' }}
+
+                                            {% set difference = date(payment.createdAt|date("Y/m/d", "Asia/Dhaka")).diff(date('now'|date("Y/m/d", "Asia/Dhaka"))) %}
+                                            {% set leftDays = difference.days %}
+
+                                            {% if 7 > leftDays|number_format %}
+                                                {% if payment.verified %}
+                                                    {{ 'VERIFIED' }}
+                                                {% else %}
+                                                    <div class="btn-group-vertical btn-group-solid btn-group btn-group-xs payment-action-buttons">
+                                                        <button type="button" value="{{ payment.id }}" id="{{ 'payment-amount-verified' }}" class="btn blue">Approve</button>
+                                                        <button type="button" value="{{ payment.id }}" id="{{ 'payment-delete' }}" class="btn red">Reject</button>
+                                                    </div>
+                                                {% endif %}
                                             {% else %}
-                                                <div class="btn-group-vertical btn-group-solid btn-group btn-group-xs payment-action-buttons">
-                                                    <button type="button" value="{{ payment.id }}" id="{{ 'payment-amount-verified' }}" class="btn blue">Approve</button>
-                                                    <button type="button" value="{{ payment.id }}" id="{{ 'payment-delete' }}" class="btn red">Reject</button>
-                                                </div>
+                                                <span> Amount Date Expired</span>
                                             {% endif %}
+
                                         </td>
                                     </tr>
                                     {% endif %}

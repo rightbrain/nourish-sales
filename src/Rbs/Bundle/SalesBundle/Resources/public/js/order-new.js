@@ -364,21 +364,55 @@ var Order = function()
 
     function paymentConfirmationOnModal() {
         $("#ajaxSummeryView").on('click', '.payment-action-buttons button',function () {
+            var setDepositedAmount = document.getElementById("amount").innerHTML;
             var paymentId = $(this).val();
             var isVerified = $(this).attr('id') == 'payment-amount-verified';
-            $.ajax({
-                type: "get",
-                url: Routing.generate('payment_amount_verified', { id : paymentId, verified: isVerified }),
-                dataType: 'json',
-                success: function (response) {
-                    $('.payment-action-buttons').html(response.message);
-                    if (!isVerified) {
-                        setTimeout(function(){
-                            $('.payment-action-buttons').closest('tr').remove();
-                        }, 5000);
-                    }
+            if(isVerified) {
+
+                var setActualAmount = prompt("Actual Amount:", setDepositedAmount);
+
+                if (setActualAmount != null || setActualAmount != "") {
+
+                    $.ajax({
+                        type: "get",
+                        url: Routing.generate('payment_amount_verified', {
+                            id: paymentId,
+                            verified: isVerified,
+                            actualAmount: setActualAmount,
+                            depositedAmount: setDepositedAmount
+                        }),
+                        dataType: 'json',
+                        success: function (response) {
+                            $('.payment-action-buttons').html(response.message);
+                            if (!isVerified) {
+                                setTimeout(function () {
+                                    $('.payment-action-buttons').closest('tr').remove();
+                                }, 5000);
+                            }
+                        }
+                    });
                 }
-            });
+            }else{
+                $.ajax({
+                    type: "get",
+                    url: Routing.generate('payment_amount_verified', {
+                        id: paymentId,
+                        verified: isVerified,
+                        actualAmount: setActualAmount,
+                        depositedAmount: setDepositedAmount
+                    }),
+                    dataType: 'json',
+                    success: function (response) {
+                        $('.payment-action-buttons').html(response.message);
+                        if (!isVerified) {
+                            setTimeout(function () {
+                                $('.payment-action-buttons').closest('tr').remove();
+                            }, 5000);
+                        }
+                    }
+                });
+            }
+
         });
     }
 

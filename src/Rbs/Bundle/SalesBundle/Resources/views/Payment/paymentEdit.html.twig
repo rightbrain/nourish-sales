@@ -1,0 +1,73 @@
+<div class="main-content">
+    {% set difference = date(payment.createdAt|date("Y/m/d", "Asia/Dhaka")).diff(date('now'|date("Y/m/d", "Asia/Dhaka"))) %}
+    {% set leftDays = difference.days %}
+    <div class="modal-header portlet-title blue">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">{{ 7 > leftDays|number_format ? "Payment Edit" : "Payment Amount" }}</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="portlet box">
+
+                    <div class="portlet-body">
+                        <div class="no-footer">
+
+                            {% if 7 > leftDays|number_format %}
+                            <form name="amountEdit" action="{{ path('payment_edit', {id: payment.id}) }}" method="post" class="action-content-form">
+                                <table class="table-bordered table-striped table-condensed flip-content col-md-12">
+                                    <thead>
+                                    <tr>
+                                        <th class="col-md-2">Amount</th>
+                                        <th class="text-right col-md-1">Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="number" step="any" class="form-control" value="{{ payment.amount }}" name="amount" id="amount" required="required"/>
+                                            </td>
+                                            <td class="text-right">
+                                                <div class="btn-group-vertical btn-group-solid btn-group btn-group-xs payment-action-buttons">
+                                                    <input type="submit" onclick="return confirm('Are you sure?')" class="btn blue form-control" name="submit" />
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                            {% else %}
+                                <table class="table-bordered table-striped table-condensed flip-content col-md-12">
+                                    <thead>
+                                    <tr>
+                                        <th class="col-md-2">Amount</th>
+                                        <th class="col-md-1">Comments</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>
+                                            {{ payment.amount }}
+                                        </td>
+                                        <td>
+                                            Amount Edit Date Expired
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            {% endif %}
+
+                            <div style="clear: both"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById("amount").required = true;
+</script>
