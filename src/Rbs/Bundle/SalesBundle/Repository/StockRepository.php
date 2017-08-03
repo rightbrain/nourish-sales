@@ -166,4 +166,46 @@ class StockRepository extends EntityRepository
         return $stockItem && $stockItem->isStockAvailable($orderItem->getQuantity());
     }
 
+    public function getAllStacks($data)
+    {
+        if(!empty($data)){
+            $query = $this->createQueryBuilder('s');
+            $query->select('s.id');
+            $query->addSelect('i.name as itemName');
+            $query->addSelect('d.name');
+            $query->addSelect('s.onHold');
+            $query->addSelect('s.onHand');
+            $query->addSelect('s.availableOnDemand');
+            $query->leftJoin('s.item', 'i');
+            $query->leftJoin('s.depo', 'd');
+
+            if(!empty($data['depo'])){
+                $this->handleSearchByDepo($data['depo'], $query);
+            }
+            if(!empty($data['item'])){
+                $this->handleSearchByItem($data['item'], $query);
+            }
+
+            return $query->getQuery()->getResult();
+        } else{
+            return array();
+        }
+    }
+
+    protected function handleSearchByDepo($depo, $query)
+    {
+        if (!empty($depo)) {
+            $query->where('s.depo = :depo');
+            $query->setParameter('depo', $depo);
+        }
+    }
+
+    protected function handleSearchByItem($item, $query)
+    {
+        if (!empty($item)) {
+            $query->where('s.item = :item');
+            $query->setParameter('item', $item);
+        }
+    }
+
 }

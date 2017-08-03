@@ -189,4 +189,9 @@ class Depo
     {
         $this->usedInTransport = $usedInTransport;
     }
+
+    public static function depoIdNameFormat($id, $name)
+    {
+        return $id . ' - ' . $name;
+    }
 }
