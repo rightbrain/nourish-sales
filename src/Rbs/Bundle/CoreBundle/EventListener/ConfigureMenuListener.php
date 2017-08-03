@@ -123,7 +123,7 @@ class ConfigureMenuListener extends ContextAwareListener
             /* Report Menu*/
             $menu->addChild('Report', array())
                 ->setAttribute('dropdown', true)
-                ->setAttribute('icon', 'fa fa-cog')
+                ->setAttribute('icon', 'fa fa-bookmark')
                 ->setLinkAttribute('data-hover', 'dropdown');
 
             if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
