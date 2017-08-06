@@ -104,6 +104,7 @@ class CashReceiveController extends BaseController
 //                    $od = $em->getRepository('RbsSalesBundle:Order')->find($request->request->get('cash_receive')['orderRef']);
                     $agent = $em->getRepository('RbsSalesBundle:Agent')->find($request->request->get('cash_receive')['agent']);
                     $payment->setAgent($agent);
+                    $payment->setDepositedAmount($request->request->get('cash_receive')['amount']);
                     $payment->setAmount($request->request->get('cash_receive')['amount']);
                     $payment->setPaymentMethod(Payment::PAYMENT_METHOD_CASH);
                     $payment->setRemark('Cash received by depo user.');
