@@ -32,7 +32,6 @@ class OrderDatatable extends BaseDatatable
             $line["paymentState"] = $order->getOrderState() == Order::ORDER_STATE_CANCEL ? '' : '<span class="label label-sm label-'.$this->getStatusColor($order->getPaymentState()).'"> '.$order->getPaymentState().' </span>';
             $line["deliveryState"] = $order->getOrderState() == Order::ORDER_STATE_CANCEL ? '' : '<span class="label label-sm label-'.$this->getStatusColor($order->getDeliveryState()).'"> '.$order->getDeliveryState().' </span>';
             $line["totalAmount"] = number_format($order->getTotalAmount(), 2);
-            $line["paidAmount"] = number_format($order->getPaidAmount(), 2);
             if ($this->showAgentName) {
                 $line["fullName"] = Agent::agentIdNameFormat($order->getAgent()->getAgentID(), $order->getAgent()->getUser()->getProfile()->getFullName());
             }
@@ -88,7 +87,6 @@ class OrderDatatable extends BaseDatatable
             ->add('paymentState', 'column', array('title' => 'Payment State', 'render' => 'Order.OrderStateFormat'))
             ->add('deliveryState', 'column', array('title' => 'Delivery State', 'render' => 'Order.OrderStateFormat'))
             ->add('totalAmount', 'column', array('title' => 'Total Amount', 'render' => 'Order.OrderPaymentFormat'))
-            ->add('paidAmount', 'column', array('title' => 'Paid Amount', 'render' => 'Order.OrderPaymentFormat'))
             ->add('isComplete', 'virtual', array('visible' => false))
             ->add('isCancel', 'virtual', array('visible' => false))
             ->add('enabled', 'virtual', array('visible' => false))
