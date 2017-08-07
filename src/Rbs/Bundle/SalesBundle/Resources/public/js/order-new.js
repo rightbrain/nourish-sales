@@ -372,7 +372,6 @@ var Order = function()
                 var setActualAmount = prompt("Actual Amount:", setDepositedAmount);
 
                 if (setActualAmount != null || setActualAmount != "") {
-
                     $.ajax({
                         type: "get",
                         url: Routing.generate('payment_amount_verified', {
@@ -384,6 +383,7 @@ var Order = function()
                         dataType: 'json',
                         success: function (response) {
                             $('.payment-action-buttons').html(response.message);
+                            $('.actual-amount-new').html(response.actualAmount);
                             if (!isVerified) {
                                 setTimeout(function () {
                                     $('.payment-action-buttons').closest('tr').remove();

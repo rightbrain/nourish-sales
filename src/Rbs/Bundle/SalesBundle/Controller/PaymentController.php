@@ -266,6 +266,7 @@ class PaymentController extends BaseController
             $payment->setDepositedAmount($depositedAmount);
             $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->update($payment);
             $data["message"] = 'VERIFIED';
+            $data["actualAmount"] = $actualAmount;
         } else {
             $em->remove($payment);
             $em->flush();

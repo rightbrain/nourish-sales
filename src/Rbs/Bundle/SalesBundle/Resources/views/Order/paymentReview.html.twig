@@ -27,9 +27,10 @@
                                 <thead>
                                 <tr>
                                     <th class="col-md-2">Date</th>
-                                    <th class="col-md-4">Bank</th>
+                                    <th class="col-md-3">Bank</th>
                                     <th class="col-md-4">Branch</th>
                                     <th class="text-right col-md-1">Deposited Amount</th>
+                                    <th class="text-right col-md-1">Actual Amount</th>
                                     <th class="text-right col-md-1">Action</th>
                                 </tr>
                                 </thead>
@@ -42,6 +43,13 @@
                                         <td>{{ payment.bankAccount.branch.bank.name }}</td>
                                         <td>{{ payment.bankAccount.branch.name }}</td>
                                         <td class="text-right"><span id="amount" class="hidden">{{ payment.depositedAmount }}</span>{{ payment.depositedAmount|number_format(2) }}</td>
+                                        <td class="text-right">
+                                            {% if payment.amount %}
+                                                {{ payment.amount|number_format(2) }}
+                                            {% else %}
+                                                <div class="actual-amount-new">0</div>
+                                            {% endif %}
+                                        </td>
                                         <td class="text-right">
 
                                             {% set difference = date(payment.createdAt|date("Y/m/d", "Asia/Dhaka")).diff(date('now'|date("Y/m/d", "Asia/Dhaka"))) %}
@@ -65,12 +73,12 @@
                                     {% endif %}
                                 {% endfor %}
                                 {% if payments is empty %}
-                                    <tr><td colspan="5">No Payment Added. <a href="{{ path('payment_create') }}">Click Here to Add a Payment</a></td></tr>
+                                    <tr><td colspan="6">No Payment Added. <a href="{{ path('payment_create') }}">Click Here to Add a Payment</a></td></tr>
                                 {% endif %}
                                 </tbody>
                                 <tfoot>
                                 {% if isOverCredit == true and order.agent.VIP != true %}
-                                    <tr><td colspan="5">
+                                    <tr><td colspan="6">
                                             <div class="alert alert-danger" style="margin-bottom: 0; padding: 2px;">
                                                 <strong>Notice!</strong> This order amount is over credit.
                                                 {% if is_granted('ROLE_PAYMENT_OVER_CREDIT_APPROVE') == false %}
