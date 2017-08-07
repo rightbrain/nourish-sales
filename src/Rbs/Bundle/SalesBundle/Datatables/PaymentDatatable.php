@@ -80,7 +80,7 @@ class PaymentDatatable extends BaseDatatable
         $this->columnBuilder
             ->add('fullName', 'virtual', array('visible' => true, 'title' => 'Agent Name'))
             ->add('amount', 'column', array('visible' => false))
-            ->add('totalAmount', 'virtual', array('title' => 'Amount'))
+            ->add('totalAmount', 'virtual', array('title' => 'Actual Amount'))
             ->add('paymentMethod', 'column', array('visible' => false))
             ->add('bankInfo', 'virtual', array('title' => 'Bank Info'))
             ->add('orders.id', 'array', array(
