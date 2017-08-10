@@ -347,6 +347,7 @@ class PaymentRepository extends EntityRepository
             $payment = new Payment();
             $payment->setAgent($order->getAgent());
             $payment->setAmount($total);
+            $payment->setDepositedAmount($total);
             $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
             $payment->setRemark(json_encode($deliveryItemSummaries));
             $payment->setDepositDate(date("Y-m-d"));
