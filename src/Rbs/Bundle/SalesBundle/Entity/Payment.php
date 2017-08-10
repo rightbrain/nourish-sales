@@ -96,7 +96,7 @@ class Payment
      * @ORM\Column(name="deposited_amounts", type="float", nullable=false)
      * @Assert\NotBlank()
      */
-    private $depositedAmount;
+    private $depositedAmount =0;
 
     /**
      * @var \DateTime
