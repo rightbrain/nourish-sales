@@ -22,6 +22,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.agent.bank:
+        class: Rbs\Bundle\SalesBundle\Datatables\AgentBankDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.credit.limit:
         class: Rbs\Bundle\SalesBundle\Datatables\CreditLimitDatatable
         tags:

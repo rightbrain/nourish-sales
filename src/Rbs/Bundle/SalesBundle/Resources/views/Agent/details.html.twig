@@ -13,7 +13,9 @@
             </div>
 
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('agents_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}
+                <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('agents_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}</div>
+                <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('agent_bank_individual_add', {'id': agent.id} ), label: 'Add Bank', 'icon': 'plus'}) }}</div>
+
                 <div class="dataTables_wrapper no-footer">
 
                     <div class="row">

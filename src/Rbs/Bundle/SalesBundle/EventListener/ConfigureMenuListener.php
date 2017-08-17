@@ -169,6 +169,11 @@ class ConfigureMenuListener extends ContextAwareListener
                     $this->isMatch('agent_groups_home') or $this->isMatch('agent_group_create') or $this->isMatch('agent_group_update')) {
                     $menu['Sales']->getChild('Agents')->setCurrent(true);
                 }
+                $menu['Sales']->addChild('Agents Bank', array('route' => 'agent_banks'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('agent_banks')) {
+                    $menu['Sales']->getChild('Agents')->setCurrent(true);
+                }
             }
         }
         if ($this->user->getUserType() == User::USER or $this->user->getUserType() == User::ZM) {
