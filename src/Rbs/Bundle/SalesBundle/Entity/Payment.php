@@ -140,7 +140,15 @@ class Payment
      * @ORM\Column(name="agent_branch", type="string", length=255, nullable=true)
      */
     private $agentBranch = '';
-    
+
+    /**
+     * @var AgentBank
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\AgentBank", inversedBy="payments", cascade={"persist"})
+     * @ORM\JoinColumn(name="agent_bank_branch_id", nullable=true)
+     **/
+    private $agentBankBranch;
+
     /**
      * Get id
      *
@@ -327,6 +335,26 @@ class Payment
     public function setBankAccount($bankAccount)
     {
         $this->bankAccount = $bankAccount;
+
+        return $this;
+    }
+
+    /**
+     * @return AgentBank
+     */
+    public function getAgentBankBranch()
+    {
+        return $this->agentBankBranch;
+    }
+
+    /**
+     * @param $agentBankBranch
+     *
+     * @return Payment
+     */
+    public function setAgentBankBranch($agentBankBranch)
+    {
+        $this->agentBankBranch = $agentBankBranch;
 
         return $this;
     }

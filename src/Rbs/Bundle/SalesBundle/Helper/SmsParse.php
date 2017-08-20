@@ -71,13 +71,10 @@ class SmsParse
         $agentId = isset($splitMsg[0]) ? trim($splitMsg[0]) : 0;
         $orderInfo = isset($splitMsg[1]) ? trim($splitMsg[1]) : '';
         $bankAccountCode = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
-        $amount = isset($splitMsg[3]) ? trim($splitMsg[3]) : '';
-        $agentBank = isset($splitMsg[4]) ? trim($splitMsg[4]) : '';
-        $agentBranch = isset($splitMsg[5]) ? trim($splitMsg[5]) : '';
 
         $this->setAgent($agentId);
         $this->setOrderItems($orderInfo);
-        $this->setPayment($bankAccountCode, $amount, $agentBank, $agentBranch);
+        $this->setPayment($bankAccountCode, $agentId);
     }
 
     public function createOrder()
@@ -119,17 +116,22 @@ class SmsParse
         $this->orderIncentiveFlag->setOrder($this->order);
         $this->em->persist($this->orderIncentiveFlag);
 
-        if ($this->payment) {
-            $this->payment->addOrder($this->order);
-            $this->payment->setAgent($this->agent);
-            $this->payment->setTransactionType(Payment::CR);
-            $this->payment->setVerified(false);
-            $this->em->persist($this->payment);
 
-            $payments = new ArrayCollection();
-            $this->order->setPayments($payments);
-            $payments->add($this->payment);
-        }
+        ##### order wise payment business logic removed #####
+        ##### but previous relation still on table #####
+
+//        if ($this->payment) {
+//            $this->payment->addOrder($this->order);
+//            $this->payment->setAgent($this->agent);
+//            $this->payment->setTransactionType(Payment::CR);
+//            $this->payment->setVerified(false);
+//            $this->em->persist($this->payment);
+//
+
+//            $payments = new ArrayCollection();
+//            $this->order->setPayments($payments);
+//            $payments->add($this->payment);
+//        }
         $this->em->flush();
 
         return array(
@@ -211,42 +213,54 @@ class SmsParse
         }
     }
 
-    protected function setPayment($bankAccountCode, $amount = '', $agentBank = '', $agentBranch = '')
+    protected function setPayment($accountInfo, $agentId)
     {
         if ($this->hasError()) {
             return;
         }
+        $agent = $this->em->getRepository('RbsSalesBundle:Agent')->findOneBy(array('agentID' => $agentId));
+        try {
+            $accounts = explode('-', $accountInfo);
+            foreach ($accounts as $account) {
 
-        if (!empty($amount) && !preg_match('/^\d+$/', trim($amount))) {
-            $this->setError('Invalid Amount');
-            $this->markError($amount);
-            return;
-        }
+                list($agentBank, $nourishBank, $amount) = explode(':', $account);
 
-        if (!empty($amount) && (empty(trim($bankAccountCode)))) {
-            $this->setError('Invalid Bank or Branch Name');
-            return;
-        }
+                $nourishBankAccount = $this->em->getRepository('RbsCoreBundle:BankAccount')->findOneBy(array('code' => $nourishBank));
+                $agentBankAccount = $this->em->getRepository('RbsSalesBundle:AgentBank')->findOneBy(array('code' => $agentBank, 'agent' => $agent));
 
-        $bankAccount = $this->em->getRepository('RbsCoreBundle:BankAccount')->findOneBy(array('code' => $bankAccountCode));
+                if (!$nourishBankAccount) {
+                    $this->setError('Invalid Nourish Bank Code');
+                    $this->markError($nourishBankAccount);
+                    break;
+                } else if (!$agentBankAccount) {
+                    $this->setError('Invalid Agent Bank Code');
+                    $this->markError($agentBankAccount);
+                    break;
+                } else if (!empty($amount) && !preg_match('/^\d+$/', trim($amount))) {
+                    $this->setError('Invalid Amount');
+                    $this->markError($amount);
+                    break;
+                } else {
+                    if (!empty($amount)) {
+                        $this->payment = new Payment();
+                        $this->payment->setAmount(0);
+                        $this->payment->setDepositedAmount($amount);
+                        $this->payment->setBankAccount($nourishBankAccount);
+                        $this->payment->setVerified(false);
+                        $this->payment->setDepositDate(date("Y-m-d"));
+                        $this->payment->setPaymentVia('SMS');
+                        $this->payment->setAgentBankBranch($agentBankAccount);
 
-        if (!$bankAccount) {
-            $this->setError('Invalid Bank Account Code');
-            $this->markError($bankAccountCode);
-            return;
-        }
+                        $this->payment->setAgent($this->agent);
+                        $this->payment->setTransactionType(Payment::CR);
+                        $this->payment->setVerified(false);
 
-        if (!empty($amount)) {
-            $this->payment = new Payment();
-//            $this->payment->setAmount($amount);
-            $this->payment->setAmount(0);
-            $this->payment->setDepositedAmount($amount);
-            $this->payment->setBankAccount($bankAccount);
-            $this->payment->setVerified(false);
-            $this->payment->setDepositDate(date("Y-m-d"));
-            $this->payment->setPaymentVia('SMS');
-            $this->payment->setAgentBank($agentBank);
-            $this->payment->setAgentBranch($agentBranch);
+                        $this->em->persist($this->payment);
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+            $this->setError("Invalid Bank, Code and Amount Format");
         }
     }
 

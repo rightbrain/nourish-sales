@@ -1,13 +1,14 @@
 <?php
 namespace Rbs\Bundle\SalesBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
 /**
- * Agent
+ * AgentBank
  *
  * @ORM\Table(name="sales_agent_banks")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\AgentBankRepository")
@@ -63,6 +64,13 @@ class AgentBank
      * @ORM\Column(name="cellphone", type="string", length=255)
      */
     private $cellphone;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\Payment", mappedBy="agentBankBranch", cascade={"persist"})
+     */
+    private $payments;
 
     /**
      * Get id
@@ -152,5 +160,13 @@ class AgentBank
     public function setCellphone($cellphone)
     {
         $this->cellphone = $cellphone;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getPayments()
+    {
+        return $this->payments;
     }
 }
