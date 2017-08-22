@@ -165,3 +165,11 @@ services:
         tags:
             - { name: kernel.event_listener, event: core.depo.created, method: onDepoCreated }
         arguments: [@doctrine.orm.entity_manager]
+
+    rbs_erp.sales.sms_gateway:
+        class: Rbs\Bundle\SalesBundle\Service\SmsGateWay
+        arguments: [%sms_username%, %sms_password%, @guzzle.client.api_crm]
+
+    rbs_erp.sales.service.smssender:
+        class: Rbs\Bundle\SalesBundle\Service\SmsSender
+        arguments: [ @doctrine, @rbs_erp.sales.sms_gateway ]

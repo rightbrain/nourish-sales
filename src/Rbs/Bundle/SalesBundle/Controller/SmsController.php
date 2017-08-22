@@ -131,8 +131,8 @@ class SmsController extends Controller
                 }
             }
 
-
-
+            $smsSender = $this->get('rbs_erp.sales.service.smssender');
+            $smsSender->agentBankInfoSmsAction($msg, $agent->getUser()->getProfile()->getCellphone());
 
             return $this->redirect($this->generateUrl('agent_bank_info_sms'));
         }

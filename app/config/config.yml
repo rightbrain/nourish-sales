@@ -112,3 +112,10 @@ leezy_pheanstalk:
             default: true
             timeout: 10
             port: %beanstalkd_port%
+
+guzzle:
+    clients:
+        api_crm:
+            base_url: "http://api.bulksms.icombd.com"
+            headers:
+                Accept: "application/json"

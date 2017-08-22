@@ -28,6 +28,7 @@ class AppKernel extends Kernel
             new Xiidea\EasyAuditBundle\XiideaEasyAuditBundle(),
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new Leezy\PheanstalkBundle\LeezyPheanstalkBundle(),
+            new EightPoints\Bundle\GuzzleBundle\GuzzleBundle(),
 
             new Rbs\Bundle\CoreBundle\RbsCoreBundle(),
             new Rbs\Bundle\UserBundle\RbsUserBundle(),
