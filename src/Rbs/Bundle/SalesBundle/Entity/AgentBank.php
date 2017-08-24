@@ -169,4 +169,9 @@ class AgentBank
     {
         return $this->payments;
     }
+
+    public function getBankBranchName()
+    {
+        return $this->getAgent()->getIdName() .", Bank: ". $this->getBank() .", Branch: ". $this->getBranch();
+    }
 }

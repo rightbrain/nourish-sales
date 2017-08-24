@@ -35,6 +35,7 @@ class SmsParse
     protected $payment;
 
     protected $orderItems = array();
+    protected $payments = array();
 
     public function __construct($em)
     {
@@ -57,6 +58,7 @@ class SmsParse
         $this->order = null;
         $this->orderIncentiveFlag = null;
         $this->orderItems = array();
+        $this->payments = array();
         $this->payment = null;
         $this->error;
         $this->validate();
@@ -116,22 +118,16 @@ class SmsParse
         $this->orderIncentiveFlag->setOrder($this->order);
         $this->em->persist($this->orderIncentiveFlag);
 
+        $payments = new ArrayCollection();
+        /** @var Payment $payment */
+        foreach ($this->payments as $payment) {
+            $payment->addOrder($this->order);
+            $this->em->persist($payment);
+            $this->order->setPayments($payments);
+            $payments->add($payment);
 
-        ##### order wise payment business logic removed #####
-        ##### but previous relation still on table #####
+        }
 
-//        if ($this->payment) {
-//            $this->payment->addOrder($this->order);
-//            $this->payment->setAgent($this->agent);
-//            $this->payment->setTransactionType(Payment::CR);
-//            $this->payment->setVerified(false);
-//            $this->em->persist($this->payment);
-//
-
-//            $payments = new ArrayCollection();
-//            $this->order->setPayments($payments);
-//            $payments->add($this->payment);
-//        }
         $this->em->flush();
 
         return array(
@@ -223,12 +219,15 @@ class SmsParse
             $accounts = explode('-', $accountInfo);
             foreach ($accounts as $account) {
 
-                list($agentBank, $nourishBank, $amount) = explode(':', $account);
+                list($fxCx, $agentBank, $nourishBank, $amount) = explode(':', $account);
 
                 $nourishBankAccount = $this->em->getRepository('RbsCoreBundle:BankAccount')->findOneBy(array('code' => $nourishBank));
                 $agentBankAccount = $this->em->getRepository('RbsSalesBundle:AgentBank')->findOneBy(array('code' => $agentBank, 'agent' => $agent));
 
-                if (!$nourishBankAccount) {
+                if (empty($fxCx)) {
+                    $this->setError('Invalid Amount For');
+                    break;
+                } else if (!$nourishBankAccount) {
                     $this->setError('Invalid Nourish Bank Code');
                     $this->markError($nourishBankAccount);
                     break;
@@ -249,12 +248,14 @@ class SmsParse
                         $this->payment->setVerified(false);
                         $this->payment->setDepositDate(date("Y-m-d"));
                         $this->payment->setPaymentVia('SMS');
+                        $this->payment->setFxCx($fxCx);
                         $this->payment->setAgentBankBranch($agentBankAccount);
 
                         $this->payment->setAgent($this->agent);
                         $this->payment->setTransactionType(Payment::CR);
                         $this->payment->setVerified(false);
 
+                        $this->payments[]=$this->payment;
                         $this->em->persist($this->payment);
                     }
                 }

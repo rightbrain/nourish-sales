@@ -130,6 +130,13 @@ class Payment
     /**
      * @var string
      *
+     * @ORM\Column(name="fx_cx", type="string", length=6, nullable=true)
+     */
+    private $fxCx;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="agent_bank", type="string", length=255, nullable=true)
      */
     private $agentBank = '';
@@ -429,5 +436,21 @@ class Payment
     public function setDepositedAmount($depositedAmount)
     {
         $this->depositedAmount = $depositedAmount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFxCx()
+    {
+        return $this->fxCx;
+    }
+
+    /**
+     * @param string $fxCx
+     */
+    public function setFxCx(string $fxCx)
+    {
+        $this->fxCx = $fxCx;
     }
 }

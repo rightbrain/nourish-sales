@@ -3,7 +3,9 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Doctrine\ORM\EntityManager;
+use Rbs\Bundle\SalesBundle\Entity\AgentBank;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Repository\AgentBankRepository;
 use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
 use Symfony\Component\Form\AbstractType;
@@ -61,6 +63,14 @@ class PaymentForm extends AbstractType
                 ),
                 'required' => false,
             ))
+            ->add('fxCx', 'choice', array(
+                'empty_value' => 'Select Payment For',
+                'choices'  => array(
+                    'FX' => 'FEED',
+                    'CX' => 'CHICK'
+                ),
+                'required' => false,
+            ))
             ->add('agent', 'entity', array(
                 'class' => 'RbsSalesBundle:Agent',
                 'attr' => array(
@@ -81,27 +91,41 @@ class PaymentForm extends AbstractType
                         ->orderBy('p.fullName','ASC');
                 }
             ))
+            ->add('agentBankBranch', 'entity', array(
+                'class' => 'RbsSalesBundle:AgentBank',
+                'attr' => array(
+                    'class' => 'select2me'
+                ),
+                'property' => 'getBankBranchName',
+                'empty_value' => 'Select Agent Bank',
+                'empty_data' => null,
+                'query_builder' => function (AgentBankRepository $repository)
+                {
+                    return $repository->createQueryBuilder('ab')
+                        ->where('ab.deletedAt IS NULL');
+                }
+            ))
             ->add('remark', 'textarea', array(
                 'required' => false,
             ))
         ;
 
-        $builder
-            ->add('orders', 'entity', array(
-                'class' => 'RbsSalesBundle:Order',
-                'property' => 'orderIdAndDueAmount',
-                'multiple' => true,
-                'required' => false,
-                'query_builder' => function (OrderRepository $repository) use ($agent)
-                {
-                    if (!$agent) {
-                        return $repository->createQueryBuilder('o')
-                            ->setMaxResults(0);
-                    } else {
-                        return $repository->getAgentWiseOrder($agent, true);
-                    }
-                }
-            ));
+//        $builder
+//            ->add('orders', 'entity', array(
+//                'class' => 'RbsSalesBundle:Order',
+//                'property' => 'orderIdAndDueAmount',
+//                'multiple' => true,
+//                'required' => false,
+//                'query_builder' => function (OrderRepository $repository) use ($agent)
+//                {
+//                    if (!$agent) {
+//                        return $repository->createQueryBuilder('o')
+//                            ->setMaxResults(0);
+//                    } else {
+//                        return $repository->getAgentWiseOrder($agent, true);
+//                    }
+//                }
+//            ));
 
         $builder
             ->add('submit', 'submit', array(

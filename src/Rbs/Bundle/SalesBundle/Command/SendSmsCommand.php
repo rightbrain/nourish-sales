@@ -32,7 +32,7 @@ EOT
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-#####        Demo Command      #####
+        #####        Demo Command      #####
         $msg = "msg";
         $cellNumber = "8801915646596";
         $smsSender = $this->getContainer()->get('rbs_erp.sales.service.smssender');

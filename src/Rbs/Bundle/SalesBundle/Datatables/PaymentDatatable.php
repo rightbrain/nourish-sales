@@ -27,6 +27,7 @@ class PaymentDatatable extends BaseDatatable
             $payment = $this->em->getRepository('RbsSalesBundle:Payment')->find($line['id']);
             $line['bankInfo'] = $this->formatBankInfo($line['bankAccount'], $line['transactionType'], $line['paymentMethod']);
             $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
+            $line['depositedAmount'] = '<div style="text-align: right;">'. number_format($payment->getDepositedAmount(), 2) .'</div>';
             if ($this->allowAgentSearch) {
                 $line["fullName"] = $this->resolveAgentName($line['agent']);
             }
@@ -79,7 +80,7 @@ class PaymentDatatable extends BaseDatatable
 
         $this->columnBuilder
             ->add('fullName', 'virtual', array('visible' => true, 'title' => 'Agent Name'))
-            ->add('amount', 'column', array('visible' => false))
+            ->add('depositedAmount', 'virtual', array('title' => 'Deposited Amount'))
             ->add('totalAmount', 'virtual', array('title' => 'Actual Amount'))
             ->add('paymentMethod', 'column', array('visible' => false))
             ->add('bankInfo', 'virtual', array('title' => 'Bank Info'))

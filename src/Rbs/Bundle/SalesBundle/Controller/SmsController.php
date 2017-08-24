@@ -119,7 +119,7 @@ class SmsController extends Controller
         $agentBanks = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentBank')->findByAgent($agent);
 
         if ('POST' === $request->getMethod()) {
-            $msg = "Agent Code: " . $request->request->get('agentID') . ";";
+            $msg = "Agent Code: " . $request->request->get('agentID') . "; Feed: FX, Chick: CX;";
             $banks = $request->request->get('banks');
 
             foreach ($banks as $key=>$bank){
