@@ -117,29 +117,51 @@ class SmsController extends Controller
     public function agentBankListSms(Request $request, Agent $agent)
     {
         $agentBanks = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentBank')->findByAgent($agent);
+        $nourishBanks = $this->getDoctrine()->getRepository('RbsCoreBundle:BankAccount')->findAll();
 
         if ('POST' === $request->getMethod()) {
-            $msg = "Agent Code: " . $request->request->get('agentID') . "; Feed: FX, Chick: CX;";
+            $msg = "Agent:". $request->request->get('agentID') . ";Type:FX/CX;";
             $banks = $request->request->get('banks');
+            $nourishBanks = $request->request->get('nourishBanks');
 
+            $msg .= ", FROM: ";
             foreach ($banks as $key=>$bank){
                 $msg .= " ";
                 $agentBank = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentBank')->find($bank);
-                $msg .= "(". ($key+1) . ") Bank Name: ". $agentBank->getBank() .", Branch Name: ". $agentBank->getBranch() .", Code:". $agentBank->getCode();
+                $msg .= "(". ($key+1) . "):". $agentBank->getBank() .", ". $agentBank->getBranch() .", Code:". $agentBank->getCode();
                 if(($key+1)< count($banks)){
                     $msg .= ", ";
                 }
             }
+            $parts = str_split($msg, $split_length = 160);
 
-            $smsSender = $this->get('rbs_erp.sales.service.smssender');
-            $smsSender->agentBankInfoSmsAction($msg, $agent->getUser()->getProfile()->getCellphone());
+            foreach($parts as $part){
+                $smsSender = $this->get('rbs_erp.sales.service.smssender');
+                $smsSender->agentBankInfoSmsAction($part, $agent->getUser()->getProfile()->getCellphone());
+            }
+            $msg = "";
+            $msg .= "TO: ";
+            foreach ($nourishBanks as $key=>$nourishBank){
+                $msg .= " ";
+                $bank = $this->getDoctrine()->getRepository('RbsCoreBundle:BankAccount')->find($nourishBank);
+                $msg .= "(". ($key+1) . ")". $bank->getBankBranch();
+                if(($key+1)< count($nourishBank)){
+                    $msg .= ", ";
+                }
+            }
+            $part1s = str_split($msg, $split_length = 160);
+            foreach($part1s as $part){
+                $smsSender = $this->get('rbs_erp.sales.service.smssender');
+                $smsSender->agentBankInfoSmsAction($part, $agent->getUser()->getProfile()->getCellphone());
+            }
 
             return $this->redirect($this->generateUrl('agent_bank_info_sms'));
         }
 
         return array(
             'agent' => $agent,
-            'agentBanks' => $agentBanks
+            'agentBanks' => $agentBanks,
+            'nourishBanks' => $nourishBanks
         );
 
     }

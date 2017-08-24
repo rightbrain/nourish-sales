@@ -115,29 +115,6 @@ class BankAccount
     }
 
     /**
-     * Set bank
-     *
-     * @param Bank $bank
-     * @return BankAccount
-     */
-    public function setBank($bank)
-    {
-        $this->bank = $bank;
-
-        return $this;
-    }
-
-    /**
-     * Get bank
-     *
-     * @return Bank
-     */
-    public function getBank()
-    {
-        return $this->bank;
-    }
-
-    /**
      * Set branch
      *
      * @param BankBranch $branch
@@ -167,5 +144,10 @@ class BankAccount
     public function getPayments()
     {
         return $this->payments;
+    }
+
+    public function getBankBranch()
+    {
+        return "Account: ".$this->getName()." ".$this->branch->getBank()->getName().", ".$this->branch->getName().", Code: ".$this->code;
     }
 }
