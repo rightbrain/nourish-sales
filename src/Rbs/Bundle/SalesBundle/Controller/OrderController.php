@@ -197,6 +197,10 @@ class OrderController extends BaseController
                 $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
                 
                 $this->flashMessage('success', 'Order Created Successfully');
+
+                $smsSender = $this->get('rbs_erp.sales.service.smssender');
+                $smsSender->agentBankInfoSmsAction("Your Order No:".$order->getId().".", $order->getAgent()->getUser()->getProfile()->getCellphone());
+
                 return $this->redirect($this->generateUrl('orders_home'));
             }
             a:

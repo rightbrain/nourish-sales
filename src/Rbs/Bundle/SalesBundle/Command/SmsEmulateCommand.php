@@ -33,7 +33,7 @@ class SmsEmulateCommand extends ContainerAwareCommand
     {
         $container = $this->getContainer();
         $em = $container->get('doctrine.orm.entity_manager');
-        $smsParse = new SmsParse($em);
+        $smsParse = new SmsParse($em, $container, $input->getArgument('mobileNo'));
 
         $sms = new Sms();
         $sms->setMobileNo($input->getArgument('mobileNo'));

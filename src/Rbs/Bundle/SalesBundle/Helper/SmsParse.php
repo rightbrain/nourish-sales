@@ -5,12 +5,12 @@ namespace Rbs\Bundle\SalesBundle\Helper;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
-use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderIncentiveFlag;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Entity\Sms;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class SmsParse
 {
@@ -33,13 +33,17 @@ class SmsParse
 
     /** @var Payment */
     protected $payment;
+    protected $container;
+    protected $mobileNumber;
 
     protected $orderItems = array();
     protected $payments = array();
 
-    public function __construct($em)
+    public function __construct($em, ContainerInterface $c, $mobileNumber)
     {
         $this->em = $em;
+        $this->container = $c;
+        $this->mobileNumber = $mobileNumber;
     }
 
     protected function setError($string)
@@ -82,12 +86,11 @@ class SmsParse
     public function createOrder()
     {
         if ($this->hasError()) {
-
+            $this->smsService();
             $this->sms->setStatus('UNREAD');
             $this->sms->setRemark($this->error);
             $this->em->persist($this->sms);
             $this->em->flush();
-
             return false;
         }
 
@@ -130,6 +133,9 @@ class SmsParse
 
         $this->em->flush();
 
+        $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
+        $smsSender->agentBankInfoSmsAction("Your Order No:".$this->order->getId().".", $this->order->getAgent()->getUser()->getProfile()->getCellphone());
+
         return array(
             'orderId' => $this->order->getId()
         );
@@ -163,6 +169,7 @@ class SmsParse
     protected function setOrderItems($orderInfo)
     {
         if ($this->hasError()) {
+            $this->smsService();
             return;
         }
 
@@ -181,14 +188,17 @@ class SmsParse
                 $item = $itemRepo->findOneBy(array('sku' => trim($sku)));
 
                 if (!$item) {
+                    $this->smsService();
                     $this->setError('Invalid Produce Code');
                     $this->markError($sku);
                     break;
                 } else if (!preg_match('/^\d+$/', trim($qty))) {
+                    $this->smsService();
                     $this->setError('Invalid Quantity');
                     $this->markError($qty);
                     break;
                 } else if ($this->agent->getItemType() != null and  $this->agent->getItemType() != $item->getItemType()) {
+                    $this->smsService();
                     $this->setError('Product Type Not Match');
                     $this->markError($sku);
                     break;
@@ -205,6 +215,7 @@ class SmsParse
             }
 
         } catch (\Exception $e) {
+            $this->smsService();
             $this->setError("Invalid Product:Quantity Format");
         }
     }
@@ -278,5 +289,11 @@ class SmsParse
     public function trimMobileNo($string)
     {
         return str_replace(array(' ', '+'), '', $string);
+    }
+
+    public function smsService()
+    {
+        $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
+        $smsSender->agentBankInfoSmsAction("Your Order SMS text is unreadable.", $this->mobileNumber);
     }
 }

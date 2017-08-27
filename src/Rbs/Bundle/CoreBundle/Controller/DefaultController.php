@@ -70,7 +70,7 @@ class DefaultController extends BaseController
                 if ($orderType == 'chick') {
                     $smsParse = new ChickOrderSmsParser($this->get('doctrine.orm.entity_manager'));
                 } else {
-                    $smsParse = new SmsParse($this->get('doctrine.orm.entity_manager'));
+                    $smsParse = new SmsParse($this->get('doctrine.orm.entity_manager'), $this->container, $formView->get('mobile')->getData());
                 }
 
                 $sms = new Sms();
@@ -85,6 +85,7 @@ class DefaultController extends BaseController
                     $this->flashMessage('success', 'Order Created Successfully, Order ID: ' . $response['orderId']);
                 } else {
                     $this->flashMessage('error', $smsParse->error);
+
                 }
                 return $this->redirectToRoute('order_via_sms');
             }

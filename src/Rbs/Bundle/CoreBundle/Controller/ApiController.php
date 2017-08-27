@@ -47,7 +47,7 @@ class ApiController extends BaseController
                         $this->getDoctrine()->getManager()->persist($entity);
                         $this->getDoctrine()->getManager()->flush();
 
-                        $smsParse = new SmsParse($this->getDoctrine()->getManager());
+                        $smsParse = new SmsParse($this->getDoctrine()->getManager(), $this->container, $msisdn);
                         $smsParse->parse($entity);
 
                         $response = new Response(json_encode(array("message" => 'SMS received Successfully')), 200);
