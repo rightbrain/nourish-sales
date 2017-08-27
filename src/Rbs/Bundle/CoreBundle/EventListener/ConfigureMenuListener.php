@@ -120,6 +120,14 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
+            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+                $menu['Settings']->addChild('Agent Bank Info Sent', array('route' => 'agent_bank_info_sms'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('agent_bank_info_sms') || $this->isMatch('agent_bank_list_sms')) {
+                    $menu['Settings']->getChild('Agent Bank Info Sent')->setCurrent(true);
+                }
+            }
+
             /* Report Menu*/
             $menu->addChild('Report', array())
                 ->setAttribute('dropdown', true)
