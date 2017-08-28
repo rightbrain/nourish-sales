@@ -124,7 +124,7 @@ class SmsController extends Controller
             $banks = $request->request->get('banks');
             $nourishBanks = $request->request->get('nourishBanks');
 
-            $msg .= ", FROM: ";
+            $msg .= "FROM: ";
             foreach ($banks as $key=>$bank){
                 $msg .= " ";
                 $agentBank = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentBank')->find($bank);
