@@ -68,18 +68,18 @@ class ConfigureMenuListener extends ContextAwareListener
             }
 
             if ($this->authorizationChecker->isGranted('ROLE_DEPO_MANAGE')) {
-                $menu['Settings']->addChild('Depos', array('route' => 'depo'))
+                $menu['Settings']->addChild('Depot', array('route' => 'depo'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('depo')) {
-                    $menu['Settings']->getChild('Depos')->setCurrent(true);
+                    $menu['Settings']->getChild('Depot')->setCurrent(true);
                 }
             }
 
             if ($this->authorizationChecker->isGranted('ROLE_SALE_INCENTIVE_MANAGE')) {
-                $menu['Settings']->addChild('Sale Incentive', array('route' => 'sale_incentive_list'))
+                $menu['Settings']->addChild('Sales Incentive', array('route' => 'sale_incentive_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('sale_incentive_list') or $this->isMatch('sale_incentive_import')) {
-                    $menu['Settings']->getChild('Sale Incentive')->setCurrent(true);
+                    $menu['Settings']->getChild('Sales Incentive')->setCurrent(true);
                 }
             }
 
@@ -147,10 +147,10 @@ class ConfigureMenuListener extends ContextAwareListener
             }
 
             if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
-                $menu['Report']->addChild('Upozilla Wise Report', array('route' => 'upozilla_wise_item_report'))
+                $menu['Report']->addChild('Upazilla Wise Report', array('route' => 'upozilla_wise_item_report'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('upozilla_wise_item_report')) {
-                    $menu['Report']->getChild('Upozilla Wise Report')->setCurrent(true);
+                    $menu['Report']->getChild('Upazilla Wise Report')->setCurrent(true);
                 }
             }
             if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {

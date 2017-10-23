@@ -41,7 +41,7 @@ class AgentBankDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-            ->add('code', 'column', array('title' => 'Code'))
+            ->add('code', 'column', array('title' => 'Bank Code'))
             ->add('agent.agentID', 'column', array('title' => 'Agent ID'))
             ->add('fullName', 'virtual', array('title' => 'Agent name'))
             ->add('bank', 'column', array('title' => 'Bank'))

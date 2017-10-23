@@ -145,7 +145,7 @@ class PaymentRepository extends EntityRepository
         $query->setParameter('AGENT', User::AGENT);
         $query->setParameter('agentId', $data['agent']);
         $this->handleSearchByTwoDate($query, $data['start_date'], $data['end_date']);
-        $query->orderBy('p.depositDate', 'asc');
+        $query->orderBy('p.createdAt', 'desc');
 
         return $query->getQuery()->getScalarResult();
     }

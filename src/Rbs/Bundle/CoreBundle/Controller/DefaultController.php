@@ -54,8 +54,8 @@ class DefaultController extends BaseController
         ));
         $form->add('type', 'choice', array(
             'choices' => array(
-                'chick' => 'Chick',
                 'feed' => 'Feed',
+                'chick' => 'Chick',
             )
         ));
 

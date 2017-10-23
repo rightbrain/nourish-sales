@@ -83,7 +83,7 @@
                                     {% set balance = balance - laser['amount'] %}
                                 {% endif %}
                                 <tr>
-                                    <td class="col-md-1">{{ laser['depositDate'] | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
+                                    <td class="col-md-1">{{ laser['depositDate'] | date("d-m-Y", "Asia/Dhaka") }}</td>
                                     <td class="col-md-1">
                                         {% if laser['transactionType'] == 'CR' %}
                                             {{ laser['remark'] | default('') }}

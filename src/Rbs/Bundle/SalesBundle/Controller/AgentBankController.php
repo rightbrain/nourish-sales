@@ -54,6 +54,8 @@ class AgentBankController extends BaseController
             $qb->join("sales_agent_banks.agent", "a");
             $qb->join("a.user", "u");
             $qb->join("u.profile", "p");
+            $qb->addOrderBy('a.id', 'ASC');
+            $qb->addOrderBy('sales_agent_banks.id', 'ASC');
             $qb->andWhere("sales_agent_banks.deletedAt IS NULL");
         };
         $query->addWhereAll($function);

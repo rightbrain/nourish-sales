@@ -88,6 +88,7 @@ class PaymentController extends BaseController
                 $agent = $agentRepository->findOneBy(array('user' => $user->getId()));
                 $qb->andWhere('sales_payments.agent = :agent')->setParameter('agent', $agent->getId());
             }
+            $qb->andWhere('sales_payments.bankAccount IS NOT NULL');
         };
         $query->addWhereAll($function);
 

@@ -160,13 +160,15 @@ class AgentController extends BaseController
 
         $data = array();
         $data['agent'] = $agent->getId();
-       
+        $agentBanks = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentBank')->findByAgent($agent);
+
         $agentDebitLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentDebitLaserTotal($data);
         $agentCreditLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentCreditLaserTotal($data);
         $currentBalance = $agentCreditLaserTotal - $agentDebitLaserTotal;
         
         return $this->render('RbsSalesBundle:Agent:details.html.twig', array(
             'agent' => $agent,
+            'agentBanks' => $agentBanks,
             'agentCurrentBalance' => $currentBalance
         ));
     }

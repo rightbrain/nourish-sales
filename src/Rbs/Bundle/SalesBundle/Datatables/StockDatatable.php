@@ -20,6 +20,7 @@ class StockDatatable extends BaseDatatable
             $stock = $this->em->getRepository('RbsSalesBundle:Stock')->find($line['id']);
             $line['available'] = $stock->isAvailableOnDemand();
             $line['notAvailable'] = !$stock->isAvailableOnDemand();
+            $line["itemInfo"] = $stock->getItem()->getItemInfo();
 
             return $line;
         };
@@ -40,7 +41,8 @@ class StockDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-            ->add('item.name', 'column', array('title' => 'Item name'))
+            ->add('itemInfo', 'virtual', array('visible' => false))
+            ->add('itemInfo', 'column', array('title' => 'Item name'))
             ->add('onHand', 'column', array('title' => 'On Hand'))
             ->add('onHold', 'column', array('title' => 'On Hold'))
             ->add('depo.name', 'column', array('title' => 'Depo'))

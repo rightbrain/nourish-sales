@@ -195,10 +195,10 @@ class ConfigureMenuListener extends ContextAwareListener
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_HEAD_OFFICE_USER', 'ROLE_DAMAGE_GOODS_VERIFY', 'ROLE_DAMAGE_GOODS_APPROVE'))) {
                 $sp4 = true;
-                $menu['Sales']->addChild('Damage Good', array('route' => 'damage_good_admin_list'))
+                $menu['Sales']->addChild('Damage Goods', array('route' => 'damage_good_admin_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('damage_good_admin_list')) {
-                    $menu['Sales']->getChild('Damage Good')->setCurrent(true);
+                    $menu['Sales']->getChild('Damage Goods')->setCurrent(true);
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_CREDIT_LIMIT_MANAGE'))) {

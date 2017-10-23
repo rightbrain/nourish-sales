@@ -370,4 +370,9 @@ class Item
     {
         return $this->category[0];
     }
+
+    public function getItemInfo()
+    {
+        return $this->getSku() ." - ".$this->getName();
+    }
 }

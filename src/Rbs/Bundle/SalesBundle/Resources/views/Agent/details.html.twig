@@ -97,6 +97,30 @@
                                 </div>
                             </div>
 
+                            <div class="portlet">
+                                <div class="portlet-body">
+                                    <table class="table">
+                                        <tr>
+                                            <th colspan="3">
+                                                <h4>Agent Bank Information</h4>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td>Bank Name</td>
+                                            <td>Branch Name</td>
+                                            <td>Bank Code</td>
+                                        </tr>
+                                        {% for index, agentBank in agentBanks %}
+                                        <tr>
+                                            <th>{{ agentBank.bank }}</th>
+                                            <th>{{ agentBank.branch }}</th>
+                                            <th>{{ agentBank.code }}</th>
+                                        </tr>
+                                        {% endfor %}
+                                    </table>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
