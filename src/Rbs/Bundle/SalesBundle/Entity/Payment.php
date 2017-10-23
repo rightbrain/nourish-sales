@@ -449,7 +449,7 @@ class Payment
     /**
      * @param string $fxCx
      */
-    public function setFxCx(string $fxCx)
+    public function setFxCx($fxCx)
     {
         $this->fxCx = $fxCx;
     }
