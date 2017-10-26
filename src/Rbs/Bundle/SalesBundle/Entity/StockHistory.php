@@ -45,6 +45,14 @@ class StockHistory
     private $stock;
 
     /**
+     * @var FeedMill
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\FeedMill", inversedBy="stockHistories")
+     * @ORM\JoinColumn(name="feed_mill_id")
+     */
+    private $feedMill;
+
+    /**
      * @var Depo
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Depo")
@@ -104,6 +112,22 @@ class StockHistory
     public function setStock($stock)
     {
         $this->stock = $stock;
+    }
+
+    /**
+     * @return FeedMill
+     */
+    public function getFeedMill()
+    {
+        return $this->feedMill;
+    }
+
+    /**
+     * @param FeedMill $feedMill
+     */
+    public function setFeedMill($feedMill)
+    {
+        $this->feedMill = $feedMill;
     }
 
     /**

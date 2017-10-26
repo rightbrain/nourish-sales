@@ -54,6 +54,7 @@ class VehicleDatatable extends BaseDatatable
             ->add('agent.user.id', 'column', array('title' => 'Agent/Nourish', 'render' => 'resolveAgentName'));
         $this->columnBuilder
             ->add('driverName', 'column', array('title' => 'Driver Name'))
+            ->add('depo.name', 'column', array('title' => 'Depot Name'))
             ->add('driverPhone', 'column', array('title' => 'Driver Phone'))
             ->add('truckNumber', 'column', array('title' => 'Truck Number'))
             ->add('status', 'column', array('title' => 'Status'))
