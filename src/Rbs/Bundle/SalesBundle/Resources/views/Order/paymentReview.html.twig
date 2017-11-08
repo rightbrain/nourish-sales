@@ -42,7 +42,7 @@
                                         <td>{{ payment.depositDate|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                         <td>{{ payment.bankAccount.branch.bank.name }}</td>
                                         <td>{{ payment.bankAccount.branch.name }}</td>
-                                        <td class="text-right"><span id="amount" class="hidden">{{ payment.depositedAmount }}</span>{{ payment.depositedAmount|number_format(2) }}</td>
+                                        <td class="text-right"><input type="hidden" name="deposit_amount" class="deposit_amount" value="{{ payment.depositedAmount }}"><span id="amount" class="hidden">{{ payment.depositedAmount }}</span>{{ payment.depositedAmount|number_format(2) }}</td>
                                         <td class="text-right">
                                             {% if payment.amount %}
                                                 {{ payment.amount|number_format(2) }}
@@ -60,8 +60,8 @@
                                                     {{ 'VERIFIED' }}
                                                 {% else %}
                                                     <div class="btn-group-vertical btn-group-solid btn-group btn-group-xs payment-action-buttons">
-                                                        <button type="button" value="{{ payment.id }}" id="{{ 'payment-amount-verified' }}" class="btn blue">Approve</button>
-                                                        <button type="button" value="{{ payment.id }}" id="{{ 'payment-delete' }}" class="btn red">Reject</button>
+                                                        <button type="button" value="{{ payment.id }}" data-id="payment-amount-verified" id="" class="btn blue">Approve</button>
+                                                        <button type="button" value="{{ payment.id }}" data-id="payment-delete" id="" class="btn red">Reject</button>
                                                     </div>
                                                 {% endif %}
                                             {% else %}

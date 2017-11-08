@@ -363,10 +363,14 @@ var Order = function()
     }
 
     function paymentConfirmationOnModal() {
-        $("#ajaxSummeryView").on('click', '.payment-action-buttons button',function () {
-            var setDepositedAmount = document.getElementById("amount").innerHTML;
+        $("#ajaxSummeryView").on('click', '.payment-action-buttons button',function (event) {
+            event.preventDefault();
+            // var setDepositedAmount = document.getElementById("amount").innerHTML;
+            var setDepositedAmount = $(this).closest('tr').find('.deposit_amount').val();
+            var element = $(this);
+            var current_tr = $(element).closest('tr');
             var paymentId = $(this).val();
-            var isVerified = $(this).attr('id') == 'payment-amount-verified';
+            var isVerified = $(this).data('id') == 'payment-amount-verified';
             if(isVerified) {
 
                 var setActualAmount = prompt("Actual Amount:", setDepositedAmount);
@@ -382,11 +386,11 @@ var Order = function()
                         }),
                         dataType: 'json',
                         success: function (response) {
-                            $('.payment-action-buttons').html(response.message);
-                            $('.actual-amount-new').html(response.actualAmount);
+                            $(element).closest('tr').find('.payment-action-buttons').html(response.message);
+                            $(current_tr).find('.actual-amount-new').html(response.actualAmount);
                             if (!isVerified) {
                                 setTimeout(function () {
-                                    $('.payment-action-buttons').closest('tr').remove();
+                                    $(element).closest('tr').remove();
                                 }, 5000);
                             }
                         }
@@ -403,10 +407,10 @@ var Order = function()
                     }),
                     dataType: 'json',
                     success: function (response) {
-                        $('.payment-action-buttons').html(response.message);
+                        $(element).closest('tr').find('.payment-action-buttons').html(response.message);
                         if (!isVerified) {
                             setTimeout(function () {
-                                $('.payment-action-buttons').closest('tr').remove();
+                                $(element).closest('tr').remove();
                             }, 5000);
                         }
                     }
