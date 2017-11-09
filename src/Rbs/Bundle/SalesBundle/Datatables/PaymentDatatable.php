@@ -26,7 +26,7 @@ class PaymentDatatable extends BaseDatatable
         $formatter = function($line){
             $payment = $this->em->getRepository('RbsSalesBundle:Payment')->find($line['id']);
             $line['bankInfo'] = $this->formatBankInfo($line['bankAccount'], $line['transactionType'], $line['paymentMethod']);
-            $line['agentBankInfo'] = $payment->getAgentBankBranch()->getBank().', '.$payment->getAgentBankBranch()->getBranch();
+            $line['agentBankInfo'] = $payment->getAgentBankBranch()?$payment->getAgentBankBranch()->getBank().', '.$payment->getAgentBankBranch()->getBranch():"";
             $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
             $line['depositedAmount'] = '<div style="text-align: right;">'. number_format($payment->getDepositedAmount(), 2) .'</div>';
             if ($this->allowAgentSearch) {
