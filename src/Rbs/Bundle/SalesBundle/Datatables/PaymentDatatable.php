@@ -26,6 +26,7 @@ class PaymentDatatable extends BaseDatatable
         $formatter = function($line){
             $payment = $this->em->getRepository('RbsSalesBundle:Payment')->find($line['id']);
             $line['bankInfo'] = $this->formatBankInfo($line['bankAccount'], $line['transactionType'], $line['paymentMethod']);
+            $line['agentBankInfo'] = $payment->getAgentBankBranch()->getBank().', '.$payment->getAgentBankBranch()->getBranch();
             $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
             $line['depositedAmount'] = '<div style="text-align: right;">'. number_format($payment->getDepositedAmount(), 2) .'</div>';
             if ($this->allowAgentSearch) {
@@ -83,7 +84,8 @@ class PaymentDatatable extends BaseDatatable
             ->add('depositedAmount', 'virtual', array('title' => 'Deposited Amount'))
             ->add('totalAmount', 'virtual', array('title' => 'Actual Amount'))
             ->add('paymentMethod', 'column', array('visible' => false))
-            ->add('bankInfo', 'virtual', array('title' => 'Bank Info'))
+            ->add('agentBankInfo', 'virtual', array('title' => 'Sender Bank'))
+            ->add('bankInfo', 'virtual', array('title' => 'Receive Bank'))
             ->add('orders.id', 'array', array(
                 'title' => 'Orders',
                 'data' => 'orders[, ].id'
@@ -118,12 +120,12 @@ class PaymentDatatable extends BaseDatatable
     {
         if ($transactionType == Payment::DR) return '';
 
-        $data = 'Payment Method: ' . $paymentMethod;
+        $data = '';
 
         if (!empty($bankAccount)) {
             $bankAccount = $this->em->getRepository('RbsCoreBundle:BankAccount')->find($bankAccount['id']);
             if ($bankAccount) {
-                $data .= ', Bank Name:'.$bankAccount->getBranch()->getBank()->getName().', Branch Name:'.$bankAccount->getBranch()->getName();
+                $data .= $bankAccount->getCode();
             }
         }
 

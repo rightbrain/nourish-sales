@@ -133,19 +133,22 @@ class PaymentRepository extends EntityRepository
         $query->leftJoin('p.bankAccount', 'bankAccount');
         $query->leftJoin('bankAccount.branch', 'branch');
         $query->leftJoin('branch.bank', 'bank');
+        $query->leftJoin('p.agentBankBranch','agentBank');
         $query->select('u.username');
         $query->addSelect('p.amount');
         $query->addSelect('p.transactionType');
         $query->addSelect('p.remark');
         $query->addSelect('p.depositDate');
-        $query->addSelect('bankAccount.name AS bankAccountName, bank.name AS bankName, branch.name AS branchName');
+        $query->addSelect('agentBank.bank as agentBankName');
+        $query->addSelect('agentBank.branch as agentBankBranch');
+        $query->addSelect('bankAccount.name AS bankAccountName, bankAccount.code AS bankCode, bank.name AS bankName, branch.name AS branchName');
         $query->where('u.userType = :AGENT');
         $query->andWhere('a.id = :agentId');
         $query->andWhere('p.verified = 1');
         $query->setParameter('AGENT', User::AGENT);
         $query->setParameter('agentId', $data['agent']);
         $this->handleSearchByTwoDate($query, $data['start_date'], $data['end_date']);
-        $query->orderBy('p.createdAt', 'desc');
+        $query->orderBy('p.depositDate', 'desc');
 
         return $query->getQuery()->getScalarResult();
     }

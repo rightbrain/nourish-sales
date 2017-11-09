@@ -59,18 +59,20 @@
                                 <tr>
                                     <th>Transaction Date</th>
                                     <th>Details</th>
+                                    <th>Sender Bank</th>
+                                    <th>Receive Bank</th>
                                     <th>Delivered Product Value</th>
                                     <th>Collection</th>
-                                    <th>Bank Info</th>
+
                                     <th>Balance</th>
                                 </tr>
                             </thead>
                             <tbody>
                             <tr>
-                                <td colspan="2" style="text-align: right">Previous Balance: </td>
+                                <td colspan="4" style="text-align: right">Previous Balance: </td>
                                 <td style="text-align: right">{{ agentPreviousDebitLaserTotal|number_format(2, '.', ',') }}</td>
                                 <td style="text-align: right">{{ agentPreviousCreditLaserTotal|number_format(2, '.', ',') }}</td>
-                                <td></td>
+
                                 <td style="text-align: right">
                                     {% set balance = agentPreviousDebitLaserTotal - agentPreviousCreditLaserTotal %}
                                     {{ balance|number_format(2, '.', ',') }}
@@ -91,22 +93,27 @@
                                             {% for id, item in json_decode(laser['remark']) %}
                                                 <div>{{ item.name ~ '(' ~ item.qty ~ 'Kg ' ~ item.amount|number_format(2, '.', ',') ~ 'Tk)'}}</div>
                                             {% endfor %}
-                                        {% endif %}</td>
+                                        {% endif %}
+                                    </td>
+                                    <td class="col-md-1 text-center">
+                                            {{ laser['agentBankName']|default('') }} {{ laser['agentBankName']? ', ':'' }}{{ laser['agentBankBranch']|default('') }}
+                                    </td>
+                                    <td class="col-md-1 text-center">
+                                        {% if laser['transactionType'] == 'CR' and laser['bankAccountName'] %}
+                                            {{ laser['bankCode'] }}
+                                        {% endif %}
+                                    </td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'CR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
-                                    <td class="col-md-1">
-                                    {% if laser['transactionType'] == 'CR' and laser['bankAccountName'] %}
-                                        Bank: {{ laser['bankName'] }}, Branch: {{ laser['branchName'] }}
-                                    {% endif %}
-                                    </td>
+
                                     <td class="col-md-1" style="text-align: right">{% if balance < 0 %}{{ '('~balance|abs|number_format(2, '.', ',')~')' }}{% else %}{{ balance|number_format(2, '.', ',') }}{% endif %}</td>
                                 </tr>
                             {% endfor %}
                             <tr>
-                                <td class="bold" colspan="2" style="text-align: right">Total: </td>
+                                <td class="bold" colspan="4" style="text-align: right">Total: </td>
                                 <td class="bold" style="text-align: right">{{ agentDebitLaserTotal|number_format(2, '.', ',') }}</td>
                                 <td class="bold" style="text-align: right">{{ agentCreditLaserTotal|number_format(2, '.', ',') }}</td>
-                                <td class="bold">Current Balance:</td>
+                                {#<td class="bold">Current Balance:</td>#}
                                 <td class="bold" style="text-align: right">
                                     {% if balance < 0 %}{{ '('~balance|abs|number_format(2, '.', ',')~')' }}{% else %}{{ balance|number_format(2, '.', ',') }}{% endif %}
                                 </td>
