@@ -500,10 +500,15 @@ class OrderController extends BaseController
     public function orderReviewAction(Order $order)
     {
         $auditLogs = $this->getDoctrine()->getRepository('RbsCoreBundle:AuditLog')->getByTypeOrObjectId(array('order.approved', 'order.hold', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
-
+        $data['agent']= $order->getAgent()->getId();
+        $data['end_date']= date('Y-m-d');
+        $agentDebitLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentDebitLaserTotal($data);
+        $agentCreditLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentCreditLaserTotal($data);
+        $currentBalance = $agentDebitLaserTotal - $agentCreditLaserTotal;
         return $this->render('RbsSalesBundle:Order:orderVerify.html.twig', array(
             'order' => $order,
             'auditLogs' => $auditLogs,
+            'outStandingBalance'=>$currentBalance
         ));
     }
 

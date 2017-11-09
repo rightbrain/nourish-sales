@@ -568,4 +568,24 @@ class Order
         }
         $this->setTotalAmount($this->getItemsTotalAmount());
     }
+
+    public function getTotalPaymentDepositedAmount()
+    {
+        $data = 0;
+        /** @var Payment $payment */
+        foreach ($this->getPayments() as $payment) {
+            $data+= $payment->getDepositedAmount();
+        }
+        return $data;
+    }
+
+    public function getTotalPaymentActualAmount()
+    {
+        $data = 0;
+        /** @var Payment $payment */
+        foreach ($this->getPayments() as $payment) {
+            $data+= $payment->getAmount();
+        }
+        return $data;
+    }
 }

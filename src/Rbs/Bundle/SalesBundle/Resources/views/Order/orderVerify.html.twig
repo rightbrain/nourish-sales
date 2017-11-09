@@ -11,20 +11,30 @@
                     <div class="portlet-body">
                         <table class="table table-bordered col-md-6">
                             <tr>
-                                <th class="col-md-4">Order Number</th>
-                                <td class="col-md-2">{{ order.id }}</td>
-                                <th class="col-md-4">Order Amount</th>
-                                <td class="col-md-2">{{ order.totalAmount|number_format(2) }}</td>
+                                <th class="col-md-3">Order Number</th>
+                                <td class="col-md-3">{{ order.id }}</td>
+                                <th class="col-md-3">Order Amount</th>
+                                <td class="col-md-3">{{ order.totalAmount|number_format(2) }}</td>
                             </tr>
                             <tr>
                                 <th>Agent Name</th>
                                 <td>{{ order.agent.user.profile.fullName }}</td>
                                 <th>Paid Amount</th>
-                                <td>{{ order.paidAmount|number_format(2) }}</td>
+                                <td>{{ order.paidAmount|number_format(2, '.', ',') }}</td>
                             </tr>
-                            {% if order.createdBy is not null %}
-                                <tr><th>Created By</th><td colspan="3">{{ order.createdBy.username|default('') }}</td></tr>
-                            {% endif %}
+                            <tr>
+                                <th>Created By</th>
+                                <td>{% if order.createdBy is not null %}{{ order.createdBy.username|default('') }}{% endif %} </td>
+                                <th>Payment Amount</th>
+                                <td>{% if order.paymentState!='PENDING' %}{{ order.totalPaymentDepositedAmount|number_format(2, '.', ',') }}{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <th>Outstanding Balance</th>
+                                <td>{% if outStandingBalance < 0 %}{{ '('~outStandingBalance|abs|number_format(2, '.', ',')~')' }}{% else %}{{ outStandingBalance|number_format(2, '.', ',') }}{% endif %}</td>
+                                <th>Actual Amount</th>
+                                <td>{% if order.paymentState!='PENDING' %}{{ order.totalPaymentActualAmount|number_format(2, '.', ',') }}{% endif %}</td>
+                            </tr>
+
                             <tr><th>Remarks</th><td colspan="3">{{ order.remark }}</td></tr>
                         </table>
 
