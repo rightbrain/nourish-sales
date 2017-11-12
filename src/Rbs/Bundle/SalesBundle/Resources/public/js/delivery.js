@@ -158,7 +158,8 @@ var Delivery = function()
                         $.post(Routing.generate('delivery_save', {id:$('#delivery-id').val()}), $('#delivery-item-form').serialize())
                             .done(function(){
                                 toastr.success('Order Delivery Saved Successfully. Please wait while page reload.');
-                                location.reload();
+                                // location.reload();
+                                window.location.href= Routing.generate('vehicle_info_load_list')
                             })
                             .fail(function(){
                                 toastr.error('Server error. Contact with System Admin');

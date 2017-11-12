@@ -45,10 +45,20 @@ class VehicleController extends BaseController
      */
     public function listAjaxAction()
     {
+        $user = $this->getUser();
         $datatable = $this->get('rbs_erp.sales.datatable.vehicle');
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb */
+        $function = function($qb) use ($user)
+        {
+            $qb->join("sales_vehicles.depo", "d");
+            $qb->join("d.users", "u");
+            $qb->andWhere("u = :user");
+            $qb->setParameter('user', $user);
+        };
+        $query->addWhereAll($function);
 
         return $query->getResponse();
     }
@@ -285,7 +295,8 @@ class VehicleController extends BaseController
         $this->vehicleRepo()->update($vehicle);
         $this->get('session')->getFlashBag()->add('success', 'Vehicle In Successfully');
 
-        return $this->redirect($this->generateUrl('truck_info_in_out_list'));
+//        return $this->redirect($this->generateUrl('truck_info_in_out_list'));
+        return $this->redirect($this->generateUrl('deliveries_home'));
     }
 
     /**
@@ -363,7 +374,7 @@ class VehicleController extends BaseController
         $this->vehicleRepo()->update($vehicle);
         $this->get('session')->getFlashBag()->add('success', 'Vehicle Load Finished Successfully');
 
-        return $this->redirect($this->generateUrl('vehicle_info_load_list'));
+        return $this->redirect($this->generateUrl('truck_info_in_out_list'));
     }
 
     /**

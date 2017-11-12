@@ -504,7 +504,7 @@ class OrderController extends BaseController
         $data['end_date']= date('Y-m-d');
         $agentDebitLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentDebitLaserTotal($data);
         $agentCreditLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentCreditLaserTotal($data);
-        $currentBalance = $agentDebitLaserTotal - $agentCreditLaserTotal;
+        $currentBalance = $agentDebitLaserTotal - ($agentCreditLaserTotal - $order->getTotalPaymentActualAmount());
         return $this->render('RbsSalesBundle:Order:orderVerify.html.twig', array(
             'order' => $order,
             'auditLogs' => $auditLogs,

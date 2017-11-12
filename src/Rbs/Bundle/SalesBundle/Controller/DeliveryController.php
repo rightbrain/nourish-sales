@@ -167,7 +167,7 @@ class DeliveryController extends BaseController
 
         $this->flashMessage('success', 'Delivery Completed Successfully');
 
-        return $this->redirect($this->generateUrl('deliveries_home'));
+        return $this->redirect($this->generateUrl('vehicle_info_load_list'));
     }
 
     /**

@@ -148,7 +148,7 @@ class PaymentRepository extends EntityRepository
         $query->setParameter('AGENT', User::AGENT);
         $query->setParameter('agentId', $data['agent']);
         $this->handleSearchByTwoDate($query, $data['start_date'], $data['end_date']);
-        $query->orderBy('p.depositDate', 'desc');
+        $query->orderBy('p.depositDate', 'Asc');
 
         return $query->getQuery()->getScalarResult();
     }
@@ -277,7 +277,7 @@ class PaymentRepository extends EntityRepository
         if (!empty($startDate) && !empty($endDate)) {
             $query->andWhere('p.depositDate >= :startDate');
             $query->andWhere('p.depositDate <= :endDate');
-            $query->setParameter('startDate', $startDate.' 00:00:01');
+            $query->setParameter('startDate', $startDate.' 00:00:00');
             $query->setParameter('endDate', $endDate.' 23:59:59');
         } elseif (!empty($startDate) && empty($endDate)){
             $query->andWhere('p.depositDate >= :startDate');
