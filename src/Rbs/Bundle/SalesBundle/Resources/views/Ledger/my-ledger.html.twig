@@ -68,7 +68,15 @@
                             {% for laser in agentLaser %}
                                 <tr>
                                     <td class="col-md-1">{{ laser['depositDate'] | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
-                                    <td class="col-md-1">{{ laser['remark'] | default('') }}</td>
+                                    <td class="col-md-1">
+                                        {% if laser['transactionType'] == 'CR' %}
+                                            {{ laser['remark'] | default('') }}
+                                        {% else %}
+                                            {% for id, item in json_decode(laser['remark']) %}
+                                                <div>{{ item.name ~ '(' ~ item.qty ~ 'Kg ' ~ item.amount|number_format(2, '.', ',') ~ 'Tk)'}}</div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'CR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
                                 </tr>
@@ -79,7 +87,7 @@
                                 <td class="bold" style="text-align: right">{{ agentCreditLaserTotal|number_format(2, '.', ',') }}</td>
                             </tr>
                             <tr>
-                                <td colspan="4">
+                                <td colspan="4" class="text-right bold">
                                     Current Balance:  {{ currentBalance|number_format(2, '.', ',') }} tk
                                 </td>
                             </tr>
