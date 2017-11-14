@@ -16,11 +16,16 @@ class VehicleDatatable extends BaseDatatable
          * @return mixed
          */
         $formatter = function($line){
-            $vehicle = $this->em->getRepository('RbsSalesBundle:Vehicle')->find($line['id']);
 
-            if($vehicle->getAgent() != null){
-                $agent = $this->em->getRepository('RbsSalesBundle:Agent')->findOneBy(array('id' => $vehicle->getAgent()->getId()));
-                $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $agent->getUser()->getId()));
+            if(isset($line['deliveries']) && !empty($line['deliveries'])) {
+                $delivery = $this->em->getRepository('RbsSalesBundle:Delivery')->find($line['deliveries']['id']);
+                $line["orderList"] = $delivery->getOrdersString();
+
+            }
+            $vehicle = $this->em->getRepository('RbsSalesBundle:Vehicle')->find($line['id']);
+            $line['isDeliveryFalse'] = $vehicle->isDeliveryFalse();
+            if(!empty($line['agent'])){
+                $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $line['agent']['user']['id']));
                 $line["fullName"] = $profile->getFullName();
             }else{
                 $line["fullName"] = 'NOURISH';
@@ -53,12 +58,41 @@ class VehicleDatatable extends BaseDatatable
         $this->columnBuilder
             ->add('agent.user.id', 'column', array('title' => 'Agent/Nourish', 'render' => 'resolveAgentName'));
         $this->columnBuilder
+            ->add('deliveries.id', 'column', array('visible' => false))
+            ->add('orderList', 'virtual', array('title' => 'Orders'))
             ->add('driverName', 'column', array('title' => 'Driver Name'))
             ->add('depo.name', 'column', array('title' => 'Depot Name'))
             ->add('driverPhone', 'column', array('title' => 'Driver Phone'))
             ->add('truckNumber', 'column', array('title' => 'Truck Number'))
             ->add('status', 'column', array('title' => 'Status'))
             ->add('smsText', 'column', array('title' => 'SMS Text'))
+            ->add('isDeliveryFalse', 'virtual', array('visible' => false))
+            ->add(null, 'action', array(
+                'width' => '',
+                'title' => 'Action',
+                'start_html' => '<div class="wrapper">',
+                'end_html' => '</div>',
+                'actions' => array(
+                    array(
+                        'route' => 'vehicle_view',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'View',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'edit-action',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button',
+                            'data-target' => "#vehicleView",
+                            'data-toggle'=>"modal"
+                        ),
+                        'render_if' => array('isDeliveryFalse')
+//                        'role' => 'ROLE_USER',
+                    )
+                )
+            ))
         ;
     }
 

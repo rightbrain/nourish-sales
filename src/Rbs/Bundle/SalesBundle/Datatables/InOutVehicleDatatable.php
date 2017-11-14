@@ -108,6 +108,24 @@ class InOutVehicleDatatable extends BaseDatatable
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_TRUCK_OUT',
                         'render_if' => array('isOut', 'isFinishFalse', 'isShipped')
+                    ),
+                    array(
+                        'route' => 'vehicle_view',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'View',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'edit-action',
+                            'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button',
+                            'data-target' => "#deliveryView",
+                            'data-toggle'=>"modal"
+                        ),
+                        'role' => 'ROLE_USER',
+                        'render_if' => array('isOut', 'isFinishFalse', 'isShipped')
                     )
                 )
             ))

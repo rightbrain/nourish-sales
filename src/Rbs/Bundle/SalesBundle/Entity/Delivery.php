@@ -156,6 +156,16 @@ class Delivery
         return $this->orders;
     }
 
+    public function getOrdersString()
+    {
+        $return = array();
+        foreach ($this->orders as $order) {
+            $return[] = $order->getId();
+        }
+
+        return implode(',', $return);
+    }
+
     /**
      * @param \Rbs\Bundle\SalesBundle\Entity\Order $order
      */

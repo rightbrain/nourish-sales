@@ -4,7 +4,7 @@
 
 {% block body %}
 
-    <div class="modal fade bs-modal-lg" id="deliveryView" role="document" aria-hidden="true">
+    <div class="modal fade bs-modal-lg printable" id="deliveryView" role="document" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-body">
@@ -51,6 +51,7 @@
     'assets/global/plugins/datatables/examples/resources/bootstrap/3/dataTables.bootstrap.css'
     'assets/global/plugins/bootstrap-toastr/toastr.min.css'
     "bundles/rbssales/css/style.css"
+    "bundles/rbssales/css/modal-print.css"
     filter='cssrewrite' output='css/compiled/datatable.css' %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
@@ -73,4 +74,15 @@
 {% block documentReady %}
     {{ parent() }}
     Delivery.init();
+    $(".modal").on('hidden.bs.modal', function () {
+    $(this).data('bs.modal', null);
+    });
+    $('.modal.printable').on('shown.bs.modal', function () {
+    $('.modal-dialog', this).addClass('focused');
+    $('body').addClass('modalprinter');
+
+    }).on('hidden.bs.modal', function () {
+    $('.modal-dialog', this).removeClass('focused');
+    $('body').removeClass('modalprinter');
+    });
 {% endblock %}

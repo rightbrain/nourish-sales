@@ -133,15 +133,13 @@ class VehicleController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb) use ($depoId)
         {
-            if($depoId == 0){
-                $qb->join('sales_vehicles.depo', 'd');
-                $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
-                $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
-            }else{
-                $qb->join('sales_vehicles.depo', 'd');
+            $qb->join('sales_vehicles.depo', 'd');
+            $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
+
+            $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
+
+            if($depoId != 0){
                 $qb->andWhere('d.id =:depoId');
-                $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
-                $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
                 $qb->setParameters(array('depoId'=>$depoId));
             }
         };
@@ -464,4 +462,20 @@ class VehicleController extends BaseController
     {
         return $this->em()->getRepository('RbsSalesBundle:Vehicle');
     }
+
+    /**
+     * @Route("/vehicle/{id}", name="vehicle_view", options={"expose"=true})
+     * @param Vehicle $vehicle
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_USER")
+     */
+    public function view(Vehicle $vehicle)
+    {
+        $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($vehicle->getDeliveries());
+        return $this->render('RbsSalesBundle:Vehicle:view.html.twig', array(
+            'vehicle'      => $vehicle,
+            'partialItems'  => $partialItems,
+        ));
+    }
+
 }

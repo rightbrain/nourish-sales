@@ -1,0 +1,152 @@
+<div class="main-content">
+    <div class="modal-header portlet-title blue">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h4 class="modal-title">Challan</h4>
+    </div>
+
+    <div class="modal-body">
+        <div class="row">
+            <table width="100%" class="table-full-width">
+                <tr>
+                    <td class="col-md-6" style="vertical-align: top; width: 60%">
+                        <div class="portlet">
+                            <div class="portlet-title partial-delivered-items">
+                                <div class="caption"> Agent Info </div>
+                            </div>
+                            <div class="portlet-body">
+                                <table class="table">
+                                    <tbody>
+                                    <tr>
+                                        <th>Challan Number : </th>
+                                        <td>{{ vehicle.deliveries.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Vehicle Supply By : </th>
+                                        <td>
+                                            {% if((vehicle.agent is not null)) %}
+                                                {{ vehicle.agent.name}}
+                                            {% else %}
+                                                {{ 'NOURISH' }}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Vehicle In : </th>
+                                        <td>
+                                            {{ vehicle.vehicleIn | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Vehicle Out : </th>
+                                        <td>
+                                            {{ vehicle.vehicleOut | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}
+                                        </td>
+                                    </tr>
+                                    </tbody></table>
+                                <table class="table">
+                                    <tr>
+                                        <th class="col-md-4">Order No</th>
+                                        <th class="col-md-8">Delivery To</th>
+                                    </tr>
+                                    {% for index, order in vehicle.deliveries.orders %}
+
+                                        <tr>
+                                            <td> {{ order.id }}</td>
+                                            <td>{{ order.agent.user.profile.fullName }}{{ ', ' }} {{ order.agent.user.profile.cellphone }} </br> {{ order.agent.user.profile.address }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="col-md-6" style="vertical-align: top; width: 40%">
+                        <div class="portlet">
+                            <div class="portlet-title partial-delivered-items">
+                                <div class="caption"> Vehicles Info </div>
+                            </div>
+                            <div class="portlet-body partial-delivered-items">
+                                <table class="table">
+                                    <tr>
+                                        <th>Vehicle Number</th>
+                                        <td>{{ vehicle.truckNumber }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Driver Name</th>
+                                        <td>{{ vehicle.driverName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Mobile Number</th>
+                                        <td>{{ vehicle.driverPhone }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="col-md-12">
+                <div class="portlet">
+                    <div class="portlet-title">
+                        <div class="caption"> Order Items </div>
+                    </div>
+                    <div class="portlet-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Order Id</th>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Delivered</th>
+                                <th class="no-print">Remain</th>
+                            </tr>
+                            </thead>
+                            <tbody class="orderItems">
+                            {% for order in vehicle.deliveries.orders %}
+                                {% for index, item in order.orderItems %}
+                                    {% if item.quantity != 0 %}
+                                        {% if order.deliveryState == 'PARTIALLY_SHIPPED' and partialItems[order.id][item.id] is defined %}
+                                            {% if (item.quantity > partialItems[order.id][item.id]['delivered']) %}
+                                                <tr>
+                                                    <td>{{ index+1 }}</td>
+                                                    <td>{{ order.id }}</td>
+                                                    <td>{{ item.item.name }}</td>
+                                                    <td class="item-qty">{{ item.quantity}}</td>
+                                                    <td class="deliver">
+                                                        {{ partialItems[order.id][item.id]['delivered'] }}
+                                                        {#<input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0">#}
+                                                    </td>
+                                                    <td class="remain no-print">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% else %}
+                                            <tr>
+                                                <td>{{ index+1 }}</td>
+                                                <td>{{ order.id }}</td>
+                                                <td>{{ item.item.name }}</td>
+                                                <td class="item-qty">{{ item.quantity }}</td>
+                                                <td class="deliver">
+                                                    {{ partialItems[order.id][item.id]['delivered'] }}
+                                                    {#<input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0">#}
+                                                </td>
+                                                <td class="remain no-print">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            <tbody>
+                        </table>
+                    </div>
+                    {#<input type="hidden" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">#}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-primary" onclick="window.print();">Print</button>
+        <button title="Close" type="button" class="btn red" data-dismiss="modal">Close</button>
+    </div>
+</div>
