@@ -5,7 +5,7 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-globe"></i>Add Dept
+                    <i class="fa fa-globe"></i>Add Depot
                 </div>
             </div>
             <div class="portlet-body">
@@ -15,6 +15,15 @@
         </div>
     </div>
 {% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets  filter='cssrewrite'
+    "assets/global/plugins/jquery-multi-select/css/multi-select.css"
+    %}
+    <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+
+{% endblock stylesheets %}
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
