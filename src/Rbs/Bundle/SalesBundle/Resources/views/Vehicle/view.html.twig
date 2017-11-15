@@ -103,24 +103,14 @@
                             </tr>
                             </thead>
                             <tbody class="orderItems">
+                            {% set totalQuentity = 0 %}
+                            {% set totalDeliveredQuantity = 0 %}
                             {% for order in vehicle.deliveries.orders %}
+
                                 {% for index, item in order.orderItems %}
                                     {% if item.quantity != 0 %}
-                                        {% if order.deliveryState == 'PARTIALLY_SHIPPED' and partialItems[order.id][item.id] is defined %}
-                                            {% if (item.quantity > partialItems[order.id][item.id]['delivered']) %}
-                                                <tr>
-                                                    <td>{{ index+1 }}</td>
-                                                    <td>{{ order.id }}</td>
-                                                    <td>{{ item.item.name }}</td>
-                                                    <td class="item-qty">{{ item.quantity}}</td>
-                                                    <td class="deliver">
-                                                        {{ partialItems[order.id][item.id]['delivered'] }}
-                                                        {#<input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0">#}
-                                                    </td>
-                                                    <td class="remain no-print">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
-                                                </tr>
-                                            {% endif %}
-                                        {% else %}
+                                        {% set totalQuentity= totalQuentity + item.quantity %}
+                                        {% set totalDeliveredQuantity= totalDeliveredQuantity + partialItems[order.id][item.id]['delivered'] %}
                                             <tr>
                                                 <td>{{ index+1 }}</td>
                                                 <td>{{ order.id }}</td>
@@ -132,12 +122,42 @@
                                                 </td>
                                                 <td class="remain no-print">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
                                             </tr>
-                                        {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             {% endfor %}
                             <tbody>
+                            <tfoot>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="bold">Total</td>
+                                    <td>{{ totalQuentity }}</td>
+                                    <td>{{ totalDeliveredQuantity }}</td>
+                                    <td class="remain no-print">{{ totalQuentity - totalDeliveredQuantity }}</td>
+                                </tr>
+                            </tfoot>
                         </table>
+                        <br>
+                        <br>
+                        <br>
+                        <table class="table table-bordered">
+                            <tr>
+                                <th colspan="4" style="text-align: center; font-size: 24px">RECEIVED THE ABOVE GOODS IN GOOD CONDITION</th>
+                            </tr>
+                            <tr>
+                                <td style="height: 80px"></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <th>Prepared By</th>
+                                <th>Checked By</th>
+                                <th>Delivered By</th>
+                                <th>Received By</th>
+                            </tr>
+                        </table>
+
                     </div>
                     {#<input type="hidden" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">#}
                 </div>
