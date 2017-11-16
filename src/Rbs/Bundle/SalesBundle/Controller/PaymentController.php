@@ -7,6 +7,7 @@ use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Search\Type\AgentSearchType;
 use Rbs\Bundle\SalesBundle\Form\Search\Type\TwoDateSearchType;
+use Rbs\Bundle\SalesBundle\Form\Type\PaymentEditForm;
 use Rbs\Bundle\SalesBundle\Form\Type\PaymentForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -286,18 +287,29 @@ class PaymentController extends BaseController
      */
     public function paymentReviewAction(Request $request, Payment $payment)
     {
-        if ('POST' === $request->getMethod()) {
-            if(is_numeric($request->request->get('amount'))) {
-                $payment->setAmount($request->request->get('amount'));
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->update($payment);
-                $this->get('session')->getFlashBag()->add(
-                    'success', 'Payment Updated Successfully');
+        $form = $this->createForm(new PaymentEditForm($this->getDoctrine()->getManager(), $this->get('request'), $payment), $payment, array(
+            'attr' => array('novalidate' => 'novalidate')
+        ));
 
-                return $this->redirect($this->generateUrl('payments_home'));
+        if ('POST' === $request->getMethod()) {
+
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                var_dump('ok');
+//                if (is_numeric($request->request->get('amount'))) {
+                    $payment->setAmount($request->request->get('amount'));
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->update($payment);
+                    $this->get('session')->getFlashBag()->add(
+                        'success', 'Payment Updated Successfully');
+
+                    return $this->redirect($this->generateUrl('payments_home'));
+//                }
             }
         }
 
         return $this->render('RbsSalesBundle:Payment:paymentEdit.html.twig', array(
+            'form' => $form->createView(),
             'payment' => $payment,
         ));
     }
