@@ -296,15 +296,14 @@ class PaymentController extends BaseController
             $form->handleRequest($request);
 
             if ($form->isValid()) {
-                var_dump('ok');
-//                if (is_numeric($request->request->get('amount'))) {
+                if (is_numeric($request->request->get('amount'))) {
                     $payment->setAmount($request->request->get('amount'));
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->update($payment);
                     $this->get('session')->getFlashBag()->add(
                         'success', 'Payment Updated Successfully');
 
                     return $this->redirect($this->generateUrl('payments_home'));
-//                }
+                }
             }
         }
 
