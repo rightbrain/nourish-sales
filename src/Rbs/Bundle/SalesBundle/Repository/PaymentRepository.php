@@ -186,7 +186,7 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('p.verified = 1');
         if (!empty($data['end_date'])) {
             $query->andWhere('p.depositDate < :endDate');
-            $query->setParameter('endDate', $data['end_date'].' 23:59:5');
+            $query->setParameter('endDate', $data['end_date'].' 23:59:59');
         }
         $query->setParameter('AGENT', User::AGENT);
         $query->setParameter('agentId', $agentId);
@@ -221,7 +221,7 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('p.verified = 1');
         if (!empty($data['start_date'])) {
             $query->andWhere('p.depositDate < :startDate');
-            $query->setParameter('startDate', $data['start_date'].' 00:00:01');
+            $query->setParameter('startDate', $data['start_date'].' 00:00:00');
         }
         $query->setParameter('AGENT', User::AGENT);
         $query->setParameter('agentId', $agentId);
@@ -242,7 +242,7 @@ class PaymentRepository extends EntityRepository
         $query->andWhere('p.verified = 1');
         if (!empty($data['end_date'])) {
             $query->andWhere('p.depositDate < :endDate');
-            $query->setParameter('endDate', $data['end_date'].' 23:59:5');
+            $query->setParameter('endDate', $data['end_date'].' 23:59:59');
         }
         $query->setParameter('AGENT', User::AGENT);
         $query->setParameter('agentId', $agentId);
@@ -281,7 +281,7 @@ class PaymentRepository extends EntityRepository
             $query->setParameter('endDate', $endDate.' 23:59:59');
         } elseif (!empty($startDate) && empty($endDate)){
             $query->andWhere('p.depositDate >= :startDate');
-            $query->setParameter('startDate', $startDate.' 00:00:01');
+            $query->setParameter('startDate', $startDate.' 00:00:00');
         }
     }
 
