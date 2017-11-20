@@ -35,7 +35,8 @@ class OrderDatatable extends BaseDatatable
             $line["paymentAmount"] = $order->getPaymentState() != Order::PAYMENT_STATE_PENDING ? number_format($order->getTotalPaymentDepositedAmount(), 2): number_format(0, 2);
             $line["actualAmount"] = $order->getPaymentState() != Order::PAYMENT_STATE_PENDING ? number_format($order->getTotalPaymentActualAmount(), 2): number_format(0, 2);
             if ($this->showAgentName) {
-                $line["fullName"] = Agent::agentIdNameFormat($order->getAgent()->getAgentID(), $order->getAgent()->getUser()->getProfile()->getFullName());
+//                $line["fullName"] = Agent::agentIdNameFormat($order->getAgent()->getAgentID(), $order->getAgent()->getUser()->getProfile()->getFullName());
+                $line["fullName"] = $order->getAgent()->getUser()->getProfile()->getFullName();
             }
 
             $line["actionButtons"] = $this->generateActionList($order);
@@ -82,6 +83,7 @@ class OrderDatatable extends BaseDatatable
         $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
         $this->columnBuilder->add('id', 'column', array('title' => 'Order ID'));
         if ($this->showAgentName) {
+            $this->columnBuilder->add('agent.agentID', 'column', array('title' => 'Agent Id'));
             $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName'));
         }
         $this->columnBuilder->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))

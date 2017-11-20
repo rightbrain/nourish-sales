@@ -228,25 +228,34 @@ var Order = function()
                 'Filter: <div id="order-status"></div>' +
                 '<div id="order-payment-status"></div>' +
                 '<div id="order-delivery-status"></div>' +
+                '<div id="order-agent"></div>' +
                 '</div>').appendTo('#order_datatable_filter');
         }
         $("#order_datatable").dataTable().yadcf([
+
                 {
-                    column_number: 3,
+                    column_number: 1,
+                    filter_type: 'text',
+                    filter_container_id: "order-agent",
+                    filter_reset_button_text: false,
+                    filter_default_label: "Agent Id"
+                },
+                {
+                    column_number: 4,
                     data: ["PENDING", "PROCESSING", "COMPLETE", "CANCEL", "HOLD"],
                     filter_container_id: "order-status",
                     filter_reset_button_text: false,
                     filter_default_label: "Order State"
                 },
                 {
-                    column_number: 4,
+                    column_number: 5,
                     data: ["PENDING", "PARTIALLY_PAID", "PAID"],
                     filter_container_id: "order-payment-status",
                     filter_reset_button_text: false,
                     filter_default_label: "Payment State"
                 },
                 {
-                    column_number: 5,
+                    column_number: 6,
                     data: ["PENDING", "PARTIALLY_SHIPPED", "SHIPPED", "HOLD"],
                     filter_container_id: "order-delivery-status",
                     filter_reset_button_text: false,
