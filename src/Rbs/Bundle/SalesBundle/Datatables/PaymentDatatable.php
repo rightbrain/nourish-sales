@@ -30,7 +30,8 @@ class PaymentDatatable extends BaseDatatable
             $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
             $line['depositedAmount'] = '<div style="text-align: right;">'. number_format($payment->getDepositedAmount(), 2) .'</div>';
             if ($this->allowAgentSearch) {
-                $line["fullName"] = $this->resolveAgentName($line['agent']);
+                //$line["fullName"] = $this->resolveAgentName($line['agent']);
+                $line["fullName"] = $payment->getAgent()->getIdName();
             }
 
             $line['remarkText'] = $line['transactionType'] == Payment::CR ? $line['remark'] : '';
