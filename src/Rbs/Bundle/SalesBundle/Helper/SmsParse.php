@@ -233,14 +233,18 @@ class SmsParse
                 list($fxCx, $agentBank, $nourishBank, $amount) = explode(':', $account);
 
                 $nourishBankAccount = $this->em->getRepository('RbsCoreBundle:BankAccount')->findOneBy(array('code' => $nourishBank));
+                $nourishBankCode = $this->em->getRepository('RbsSalesBundle:AgentNourishBank')->findOneBy(array('account' => $nourishBankAccount));
                 $agentBankAccount = $this->em->getRepository('RbsSalesBundle:AgentBank')->findOneBy(array('code' => $agentBank, 'agent' => $agent));
 
                 if (empty($fxCx)) {
-                    $this->setError('Invalid Amount For');
+                    $this->setError('Invalid Payment For');
                     break;
-                } else if (!$nourishBankAccount) {
+                } else if ($fxCx != "FD") {
+                    $this->setError('Invalid Parameter, Need FD');
+                    break;
+                } else if (!$nourishBankCode) {
                     $this->setError('Invalid Nourish Bank Code');
-                    $this->markError($nourishBankAccount);
+                    $this->markError($nourishBankCode);
                     break;
                 } else if (!$agentBankAccount) {
                     $this->setError('Invalid Agent Bank Code');

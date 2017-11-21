@@ -93,6 +93,8 @@ class ChickOrderSmsParser
         $item = $this->em->getRepository('RbsCoreBundle:Item')->findOneBy(array('sku' => $sku));
         if (!$item) return false;
 
+
+
         $price = $this->em->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice($item, $agent->getUser()->getZilla());
         $orderItem = new OrderItem();
         $orderItem->setItem($item);

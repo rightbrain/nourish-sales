@@ -5,6 +5,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentBank;
+use Rbs\Bundle\SalesBundle\Entity\AgentNourishBank;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use JMS\SecurityExtraBundle\Annotation as JMS;
@@ -152,5 +153,63 @@ class AgentBankController extends BaseController
         return array(
             'form' => $form->createView(),
         );
+    }
+
+    /**
+     * @Route("/agents/nourish/banks", name="agent_nourish_banks", options={"expose"=true})
+     * @Method("GET")
+     * @Template()
+     * @JMS\Secure(roles="ROLE_SUPER_ADMIN, ROLE_ADMIN")
+     */
+    public function agentNourishBanksAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.agent.nourish.bank');
+        $datatable->buildDatatable();
+
+        return $this->render('RbsSalesBundle:Agent:agentNourishBankList.html.twig', array(
+            'datatable' => $datatable
+        ));
+    }
+
+    /**
+     * @Route("/agent_nourish_banks_list_ajax", name="agent_nourish_banks_list_ajax", options={"expose"=true})
+     * @Method("GET")
+     * @JMS\Secure(roles="ROLE_SUPER_ADMIN, ROLE_ADMIN")
+     */
+    public function agentNourishBankListAjaxAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.agent.nourish.bank');
+        $datatable->buildDatatable();
+
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb */
+        $function = function($qb)
+        {
+            $qb->join("sales_agent_nourish_banks.agent", "a");
+            $qb->join("a.user", "u");
+            $qb->join("u.profile", "p");
+            $qb->addOrderBy('a.id', 'ASC');
+        };
+        $query->addWhereAll($function);
+
+        return $query->getResponse();
+    }
+
+    /**
+     * @Route("/agent_nourish_banks/delete/{id}", name="agent_nourish_banks_delete", options={"expose"=true})
+     * @param AgentNourishBank $agentNourishBank
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_SUPER_ADMIN, ROLE_ADMIN")
+     */
+    public function agentNourishBankDeleteAction(AgentNourishBank $agentNourishBank)
+    {
+        $this->getDoctrine()->getRepository('RbsSalesBundle:AgentNourishBank')->delete($agentNourishBank);
+
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Agents Nourish Bank Deleted Successfully'
+        );
+
+        return $this->redirect($this->generateUrl('agent_nourish_banks'));
     }
 }

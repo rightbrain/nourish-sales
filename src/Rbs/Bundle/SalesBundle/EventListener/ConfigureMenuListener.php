@@ -174,6 +174,8 @@ class ConfigureMenuListener extends ContextAwareListener
                 if ($this->isMatch('agent_banks')) {
                     $menu['Sales']->getChild('Agents')->setCurrent(true);
                 }
+                $menu['Sales']->addChild('Agents Nourish Account', array('route' => 'agent_nourish_banks'))
+                    ->setAttribute('icon', 'fa fa-th-list');
             }
         }
         if ($this->user->getUserType() == User::USER or $this->user->getUserType() == User::ZM) {
