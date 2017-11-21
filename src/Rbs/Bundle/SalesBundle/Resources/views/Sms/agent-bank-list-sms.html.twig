@@ -33,7 +33,7 @@
                             {% for index, agentBank in agentBanks %}
                                 <tr class="form-group">
                                     <td>
-                                        <input class="agentBank-checkbox" type="checkbox" name="banks[]" value="{{ agentBank.id }}"/>
+                                        <input class="agentBank-checkbox" type="checkbox" name="banks[]" value="{{ agentBank.id }}" checked="checked"/>
                                         <input type="hidden" name="agentID" value="{{ agent.agentID }}"/>
                                     </td>
                                     <td>{{ agentBank.code }}</td>
@@ -46,6 +46,31 @@
                         </table>
 
                         <div class="portlet-title">
+                            <div class="caption">Nourish's Bank For Agent</div>
+                        </div>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th width="10%">Code</th>
+                                    <th width="30%">Name</th>
+                                    <th width="30%">Bank</th>
+                                    <th width="30%">Branch</th>
+                                </tr>
+                                </thead>
+                                <tbody class="items">
+                                {% for agentNourishBank in agentNourishBanks %}
+                                    <tr class="form-group">
+                                        <td>{{ agentNourishBank.account.code }}</td>
+                                        <td>{{ agentNourishBank.account.name }}</td>
+                                        <td>{{ agentNourishBank.account.branch.bank.name }}</td>
+                                        <td>{{ agentNourishBank.account.branch.name }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+
+                       <div class="portlet-title">
                             <div class="caption">Nourish's Bank Information</div>
                         </div>
                         <table class="table">
@@ -59,7 +84,8 @@
                             </tr>
                             </thead>
                             <tbody class="banks">
-                            {% for index, nourishBank in nourishBanks %}
+                            {% for nourishBank in nourishBanks %}
+
                                 <tr class="form-group">
                                     <td>
                                         <input class="nourishBank-checkbox" type="checkbox" name="nourishBanks[]" value="{{ nourishBank.id }}"/>
@@ -69,6 +95,7 @@
                                     <td>{{ nourishBank.branch.bank.name }}</td>
                                     <td>{{ nourishBank.branch.name }}</td>
                                 </tr>
+
                             {% endfor %}
                             </tbody>
                         </table>

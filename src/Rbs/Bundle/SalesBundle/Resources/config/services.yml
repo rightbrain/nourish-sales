@@ -27,6 +27,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.agent.nourish.bank:
+        class: Rbs\Bundle\SalesBundle\Datatables\AgentNourishBankDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.credit.limit:
         class: Rbs\Bundle\SalesBundle\Datatables\CreditLimitDatatable
         tags:

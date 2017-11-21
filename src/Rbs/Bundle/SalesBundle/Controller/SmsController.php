@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
+use Rbs\Bundle\SalesBundle\Entity\AgentNourishBank;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentBankInfoSmsForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -118,11 +119,18 @@ class SmsController extends Controller
     {
         $agentBanks = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentBank')->findByAgent($agent);
         $nourishBanks = $this->getDoctrine()->getRepository('RbsCoreBundle:BankAccount')->findAll();
-
+        $agentNourishBanks = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentNourishBank')->findByAgent($agent);
         if ('POST' === $request->getMethod()) {
-            $msg = "Agent:". $request->request->get('agentID') . ";Type:FX/CX;";
+            $msg = "Agent:". $request->request->get('agentID') . ";Type:FD/CK;";
             $banks = $request->request->get('banks');
             $nourishBanks = $request->request->get('nourishBanks');
+            $em = $this->getDoctrine()->getManager();
+
+            if($agentNourishBanks){
+                foreach ($agentNourishBanks as $key=>$nBank){
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:AgentNourishBank')->delete($nBank);
+                }
+            }
 
             $msg .= "FROM: ";
             foreach ($banks as $key=>$bank){
@@ -148,6 +156,12 @@ class SmsController extends Controller
                 if(($key+1)< count($nourishBank)){
                     $msg .= ", ";
                 }
+
+                $agentNourishBank = new AgentNourishBank();
+                $agentNourishBank->setAgent($agent);
+                $agentNourishBank->setAccount($bank);
+                $em->persist($agentNourishBank);
+                $em->flush();
             }
             $part1s = str_split($msg, $split_length = 160);
             foreach($part1s as $part){
@@ -161,6 +175,7 @@ class SmsController extends Controller
         return array(
             'agent' => $agent,
             'agentBanks' => $agentBanks,
+            'agentNourishBanks' => $agentNourishBanks,
             'nourishBanks' => $nourishBanks
         );
 

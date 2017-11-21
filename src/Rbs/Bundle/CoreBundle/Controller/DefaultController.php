@@ -79,6 +79,7 @@ class DefaultController extends BaseController
                 $sms->setDate(new \DateTime());
                 $sms->setSl(rand());
                 $sms->setStatus('NEW');
+                $sms->setType($orderType == 'chick' ? "CK" : "FD");
                 $response = $smsParse->parse($sms);
 
                 if ($response) {
