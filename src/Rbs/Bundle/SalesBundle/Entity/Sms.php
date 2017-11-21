@@ -80,6 +80,13 @@ class Sms
     private $status;
 
     /**
+     * @var array $type
+     *
+     * @ORM\Column(name="type", type="string", length=255, columnDefinition="ENUM('FD', 'CK')", nullable=true)
+     */
+    private $type;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="remarks", type="text", nullable=true)
@@ -253,4 +260,19 @@ class Sms
         return $this->mobileNo . ": " . strip_tags($this->msg);
     }
 
+    /**
+     * @return array
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param array $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
 }
