@@ -139,6 +139,7 @@ class PaymentRepository extends EntityRepository
         $query->addSelect('p.transactionType');
         $query->addSelect('p.remark');
         $query->addSelect('p.depositDate');
+        $query->addSelect('p.quantity');
         $query->addSelect('agentBank.bank as agentBankName');
         $query->addSelect('agentBank.branch as agentBankBranch');
         $query->addSelect('bankAccount.name AS bankAccountName, bankAccount.code AS bankCode, bank.name AS bankName, branch.name AS branchName');
@@ -347,9 +348,11 @@ class PaymentRepository extends EntityRepository
         foreach ($data as $orderId => $deliveryItemSummaries) {
             $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
             $total = array_sum(array_column($data[$orderId], 'amount'));
+            $quantity = array_sum(array_column($data[$orderId], 'qty'));
             $payment = new Payment();
             $payment->setAgent($order->getAgent());
             $payment->setAmount($total);
+            $payment->setQuantity($quantity);
             $payment->setDepositedAmount($total);
             $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
             $payment->setRemark(json_encode($deliveryItemSummaries));

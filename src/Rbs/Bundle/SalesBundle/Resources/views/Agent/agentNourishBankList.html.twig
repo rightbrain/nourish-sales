@@ -12,9 +12,6 @@
                 </div>
             </div>
             <div class="portlet-body">
-                <div>
-                    <div style="float: right;margin-right: 5px;">{{ include('_elements/_back_to_list_button.html.twig', {url: path('agent_bank_add'), label: 'Add Agent Bank', 'icon': 'plus'}) }}</div>
-                </div>
                 <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}
                     <div style="clear: both"></div>
