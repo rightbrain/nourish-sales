@@ -91,6 +91,13 @@ class Payment
     private $amount;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="quantity", type="integer")
+     */
+    private $quantity = 0;
+
+    /**
      * @var float
      *
      * @ORM\Column(name="deposited_amounts", type="float", nullable=false)
@@ -233,6 +240,22 @@ class Payment
     public function setAmount($amount)
     {
         $this->amount = $amount;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuantity()
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * @param int $quantity
+     */
+    public function setQuantity($quantity)
+    {
+        $this->quantity = $quantity;
     }
 
     /**
