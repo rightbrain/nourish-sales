@@ -279,7 +279,7 @@ class SmsParse
                             $this->payment->setAgentBankBranch($agentBankAccount);
 
                             $this->payment->setAgent($this->agent);
-                            $this->payment->setPaymentType($this->paymentType);
+                            $this->payment->setPaymentMode($this->paymentType);
                             $this->payment->setTransactionType(Payment::CR);
                             $this->payment->setVerified(false);
 

@@ -48,6 +48,7 @@ class SmsController extends Controller
         $function = function($qb)
         {
             $qb->andWhere("sales_sms.status = 'UNREAD'");
+            $qb->andWhere("sales_sms.paymentMode IS NULL");
         };
         $query->addWhereAll($function);
         return $query->getResponse();
@@ -179,5 +180,38 @@ class SmsController extends Controller
             'nourishBanks' => $nourishBanks
         );
 
+    }
+
+    /**
+     * @Route("/payment-sms", name="payment_sms_home")
+     */
+    public function paymentSmsAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.payment_sms');
+        $datatable->buildDatatable();
+
+        return $this->render('RbsSalesBundle:Sms:payment-sms.html.twig', array(
+            'datatable' => $datatable
+        ));
+    }
+
+    /**
+     * @Route("/payment_sms_list_ajax", name="payment_sms_list_ajax", options={"expose"=true})
+     * @Method("GET")
+     * @JMS\Secure(roles="ROLE_ORDER_VIEW")
+     */
+    public function paymentSmsListAjaxAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.payment_sms');
+        $datatable->buildDatatable();
+
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb */
+        $function = function($qb)
+        {
+            $qb->andWhere("sales_sms.paymentMode IS NOT NULL");
+        };
+        $query->addWhereAll($function);
+        return $query->getResponse();
     }
 }

@@ -82,9 +82,16 @@ class Sms
     /**
      * @var array $type
      *
-     * @ORM\Column(name="type", type="string", length=255, columnDefinition="ENUM('FD', 'CK', 'PAYMENT')", nullable=true)
+     * @ORM\Column(name="type", type="string", length=255, columnDefinition="ENUM('FD', 'CK')", nullable=true)
      */
     private $type;
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="payment_mode", type="string", length=255, columnDefinition="ENUM('HO', 'OP')", nullable=true)
+     */
+    private $paymentMode = null;
 
     /**
      * @var string
@@ -274,5 +281,21 @@ class Sms
     public function setType($type)
     {
         $this->type = $type;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPaymentMode()
+    {
+        return $this->paymentMode;
+    }
+
+    /**
+     * @param array $paymentMode
+     */
+    public function setPaymentMode($paymentMode)
+    {
+        $this->paymentMode = $paymentMode;
     }
 }

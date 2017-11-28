@@ -18,6 +18,8 @@ class PaymentSmsParse
 
     public $error;
 
+    public $paymentType;
+
     /** @var Agent */
     protected $agent;
 
@@ -48,15 +50,28 @@ class PaymentSmsParse
         $this->sms = $sms;
         $this->payment = null;
         $this->error;
+        $this->paymentType = null;
 
         $msg = $this->sms->getMsg();
         $splitMsg = array_filter(explode(',', $msg));
 
         $agentId = isset($splitMsg[0]) ? trim($splitMsg[0]) : 0;
         $bankAccountCode = isset($splitMsg[1]) ? trim($splitMsg[1]) : '';
+        $this->paymentType = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
+
+        if(empty($this->paymentType) or $this->paymentType == null){
+            $this->setError('Invalid Payment Type');
+            return false;
+        }
 
         $this->setAgent($agentId);
         $this->setPayment($bankAccountCode, $agentId);
+
+        $this->sms->setPaymentMode($this->paymentType);
+        $this->em->persist($this->sms);
+        $this->em->flush();
+
+        return $this->sms->getId();
     }
 
     public function markError($string)
@@ -90,57 +105,62 @@ class PaymentSmsParse
             return;
         }
         $agent = $this->em->getRepository('RbsSalesBundle:Agent')->findOneBy(array('agentID' => $agentId));
-        try {
-            $accounts = explode('-', $accountInfo);
-            foreach ($accounts as $account) {
+        if ($this->paymentType == "HO" or $this->paymentType == "OP") {
+            try {
+                $accounts = explode('-', $accountInfo);
+                foreach ($accounts as $account) {
 
-                list($fxCx, $agentBank, $nourishBank, $amount) = explode(':', $account);
+                    list($fxCx, $agentBank, $nourishBank, $amount) = explode(':', $account);
 
-                $nourishBankAccount = $this->em->getRepository('RbsCoreBundle:BankAccount')->findOneBy(array('code' => $nourishBank));
-                $nourishBankCode = $this->em->getRepository('RbsSalesBundle:AgentNourishBank')->findOneBy(array('account' => $nourishBankAccount));
-                $agentBankAccount = $this->em->getRepository('RbsSalesBundle:AgentBank')->findOneBy(array('code' => $agentBank, 'agent' => $agent));
+                    $nourishBankAccount = $this->em->getRepository('RbsCoreBundle:BankAccount')->findOneBy(array('code' => $nourishBank));
+                    $nourishBankCode = $this->em->getRepository('RbsSalesBundle:AgentNourishBank')->findOneBy(array('account' => $nourishBankAccount));
+                    $agentBankAccount = $this->em->getRepository('RbsSalesBundle:AgentBank')->findOneBy(array('code' => $agentBank, 'agent' => $agent));
 
-                if (empty($fxCx)) {
-                    $this->setError('Invalid Payment For');
-                    break;
-                } else if ($fxCx != "FD") {
-                    $this->setError('Invalid Parameter, Need Payment Type');
-                    break;
-                } else if (!$nourishBankCode) {
-                    $this->setError('Invalid Nourish Bank Code');
-                    $this->markError($nourishBankCode);
-                    break;
-                } else if (!$agentBankAccount) {
-                    $this->setError('Invalid Agent Bank Code');
-                    $this->markError($agentBankAccount);
-                    break;
-                } else if (!empty($amount) && !preg_match('/^\d+$/', trim($amount))) {
-                    $this->setError('Invalid Amount');
-                    $this->markError($amount);
-                    break;
-                } else {
-                    if (!empty($amount)) {
-                        $this->payment = new Payment();
-                        $this->payment->setAmount(0);
-                        $this->payment->setDepositedAmount($amount);
-                        $this->payment->setBankAccount($nourishBankAccount);
-                        $this->payment->setVerified(false);
-                        $this->payment->setDepositDate(date("Y-m-d"));
-                        $this->payment->setPaymentVia('SMS');
-                        $this->payment->setFxCx($fxCx);
-                        $this->payment->setAgentBankBranch($agentBankAccount);
+                    if (empty($fxCx)) {
+                        $this->setError('Invalid Payment For');
+                        break;
+                    } else if ($fxCx != "FD") {
+                        $this->setError('Invalid Parameter, Need Payment Type');
+                        break;
+                    } else if (!$nourishBankCode) {
+                        $this->setError('Invalid Nourish Bank Code');
+                        $this->markError($nourishBankCode);
+                        break;
+                    } else if (!$agentBankAccount) {
+                        $this->setError('Invalid Agent Bank Code');
+                        $this->markError($agentBankAccount);
+                        break;
+                    } else if (!empty($amount) && !preg_match('/^\d+$/', trim($amount))) {
+                        $this->setError('Invalid Amount');
+                        $this->markError($amount);
+                        break;
+                    } else {
+                        if (!empty($amount)) {
+                            $this->payment = new Payment();
+                            $this->payment->setAmount(0);
+                            $this->payment->setDepositedAmount($amount);
+                            $this->payment->setBankAccount($nourishBankAccount);
+                            $this->payment->setVerified(false);
+                            $this->payment->setDepositDate(date("Y-m-d"));
+                            $this->payment->setPaymentVia('SMS');
+                            $this->payment->setFxCx($fxCx);
+                            $this->payment->setAgentBankBranch($agentBankAccount);
 
-                        $this->payment->setAgent($this->agent);
-                        $this->payment->setPaymentType("HO");
-                        $this->payment->setTransactionType(Payment::CR);
-                        $this->payment->setVerified(false);
+                            $this->payment->setAgent($this->agent);
+                            $this->payment->setPaymentMode($this->paymentType);
+                            $this->payment->setTransactionType(Payment::CR);
+                            $this->payment->setVerified(false);
 
-                        $this->em->persist($this->payment);
+                            $this->em->persist($this->payment);
+                            $this->em->flush();
+                        }
                     }
                 }
+            } catch (\Exception $e) {
+                $this->setError("Invalid Bank, Code and Amount Format");
             }
-        } catch (\Exception $e) {
-            $this->setError("Invalid Bank, Code and Amount Format");
+        }else{
+            $this->setError('Invalid Payment Type');
         }
     }
 
@@ -162,6 +182,6 @@ class PaymentSmsParse
     public function smsService()
     {
         $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
-        $smsSender->agentBankInfoSmsAction("Your Order SMS text is unreadable.", $this->mobileNumber);
+        $smsSender->agentBankInfoSmsAction("Your SMS text is unreadable.", $this->mobileNumber);
     }
 }

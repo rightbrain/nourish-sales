@@ -80,6 +80,16 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Sales']->getChild('Payments')->setCurrent(true);
                 }
             }
+
+            if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
+                $sp2 = true;
+                $menu['Sales']->addChild('Payments SMS', array('route' => 'payment_sms_home'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('payment_sms_home')) {
+                    $menu['Sales']->getChild('Payments SMS')->setCurrent(true);
+                }
+            }
+
             if ($this->authorizationChecker->isGranted(array('ROLE_CASH_RECEIVE_MANAGE'))) {
                 $sp2 = true;
                 $menu['Sales']->addChild('Cash Receive', array('route' => 'cash_receive_list'))

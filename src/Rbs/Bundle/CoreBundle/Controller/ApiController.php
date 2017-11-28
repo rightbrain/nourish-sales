@@ -204,7 +204,6 @@ class ApiController extends BaseController
                         $entity->setMobileNo($msisdn);
                         $entity->setSl($messageid);
                         $entity->setStatus('NEW');
-                        $entity->setType('PAYMENT');
                         $this->getDoctrine()->getManager()->persist($entity);
                         $this->getDoctrine()->getManager()->flush();
 

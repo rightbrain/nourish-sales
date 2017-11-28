@@ -4,6 +4,7 @@ namespace Rbs\Bundle\CoreBundle\Controller;
 
 use Rbs\Bundle\SalesBundle\Entity\Sms;
 use Rbs\Bundle\SalesBundle\Helper\ChickOrderSmsParser;
+use Rbs\Bundle\SalesBundle\Helper\PaymentSmsParse;
 use Rbs\Bundle\SalesBundle\Helper\SmsParse;
 use Rbs\Bundle\SalesBundle\Helper\SmsVehicleParse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -56,6 +57,7 @@ class DefaultController extends BaseController
             'choices' => array(
                 'feed' => 'Feed',
                 'chick' => 'Chick',
+                'payment' => 'Payment',
             )
         ));
 
@@ -66,14 +68,17 @@ class DefaultController extends BaseController
             $formView->handleRequest($request);
             if ($formView->isValid()) {
 
+                $sms = new Sms();
                 $orderType = $formView->get('type')->getData();
                 if ($orderType == 'chick') {
                     $smsParse = new ChickOrderSmsParser($this->get('doctrine.orm.entity_manager'));
-                } else {
+                } else if ($orderType == 'feed') {
                     $smsParse = new SmsParse($this->get('doctrine.orm.entity_manager'), $this->container, $formView->get('mobile')->getData());
+                } else {
+                    $smsParse = new PaymentSmsParse($this->get('doctrine.orm.entity_manager'), $this->container, $formView->get('mobile')->getData());
+                    $sms->setPaymentMode("OP");
                 }
 
-                $sms = new Sms();
                 $sms->setMobileNo($formView->get('mobile')->getData());
                 $sms->setMsg($formView->get('msg')->getData());
                 $sms->setDate(new \DateTime());
@@ -82,11 +87,20 @@ class DefaultController extends BaseController
                 $sms->setType($orderType == 'chick' ? "CK" : "FD");
                 $response = $smsParse->parse($sms);
 
-                if ($response) {
-                    $this->flashMessage('success', 'Order Created Successfully, Order ID: ' . $response['orderId']);
-                } else {
-                    $this->flashMessage('error', $smsParse->error);
+                if ($orderType == 'chick' or $orderType == 'feed'){
+                    if ($response) {
+                        $this->flashMessage('success', 'Order Created Successfully, Order ID: ' . $response['orderId']);
+                    } else {
+                        $this->flashMessage('error', $smsParse->error);
 
+                    }
+                }else{
+                    if ($response) {
+                        $this->flashMessage('success', 'Payment Placed Successfully');
+                    } else {
+                        $this->flashMessage('error', $smsParse->error);
+
+                    }
                 }
                 return $this->redirectToRoute('order_via_sms');
             }

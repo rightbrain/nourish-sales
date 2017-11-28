@@ -142,11 +142,11 @@ class Payment
     private $fxCx;
 
     /**
-     * @var string
+     * @var array $type
      *
-     * @ORM\Column(name="payment_type", type="string", length=6, nullable=true)
+     * @ORM\Column(name="payment_mode", type="string", length=255, columnDefinition="ENUM('HO', 'OP')", nullable=true)
      */
-    private $paymentType;
+    private $paymentMode;
 
     /**
      * @var string
@@ -487,16 +487,16 @@ class Payment
     /**
      * @return string
      */
-    public function getPaymentType()
+    public function getPaymentMode()
     {
-        return $this->paymentType;
+        return $this->paymentMode;
     }
 
     /**
-     * @param string $paymentType
+     * @param string $paymentMode
      */
-    public function setPaymentType($paymentType)
+    public function setPaymentMode($paymentMode)
     {
-        $this->paymentType = $paymentType;
+        $this->paymentMode = $paymentMode;
     }
 }

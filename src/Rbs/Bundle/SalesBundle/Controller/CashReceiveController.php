@@ -8,7 +8,6 @@ use Rbs\Bundle\SalesBundle\Entity\CashReceive;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\CashReceiveForm;
-use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -101,7 +100,6 @@ class CashReceiveController extends BaseController
                 $form->handleRequest($request);
 
                 if ($form->isValid()) {
-//                    $od = $em->getRepository('RbsSalesBundle:Order')->find($request->request->get('cash_receive')['orderRef']);
                     $agent = $em->getRepository('RbsSalesBundle:Agent')->find($request->request->get('cash_receive')['agent']);
                     $payment->setAgent($agent);
                     $payment->setDepositedAmount($request->request->get('cash_receive')['amount']);
@@ -111,7 +109,6 @@ class CashReceiveController extends BaseController
                     $payment->setDepositDate(date("Y-m-d"));
                     $payment->setTransactionType(Payment::CR);
                     $payment->setVerified(true);
-//                    $payment->addOrder($od);
                     $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
                     $em->getRepository('RbsSalesBundle:Payment')->create($payment);
 
