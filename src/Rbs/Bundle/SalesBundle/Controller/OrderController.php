@@ -229,7 +229,7 @@ class OrderController extends BaseController
         }
 
         if (in_array($order->getOrderState(), array(ORDER::ORDER_STATE_CANCEL, ORDER::ORDER_STATE_COMPLETE))
-            || in_array($order->getDeliveryState(), array(ORDER::DELIVERY_STATE_READY))) {
+            || in_array($order->getDeliveryState(), array(ORDER::DELIVERY_STATE_PARTIALLY_SHIPPED))) {
             $this->flashMessage('error', 'Invalid Operation');
             return $this->redirectToRoute('orders_home');
         }
@@ -237,7 +237,7 @@ class OrderController extends BaseController
         $form = $this->createForm(new OrderForm($refSms), $order);
         $em = $this->getDoctrine()->getManager();
 
-        $depoAttr = Order::ORDER_STATE_PROCESSING == $order->getOrderState() ? array('disabled'=>'disabled') : array();
+        $depoAttr = Order::ORDER_STATE_COMPLETE == $order->getOrderState() ? array('disabled'=>'disabled') : array();
         if ('POST' === $request->getMethod()) {
             $sms = $order->getRefSMS();
             $stockRepo = $em->getRepository('RbsSalesBundle:Stock');
