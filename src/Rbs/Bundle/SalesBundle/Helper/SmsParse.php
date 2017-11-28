@@ -82,7 +82,7 @@ class SmsParse
         $bankAccountCode = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
         $this->paymentType = isset($splitMsg[3]) ? trim($splitMsg[3]) : '';
 
-        if(empty($this->paymentType) or $this->paymentType == null){
+        if(empty($this->paymentType)){
             $this->setError('Invalid Payment Type');
             return false;
         }
@@ -236,8 +236,6 @@ class SmsParse
         }
         $agent = $this->em->getRepository('RbsSalesBundle:Agent')->findOneBy(array('agentID' => $agentId));
 
-        if ($this->paymentType == "HO" or $this->paymentType == "OP") {
-
         try {
             $accounts = explode('-', $accountInfo);
             foreach ($accounts as $account) {
@@ -293,9 +291,6 @@ class SmsParse
             (\Exception $e) {
                 $this->setError("Invalid Bank, Code and Amount Format");
             }
-        }else{
-            $this->setError('Invalid Payment Type');
-        }
     }
 
     function startsWith($haystack, $needle) {

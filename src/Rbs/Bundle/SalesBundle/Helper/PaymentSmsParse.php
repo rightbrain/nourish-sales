@@ -59,7 +59,7 @@ class PaymentSmsParse
         $bankAccountCode = isset($splitMsg[1]) ? trim($splitMsg[1]) : '';
         $this->paymentType = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
 
-        if(empty($this->paymentType) or $this->paymentType == null){
+        if(empty($this->paymentType)){
             $this->setError('Invalid Payment Type');
             return false;
         }
@@ -105,7 +105,6 @@ class PaymentSmsParse
             return;
         }
         $agent = $this->em->getRepository('RbsSalesBundle:Agent')->findOneBy(array('agentID' => $agentId));
-        if ($this->paymentType == "HO" or $this->paymentType == "OP") {
             try {
                 $accounts = explode('-', $accountInfo);
                 foreach ($accounts as $account) {
@@ -117,10 +116,8 @@ class PaymentSmsParse
                     $agentBankAccount = $this->em->getRepository('RbsSalesBundle:AgentBank')->findOneBy(array('code' => $agentBank, 'agent' => $agent));
 
                     if (empty($fxCx)) {
+
                         $this->setError('Invalid Payment For');
-                        break;
-                    } else if ($fxCx != "FD") {
-                        $this->setError('Invalid Parameter, Need Payment Type');
                         break;
                     } else if (!$nourishBankCode) {
                         $this->setError('Invalid Nourish Bank Code');
@@ -135,6 +132,7 @@ class PaymentSmsParse
                         $this->markError($amount);
                         break;
                     } else {
+
                         if (!empty($amount)) {
                             $this->payment = new Payment();
                             $this->payment->setAmount(0);
@@ -159,9 +157,6 @@ class PaymentSmsParse
             } catch (\Exception $e) {
                 $this->setError("Invalid Bank, Code and Amount Format");
             }
-        }else{
-            $this->setError('Invalid Payment Type');
-        }
     }
 
     function startsWith($haystack, $needle) {
