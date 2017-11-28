@@ -144,6 +144,13 @@ class Payment
     /**
      * @var string
      *
+     * @ORM\Column(name="payment_type", type="string", length=6, nullable=true)
+     */
+    private $paymentType;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="agent_bank", type="string", length=255, nullable=true)
      */
     private $agentBank = '';
@@ -475,5 +482,21 @@ class Payment
     public function setFxCx($fxCx)
     {
         $this->fxCx = $fxCx;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentType()
+    {
+        return $this->paymentType;
+    }
+
+    /**
+     * @param string $paymentType
+     */
+    public function setPaymentType($paymentType)
+    {
+        $this->paymentType = $paymentType;
     }
 }

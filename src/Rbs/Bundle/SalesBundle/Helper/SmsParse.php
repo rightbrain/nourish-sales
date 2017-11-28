@@ -22,6 +22,8 @@ class SmsParse
 
     public $error;
 
+    public $paymentType;
+
     /** @var Agent */
     protected $agent;
 
@@ -64,6 +66,7 @@ class SmsParse
         $this->orderItems = array();
         $this->payments = array();
         $this->payment = null;
+        $this->paymentType = null;
         $this->error;
         $this->validate();
         return $this->createOrder();
@@ -77,6 +80,12 @@ class SmsParse
         $agentId = isset($splitMsg[0]) ? trim($splitMsg[0]) : 0;
         $orderInfo = isset($splitMsg[1]) ? trim($splitMsg[1]) : '';
         $bankAccountCode = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
+        $this->paymentType = isset($splitMsg[3]) ? trim($splitMsg[3]) : '';
+
+        if(empty($this->paymentType) or $this->paymentType == null){
+            $this->setError('Invalid Payment Type');
+            return false;
+        }
 
         $this->setAgent($agentId);
         $this->setOrderItems($orderInfo);
@@ -226,6 +235,9 @@ class SmsParse
             return;
         }
         $agent = $this->em->getRepository('RbsSalesBundle:Agent')->findOneBy(array('agentID' => $agentId));
+
+        if ($this->paymentType == "HO" or $this->paymentType == "OP") {
+
         try {
             $accounts = explode('-', $accountInfo);
             foreach ($accounts as $account) {
@@ -236,47 +248,53 @@ class SmsParse
                 $nourishBankCode = $this->em->getRepository('RbsSalesBundle:AgentNourishBank')->findOneBy(array('account' => $nourishBankAccount));
                 $agentBankAccount = $this->em->getRepository('RbsSalesBundle:AgentBank')->findOneBy(array('code' => $agentBank, 'agent' => $agent));
 
-                if (empty($fxCx)) {
-                    $this->setError('Invalid Payment For');
-                    break;
-                } else if ($fxCx != "FD") {
-                    $this->setError('Invalid Parameter, Need FD');
-                    break;
-                } else if (!$nourishBankCode) {
-                    $this->setError('Invalid Nourish Bank Code');
-                    $this->markError($nourishBankCode);
-                    break;
-                } else if (!$agentBankAccount) {
-                    $this->setError('Invalid Agent Bank Code');
-                    $this->markError($agentBankAccount);
-                    break;
-                } else if (!empty($amount) && !preg_match('/^\d+$/', trim($amount))) {
-                    $this->setError('Invalid Amount');
-                    $this->markError($amount);
-                    break;
-                } else {
-                    if (!empty($amount)) {
-                        $this->payment = new Payment();
-                        $this->payment->setAmount(0);
-                        $this->payment->setDepositedAmount($amount);
-                        $this->payment->setBankAccount($nourishBankAccount);
-                        $this->payment->setVerified(false);
-                        $this->payment->setDepositDate(date("Y-m-d"));
-                        $this->payment->setPaymentVia('SMS');
-                        $this->payment->setFxCx($fxCx);
-                        $this->payment->setAgentBankBranch($agentBankAccount);
+                    if (empty($fxCx)) {
+                        $this->setError('Invalid Payment For');
+                        break;
+                    } else if ($fxCx != "FD") {
+                        $this->setError('Invalid Parameter, Need FD');
+                        break;
+                    } else if (!$nourishBankCode) {
+                        $this->setError('Invalid Nourish Bank Code');
+                        $this->markError($nourishBankCode);
+                        break;
+                    } else if (!$agentBankAccount) {
+                        $this->setError('Invalid Agent Bank Code');
+                        $this->markError($agentBankAccount);
+                        break;
+                    } else if (!empty($amount) && !preg_match('/^\d+$/', trim($amount))) {
+                        $this->setError('Invalid Amount');
+                        $this->markError($amount);
+                        break;
+                    } else {
+                        if (!empty($amount)) {
+                            $this->payment = new Payment();
+                            $this->payment->setAmount(0);
+                            $this->payment->setDepositedAmount($amount);
+                            $this->payment->setBankAccount($nourishBankAccount);
+                            $this->payment->setVerified(false);
+                            $this->payment->setDepositDate(date("Y-m-d"));
+                            $this->payment->setPaymentVia('SMS');
+                            $this->payment->setFxCx($fxCx);
+                            $this->payment->setAgentBankBranch($agentBankAccount);
 
-                        $this->payment->setAgent($this->agent);
-                        $this->payment->setTransactionType(Payment::CR);
-                        $this->payment->setVerified(false);
+                            $this->payment->setAgent($this->agent);
+                            $this->payment->setPaymentType($this->paymentType);
+                            $this->payment->setTransactionType(Payment::CR);
+                            $this->payment->setVerified(false);
 
-                        $this->payments[]=$this->payment;
-                        $this->em->persist($this->payment);
+                            $this->payments[] = $this->payment;
+                            $this->em->persist($this->payment);
+                        }
                     }
                 }
             }
-        } catch (\Exception $e) {
-            $this->setError("Invalid Bank, Code and Amount Format");
+        catch
+            (\Exception $e) {
+                $this->setError("Invalid Bank, Code and Amount Format");
+            }
+        }else{
+            $this->setError('Invalid Payment Type');
         }
     }
 
