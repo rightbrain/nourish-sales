@@ -11,8 +11,8 @@
                     <div class="portlet-body">
                         <table class="table table-bordered col-md-6">
                             <tr>
-                                <th class="col-md-3">Order Number</th>
-                                <td class="col-md-3">{{ order.id }}</td>
+                                <th class="col-md-2">Order Number</th>
+                                <td class="col-md-4">{{ order.id }}</td>
                                 <th class="col-md-3">Order Amount</th>
                                 <td class="col-md-3">{{ order.totalAmount|number_format(2) }}</td>
                             </tr>
@@ -23,16 +23,22 @@
                                 <td>{{ order.paidAmount|number_format(2, '.', ',') }}</td>
                             </tr>
                             <tr>
-                                <th>Created By</th>
-                                <td>{% if order.createdBy is not null %}{{ order.createdBy.username|default('') }}{% endif %} </td>
+                                <th>Agent Mobile</th>
+                                <td>{{ order.agent.user.profile.cellphone }}</td>
                                 <th>Payment Amount</th>
                                 <td>{% if order.paymentState!='PENDING' %}{{ order.totalPaymentDepositedAmount|number_format(2, '.', ',') }}{% endif %}</td>
                             </tr>
                             <tr>
-                                <th>Outstanding Balance</th>
-                                <td>{% if outStandingBalance < 0 %}{{ '('~outStandingBalance|abs|number_format(2, '.', ',')~')' }}{% else %}{{ outStandingBalance|number_format(2, '.', ',') }}{% endif %}</td>
+                                <th>Agent Address</th>
+                                <td>{{ order.agent.user.profile.address }}</td>
                                 <th>Actual Amount</th>
                                 <td>{% if order.paymentState!='PENDING' %}{{ order.totalPaymentActualAmount|number_format(2, '.', ',') }}{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <th>Created By</th>
+                                <td>{% if order.createdBy is not null %}{{ order.createdBy.profile.fullName|default('') }}{% endif %} </td>
+                                <th>Outstanding Balance</th>
+                                <td>{% if outStandingBalance < 0 %}{{ '('~outStandingBalance|abs|number_format(2, '.', ',')~')' }}{% else %}{{ outStandingBalance|number_format(2, '.', ',') }}{% endif %}</td>
                             </tr>
 
                             <tr><th>Remarks</th><td colspan="3">{{ order.remark }}</td></tr>
@@ -51,10 +57,14 @@
                             {% for index, orderItem in order.orderItems %}
                                 <tr>
                                     <td>{{ index + 1 }}.</td>
-                                    <td>{{ orderItem.item.itemName | default('') }}</td>
+                                    <td>{{ orderItem.item.getItemCodeName | default('') }}</td>
                                     <td class="text-center">{{ orderItem.quantity | default('') }}</td>
                                 </tr>
                             {% endfor %}
+                            <tr>
+                                <td colspan="2" class="text-right"><strong>Total Quantity</strong></td>
+                                <td class="text-center">{{ order.getOrderItemsTotalQuantity() }}</td>
+                            </tr>
                             </tbody>
                         </table>
                         <br />

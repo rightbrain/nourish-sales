@@ -45,4 +45,14 @@ class AgentBankRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+    public function getAgentBankByAgentId($agentId)
+    {
+        $query = $this->createQueryBuilder('ab');
+        $query->join('ab.agent', 'a');
+        $query->where('ab.deletedAt IS NULL');
+        $query->andWhere('a.id = :agentId');
+        $query->setParameter('agentId', $agentId);
+
+        return $query->getQuery()->getResult();
+    }
 }

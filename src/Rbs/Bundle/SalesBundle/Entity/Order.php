@@ -373,6 +373,18 @@ class Order
         return $total;
     }
 
+    /** @return float */
+    public function getOrderItemsTotalQuantity()
+    {
+        $total = 0;
+        /** @var OrderItem $item */
+        foreach($this->orderItems as $item) {
+            $total += $item->getQuantity();
+        }
+
+        return $total;
+    }
+
     public function isPending()
     {
         $state = false;
@@ -587,5 +599,18 @@ class Order
             $data+= $payment->getAmount();
         }
         return $data;
+    }
+
+
+    /** @return float */
+    public function getTotalDeliveryItemsQuantity()
+    {
+        $total = 0;
+        /** @var Delivery $item */
+        foreach($this->getDeliveries() as $item) {
+            $total += $item->getTotalDeliveryItemsQuantity();
+        }
+
+        return $total;
     }
 }

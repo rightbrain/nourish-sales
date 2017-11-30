@@ -108,6 +108,13 @@ class Item
      **/
     private $bundles;
 
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="packet_weight", type="integer")
+     */
+    private $packetWeight=50;
+
     public function __construct()
     {
         $this->category = new ArrayCollection();
@@ -375,4 +382,22 @@ class Item
     {
         return $this->getSku() ." - ".$this->getName();
     }
+
+    /**
+     * @return int
+     */
+    public function getPacketWeight()
+    {
+        return $this->packetWeight;
+    }
+
+    /**
+     * @param int $packetWeight
+     */
+    public function setPacketWeight($packetWeight)
+    {
+        $this->packetWeight = $packetWeight;
+    }
+
+
 }

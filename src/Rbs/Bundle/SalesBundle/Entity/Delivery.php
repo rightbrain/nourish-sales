@@ -275,4 +275,16 @@ class Delivery
     {
         $this->shipped = $shipped;
     }
+
+    /** @return float */
+    public function getTotalDeliveryItemsQuantity()
+    {
+        $total = 0;
+        /** @var DeliveryItem $item */
+        foreach($this->deliveryItems as $item) {
+            $total += $item->getQty();
+        }
+
+        return $total;
+    }
 }
