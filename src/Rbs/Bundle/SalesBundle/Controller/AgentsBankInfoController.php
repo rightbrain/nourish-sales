@@ -166,7 +166,7 @@ class AgentsBankInfoController extends BaseController
         $payment->setRemark('Bank Deposit By Agent.');
         $payment->setBankName($agentsBankInfo->getBankName());
         $payment->setBranchName($agentsBankInfo->getBranchName());
-        $payment->setDepositDate(date("Y-m-d"));
+//        $payment->setDepositDate(date("Y-m-d"));
         $payment->setTransactionType(Payment::CR);
         $payment->setVerified(true);
         $payment->addOrder($agentsBankInfo->getOrderRef());

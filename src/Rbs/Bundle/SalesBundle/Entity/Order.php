@@ -56,7 +56,7 @@ class Order
     protected $orderIncentiveFlag;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Payment", mappedBy="orders")
+     * @ORM\ManyToMany(targetEntity="Payment", mappedBy="orders", cascade={"persist"})
      * @ORM\OrderBy({"createdAt" = "DESC"})
      **/
     protected $payments;
@@ -128,7 +128,6 @@ class Order
 
     /**
      * @ORM\OneToOne(targetEntity="Sms", mappedBy="order", cascade={"persist"})
-     * @Assert\NotBlank()
      */
     protected $refSMS;
 

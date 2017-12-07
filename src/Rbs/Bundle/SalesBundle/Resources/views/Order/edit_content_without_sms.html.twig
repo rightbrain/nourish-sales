@@ -1,0 +1,121 @@
+{{ form_start(form, {'method': 'POST', attr: { novalidate: 'novalidate'}}) }}
+
+
+<div class="form-group">
+    <label class="col-md-2 control-label">Agent *</label>
+    <div class="col-md-6" style="margin-top: 10px;">
+        {{ form_widget(form.agent) }}
+        {{ form_errors(form.agent) }}
+    </div>
+</div>
+
+
+<div class="form-group">
+    <label class="col-md-2 control-label">Depo *</label>
+    <div class="col-md-6" style="margin-top: 10px;">
+        {{ form_widget(form.depo) }}
+        {{ form_errors(form.depo) }}
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-md-2 control-label">Remark</label>
+    <div class="col-md-6" style="margin-top: 10px;">
+        {{ form_widget(form.remark) }}
+    </div>
+</div>
+
+<br/>
+<div class="payment-list">
+    <table width="100%" class="table table-condensed table-hover" style="width:100%; margin-bottom:0!important;">
+        <thead>
+        <tr>
+            <th colspan="5"><h3 class="table pull-left">Payment Information:</h3></th>
+            <th colspan="4"><div class="pull-right"><a href="#" class="add_payment_tag_link blue btn" id="add_payment_item">Add Payment Info</a></div></th>
+        </tr>
+        <tr>
+            <th style="width: 20%;">Agent Bank Brnch</th>
+            <th style="width: 8%;">Deposit Amount</th>
+            <th style="width: 15%;" class="text-center">Date</th>
+            <th style="width: 8%;" class="text-center">Fx cx</th>
+            <th style="width: 8%;">Payment Method</th>
+            <th style="width: 8%;">Where Payment</th>
+            <th style="width: 15%;">Bank Account</th>
+            <th style="width: 15%;">Remarks</th>
+            <th style="width: 8%;"></th>
+        </tr>
+        </thead>
+        <tbody id="payments" class="payments" data-prototype="
+        {% filter escape %}
+        {{ include('RbsSalesBundle:Order:payment_content.html.twig', { 'form': form.payments.vars.prototype }) }}
+        {% endfilter %}">
+        {% for j,payment in form.payments %}
+            <tr id="payment-{{ j }}">
+                <td>{{ form_widget(payment.agentBankBranch, { 'attr': {}}) }}</td>
+                <td>{{ form_widget(payment.depositedAmount, { 'attr': {'class': 'amount'}}) }}</td>
+                <td>{{ form_widget(payment.depositDate) }}</td>
+                <td>{{ form_widget(payment.fxCx) }}</td>
+                <td>{{ form_widget(payment.paymentMethod) }}</td>
+                <td>{{ form_widget(payment.paymentMode) }}</td>
+                <td>{{ form_widget(payment.bankAccount) }}</td>
+                <td>{{ form_widget(payment.remark) }}</td>
+                <td>{{ form_widget(payment.remove) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+</div>
+
+<br/>
+<div class="order-item-list">
+    <table class="table table-condensed table-hover" style="margin-bottom:0!important;">
+        <thead>
+        <tr>
+            <th colspan="4"><h3 class="table pull-left">Item Information:</h3></th>
+            <th colspan="3"><div class="pull-right"><a href="#" class="add_tag_link blue btn" id="add_order_item">Add Item</a></div></th>
+        </tr>
+        <tr>
+            <th style="width: 300px;">Item</th>
+            <th style="width: 50px;">Quantity</th>
+            <th style="width: 20px;" class="text-center">Unit</th>
+            <th style="width: 150px;" class="text-center">Available</th>
+            <th style="width: 50px;">Price</th>
+            <th style="width: 70px;">Total</th>
+            <th style="width: 70px;"></th>
+        </tr>
+        </thead>
+        <tbody id="orderItems" class="tags" data-prototype="
+        {% filter escape %}
+        {{ include('RbsSalesBundle:Order:order_item_content.html.twig', { 'form': form.orderItems.vars.prototype }) }}
+        {% endfilter %}">
+        {% for i, orderItem in form.orderItems %}
+            <tr id="order-item-{{ i }}">
+                <td>{{ form_widget(orderItem.item) }}</td>
+                <td>{{ form_widget(orderItem.quantity, { 'attr': {'class': 'quantity input-mask-number'}}) }}</td>
+                <td class="item-unit text-center"></td>
+                <td class="stock-available text-center"></td>
+                <td class="item-price">{{ form_widget(orderItem.price, { 'attr': {'class': 'price'}}) }}</td>
+                <td>{{ form_widget(orderItem.totalAmount, { 'attr': {'class': 'total_price'}} ) }}</td>
+                <td>{{ form_widget(orderItem.remove) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <th>Total</th>
+            <th colspan="2">{{ form_widget(form.totalAmount, { 'attr': {'style': ''}} ) }}</th>
+        </tr>
+        <tr>
+            <td colspan="6"></td>
+            <td>{{ form_row(form.submit) }}</td>
+        </tr>
+        </tfoot>
+    </table>
+</div>
+
+{{ form_end(form) }}

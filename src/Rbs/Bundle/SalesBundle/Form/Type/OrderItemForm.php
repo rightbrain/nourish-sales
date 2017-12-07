@@ -32,6 +32,9 @@ class OrderItemForm extends AbstractType
         $builder
             ->add('item', 'entity', array(
                 'class' => 'RbsCoreBundle:Item',
+                'attr' => array(
+                    'class' => 'orderItem'
+                ),
                 'property' => 'getItemCodeName',
                 'required' => true,
                 'empty_value' => 'Select Item',
@@ -56,6 +59,9 @@ class OrderItemForm extends AbstractType
                 ),
             ))
             ->add('quantity', 'text', array(
+                'attr' => array(
+                    'class' => 'quantity'
+                ),
                 'empty_data' => 0,
             ))
             ->add('totalAmount', 'text', array(

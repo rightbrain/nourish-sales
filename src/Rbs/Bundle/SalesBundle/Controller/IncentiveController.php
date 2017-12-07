@@ -123,7 +123,7 @@ class IncentiveController extends BaseController
         $payment->setAmount($incentive->getAmount());
         $payment->setPaymentMethod(Payment::PAYMENT_METHOD_INCENTIVE);
         $payment->setRemark('Refund for incentive.');
-        $payment->setDepositDate(date("Y-m-d"));
+//        $payment->setDepositDate(date("Y-m-d"));
         $payment->setTransactionType(Payment::CR);
         $payment->setVerified(true);
 

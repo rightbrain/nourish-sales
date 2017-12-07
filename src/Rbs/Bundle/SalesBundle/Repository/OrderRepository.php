@@ -32,10 +32,33 @@ class OrderRepository extends EntityRepository
         $this->_em->flush();
     }
 
+    public function createWithouSms(Order $order)
+    {
+        $this->calculateOrderAmount($order);
+        $this->orderPayment($order);
+        $this->setAllPendingStatus($order);
+        $order->setOrderVia('ONLINE');
+//        $this->setSms($order)
+        $this->_em->persist($order);
+        $this->_em->flush();
+    }
+
     public function update(Order $order, $resetStatus = false)
     {
         $this->calculateOrderAmount($order);
         $this->setSms($order);
+        if ($resetStatus) {
+            $this->setStatus($order);
+        }
+
+        $this->_em->flush();
+        return $this->_em;
+    }
+
+    public function updateWithoutSms(Order $order, $resetStatus = false)
+    {
+        $this->calculateOrderAmount($order);
+
         if ($resetStatus) {
             $this->setStatus($order);
         }
@@ -60,12 +83,37 @@ class OrderRepository extends EntityRepository
         $order->setTotalAmount($order->getItemsTotalAmount());
     }
 
+    public function orderPayment(Order $order)
+    {
+        $agent = $order->getAgent();
+        /** @var Payment $payment */
+        foreach ($order->getPayments() as $payment) {
+            $payment->setAgent($agent);
+            $payment->setAmount(0);
+            $payment->setTransactionType(Payment::CR);
+            $this->_em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
+            $payment->addOrder($order);
+//            $this->_em->persist($payment);
+        }
+
+    }
+
     /**
      * @param Order $order
      */
     protected function setStatus(Order $order)
     {
         $order->setOrderState('PROCESSING');
+        $order->setPaymentState('PENDING');
+        $order->setDeliveryState('PENDING');
+    }
+
+    /**
+     * @param Order $order
+     */
+    protected function setAllPendingStatus(Order $order)
+    {
+        $order->setOrderState('PENDING');
         $order->setPaymentState('PENDING');
         $order->setDeliveryState('PENDING');
     }

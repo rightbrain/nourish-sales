@@ -107,7 +107,7 @@ class CashReceiveController extends BaseController
                     $payment->setPaymentMethod(Payment::PAYMENT_METHOD_CASH);
                     $payment->setRemark('Cash received by depo user.');
 //                    var_dump($cashReceive->getReceivedAt());exit;
-                    $payment->setDepositDate($cashReceive->getReceivedAt()->format('Y-m-d'));
+                    $payment->setDepositDate(($cashReceive->getReceivedAt())?$cashReceive->getReceivedAt(): new \DateTime('today'));
                     $payment->setTransactionType(Payment::CR);
                     $payment->setVerified(true);
                     $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);

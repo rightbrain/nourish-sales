@@ -99,7 +99,7 @@ class AgentController extends BaseController
                     $payment->setAmount($agent->getOpeningBalance());
                     $payment->setPaymentMethod(Payment::PAYMENT_METHOD_OPENING_BALANCE);
                     $payment->setRemark('Agents opening balance.');
-                    $payment->setDepositDate(date("Y-m-d"));
+//                    $payment->setDepositDate(date("Y-m-d"));
                     $payment->setTransactionType($agent->getOpeningBalanceType());
                     $payment->setVerified(true);
                     $em->getRepository('RbsSalesBundle:Payment')->create($payment);

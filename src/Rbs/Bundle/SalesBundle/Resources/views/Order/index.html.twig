@@ -23,9 +23,25 @@
                 </div>
             </div>
             <div class="portlet-body">
-                {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_ORDER_CREATE") or is_granted("ROLE_ORDER_EDIT") or is_granted("ROLE_ORDER_APPROVE") or is_granted("ROLE_ORDER_CANCEL") %}
-                    {{ include('_elements/_back_to_list_button.html.twig', {url: path('order_create'), label: 'Add New Order', 'icon': 'plus'}) }}
-                {% endif %}
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="btn-group pull-right">
+                                {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_DEPO_USER") %}
+                                    <a class="btn blue" href="{{ path('order_create_new') }}">
+                                        <i class="fa fa-plus"></i> {{ 'Add New Order' }}
+                                    </a>
+                                {% endif %}
+                                {% if is_granted("ROLE_ADMIN") or is_granted("ROLE_ORDER_CREATE") or is_granted("ROLE_ORDER_EDIT") or is_granted("ROLE_ORDER_APPROVE") or is_granted("ROLE_ORDER_CANCEL") %}
+                                    <a style="margin-left: 10px" class="btn blue" href="{{ path('order_create') }}">
+                                        <i class="fa fa-plus"></i> {{ 'Add Unread SMS Order' }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}
                     <div style="clear: both"></div>

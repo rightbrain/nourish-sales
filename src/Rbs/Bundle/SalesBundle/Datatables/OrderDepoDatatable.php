@@ -132,7 +132,11 @@ class OrderDepoDatatable extends BaseDatatable
                     ';
 
         if ($canEdit && !in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
-            $html .= $this->generateMenuLink('Edit', 'order_update', array('id' => $order->getId()));
+            $route = 'order_update';
+            if($order->getOrderVia()=='ONLINE'){
+                $route= 'order_update_online';
+            }
+            $html .= $this->generateMenuLink('Edit', $route, array('id' => $order->getId()));
         }
 
         if ($canView) {

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }} : Order create {% endblock %}
+{% block title %}{{ parent() }} : Order Update {% endblock %}
 
 {% block body %}
     <div class="col-md-12">
@@ -12,7 +12,7 @@
             </div>
             <div class="portlet-body">
                 {{ include('_elements/_back_to_list_button.html.twig', {url: path('orders_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}
-                {% include "RbsSalesBundle:Order:new_content.html.twig" %}
+                {% include "RbsSalesBundle:Order:edit_content_without_sms.html.twig" %}
             </div>
         </div>
     </div>
@@ -26,6 +26,7 @@
     %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
+
 {% endblock stylesheets %}
 
 {% block javascripts %}
@@ -34,11 +35,12 @@
     "assets/global/plugins/bootstrap-toastr/toastr.min.js"
     "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
     "assets/admin/pages/scripts/form-validation.js"
-    "bundles/rbssales/js/order-new.js"
+    "bundles/rbssales/js/order-edit.js"
     %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 {% endblock javascripts %}
+
 {% block documentReady %}
     {{ parent() }}
     Order.init();
