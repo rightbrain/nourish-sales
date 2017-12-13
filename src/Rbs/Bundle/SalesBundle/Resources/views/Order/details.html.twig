@@ -32,8 +32,15 @@
                                             <td>{{ order.createdAt|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                         </tr>
                                         <tr>
+                                            <th>Agent Mobile</th>
+                                            <td>{{order.agent.user.profile.cellphone}}</td>
                                             <th>Created By</th>
-                                            <td>{{ order.createdBy.username | default('SMS') }}</td>
+                                            <td>{{ order.createdBy.profile.fullName | default('SMS') }}</td>
+
+                                        </tr>
+                                        <tr>
+                                            <th>Agent Address</th>
+                                            <td>{{ order.agent.user.profile.address }}</td>
                                             <th>SMS ref.</th>
                                             <td>{{ order.refSMS.msg | default('N/A') | raw }}</td>
                                         </tr>
@@ -145,7 +152,7 @@
                                             {% if orderItem.quantity != 0 %}
                                             <tr>
                                                 <td>{{ index + 1 }}.</td>
-                                                <td>{{ orderItem.item.name | default('') }}</td>
+                                                <td>{{ orderItem.item.getItemCodeName | default('') }}</td>
                                                 <td>{{ orderItem.quantity | default('') }}</td>
                                                 <td>{{ deliveredItems[index]['totalDeliveredQuantity'] | default('') }}</td>
                                                 <td>{{ orderItem.price | default('') }}</td>
@@ -155,6 +162,14 @@
                                             {% endif %}
                                         {% endfor %}
                                         <tbody>
+                                            <tr class="bold">
+                                                <td colspan="2" class="text-right bold"><strong>Total</strong></td>
+                                                <td>{{ order.getOrderItemsTotalQuantity() }}</td>
+                                                <td>{{ order.getTotalDeliveryItemsQuantity() }}</td>
+                                                <td></td>
+                                                <td>{{ order.totalAmount }}</td>
+                                                <td>{{ order.paidAmount }}</td>
+                                            </tr>
                                     </table>
                                 </div>
                             </div>
@@ -182,16 +197,16 @@
                                             <tbody>
                                             {% set index = 1 %}
                                             {% for payment in order.payments %}
-                                                {% if payment.paymentMethod == 'BANK' and payment.verified %}
+                                                {% if payment.paymentMethod == 'BANK' and payment.verified and payment.transactionType == 'CR' %}
                                                 <tr>
                                                     <td>{{ index }}.</td>
                                                     <td>{{ payment.depositDate | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                                     <td>{{ payment.id | default('') }}</td>
                                                     <td>{{ payment.paymentMethod | default('') }}</td>
-                                                    <td>{{ payment.bankName | default('') }}</td>
-                                                    <td>{{ payment.branchName | default('') }}</td>
+                                                    <td>{{ payment.agentBankBranch.bank | default('') }}</td>
+                                                    <td>{{ payment.agentBankBranch.branch | default('') }}</td>
                                                     <td>{{ payment.amount | default('') }}</td>
-                                                    <td>{{ payment.transactionType == 'CR' ? payment.remark : ''| default('') }}</td>
+                                                    <td>{{ payment.remark| default('') }}</td>
                                                 </tr>
                                                 {% set index = index + 1 %}
                                                 {% endif %}
@@ -224,11 +239,15 @@
                                                 <tr>
                                                     <td>{{ index + 1 }}.</td>
                                                     <td>{{ deliveryItem.delivery.id }}</td>
-                                                    <td>{{ deliveryItem.orderItem.item.name }}</td>
+                                                    <td>{{ deliveryItem.orderItem.item.getItemCodeName }}</td>
                                                     <td>{{ deliveryItem.qty }}</td>
                                                 </tr>
                                             {% endfor %}
                                             </tbody>
+                                            <tr>
+                                                <td class="text-right" colspan="3"><strong>Total</strong></td>
+                                                <td class="bold">{{ order.totalDeliveryItemsQuantity() }}</td>
+                                            </tr>
                                         </table>
 
                                     </div>

@@ -271,7 +271,7 @@ class SmsParse
                             $this->payment->setDepositedAmount($amount);
                             $this->payment->setBankAccount($nourishBankAccount);
                             $this->payment->setVerified(false);
-                            $this->payment->setDepositDate(date("Y-m-d"));
+//                            $this->payment->setDepositDate(date("Y-m-d"));
                             $this->payment->setPaymentVia('SMS');
                             $this->payment->setFxCx($fxCx);
                             $this->payment->setAgentBankBranch($agentBankAccount);

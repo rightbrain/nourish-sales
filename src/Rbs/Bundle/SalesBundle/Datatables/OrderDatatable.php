@@ -37,6 +37,7 @@ class OrderDatatable extends BaseDatatable
             if ($this->showAgentName) {
 //                $line["fullName"] = Agent::agentIdNameFormat($order->getAgent()->getAgentID(), $order->getAgent()->getUser()->getProfile()->getFullName());
                 $line["fullName"] = $order->getAgent()->getUser()->getProfile()->getFullName();
+                $line["agentDistrict"] = $order->getAgent()->getUser()->getZilla()->getName();
             }
 
             $line["actionButtons"] = $this->generateActionList($order);
@@ -85,6 +86,7 @@ class OrderDatatable extends BaseDatatable
         if ($this->showAgentName) {
             $this->columnBuilder->add('agent.agentID', 'column', array('title' => 'Agent Id'));
             $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName'));
+            $this->columnBuilder->add('agentDistrict', 'virtual', array('title' => 'Agent District'));
         }
         $this->columnBuilder->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
             ->add('orderState', 'column', array('title' => 'Order State', 'render' => 'Order.OrderStateFormat'))
@@ -138,7 +140,11 @@ class OrderDatatable extends BaseDatatable
 //        if($order->getDeliveryState() != Order::DELIVERY_STATE_READY and $order->getDeliveryState() != Order::DELIVERY_STATE_PARTIALLY_SHIPPED and $order->getDeliveryState() != Order::ORDER_STATE_CANCEL) {
         if($order->getDeliveryState() != Order::DELIVERY_STATE_PARTIALLY_SHIPPED and $order->getDeliveryState() != Order::ORDER_STATE_CANCEL) {
             if ($canEdit && !in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
-                $html .= $this->generateMenuLink('Edit', 'order_update', array('id' => $order->getId()));
+                $route = 'order_update';
+                if($order->getOrderVia()=='ONLINE'){
+                    $route= 'order_update_online';
+                }
+                $html .= $this->generateMenuLink('Edit', $route, array('id' => $order->getId()));
             }
         }
 

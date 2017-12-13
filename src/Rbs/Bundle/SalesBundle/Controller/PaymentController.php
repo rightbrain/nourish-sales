@@ -151,6 +151,24 @@ class PaymentController extends BaseController
     }
 
     /**
+     * @Route("/payment/agent_bank/{id}", name="agent_bank_by_agent_id", options={"expose"=true})
+     * @param Agent $agent
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
+     */
+    public function getAgentBankByAgentId(Agent $agent)
+    {
+        $agentBanks = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentBank')->getAgentBankByAgentId($agent->getId());
+
+        $agentBankArr = array();
+        foreach ($agentBanks as $agentBank) {
+            $agentBankArr[] = array('id' => $agentBank->getId(), 'text' => $agentBank->getBankBranchName());
+        }
+
+        return new JsonResponse($agentBankArr);
+    }
+
+    /**
      * @Route("/agents/ledger", name="agents_laser")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response

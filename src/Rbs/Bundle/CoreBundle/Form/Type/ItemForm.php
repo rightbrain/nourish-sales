@@ -29,6 +29,10 @@ class ItemForm extends AbstractType
                 'label' => 'Item Code'
             ))
             ->add('itemUnit')
+
+            ->add('packetWeight', 'integer', array(
+                'label' => 'Packet Weight'
+            ))
             ->add('itemType', 'entity', array(
                 'attr' => array('class' => 'select2me'),
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\ItemType',

@@ -42,4 +42,5 @@
 {% block documentReady %}
     {{ parent() }}
     Order.init();
+    Order.autoFocusQuantityField();
 {% endblock documentReady %}

@@ -103,6 +103,14 @@ class CashReceiveForm extends AbstractType
                     'class' => 'input-small input-mask-amount'
                 )
             ))
+            ->add('receivedAt', 'date', array(
+                'widget' => 'single_text',
+                'html5' => false,
+                'format' => 'dd-MM-yyyy',
+                'attr' => array(
+                    'class' => 'date-picker'
+                )
+            ))
             ->add('depositor')
             ->add('remark')
             ->add('submit', 'submit', array(

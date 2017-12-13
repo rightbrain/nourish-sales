@@ -8,12 +8,15 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderIncentiveFlag;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
+use Rbs\Bundle\SalesBundle\Form\Type\OrderEditWithoutSmsForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
+use Rbs\Bundle\SalesBundle\Form\Type\OrderWithoutSmsForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use JMS\SecurityExtraBundle\Annotation as JMS;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
@@ -213,6 +216,65 @@ class OrderController extends BaseController
     }
 
     /**
+     * @Route("/order/create/online", name="order_create_new", options={"expose"=true})
+     * @Template("RbsSalesBundle:Order:new_without_sms.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE")
+     */
+    public function createOrderWithoutSmsAction(Request $request)
+    {
+        $order = new Order();
+        $orderIncentiveFlag = new OrderIncentiveFlag();
+
+        $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager()), $order);
+        if ('POST' === $request->getMethod()) {
+
+            $form->handleRequest($request);
+            /** @var OrderItem $item */
+            foreach ($order->getOrderItems() as $item){
+                if ($item->getQuantity() < 1) {
+                    $this->flashMessage('error', 'Invalid Item Quantity');
+                    goto a;
+                }
+
+                $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+                    $item->getItem(), $order->getDepo()->getLocation()
+                );
+                if ($price < 1) {
+                    $this->flashMessage('error', 'Invalid Item Price');
+                    goto a;
+                }
+            }
+
+            if ($form->isValid()) {
+
+                $em = $this->getDoctrine()->getManager();
+                $order->setLocation($order->getAgent()->getUser()->getUpozilla());
+                $orderIncentiveFlag->setOrder($order);
+                $this->orderRepository()->createWithouSms($order);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
+                $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('order')['depo']);
+                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
+
+                $this->flashMessage('success', 'Order Created Successfully');
+
+                $smsSender = $this->get('rbs_erp.sales.service.smssender');
+                $smsSender->agentBankInfoSmsAction("Your Order No:".$order->getId().".", $order->getAgent()->getUser()->getProfile()->getCellphone());
+
+                return $this->redirect($this->generateUrl('orders_home'));
+            }
+//            dump($form->getErrors());die;
+            a:
+            return $this->redirect($this->generateUrl('order_create_new'));
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+
+    /**
      * @Route("/order/update/{id}", name="order_update", options={"expose"=true})
      * @Template("RbsSalesBundle:Order:edit.html.twig")
      * @param Request $request
@@ -284,6 +346,95 @@ class OrderController extends BaseController
             'order' => $order,
             'depoAttr' => $depoAttr,
         );
+    }
+
+    /**
+     * @Route("/order/update/online/{id}", name="order_update_online", options={"expose"=true})
+     * @Template("RbsSalesBundle:Order:edit_without_sms.html.twig")
+     * @param Request $request
+     * @param Order $order
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     */
+
+    public function updateWithoutSmsAction(Request $request, Order $order)
+    {
+
+        if (in_array($order->getOrderState(), array(ORDER::ORDER_STATE_CANCEL, ORDER::ORDER_STATE_COMPLETE))
+            || in_array($order->getDeliveryState(), array(ORDER::DELIVERY_STATE_PARTIALLY_SHIPPED))) {
+            $this->flashMessage('error', 'Invalid Operation');
+            return $this->redirectToRoute('orders_home');
+        }
+
+        $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager()), $order);
+        $em = $this->getDoctrine()->getManager();
+
+        $depoAttr = Order::ORDER_STATE_COMPLETE == $order->getOrderState() ? array('disabled'=>'disabled') : array();
+        $agentAttr =  array('disabled'=>'disabled');
+        if ('POST' === $request->getMethod()) {
+
+            $stockRepo = $em->getRepository('RbsSalesBundle:Stock');
+            $prevDepo = clone $order->getDepo();
+            $prevOrderItems = $stockRepo->extractOrderItemQuantity($order);
+            $form->handleRequest($request);
+
+            $depo = $order->getDepo() ? $order->getDepo() : $prevDepo;
+
+            /** @var OrderItem $item */
+            foreach ($order->getOrderItems() as $item){
+                if ($item->getQuantity() < 1) {
+                    $this->flashMessage('error', 'Invalid Item Quantity');
+                    goto a;
+                }
+
+                /*$price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+                    $item->getItem(), $depo->getLocation()
+                );*/
+                if ($item->getPrice() < 1) {
+                    $this->flashMessage('error', 'Invalid Item Price');
+                    goto a;
+                }
+            }
+
+            if ($form->isValid()) {
+
+                $stockRepo->updateStock($order, $depo, $prevOrderItems);
+                $em->getRepository('RbsSalesBundle:Order')->updateWithoutSms($order, true);
+
+                $this->flashMessage('success', 'Order Updated Successfully');
+
+                return $this->redirect($this->generateUrl('orders_home'));
+            }
+            a:
+            return $this->redirect($this->generateUrl('order_update_online', array('id' => $order->getId())));
+        }
+
+        return array(
+            'form' => $form->createView(),
+            'order' => $order,
+            'depoAttr' => $depoAttr,
+            'agentAttr' => $agentAttr,
+        );
+    }
+
+    /**
+     * @Route("find_payment_form_ajax", name="find_payment_form_ajax", options={"expose"=true})
+     * @param Request $request
+     * @return Response
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_AGENT_USER, ROLE_ORDER_VIEW, ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
+     */
+    public function findPaymentFormAction(Request $request)
+    {
+        $agentId = $request->request->get('agent');
+        $agentRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
+        $agent = $agentRepo->find($agentId);
+
+        $order = new Order();
+        $order->setAgent($agent);
+        $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager()), $order);
+        $prototype = $this->renderView('@RbsSales/Order/_paymentTypePrototype.html.twig', array('form' => $form->createView()));
+
+        return new JsonResponse(array('item_type_prototype' => $prototype));
     }
 
     /**

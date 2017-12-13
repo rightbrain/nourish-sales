@@ -99,27 +99,31 @@
                                 <th>Item</th>
                                 <th>Quantity</th>
                                 <th>Delivered</th>
+                                <th>Packet Weight</th>
                                 <th class="no-print">Remain</th>
                             </tr>
                             </thead>
                             <tbody class="orderItems">
                             {% set totalQuentity = 0 %}
                             {% set totalDeliveredQuantity = 0 %}
+                            {% set totalPackWighth = 0 %}
                             {% for order in vehicle.deliveries.orders %}
 
                                 {% for index, item in order.orderItems %}
                                     {% if item.quantity != 0 %}
                                         {% set totalQuentity= totalQuentity + item.quantity %}
                                         {% set totalDeliveredQuantity= totalDeliveredQuantity + partialItems[order.id][item.id]['delivered'] %}
+                                        {% set totalPackWighth= totalPackWighth + (partialItems[order.id][item.id]['delivered']/item.item.packetWeight) %}
                                             <tr>
                                                 <td>{{ index+1 }}</td>
                                                 <td>{{ order.id }}</td>
-                                                <td>{{ item.item.name }}</td>
+                                                <td>{{ item.item.getItemCodeName }}</td>
                                                 <td class="item-qty">{{ item.quantity }}</td>
                                                 <td class="deliver">
                                                     {{ partialItems[order.id][item.id]['delivered'] }}
                                                     {#<input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0">#}
                                                 </td>
+                                                <td>{{partialItems[order.id][item.id]['delivered']/item.item.packetWeight }}</td>
                                                 <td class="remain no-print">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
                                             </tr>
                                     {% endif %}
@@ -127,34 +131,41 @@
                             {% endfor %}
                             <tbody>
                             <tfoot>
-                                <tr>
+                                <tr class="bold">
                                     <td></td>
                                     <td></td>
                                     <td class="bold">Total</td>
                                     <td>{{ totalQuentity }}</td>
                                     <td>{{ totalDeliveredQuantity }}</td>
+                                    <td>{{ totalPackWighth }}</td>
                                     <td class="remain no-print">{{ totalQuentity - totalDeliveredQuantity }}</td>
                                 </tr>
                             </tfoot>
                         </table>
                         <br>
-                        <br>
-                        <br>
                         <table class="table table-bordered">
+
                             <tr>
-                                <th colspan="4" style="text-align: center; font-size: 24px">RECEIVED THE ABOVE GOODS IN GOOD CONDITION</th>
-                            </tr>
-                            <tr>
-                                <td style="height: 80px"></td>
+                                <td style="height: 50px"></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                             </tr>
                             <tr>
-                                <th>Prepared By</th>
-                                <th>Checked By</th>
-                                <th>Delivered By</th>
-                                <th>Received By</th>
+                                <th class="text-center">Prepared By</th>
+                                <th class="text-center">Checked By</th>
+                                <th class="text-center">Delivered By</th>
+                                <th class="text-center">Manager</th>
+                            </tr>
+                            <tr>
+                                <th colspan="4" style="text-align: center; font-size: 20px">RECEIVED THE ABOVE GOODS IN GOOD CONDITION</th>
+                            </tr>
+                            <tr>
+                                <td rowspan="2" colspan="3"></td>
+                                <td style="height: 40px"></td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Received By</th>
                             </tr>
                         </table>
 

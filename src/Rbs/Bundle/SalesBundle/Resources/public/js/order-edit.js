@@ -15,6 +15,27 @@ var Order = function()
         });
     }
 
+    function bindPaymentChangeEvent(collectionHolder) {
+        collectionHolder.find('tr').each(function(index, elm){
+            $(elm).find('select').change(function(){
+                // findStockItem($(this).val(), index);
+                $("#order_payments_"+index+"_remove").click(function () {
+                    deleteOrderPaymentHandler(collectionHolder, index);
+                });
+
+                $("#order_payments_"+index+"_depositDate").datepicker( {
+                    format: "yyyy-mm-dd",
+                    viewMode: "default",
+                    minViewMode: "default",
+                    autoclose: true
+                });
+
+            }).trigger('change');
+
+
+        });
+    }
+
     function deleteOrderItemHandler(collectionHolder, index)
     {
         if (collectionHolder.find('tr').length == 1) {
@@ -24,6 +45,16 @@ var Order = function()
         $('#order-item-'+index).remove();
         totalAmountCalculate();
     }
+
+    function deleteOrderPaymentHandler(collectionHolder, index)
+    {
+        if (collectionHolder.find('tr').length == 1) {
+            bootbox.alert("Minimum One Item Require.");
+            return false;
+        }
+        $('#payment-'+index).remove();
+    }
+
 
     function addItemForm($collectionHolder) {
 
@@ -55,6 +86,48 @@ var Order = function()
         });
 
         App.integerMask($collectionHolder.find('tr:eq('+index+')').find('.quantity'));
+    }
+
+    function addPaymentForm($collectionHolder) {
+
+        if ($('#order_agent').val() == '') {
+            toastr.error("Please select an agent.");
+            return false;
+        }
+
+        var prototype = $collectionHolder.data('prototype');
+        var index = $collectionHolder.data('index');
+        var $newForm = prototype.replace(/__name__/g, index);
+
+        $collectionHolder.data('index', index + 1);
+        //var $newFormLi = $('<div></div>').append(newForm);
+        $collectionHolder.append($newForm);
+
+        $("#order_payments_"+index+"_remove").click(function () {
+            deleteOrderPaymentHandler($collectionHolder, index);
+        });
+
+        $("#order_payments_"+index+"_depositDate").datepicker( {
+            format: "yyyy-mm-dd",
+            viewMode: "default",
+            minViewMode: "default",
+            autoclose: true
+        });
+
+    }
+
+    function autoFocusQuantityField() {
+        var collectionHolder = $('tbody.tags');
+        collectionHolder.data('index', collectionHolder.find(':input').length);
+        var index = collectionHolder.data('index');
+        $('.order-item-list').on("keydown, keyup", ".orderItem", function(event) {
+            if (event.which === 13 || event.keyCode==13) {
+                event.stopPropagation();
+                event.preventDefault();
+                $(this).closest('tr').find('td').find('.quantity').focus();
+            }
+        });
+
     }
 
     function findStockItem(item, index) {
@@ -189,7 +262,7 @@ var Order = function()
 
         agentElm.change(function () {
 
-            $collectionHolder.find('tr').remove();
+            // $collectionHolder.find('tr').remove();
             var agent = $(this).val();
             if (agent == false) {
                 $('.hide_button').hide();
@@ -222,6 +295,54 @@ var Order = function()
 
         $('.order-item-list tbody').on("click keyup", ".quantity", (totalPriceCalculation));
         recalculateItemPriceOnEdit();
+    }
+
+    function newOrderPayment()
+    {
+        var $collectionHolder;
+        var $addPaymentLink = $('#add_payment_item');
+        var agentElm = $('#order_agent');
+        $collectionHolder = $('tbody.payments');
+        $collectionHolder.data('index', $collectionHolder.find(':input').length);
+        bindPaymentChangeEvent($collectionHolder);
+        $addPaymentLink.on('click', function(e) {
+            e.preventDefault();
+            addPaymentForm($collectionHolder);
+        });
+
+        agentElm.change(function () {
+
+            // $collectionHolder.find('tr').remove();
+            var agent = $(this).val();
+            if (agent == false) {
+                $('.hide_button').hide();
+            } else {
+                Metronic.blockUI({
+                    target: null,
+                    animate: true,
+                    overlayColor: 'black'
+                });
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('find_agent_ajax'),
+                    data: "agent=" + agent,
+                    dataType: 'json',
+                    success: function (response) {
+                        var item_type_prototype = response.item_type_prototype;
+                        $collectionHolder.data('prototype', item_type_prototype);
+                        Metronic.unblockUI();
+                        if (depoElm.val() != '' && agentElm.val() != '') {
+                            $addTagLink.trigger('click');
+                        }
+                    },
+                    error: function(){
+                        Metronic.unblockUI();
+                    }
+                });
+                $('.hide_button').show();
+            }
+        }).change();
+
     }
 
     function filterInit(){
@@ -286,6 +407,7 @@ var Order = function()
     function init()
     {
         newOrder();
+        newOrderPayment();
         formValidateInit();
     }
 
@@ -431,12 +553,27 @@ var Order = function()
         });
     }
 
+    function autoFocusQuantityField() {
+        var collectionHolder = $('tbody.tags');
+        collectionHolder.data('index', collectionHolder.find(':input').length);
+        var index = collectionHolder.data('index');
+        $('.order-item-list').on("keydown, keyup", ".orderItem", function(event) {
+            if (event.which === 13 || event.keyCode==13) {
+                event.stopPropagation();
+                event.preventDefault();
+                $(this).closest('tr').find('td').find('.quantity').focus();
+            }
+        });
+
+    }
+
     return {
         init: init,
         filterInit: filterInit,
         formValidateInit: formValidateInit,
         OrderStateFormat: OrderStateFormat,
         OrderPaymentFormat: OrderPaymentFormat,
-        PaymentConfirmationOnModal: paymentConfirmationOnModal
+        PaymentConfirmationOnModal: paymentConfirmationOnModal,
+        autoFocusQuantityField: autoFocusQuantityField
     }
 }();

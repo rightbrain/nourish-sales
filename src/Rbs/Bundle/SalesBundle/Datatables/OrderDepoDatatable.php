@@ -33,8 +33,9 @@ class OrderDepoDatatable extends BaseDatatable
             $line["paidAmount"] = number_format($order->getPaidAmount(), 2);
             if ($this->showAgentName) {
                 $line["fullName"] = $order->getAgent()->getUser()->getProfile()->getFullName();
+                $line["agentDistrict"] = $order->getAgent()->getUser()->getZilla()->getName();
             }
-
+            $line["actionButtons"] = $this->generateActionList($order);
             return $line;
         };
 
@@ -77,7 +78,9 @@ class OrderDepoDatatable extends BaseDatatable
         $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
         $this->columnBuilder->add('id', 'column', array('title' => 'Order ID'));
         if ($this->showAgentName) {
+            $this->columnBuilder->add('agent.agentID', 'column', array('title' => 'Agent Id'));
             $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName'));
+            $this->columnBuilder->add('agentDistrict', 'virtual', array('title' => 'Agent District'));
         }
 
             $this->columnBuilder->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
@@ -90,6 +93,7 @@ class OrderDepoDatatable extends BaseDatatable
                 ->add('isCancel', 'virtual', array('visible' => false))
                 ->add('enabled', 'virtual', array('visible' => false))
                 ->add('disabled', 'virtual', array('visible' => false))
+                ->add('actionButtons', 'virtual', array('title' => 'Action'))
             ;
     }
 
@@ -128,7 +132,11 @@ class OrderDepoDatatable extends BaseDatatable
                     ';
 
         if ($canEdit && !in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
-            $html .= $this->generateMenuLink('Edit', 'order_update', array('id' => $order->getId()));
+            $route = 'order_update';
+            if($order->getOrderVia()=='ONLINE'){
+                $route= 'order_update_online';
+            }
+            $html .= $this->generateMenuLink('Edit', $route, array('id' => $order->getId()));
         }
 
         if ($canView) {

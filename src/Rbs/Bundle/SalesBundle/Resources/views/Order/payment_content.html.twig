@@ -1,0 +1,11 @@
+    <tr id="payment-__name__">
+        <td>{{ form_widget(form.agentBankBranch, { 'attr': {}}) }}</td>
+        <td>{{ form_widget(form.depositedAmount, { 'attr': {'class': 'amount'}}) }}</td>
+        <td>{{ form_widget(form.depositDate) }}</td>
+            <td>{{ form_widget(form.fxCx) }}</td>
+            <td>{{ form_widget(form.paymentMethod) }}</td>
+            <td>{{ form_widget(form.paymentMode) }}</td>
+            <td>{{ form_widget(form.bankAccount) }}</td>
+            <td>{{ form_widget(form.remark) }}</td>
+        <td>{{ form_widget(form.remove) }}</td>
+    </tr>

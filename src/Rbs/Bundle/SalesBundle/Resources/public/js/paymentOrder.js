@@ -82,13 +82,14 @@ var Payment = function()
 
     function handleAgentChange()
     {
-        if (!$("#payment_agent").length) {
+        /*if (!$("#payment_agent").length) {
             return;
-        }
+        }*/
         $("#payment_agent").change(function () {
             var ordersElm = $('#payment_orders');
+            var payment_agentBankBranch = $('#payment_agentBankBranch');
             var agent = $(this).val();
-            if (agent == '') {
+            if (agent=='') {
                 ordersElm.find('option').remove();
                 return fales;
             }
@@ -107,7 +108,23 @@ var Payment = function()
                     toastr.error('Server Error');
                 }
             });
-        });
+
+            $.ajax({
+                type: "post",
+                url: Routing.generate('agent_bank_by_agent_id', {id: agent}),
+                dataType: 'json',
+                success: function(data) {
+                    payment_agentBankBranch.find('option').remove();
+                    for (var i=0; i < data.length; i++) {
+                        var arr = data[i];
+                        payment_agentBankBranch.append('<option value="'+arr['id']+'">'+arr['text']+'</option>');
+                    }
+                },
+                error: function(){
+                    toastr.error('Server Error');
+                }
+            });
+        }).change();
     }
 
     function init()

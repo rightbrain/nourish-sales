@@ -276,6 +276,7 @@ class Payment
     public function __construct()
     {
         $this->orders = new ArrayCollection();
+        $this->depositDate = new \DateTime("today");
     }
 
     /**
@@ -449,7 +450,8 @@ class Payment
      */
     public function setDepositDate($depositDate)
     {
-        $this->depositDate = $depositDate = false ? "null" : new \DateTime($depositDate);
+//        $this->depositDate = $depositDate = false ? "null" : new \DateTime($depositDate);
+        $this->depositDate = $depositDate;
     }
 
     /**

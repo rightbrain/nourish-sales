@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Doctrine\ORM\EntityManager;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentBank;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Repository\AgentBankRepository;
@@ -16,7 +17,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Rbs\Bundle\CoreBundle\Form\Transformer\BankAccountTransformer;
 
-class PaymentForm extends AbstractType
+class PaymentWithoutSmsForm extends AbstractType
 {
     /** @var Request */
     private $request;
@@ -24,8 +25,12 @@ class PaymentForm extends AbstractType
     /** @var  EntityManager */
     private $em;
 
-    public function __construct($entityManager, $request = null)
+    /** @var Agent */
+    private $agent;
+
+    public function __construct($agent=null,$entityManager, $request = null)
     {
+        $this->agent = $agent;
         $this->em = $entityManager;
         $this->request = $request;
     }
@@ -36,10 +41,9 @@ class PaymentForm extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $agent = $this->request->request->get('payment[agent]', null, true);
 
         $builder
-            ->add('amount', null, array(
+            ->add('depositedAmount', null, array(
                 'attr' => array(
                     'class' => 'input-small input-mask-amount'
                 )
@@ -54,7 +58,7 @@ class PaymentForm extends AbstractType
                 'format' => 'yyyy-MM-dd',
                 'html5'=> false,
                 'attr' => array(
-                    'class' => 'form-control input-medium date-month-year-picker'
+                    'class' => 'form-control'
                 )
             ))
             ->add('paymentMethod', 'choice', array(
@@ -74,25 +78,13 @@ class PaymentForm extends AbstractType
                 ),
                 'required' => false,
             ))
-            ->add('agent', 'entity', array(
-                'class' => 'RbsSalesBundle:Agent',
-                'attr' => array(
-                    'class' => 'select2me'
+            ->add('paymentMode', 'choice', array(
+                'empty_value' => 'Select',
+                'choices'  => array(
+                    'OP' => 'OP',
+                    'HO' => 'HO'
                 ),
-                'property' => 'getIdName',
-                'empty_value' => 'Select Agent',
-                'empty_data' => null,
-                'query_builder' => function (AgentRepository $repository)
-                {
-                    return $repository->createQueryBuilder('c')
-                        ->join('c.user', 'u')
-                        ->join('u.profile', 'p')
-                        ->where('u.deletedAt IS NULL')
-                        ->andWhere('u.enabled = 1')
-                        ->andWhere('u.userType = :AGENT')
-                        ->setParameter('AGENT', 'AGENT')
-                        ->orderBy('p.fullName','ASC');
-                }
+                'required' => false,
             ))
             ->add('agentBankBranch', 'entity', array(
                 'class' => 'RbsSalesBundle:AgentBank',
@@ -104,8 +96,14 @@ class PaymentForm extends AbstractType
                 'empty_data' => null,
                 'query_builder' => function (AgentBankRepository $repository)
                 {
-                    return $repository->createQueryBuilder('ab')
+                    $qb = $repository->createQueryBuilder('ab')
+                        ->join('ab.agent','a')
                         ->where('ab.deletedAt IS NULL');
+                        if($this->agent){
+                            $qb->andWhere('a.id = :agent');
+                            $qb->setParameter('agent', $this->agent);
+                        }
+                        return $qb;
                 }
             ))
             ->add('remark', 'textarea', array(
@@ -131,9 +129,7 @@ class PaymentForm extends AbstractType
 //            ));
 
         $builder
-            ->add('submit', 'submit', array(
-                'attr'     => array('class' => 'btn green')
-            ))
+            ->add('remove', 'button')
         ;
 
         $builder->get('bankAccount')
