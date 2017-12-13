@@ -262,7 +262,7 @@ var Order = function()
 
         agentElm.change(function () {
 
-            $collectionHolder.find('tr').remove();
+            // $collectionHolder.find('tr').remove();
             var agent = $(this).val();
             if (agent == false) {
                 $('.hide_button').hide();
@@ -309,39 +309,39 @@ var Order = function()
             e.preventDefault();
             addPaymentForm($collectionHolder);
         });
-        /*
-                agentElm.change(function () {
 
-                    $collectionHolder.find('tr').remove();
-                    var agent = $(this).val();
-                    if (agent == false) {
-                        $('.hide_button').hide();
-                    } else {
-                        Metronic.blockUI({
-                            target: null,
-                            animate: true,
-                            overlayColor: 'black'
-                        });
-                        $.ajax({
-                            type: "post",
-                            url: Routing.generate('find_agent_ajax'),
-                            data: "agent=" + agent,
-                            dataType: 'json',
-                            success: function (response) {
-                                var item_type_prototype = response.item_type_prototype;
-                                $collectionHolder.data('prototype', item_type_prototype);
-                                Metronic.unblockUI();
-                                if (depoElm.val() != '' && agentElm.val() != '') {
-                                    $addTagLink.trigger('click');
-                                }
-                            },
-                            error: function(){
-                                Metronic.unblockUI();
-                            }
-                        });
-                        $('.hide_button').show();
+        agentElm.change(function () {
+
+            // $collectionHolder.find('tr').remove();
+            var agent = $(this).val();
+            if (agent == false) {
+                $('.hide_button').hide();
+            } else {
+                Metronic.blockUI({
+                    target: null,
+                    animate: true,
+                    overlayColor: 'black'
+                });
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('find_agent_ajax'),
+                    data: "agent=" + agent,
+                    dataType: 'json',
+                    success: function (response) {
+                        var item_type_prototype = response.item_type_prototype;
+                        $collectionHolder.data('prototype', item_type_prototype);
+                        Metronic.unblockUI();
+                        if (depoElm.val() != '' && agentElm.val() != '') {
+                            $addTagLink.trigger('click');
+                        }
+                    },
+                    error: function(){
+                        Metronic.unblockUI();
                     }
-                });*/
+                });
+                $('.hide_button').show();
+            }
+        }).change();
 
     }
 

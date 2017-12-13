@@ -220,7 +220,7 @@ class OrderController extends BaseController
      * @Template("RbsSalesBundle:Order:new_without_sms.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE")
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE")
      */
     public function createOrderWithoutSmsAction(Request $request)
     {
@@ -273,25 +273,7 @@ class OrderController extends BaseController
             'form' => $form->createView(),
         );
     }
-    /**
-     * @Route("find_payment_form_ajax", name="find_payment_form_ajax", options={"expose"=true})
-     * @param Request $request
-     * @return Response
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
-     */
-    public function findPaymentFormAction(Request $request)
-    {
-        $agentId = $request->request->get('agent');
-        $agentRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
-        $agent = $agentRepo->find($agentId);
 
-        $order = new Order();
-        $order->setAgent($agent);
-        $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager()), $order);
-        $prototype = $this->renderView('@RbsSales/Order/_itemTypePrototype.html.twig', array('form' => $form->createView()));
-
-        return new JsonResponse(array('item_type_prototype' => $prototype));
-    }
     /**
      * @Route("/order/update/{id}", name="order_update", options={"expose"=true})
      * @Template("RbsSalesBundle:Order:edit.html.twig")
@@ -377,11 +359,6 @@ class OrderController extends BaseController
 
     public function updateWithoutSmsAction(Request $request, Order $order)
     {
-        /*if ($request->query->get('sms')) {
-            $refSms = $request->query->get('sms');
-        } else {
-            $refSms = 0;
-        }*/
 
         if (in_array($order->getOrderState(), array(ORDER::ORDER_STATE_CANCEL, ORDER::ORDER_STATE_COMPLETE))
             || in_array($order->getDeliveryState(), array(ORDER::DELIVERY_STATE_PARTIALLY_SHIPPED))) {
@@ -393,6 +370,7 @@ class OrderController extends BaseController
         $em = $this->getDoctrine()->getManager();
 
         $depoAttr = Order::ORDER_STATE_COMPLETE == $order->getOrderState() ? array('disabled'=>'disabled') : array();
+        $agentAttr =  array('disabled'=>'disabled');
         if ('POST' === $request->getMethod()) {
 
             $stockRepo = $em->getRepository('RbsSalesBundle:Stock');
@@ -435,7 +413,28 @@ class OrderController extends BaseController
             'form' => $form->createView(),
             'order' => $order,
             'depoAttr' => $depoAttr,
+            'agentAttr' => $agentAttr,
         );
+    }
+
+    /**
+     * @Route("find_payment_form_ajax", name="find_payment_form_ajax", options={"expose"=true})
+     * @param Request $request
+     * @return Response
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_AGENT_USER, ROLE_ORDER_VIEW, ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
+     */
+    public function findPaymentFormAction(Request $request)
+    {
+        $agentId = $request->request->get('agent');
+        $agentRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
+        $agent = $agentRepo->find($agentId);
+
+        $order = new Order();
+        $order->setAgent($agent);
+        $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager()), $order);
+        $prototype = $this->renderView('@RbsSales/Order/_paymentTypePrototype.html.twig', array('form' => $form->createView()));
+
+        return new JsonResponse(array('item_type_prototype' => $prototype));
     }
 
     /**

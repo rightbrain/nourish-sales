@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Doctrine\ORM\EntityManager;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentBank;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Repository\AgentBankRepository;
@@ -16,7 +17,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Rbs\Bundle\CoreBundle\Form\Transformer\BankAccountTransformer;
 
-class PaymentEditWithoutSmsForm extends AbstractType
+class PaymentWithoutSmsForm extends AbstractType
 {
     /** @var Request */
     private $request;
@@ -24,8 +25,12 @@ class PaymentEditWithoutSmsForm extends AbstractType
     /** @var  EntityManager */
     private $em;
 
-    public function __construct($entityManager, $request = null)
+    /** @var Agent */
+    private $agent;
+
+    public function __construct($agent=null,$entityManager, $request = null)
     {
+        $this->agent = $agent;
         $this->em = $entityManager;
         $this->request = $request;
     }
@@ -38,7 +43,7 @@ class PaymentEditWithoutSmsForm extends AbstractType
     {
 
         $builder
-            ->add('amount', null, array(
+            ->add('depositedAmount', null, array(
                 'attr' => array(
                     'class' => 'input-small input-mask-amount'
                 )
@@ -47,6 +52,14 @@ class PaymentEditWithoutSmsForm extends AbstractType
                 'required' => false,
                 'choices' => $this->getAccountList(),
                 'attr' => array('class' => 'select2me')
+            ))
+            ->add('depositDate', 'datetime', array(
+                'widget'=>'single_text',
+                'format' => 'yyyy-MM-dd',
+                'html5'=> false,
+                'attr' => array(
+                    'class' => 'form-control'
+                )
             ))
             ->add('paymentMethod', 'choice', array(
                 'empty_value' => 'Select Payment Method',
@@ -83,8 +96,14 @@ class PaymentEditWithoutSmsForm extends AbstractType
                 'empty_data' => null,
                 'query_builder' => function (AgentBankRepository $repository)
                 {
-                    return $repository->createQueryBuilder('ab')
+                    $qb = $repository->createQueryBuilder('ab')
+                        ->join('ab.agent','a')
                         ->where('ab.deletedAt IS NULL');
+                        if($this->agent){
+                            $qb->andWhere('a.id = :agent');
+                            $qb->setParameter('agent', $this->agent);
+                        }
+                        return $qb;
                 }
             ))
             ->add('remark', 'textarea', array(

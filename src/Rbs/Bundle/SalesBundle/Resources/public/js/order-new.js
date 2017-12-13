@@ -288,7 +288,7 @@ var Order = function()
                 });
                 $('.hide_button').show();
             }
-        });
+        }).change();
 
         $('.order-item-list tbody').on("click keyup", ".quantity", (totalPriceCalculation));
         recalculateItemPriceOnEdit();
@@ -306,7 +306,6 @@ var Order = function()
             e.preventDefault();
             addPaymentForm($collectionHolder);
         });
-/*
         agentElm.change(function () {
 
             $collectionHolder.find('tr').remove();
@@ -321,15 +320,15 @@ var Order = function()
                 });
                 $.ajax({
                     type: "post",
-                    url: Routing.generate('find_agent_ajax'),
+                    url: Routing.generate('find_payment_form_ajax'),
                     data: "agent=" + agent,
                     dataType: 'json',
                     success: function (response) {
                         var item_type_prototype = response.item_type_prototype;
                         $collectionHolder.data('prototype', item_type_prototype);
                         Metronic.unblockUI();
-                        if (depoElm.val() != '' && agentElm.val() != '') {
-                            $addTagLink.trigger('click');
+                        if (agentElm.val() != '') {
+                            $addPaymentLink.trigger('click');
                         }
                     },
                     error: function(){
@@ -338,7 +337,7 @@ var Order = function()
                 });
                 $('.hide_button').show();
             }
-        });*/
+        }).change();
 
     }
 
