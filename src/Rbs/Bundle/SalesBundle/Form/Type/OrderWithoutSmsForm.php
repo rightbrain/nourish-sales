@@ -35,7 +35,7 @@ class OrderWithoutSmsForm extends AbstractType
     {
         /** @var Agent $agentAjax */
         $agentAjax = $options['data']->getAgent();
-//dump($agentAjax);die;
+
             if(!$agentAjax){
                 $builder
                     ->add('agent', 'entity', array(
