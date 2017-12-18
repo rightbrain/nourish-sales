@@ -18,7 +18,7 @@ class PaymentSmsParse
 
     public $error;
 
-    public $paymentType;
+//    public $paymentType;
 
     /** @var Agent */
     protected $agent;
@@ -50,24 +50,24 @@ class PaymentSmsParse
         $this->sms = $sms;
         $this->payment = null;
         $this->error;
-        $this->paymentType = null;
+//        $this->paymentType = null;
 
         $msg = $this->sms->getMsg();
         $splitMsg = array_filter(explode(',', $msg));
 
         $agentId = isset($splitMsg[0]) ? trim($splitMsg[0]) : 0;
         $bankAccountCode = isset($splitMsg[1]) ? trim($splitMsg[1]) : '';
-        $this->paymentType = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
+        /*$this->paymentType = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
 
         if(empty($this->paymentType)){
             $this->setError('Invalid Payment Type');
             return false;
-        }
+        }*/
 
         $this->setAgent($agentId);
         $this->setPayment($bankAccountCode, $agentId);
 
-        $this->sms->setPaymentMode($this->paymentType);
+//        $this->sms->setPaymentMode($this->paymentType);
         $this->em->persist($this->sms);
         $this->em->flush();
 
@@ -145,7 +145,7 @@ class PaymentSmsParse
                             $this->payment->setAgentBankBranch($agentBankAccount);
 
                             $this->payment->setAgent($this->agent);
-                            $this->payment->setPaymentMode($this->paymentType);
+//                            $this->payment->setPaymentMode($this->paymentType);
                             $this->payment->setTransactionType(Payment::CR);
                             $this->payment->setVerified(false);
 

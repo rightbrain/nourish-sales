@@ -4,8 +4,10 @@
 <div class="form-group">
     <label class="col-md-2 control-label">Agent *</label>
     <div class="col-md-6" style="margin-top: 10px;">
-        {{ form_widget(form.agent, {'attr' : agentAttr}) }}
-        {{ form_errors(form.agent) }}
+        {#{{ form_widget(form.agent, {'attr' : agentAttr}) }}
+        {{ form_errors(form.agent) }}#}
+        <input type="hidden" value="{{ order.agent.id }}" id="order_agent">
+        {{ order.agent.agentID ~ " - " ~ order.agent.user.profile.fullName }}
     </div>
 </div>
 
@@ -39,7 +41,6 @@
             <th style="width: 15%;" class="text-center">Date</th>
             <th style="width: 8%;" class="text-center">Fx cx</th>
             <th style="width: 8%;">Payment Method</th>
-            <th style="width: 8%;">Where Payment</th>
             <th style="width: 15%;">Bank Account</th>
             <th style="width: 15%;">Remarks</th>
             <th style="width: 8%;"></th>
@@ -56,7 +57,6 @@
                 <td>{{ form_widget(payment.depositDate) }}</td>
                 <td>{{ form_widget(payment.fxCx) }}</td>
                 <td>{{ form_widget(payment.paymentMethod) }}</td>
-                <td>{{ form_widget(payment.paymentMode) }}</td>
                 <td>{{ form_widget(payment.bankAccount) }}</td>
                 <td>{{ form_widget(payment.remark) }}</td>
                 <td>{{ form_widget(payment.remove) }}</td>
@@ -111,7 +111,10 @@
             <th colspan="2">{{ form_widget(form.totalAmount, { 'attr': {'style': ''}} ) }}</th>
         </tr>
         <tr>
-            <td colspan="6"></td>
+            <td colspan="6">
+                {#<input id="order_agent" type="hidden" value="{{ order.agent.id }}">#}
+                <input id="order_id" type="hidden" value="{{ order.id }}">
+            </td>
             <td>{{ form_row(form.submit) }}</td>
         </tr>
         </tfoot>

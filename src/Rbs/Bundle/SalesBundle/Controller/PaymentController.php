@@ -219,6 +219,28 @@ class PaymentController extends BaseController
         ));
     }
 
+
+    /**
+     * @Route("/quantity/migrate", name="quantity_migrate")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_ADMIN")
+     */
+    public function quantityMigrateAction(){
+        set_time_limit(0);
+        $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->findBy(array('transactionType'=>'DR'));
+        /** @var Payment $payment */
+        foreach ($payments as $payment){
+            $getRemarks = json_decode($payment->getRemark(),true);
+            $quantity = array_sum(array_column($getRemarks, 'qty'));
+            $payment->setQuantity($quantity);
+
+        $this->getDoctrine()->getManager()->flush();
+        }
+        return $this->redirect($this->generateUrl('agents_laser'));
+
+    }
+
     /**
      * @Route("/my/ledger", name="my_laser")
      * @param Request $request

@@ -170,6 +170,27 @@ class Order
     public function __construct()
     {
         $this->orderItems = new ArrayCollection();
+        $this->payments = new ArrayCollection();
+    }
+
+
+    /**
+     * @param Payment $payment
+     */
+    public function addPayment(Payment $payment)
+    {
+        $payment->setAgent($this->getAgent());
+        $this->payments->add($payment);
+    }
+
+    /**
+     * @param Payment $payment
+     */
+    public function removePayment(Payment $payment)
+    {
+        $this->payments->removeElement($payment);
+//        $payment->removeOrder($this);
+
     }
 
     /**

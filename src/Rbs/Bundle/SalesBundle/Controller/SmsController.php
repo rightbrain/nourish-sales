@@ -48,7 +48,7 @@ class SmsController extends Controller
         $function = function($qb)
         {
             $qb->andWhere("sales_sms.status = 'UNREAD'");
-            $qb->andWhere("sales_sms.paymentMode IS NULL");
+//            $qb->andWhere("sales_sms.paymentMode IS NULL");
         };
         $query->addWhereAll($function);
         return $query->getResponse();
@@ -209,7 +209,7 @@ class SmsController extends Controller
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            $qb->andWhere("sales_sms.paymentMode IS NOT NULL");
+//            $qb->andWhere("sales_sms.paymentMode IS NOT NULL");
         };
         $query->addWhereAll($function);
         return $query->getResponse();

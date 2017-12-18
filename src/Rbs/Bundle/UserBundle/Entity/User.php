@@ -10,6 +10,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\CoreBundle\Entity\Project;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 
@@ -56,6 +57,12 @@ class User extends BaseUser
      * @ORM\OneToOne(targetEntity="Profile", mappedBy="user", cascade={"persist"})
      */
     protected $profile;
+
+    /**
+     * @ORM\OneToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent", mappedBy="user")
+     *
+     */
+    protected $agent;
 
     /**
      * @ORM\ManyToMany(targetEntity="Group", inversedBy="users")
@@ -231,4 +238,21 @@ class User extends BaseUser
             ? $this->getProfile()->getFullName()
             : $this->getUsername();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param mixed $agent
+     */
+    public function setAgent($agent)
+    {
+        $this->agent = $agent;
+    }
+
 }

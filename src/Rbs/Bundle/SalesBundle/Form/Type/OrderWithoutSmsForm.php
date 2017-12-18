@@ -19,9 +19,13 @@ class OrderWithoutSmsForm extends AbstractType
     /** @var  EntityManager */
     private $em;
 
-    public function __construct($entityManager, $request = null)
+    /** @var Agent */
+    private $agent;
+
+    public function __construct($entityManager, $agent=null, $request = null)
     {
         $this->em = $entityManager;
+        $this->agent = $agent;
     }
     /**
      * @param FormBuilderInterface $builder
@@ -29,36 +33,45 @@ class OrderWithoutSmsForm extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /** @var Agent $agent */
-        $agent = $options['data']->getAgent();
-//var_dump($agent);
-            $builder
-                ->add('agent', 'entity', array(
-                    'class' => 'RbsSalesBundle:Agent',
-                    'attr' => array(
-                        'class' => 'select2me'
-                    ),
-                    'property' => 'getIdName',
-                    'required' => true,
-                    'empty_value' => 'Select Agent',
-                    'query_builder' => function (AgentRepository $repository)
-                    {
-                        return $repository->createQueryBuilder('c')
-                            ->join('c.user', 'u')
-                            ->join('u.profile', 'p')
-                            ->where('u.deletedAt IS NULL')
-                            ->andWhere('u.enabled = 1')
-                            ->andWhere('u.userType = :AGENT')
-                            ->setParameter('AGENT', User::AGENT)
-                            ->orderBy('p.fullName','ASC');
-                    },
-                    'constraints' => array(
-                        new NotBlank(array(
-                            'message'=>'Agent should not be blank'
-                        )),
-                    ),
-                ))
-                ->add('depo', 'entity', array(
+        /** @var Agent $agentAjax */
+        $agentAjax = $options['data']->getAgent();
+//dump($agentAjax);die;
+            if(!$agentAjax){
+                $builder
+                    ->add('agent', 'entity', array(
+                        'class' => 'RbsSalesBundle:Agent',
+                        'attr' => array(
+                            'class' => 'select2me'
+                        ),
+                        'property' => 'getIdName',
+                        'required' => true,
+                        'empty_value' => 'Select Agent',
+                        'query_builder' => function (AgentRepository $repository)
+                        {
+                            $query = $repository->createQueryBuilder('c')
+                                ->join('c.user', 'u')
+                                ->join('u.profile', 'p')
+                                ->where('u.deletedAt IS NULL')
+                                ->andWhere('u.enabled = 1')
+                                ->andWhere('u.userType = :AGENT')
+                                ->setParameter('AGENT', User::AGENT)
+                                ->orderBy('p.fullName','ASC');
+                            if($this->agent){
+                                $query->andWhere('c.id = :agentId');
+                                $query->setParameter('agentId', $this->agent);
+                            }
+
+                            return $query;
+                        },
+                        'constraints' => array(
+                            new NotBlank(array(
+                                'message'=>'Agent should not be blank'
+                            )),
+                        ),
+                        'data'=>($this->agent)?$this->em->getReference("RbsSalesBundle:Agent",$this->agent):null
+                    ));
+            }
+               $builder ->add('depo', 'entity', array(
                     'class' => 'Rbs\Bundle\CoreBundle\Entity\Depo',
                     'attr' => array(
                         'class' => 'select2me'
@@ -86,7 +99,7 @@ class OrderWithoutSmsForm extends AbstractType
             ->add('remark');
         $builder
             ->add('orderItems', 'collection', array(
-                'type'         => new OrderItemForm($agent),
+                'type'         => new OrderItemForm($agentAjax),
                 'allow_add'    => true,
                 'allow_delete' => true,
                 'by_reference' => false,
@@ -96,7 +109,7 @@ class OrderWithoutSmsForm extends AbstractType
                 ),
             ))
             ->add('payments', 'collection', array(
-                'type'         => new PaymentWithoutSmsForm($agent, $this->em),
+                'type'         => new PaymentWithoutSmsForm($agentAjax, $this->em),
                 'allow_add'    => true,
                 'allow_delete' => true,
                 'by_reference' => false,

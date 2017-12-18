@@ -78,14 +78,6 @@ class PaymentWithoutSmsForm extends AbstractType
                 ),
                 'required' => false,
             ))
-            ->add('paymentMode', 'choice', array(
-                'empty_value' => 'Select',
-                'choices'  => array(
-                    'OP' => 'OP',
-                    'HO' => 'HO'
-                ),
-                'required' => false,
-            ))
             ->add('agentBankBranch', 'entity', array(
                 'class' => 'RbsSalesBundle:AgentBank',
                 'attr' => array(

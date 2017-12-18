@@ -220,14 +220,18 @@ class OrderController extends BaseController
      * @Template("RbsSalesBundle:Order:new_without_sms.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE")
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_AGENT, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE")
      */
     public function createOrderWithoutSmsAction(Request $request)
     {
+        $agentId = $this->getUser()->getAgent()?$this->getUser()->getAgent()->getId():null;
         $order = new Order();
         $orderIncentiveFlag = new OrderIncentiveFlag();
 
-        $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager()), $order);
+        $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager(), $agentId ), $order);
+
+        $depoAttr = Order::ORDER_STATE_COMPLETE == $order->getOrderState() ? array('disabled'=>'disabled') : array();
+//        $agentAttr =  $this->isGranted('ROLE_AGENT')? array('disabled'=>'disabled'): array();
         if ('POST' === $request->getMethod()) {
 
             $form->handleRequest($request);
@@ -261,7 +265,9 @@ class OrderController extends BaseController
 
                 $smsSender = $this->get('rbs_erp.sales.service.smssender');
                 $smsSender->agentBankInfoSmsAction("Your Order No:".$order->getId().".", $order->getAgent()->getUser()->getProfile()->getCellphone());
-
+                if($this->isGranted('ROLE_AGENT')){
+                    return $this->redirect($this->generateUrl('orders_my_home'));
+                }
                 return $this->redirect($this->generateUrl('orders_home'));
             }
 //            dump($form->getErrors());die;
@@ -271,6 +277,8 @@ class OrderController extends BaseController
 
         return array(
             'form' => $form->createView(),
+            'depoAttr' => $depoAttr,
+//            'agentAttr' => $agentAttr,
         );
     }
 
@@ -359,6 +367,7 @@ class OrderController extends BaseController
 
     public function updateWithoutSmsAction(Request $request, Order $order)
     {
+        $agentId= ($order->getAgent())? $order->getAgent()->getId(): null;
 
         if (in_array($order->getOrderState(), array(ORDER::ORDER_STATE_CANCEL, ORDER::ORDER_STATE_COMPLETE))
             || in_array($order->getDeliveryState(), array(ORDER::DELIVERY_STATE_PARTIALLY_SHIPPED))) {
@@ -366,11 +375,12 @@ class OrderController extends BaseController
             return $this->redirectToRoute('orders_home');
         }
 
-        $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager()), $order);
+        $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager(), $agentId), $order);
+        //$form->remove('agent');
         $em = $this->getDoctrine()->getManager();
 
         $depoAttr = Order::ORDER_STATE_COMPLETE == $order->getOrderState() ? array('disabled'=>'disabled') : array();
-        $agentAttr =  array('disabled'=>'disabled');
+        $agentAttr =  array(''=>'');
         if ('POST' === $request->getMethod()) {
 
             $stockRepo = $em->getRepository('RbsSalesBundle:Stock');
@@ -421,17 +431,18 @@ class OrderController extends BaseController
      * @Route("find_payment_form_ajax", name="find_payment_form_ajax", options={"expose"=true})
      * @param Request $request
      * @return Response
-     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_AGENT_USER, ROLE_ORDER_VIEW, ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function findPaymentFormAction(Request $request)
     {
+
         $agentId = $request->request->get('agent');
         $agentRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
         $agent = $agentRepo->find($agentId);
 
         $order = new Order();
         $order->setAgent($agent);
-        $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager()), $order);
+        $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager(), null), $order);
         $prototype = $this->renderView('@RbsSales/Order/_paymentTypePrototype.html.twig', array('form' => $form->createView()));
 
         return new JsonResponse(array('item_type_prototype' => $prototype));

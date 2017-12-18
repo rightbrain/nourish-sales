@@ -133,7 +133,7 @@ class StockController extends Controller
      * @Route("find_stock_item_depo_ajax/{item}/{agent}/{depo}", name="find_stock_item_depo_ajax", options={"expose"=true})
      * @param Request $request
      * @return Response
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
      */
     public function findItemDepoAction(Request $request, Item $item, Agent $agent, Depo $depo)
     {

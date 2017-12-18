@@ -15,12 +15,13 @@ var Order = function()
         });
     }
 
-    function bindPaymentChangeEvent(collectionHolder) {
-        collectionHolder.find('tr').each(function(index, elm){
-            $(elm).find('select').change(function(){
+    function bindPaymentChangeEvent(collectionHolderPayment) {
+        collectionHolderPayment.find('tr').each(function(index, elm1){
+            //alert(index)
+            $(elm1).find('select').change(function(){
                 // findStockItem($(this).val(), index);
                 $("#order_payments_"+index+"_remove").click(function () {
-                    deleteOrderPaymentHandler(collectionHolder, index);
+                    deleteOrderPaymentHandler(collectionHolderPayment, index);
                 });
 
                 $("#order_payments_"+index+"_depositDate").datepicker( {
@@ -46,10 +47,11 @@ var Order = function()
         totalAmountCalculate();
     }
 
-    function deleteOrderPaymentHandler(collectionHolder, index)
+    function deleteOrderPaymentHandler(collectionHolderPayment, index)
     {
-        if (collectionHolder.find('tr').length == 1) {
-            bootbox.alert("Minimum One Item Require.");
+
+        if (collectionHolderPayment.find('tr').length == 1) {
+            alert("Minimum One Payment Require.");
             return false;
         }
         $('#payment-'+index).remove();
@@ -88,23 +90,23 @@ var Order = function()
         App.integerMask($collectionHolder.find('tr:eq('+index+')').find('.quantity'));
     }
 
-    function addPaymentForm($collectionHolder) {
+    function addPaymentForm($collectionHolderPayment) {
 
         if ($('#order_agent').val() == '') {
             toastr.error("Please select an agent.");
             return false;
         }
 
-        var prototype = $collectionHolder.data('prototype');
-        var index = $collectionHolder.data('index');
+        var prototype = $collectionHolderPayment.data('prototype');
+        var index = $collectionHolderPayment.data('index');
         var $newForm = prototype.replace(/__name__/g, index);
 
-        $collectionHolder.data('index', index + 1);
+        $collectionHolderPayment.data('index', index + 1);
         //var $newFormLi = $('<div></div>').append(newForm);
-        $collectionHolder.append($newForm);
+        $collectionHolderPayment.append($newForm);
 
         $("#order_payments_"+index+"_remove").click(function () {
-            deleteOrderPaymentHandler($collectionHolder, index);
+            deleteOrderPaymentHandler($collectionHolderPayment, index);
         });
 
         $("#order_payments_"+index+"_depositDate").datepicker( {
@@ -112,20 +114,6 @@ var Order = function()
             viewMode: "default",
             minViewMode: "default",
             autoclose: true
-        });
-
-    }
-
-    function autoFocusQuantityField() {
-        var collectionHolder = $('tbody.tags');
-        collectionHolder.data('index', collectionHolder.find(':input').length);
-        var index = collectionHolder.data('index');
-        $('.order-item-list').on("keydown, keyup", ".orderItem", function(event) {
-            if (event.which === 13 || event.keyCode==13) {
-                event.stopPropagation();
-                event.preventDefault();
-                $(this).closest('tr').find('td').find('.quantity').focus();
-            }
         });
 
     }
@@ -239,21 +227,21 @@ var Order = function()
 
     function newOrder()
     {
-        var $collectionHolder;
+        var $collectionHolderItem;
         var $addTagLink = $('#add_order_item');
         var agentElm = $('#order_agent');
         var depoElm = $('#order_depo');
-        $collectionHolder = $('tbody.tags');
-        $collectionHolder.data('index', $collectionHolder.find(':input').length);
-        bindItemChangeEvent($collectionHolder);
+        $collectionHolderItem = $('tbody.tags');
+        $collectionHolderItem.data('index', $collectionHolderItem.find(':input').length);
+        bindItemChangeEvent($collectionHolderItem);
         $addTagLink.on('click', function(e) {
             e.preventDefault();
-            addItemForm($collectionHolder);
+            addItemForm($collectionHolderItem);
         });
 /*
 
         depoElm.change(function () {
-            $collectionHolder.find('tr').remove();
+            $collectionHolderItem.find('tr').remove();
             if (depoElm.val() != '' && agentElm.val() != '') {
                 $addTagLink.trigger('click');
             }
@@ -262,7 +250,7 @@ var Order = function()
 
         agentElm.change(function () {
 
-            // $collectionHolder.find('tr').remove();
+            // $collectionHolderItem.find('tr').remove();
             var agent = $(this).val();
             if (agent == false) {
                 $('.hide_button').hide();
@@ -279,7 +267,7 @@ var Order = function()
                     dataType: 'json',
                     success: function (response) {
                         var item_type_prototype = response.item_type_prototype;
-                        $collectionHolder.data('prototype', item_type_prototype);
+                        $collectionHolderItem.data('prototype', item_type_prototype);
                         Metronic.unblockUI();
                         if (depoElm.val() != '' && agentElm.val() != '') {
                             $addTagLink.trigger('click');
@@ -299,10 +287,9 @@ var Order = function()
 
     function newOrderPayment()
     {
-        var $collectionHolder;
         var $addPaymentLink = $('#add_payment_item');
-        var agentElm = $('#order_agent');
-        $collectionHolder = $('tbody.payments');
+        var agentElmPayment = $('#order_agent');
+        var $collectionHolder = $('tbody.payments');
         $collectionHolder.data('index', $collectionHolder.find(':input').length);
         bindPaymentChangeEvent($collectionHolder);
         $addPaymentLink.on('click', function(e) {
@@ -310,7 +297,7 @@ var Order = function()
             addPaymentForm($collectionHolder);
         });
 
-        agentElm.change(function () {
+        agentElmPayment.change(function () {
 
             // $collectionHolder.find('tr').remove();
             var agent = $(this).val();
@@ -324,15 +311,15 @@ var Order = function()
                 });
                 $.ajax({
                     type: "post",
-                    url: Routing.generate('find_agent_ajax'),
+                    url: Routing.generate('find_payment_form_ajax'),
                     data: "agent=" + agent,
                     dataType: 'json',
                     success: function (response) {
                         var item_type_prototype = response.item_type_prototype;
                         $collectionHolder.data('prototype', item_type_prototype);
                         Metronic.unblockUI();
-                        if (depoElm.val() != '' && agentElm.val() != '') {
-                            $addTagLink.trigger('click');
+                        if (agentElmPayment.val() != '') {
+                            $addPaymentLink.trigger('click');
                         }
                     },
                     error: function(){
@@ -341,7 +328,7 @@ var Order = function()
                 });
                 $('.hide_button').show();
             }
-        }).change();
+        });
 
     }
 

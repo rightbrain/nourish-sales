@@ -88,7 +88,7 @@ class Payment
      * @ORM\Column(name="amounts", type="float", nullable=false)
      * @Assert\NotBlank()
      */
-    private $amount;
+    private $amount=0;
 
     /**
      * @var integer

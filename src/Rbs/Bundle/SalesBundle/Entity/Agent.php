@@ -40,7 +40,7 @@ class Agent
     /**
      * @var User
      *
-     * @ORM\OneToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Rbs\Bundle\UserBundle\Entity\User", inversedBy="agent", cascade={"persist"})
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="user_id", referencedColumnName="id", unique=true, onDelete="CASCADE")
      * })

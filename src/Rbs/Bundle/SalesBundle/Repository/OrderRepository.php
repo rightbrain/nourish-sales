@@ -57,11 +57,9 @@ class OrderRepository extends EntityRepository
 
     public function updateWithoutSms(Order $order, $resetStatus = false)
     {
-        $this->calculateOrderAmount($order);
 
-        if ($resetStatus) {
-            $this->setStatus($order);
-        }
+        $this->calculateOrderAmount($order);
+        $this->orderPayment($order);
 
         $this->_em->flush();
         return $this->_em;
@@ -86,6 +84,7 @@ class OrderRepository extends EntityRepository
     public function orderPayment(Order $order)
     {
         $agent = $order->getAgent();
+
         /** @var Payment $payment */
         foreach ($order->getPayments() as $payment) {
             $payment->setAgent($agent);

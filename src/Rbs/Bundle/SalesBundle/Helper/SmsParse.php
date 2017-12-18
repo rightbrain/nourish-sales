@@ -22,7 +22,7 @@ class SmsParse
 
     public $error;
 
-    public $paymentType;
+//    public $paymentType;
 
     /** @var Agent */
     protected $agent;
@@ -66,7 +66,6 @@ class SmsParse
         $this->orderItems = array();
         $this->payments = array();
         $this->payment = null;
-        $this->paymentType = null;
         $this->error;
         $this->validate();
         return $this->createOrder();
@@ -80,12 +79,6 @@ class SmsParse
         $agentId = isset($splitMsg[0]) ? trim($splitMsg[0]) : 0;
         $orderInfo = isset($splitMsg[1]) ? trim($splitMsg[1]) : '';
         $bankAccountCode = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
-        $this->paymentType = isset($splitMsg[3]) ? trim($splitMsg[3]) : '';
-
-        if(empty($this->paymentType)){
-            $this->setError('Invalid Payment Type');
-            return false;
-        }
 
         $this->setAgent($agentId);
         $this->setOrderItems($orderInfo);
@@ -276,10 +269,9 @@ class SmsParse
                             $this->payment->setFxCx($fxCx);
                             $this->payment->setAgentBankBranch($agentBankAccount);
 
-                            $this->payment->setAgent($this->agent);
-                            $this->payment->setPaymentMode($this->paymentType);
-                            $this->payment->setTransactionType(Payment::CR);
-                            $this->payment->setVerified(false);
+                        $this->payment->setAgent($this->agent);
+                        $this->payment->setTransactionType(Payment::CR);
+                        $this->payment->setVerified(false);
 
                             $this->payments[] = $this->payment;
                             $this->em->persist($this->payment);

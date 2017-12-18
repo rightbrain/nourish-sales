@@ -23,6 +23,20 @@
                 </div>
             </div>
             <div class="portlet-body">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="btn-group pull-right">
+                                {% if is_granted("ROLE_AGENT") %}
+                                    <a class="btn blue" href="{{ path('order_create_new') }}">
+                                        <i class="fa fa-plus"></i> {{ 'Add New Order' }}
+                                    </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="dataTables_wrapper no-footer">
                     {{ datatable_render_html(datatable) }}
                     <div style="clear: both"></div>

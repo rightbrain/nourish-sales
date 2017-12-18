@@ -206,7 +206,7 @@ class AgentController extends BaseController
      * @Route("find_agent_ajax", name="find_agent_ajax", options={"expose"=true})
      * @param Request $request
      * @return Response
-     * @JMS\Secure(roles="ROLE_ORDER_VIEW, ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_DEPO_USER, ROLE_ORDER_VIEW, ROLE_AGENT_VIEW, ROLE_AGENT_CREATE")
      */
     public function findAgentAction(Request $request)
     {

@@ -12,7 +12,7 @@
     <div class="form-group">
         <label class="col-md-2 control-label">Depo *</label>
         <div class="col-md-6" style="margin-top: 10px;">
-            {{ form_widget(form.depo) }}
+            {{ form_widget(form.depo, {'attr' : depoAttr}) }}
             {{ form_errors(form.depo) }}
         </div>
     </div>
@@ -38,7 +38,6 @@
                 <th style="width: 15%;" class="text-center">Date</th>
                 <th style="width: 8%;" class="text-center">FD/CK</th>
                 <th style="width: 8%;">Payment Method</th>
-                <th style="width: 8%;">Where Payment</th>
                 <th style="width: 15%;">Bank Account</th>
                 <th style="width: 15%;">Remarks</th>
                 <th style="width: 8%;"></th>
