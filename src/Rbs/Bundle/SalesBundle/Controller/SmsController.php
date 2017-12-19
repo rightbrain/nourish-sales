@@ -124,14 +124,14 @@ class SmsController extends Controller
         if ('POST' === $request->getMethod()) {
             $msg = "Agent:". $request->request->get('agentID') . ";Type:FD/CK;";
             $banks = $request->request->get('banks');
-            $nourishBanks = $request->request->get('nourishBanks');
+            $getNourishBanks = $request->request->get('nourishBanks');
             $em = $this->getDoctrine()->getManager();
-//dump($banks);die;
-            if($agentNourishBanks){
+
+           /* if($agentNourishBanks){
                 foreach ($agentNourishBanks as $key=>$nBank){
                     $this->getDoctrine()->getRepository('RbsSalesBundle:AgentNourishBank')->delete($nBank);
                 }
-            }
+            }*/
 
             $msg .= "FROM: ";
             foreach ($banks as $key=>$bank){
@@ -150,19 +150,21 @@ class SmsController extends Controller
             }*/
             $msg = "";
             $msg .= "TO: ";
-            foreach ($nourishBanks as $key=>$nourishBank){
-                $msg .= " ";
-                $bank = $this->getDoctrine()->getRepository('RbsCoreBundle:BankAccount')->find($nourishBank);
-                $msg .= "(". ($key+1) . ")". $bank->getBankBranch();
-                if(($key+1)< count($nourishBank)){
-                    $msg .= ", ";
-                }
+            if($getNourishBanks){
+                foreach ($getNourishBanks as $key=>$nourishBank){
+                    $msg .= " ";
+                    $bank = $this->getDoctrine()->getRepository('RbsCoreBundle:BankAccount')->find($nourishBank);
+                    $msg .= "(". ($key+1) . ")". $bank->getBankBranch();
+                    if(($key+1)< count($nourishBank)){
+                        $msg .= ", ";
+                    }
 
-                $agentNourishBank = new AgentNourishBank();
-                $agentNourishBank->setAgent($agent);
-                $agentNourishBank->setAccount($bank);
-                $em->persist($agentNourishBank);
-                $em->flush();
+                    $agentNourishBank = new AgentNourishBank();
+                    $agentNourishBank->setAgent($agent);
+                    $agentNourishBank->setAccount($bank);
+                    $em->persist($agentNourishBank);
+                    $em->flush();
+                }
             }
             $part1s = str_split($msg, $split_length = 160);
             $smsMessage = array_merge($parts, $part1s);
