@@ -54,7 +54,8 @@
                                     <th width="10%">Code</th>
                                     <th width="30%">Name</th>
                                     <th width="30%">Bank</th>
-                                    <th width="30%">Branch</th>
+                                    <th width="20%">Branch</th>
+                                    <th width="10%">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody class="items">
@@ -64,6 +65,10 @@
                                         <td>{{ agentNourishBank.account.name }}</td>
                                         <td>{{ agentNourishBank.account.branch.bank.name }}</td>
                                         <td>{{ agentNourishBank.account.branch.name }}</td>
+                                        <td>
+                                            <input type="hidden" name="existNourishBanks[]" value="{{ agentNourishBank.account.id }}"/>
+                                            <button type="button" value="{{ agentNourishBank.id }}" class="btn btn-danger btn-sm deleteExistNourishBank">Delete</button>
+                                        </td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
@@ -101,7 +106,7 @@
                         </table>
 
                         <div class="footer">
-                            <button type="submit" class="btn blue green" id="send-sms"> Send SMS </button>
+                            <button type="submit" class="btn blue green" id="send-sms">Save & Send SMS </button>
                         </div>
                 </div>
             </form>
@@ -118,4 +123,24 @@
 
 {% block javascripts %}
     {{ parent() }}
+{% endblock %}
+{#<script>#}
+{% block documentReady %}
+    $('.deleteExistNourishBank').click(function () {
+    var this_element = $(this);
+    var nourish_bank_id =  $(this).val();
+        $.ajax({
+            type: "post",
+            url: Routing.generate('delete_exist_nourish_bank'),
+            data: "nourish_bank_id=" + nourish_bank_id,
+            dataType: 'json',
+            success: function (response) {
+                if(response.status=='success'){
+                    $(this_element).closest('tr').remove();
+                    }
+
+                }
+        });
+    });
+
 {% endblock %}

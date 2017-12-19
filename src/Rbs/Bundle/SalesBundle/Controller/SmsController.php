@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use JMS\SecurityExtraBundle\Annotation as JMS;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -122,16 +123,14 @@ class SmsController extends Controller
         $nourishBanks = $this->getDoctrine()->getRepository('RbsCoreBundle:BankAccount')->findAll();
         $agentNourishBanks = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentNourishBank')->findByAgent($agent);
         if ('POST' === $request->getMethod()) {
-            $msg = "Agent:". $request->request->get('agentID') . ";Type:FD/CK;";
+            $msg = "Agent:". $request->request->get('agentID') . ";";
             $banks = $request->request->get('banks');
-            $getNourishBanks = $request->request->get('nourishBanks');
+            $existNourishBanks = $request->request->get('existNourishBanks')? $request->request->get('existNourishBanks'): array();
+            $getNourishBanks = $request->request->get('nourishBanks')? $request->request->get('nourishBanks'): array();
             $em = $this->getDoctrine()->getManager();
 
-           /* if($agentNourishBanks){
-                foreach ($agentNourishBanks as $key=>$nBank){
-                    $this->getDoctrine()->getRepository('RbsSalesBundle:AgentNourishBank')->delete($nBank);
-                }
-            }*/
+            $arrayMerged = array_merge( $existNourishBanks,$getNourishBanks);
+            $uniqueNourishBanks = array_unique($arrayMerged);
 
             $msg .= "FROM: ";
             foreach ($banks as $key=>$bank){
@@ -144,14 +143,10 @@ class SmsController extends Controller
             }
             $parts = str_split($msg, $split_length = 160);
 
-            /*foreach($parts as $part){
-                $smsSender = $this->get('rbs_erp.sales.service.smssender');
-                $smsSender->agentBankInfoSmsAction($part, $agent->getUser()->getProfile()->getCellphone());
-            }*/
             $msg = "";
             $msg .= "TO: ";
-            if($getNourishBanks){
-                foreach ($getNourishBanks as $key=>$nourishBank){
+            if($uniqueNourishBanks){
+                foreach ($uniqueNourishBanks as $key=>$nourishBank){
                     $msg .= " ";
                     $bank = $this->getDoctrine()->getRepository('RbsCoreBundle:BankAccount')->find($nourishBank);
                     $msg .= "(". ($key+1) . ")". $bank->getBankBranch();
@@ -159,11 +154,14 @@ class SmsController extends Controller
                         $msg .= ", ";
                     }
 
-                    $agentNourishBank = new AgentNourishBank();
-                    $agentNourishBank->setAgent($agent);
-                    $agentNourishBank->setAccount($bank);
-                    $em->persist($agentNourishBank);
-                    $em->flush();
+                    if (!in_array($nourishBank, $existNourishBanks)) {
+                        $agentNourishBank = new AgentNourishBank();
+                        $agentNourishBank->setAgent($agent);
+                        $agentNourishBank->setAccount($bank);
+                        $em->persist($agentNourishBank);
+                        $em->flush();
+                    }
+
                 }
             }
             $part1s = str_split($msg, $split_length = 160);
@@ -184,6 +182,25 @@ class SmsController extends Controller
             'nourishBanks' => $nourishBanks
         );
 
+    }
+
+    /**
+     * @Route("/exist_nourish_bank/delete", name="delete_exist_nourish_bank", options={"expose"=true})
+     * @param AgentNourishBank $agentNourishBank
+     * @return JsonResponse
+     * @JMS\Secure(roles="ROLE_SUPER_ADMIN, ROLE_ADMIN")
+     */
+    public function agentNourishBankDeleteAction(Request $request)
+    {
+        $nourish_bank_id = $request->request->get('nourish_bank_id');
+        $agentRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentNourishBank');
+        $agentNourishBank = $agentRepo->find($nourish_bank_id);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:AgentNourishBank')->delete($agentNourishBank);
+
+        return new JsonResponse(array(
+            'status' => 'success',
+            'message' => 'Agents Nourish Bank Deleted Successfully'
+        ));
     }
 
     /**
