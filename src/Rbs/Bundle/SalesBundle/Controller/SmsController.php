@@ -173,7 +173,8 @@ class SmsController extends Controller
                 $smsSender->agentBankInfoSmsAction($part, $agent->getUser()->getProfile()->getCellphone());
             }
 
-            return $this->redirect($this->generateUrl('agent_bank_info_sms'));
+//            return $this->redirect($this->generateUrl('agent_bank_info_sms'));
+            return $this->redirect($this->generateUrl('agent_bank_list_sms', array('id' => $agent)));
         }
 
         return array(
