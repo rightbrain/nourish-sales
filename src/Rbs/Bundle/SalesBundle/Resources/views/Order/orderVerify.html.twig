@@ -43,6 +43,46 @@
 
                             <tr><th>Remarks</th><td colspan="3">{{ order.remark }}</td></tr>
                         </table>
+                        <div style="clear: both"></div>
+                        <br><br>
+
+                        <h4> Payment History</h4>
+
+                        <table class="table table-bordered table-striped table-condensed flip-content">
+                            <thead>
+                            <tr>
+                                <th>Sl</th>
+                                <th>Deposit Date</th>
+                                <th>Payment ID</th>
+                                <th>Payment Method</th>
+                                <th>Bank Name</th>
+                                <th>Branch Name</th>
+                                <th>Amount</th>
+                                <th>Remark</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% set index = 1 %}
+                            {% for payment in order.payments %}
+                                {% if payment.paymentMethod == 'BANK' and payment.verified and payment.transactionType == 'CR' %}
+                                    <tr>
+                                        <td>{{ index }}.</td>
+                                        <td>{{ payment.depositDate | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
+                                        <td>{{ payment.id | default('') }}</td>
+                                        <td>{{ payment.paymentMethod | default('') }}</td>
+                                        <td>{{ payment.agentBankBranch.bank | default('') }}</td>
+                                        <td>{{ payment.agentBankBranch.branch | default('') }}</td>
+                                        <td>{{ payment.amount | default('') }}</td>
+                                        <td>{{ payment.remark| default('') }}</td>
+                                    </tr>
+                                    {% set index = index + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <div style="clear: both"></div>
+                        <br><br>
 
                         <h4>Order Items</h4>
                         <table class="table table-bordered table-striped table-condensed flip-content">

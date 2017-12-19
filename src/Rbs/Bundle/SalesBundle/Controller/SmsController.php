@@ -126,7 +126,7 @@ class SmsController extends Controller
             $banks = $request->request->get('banks');
             $nourishBanks = $request->request->get('nourishBanks');
             $em = $this->getDoctrine()->getManager();
-
+//dump($banks);die;
             if($agentNourishBanks){
                 foreach ($agentNourishBanks as $key=>$nBank){
                     $this->getDoctrine()->getRepository('RbsSalesBundle:AgentNourishBank')->delete($nBank);
@@ -144,10 +144,10 @@ class SmsController extends Controller
             }
             $parts = str_split($msg, $split_length = 160);
 
-            foreach($parts as $part){
+            /*foreach($parts as $part){
                 $smsSender = $this->get('rbs_erp.sales.service.smssender');
                 $smsSender->agentBankInfoSmsAction($part, $agent->getUser()->getProfile()->getCellphone());
-            }
+            }*/
             $msg = "";
             $msg .= "TO: ";
             foreach ($nourishBanks as $key=>$nourishBank){
@@ -165,7 +165,8 @@ class SmsController extends Controller
                 $em->flush();
             }
             $part1s = str_split($msg, $split_length = 160);
-            foreach($part1s as $part){
+            $smsMessage = array_merge($parts, $part1s);
+            foreach($smsMessage as $part){
                 $smsSender = $this->get('rbs_erp.sales.service.smssender');
                 $smsSender->agentBankInfoSmsAction($part, $agent->getUser()->getProfile()->getCellphone());
             }
