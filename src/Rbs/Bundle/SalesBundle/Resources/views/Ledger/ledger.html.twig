@@ -80,6 +80,7 @@
                                     {{ balance|number_format(2, '.', ',') }}
                                 </td>
                             </tr>
+                            {% set totalQuantity=0 %}
                             {% for laser in agentLaser %}
                                 {% if laser['transactionType'] == 'DR' %}
                                     {% set balance = balance + laser['amount'] %}
@@ -105,15 +106,17 @@
                                             {{ laser['bankCode'] }}
                                         {% endif %}
                                     </td>
-                                    <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['quantity']|default('') }}{% endif %}</td>
+                                    <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['quantity']|default(0) }}{% endif %}</td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'CR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
 
                                     <td class="col-md-1" style="text-align: right">{% if balance < 0 %}{{ '('~balance|abs|number_format(2, '.', ',')~')' }}{% else %}{{ balance|number_format(2, '.', ',') }}{% endif %}</td>
                                 </tr>
+                                {% set totalQuantity = totalQuantity + laser['quantity'] %}
                             {% endfor %}
                             <tr>
-                                <td class="bold" colspan="5" style="text-align: right">Total: </td>
+                                <td class="bold" colspan="4" style="text-align: right">Total: </td>
+                                <td class="bold" style="text-align: right">{{ totalQuantity|default(0) }}</td>
                                 <td class="bold" style="text-align: right">{{ agentDebitLaserTotal|number_format(2, '.', ',') }}</td>
                                 <td class="bold" style="text-align: right">{{ agentCreditLaserTotal|number_format(2, '.', ',') }}</td>
                                 {#<td class="bold">Current Balance:</td>#}
