@@ -75,12 +75,8 @@
                 <th>Total</th>
                 <th colspan="2">{{ form_widget(form.totalAmount, { 'attr': {'style': ''}} ) }}</th>
             </tr>
-            <tr>
-                <td colspan="6"></td>
-                <td>{{ form_row(form.submit) }}</td>
-            </tr>
             </tfoot>
         </table>
     </div>
-
+{{ form_row(form.submit,{ 'attr': {'style': 'float:right;'}}) }}
 {{ form_end(form) }}
