@@ -54,7 +54,7 @@
                     </div>
 
                     <div class="col-md-12" style="margin-top: 25px;">
-                        <table class="table table-bordered table-striped">
+                        <table class="table table-bordered table-striped" style="width: 100%">
                             <thead>
                                 <tr>
                                     <th>Date</th>
@@ -88,8 +88,8 @@
                                     {% set balance = balance - laser['amount'] %}
                                 {% endif %}
                                 <tr>
-                                    <td class="col-md-1">{{ laser['depositDate'] | date("d-m-Y", "Asia/Dhaka") }}</td>
-                                    <td class="col-md-4">
+                                    <td style="width:10%" class="col-md-1">{{ laser['depositDate'] | date("d-m-Y", "Asia/Dhaka") }}</td>
+                                    <td style="width:30%" class="col-md-4">
                                         {% if laser['transactionType'] == 'CR' %}
                                             {{ laser['remark'] | default('') }}
                                         {% else %}
@@ -98,15 +98,15 @@
                                             {% endfor %}
                                         {% endif %}
                                     </td>
-                                    <td class="col-md-1 text-center">
+                                    <td style="width:12%" class="col-md-1 text-center">
                                             {{ laser['agentBankName']|default('') }} {{ laser['agentBankName']? ', ':'' }}{{ laser['agentBankBranch']|default('') }}
                                     </td>
-                                    <td class="col-md-1 text-center">
+                                    <td style="width:5%" class="col-md-1 text-center">
                                         {% if laser['transactionType'] == 'CR' and laser['bankAccountName'] %}
                                             {{ laser['bankCode'] }}
                                         {% endif %}
                                     </td>
-                                    <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['quantity']|default(0) }}{% endif %}</td>
+                                    <td style="width:8%" class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['quantity']|default(0) }}{% endif %}</td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'CR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
 
