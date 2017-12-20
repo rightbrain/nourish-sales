@@ -57,12 +57,12 @@
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>Transaction Date</th>
+                                    <th>Date</th>
                                     <th>Details</th>
                                     <th>Sender Bank</th>
                                     <th>Receive Bank</th>
-                                    <th>Delivered Product Quantity</th>
-                                    <th>Delivered Product Value</th>
+                                    <th>Delivered Quantity</th>
+                                    <th>Delivered Value</th>
                                     <th>Collection</th>
 
                                     <th>Balance</th>
@@ -89,7 +89,7 @@
                                 {% endif %}
                                 <tr>
                                     <td class="col-md-1">{{ laser['depositDate'] | date("d-m-Y", "Asia/Dhaka") }}</td>
-                                    <td class="col-md-1">
+                                    <td class="col-md-4">
                                         {% if laser['transactionType'] == 'CR' %}
                                             {{ laser['remark'] | default('') }}
                                         {% else %}
@@ -110,7 +110,7 @@
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'CR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
 
-                                    <td class="col-md-1" style="text-align: right">{% if balance < 0 %}{{ '('~balance|abs|number_format(2, '.', ',')~')' }}{% else %}{{ balance|number_format(2, '.', ',') }}{% endif %}</td>
+                                    <td class="col-md-2" style="text-align: right">{% if balance < 0 %}{{ '('~balance|abs|number_format(2, '.', ',')~')' }}{% else %}{{ balance|number_format(2, '.', ',') }}{% endif %}</td>
                                 </tr>
                                 {% set totalQuantity = totalQuantity + laser['quantity'] %}
                             {% endfor %}
