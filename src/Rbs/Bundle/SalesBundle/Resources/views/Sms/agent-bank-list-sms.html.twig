@@ -126,6 +126,7 @@
 {% endblock %}
 {#<script>#}
 {% block documentReady %}
+    {{ parent() }}
     $('.deleteExistNourishBank').click(function () {
     var this_element = $(this);
     var nourish_bank_id =  $(this).val();
