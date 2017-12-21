@@ -59,9 +59,9 @@
                                 <tr>
                                     <th>Date</th>
                                     <th>Details</th>
+                                    <th>Delivered Quantity</th>
                                     <th>Sender Bank</th>
                                     <th>Receive Bank</th>
-                                    <th>Delivered Quantity</th>
                                     <th>Delivered Value</th>
                                     <th>Collection</th>
 
@@ -70,8 +70,7 @@
                             </thead>
                             <tbody>
                             <tr>
-                                <td colspan="4" style="text-align: right">Previous Balance: </td>
-                                <td style="text-align: right"></td>
+                                <td colspan="5" style="text-align: right">Previous Balance: </td>
                                 <td style="text-align: right">{{ agentPreviousDebitLaserTotal|number_format(2, '.', ',') }}</td>
                                 <td style="text-align: right">{{ agentPreviousCreditLaserTotal|number_format(2, '.', ',') }}</td>
 
@@ -98,6 +97,7 @@
                                             {% endfor %}
                                         {% endif %}
                                     </td>
+                                    <td style="width:8%" class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['quantity']|default(0) }}{% endif %}</td>
                                     <td style="width:12%" class="col-md-1 text-center">
                                             {{ laser['agentBankName']|default('') }} {{ laser['agentBankName']? ', ':'' }}{{ laser['agentBankBranch']|default('') }}
                                     </td>
@@ -106,7 +106,7 @@
                                             {{ laser['bankCode'] }}
                                         {% endif %}
                                     </td>
-                                    <td style="width:8%" class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['quantity']|default(0) }}{% endif %}</td>
+
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'DR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
                                     <td class="col-md-1" style="text-align: right">{% if laser['transactionType'] == 'CR' %}{{ laser['amount']|number_format(2, '.', ',') }}{% endif %}</td>
 
@@ -115,8 +115,10 @@
                                 {% set totalQuantity = totalQuantity + laser['quantity'] %}
                             {% endfor %}
                             <tr>
-                                <td class="bold" colspan="4" style="text-align: right">Total: </td>
+                                <td class="bold" colspan="2" style="text-align: right">Total: </td>
                                 <td class="bold" style="text-align: right">{{ totalQuantity|default(0) }}</td>
+                                <td class="bold" style="text-align: right"></td>
+                                <td class="bold" style="text-align: right"></td>
                                 <td class="bold" style="text-align: right">{{ agentDebitLaserTotal|number_format(2, '.', ',') }}</td>
                                 <td class="bold" style="text-align: right">{{ agentCreditLaserTotal|number_format(2, '.', ',') }}</td>
                                 {#<td class="bold">Current Balance:</td>#}

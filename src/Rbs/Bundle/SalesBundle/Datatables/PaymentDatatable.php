@@ -28,6 +28,7 @@ class PaymentDatatable extends BaseDatatable
             $line['bankInfo'] = $this->formatBankInfo($line['bankAccount'], $line['transactionType'], $line['paymentMethod']);
             $line['agentBankInfo'] = $payment->getAgentBankBranch()?$payment->getAgentBankBranch()->getBank().', '.$payment->getAgentBankBranch()->getBranch():"";
             $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
+            $line['orderStatus'] = $this->orderStateCancel($payment->getOrders()[0]);
             $line['depositedAmount'] = '<div style="text-align: right;">'. number_format($payment->getDepositedAmount(), 2) .'</div>';
             if ($this->allowAgentSearch) {
                 //$line["fullName"] = $this->resolveAgentName($line['agent']);
@@ -92,6 +93,7 @@ class PaymentDatatable extends BaseDatatable
                 'data' => 'orders[, ].id'
             ))
             ->add('remarkText', 'virtual', array('title' => 'Remarks'))
+            ->add('orderStatus', 'virtual', array('title' => 'Status'))
             ->add('remark', 'column', array('visible' => false))
             ->add('transactionType', 'column', array('visible' => false))
             ->add('bankAccount.id', 'column', array('visible' => false))
@@ -140,6 +142,16 @@ class PaymentDatatable extends BaseDatatable
         return Agent::agentIdNameFormat($agent['id'], $profile->getFullName());
     }
 
+    private function orderStateCancel($order)
+    {   $status= '';
+        if($order){
+            if($order->isCancel()){
+                $status = '<span class="btn btn-danger btn-xs">Cancel</span>';
+            }
+        }
+        return $status;
+    }
+
     private function generateActionList(Payment $payment)
     {
 //        $html = '<div class="actions">
@@ -153,7 +165,15 @@ class PaymentDatatable extends BaseDatatable
 //        $html .='</ul>
 //                </div>
 //            </div>';
-        $html = sprintf('<a href="%s" rel="tooltip" title="show-action" class="btn" role="button" data-target="#ajaxAmountEdit" data-toggle="modal"> <i class="i"></i> %s </a>', $this->router->generate('payment_edit', array('id'=> $payment->getId())), 'Amount Edit');
+        $html='';
+        if($payment->getOrders()[0]){
+            if(!$payment->getOrders()[0]->isCancel()){
+                $html = sprintf('<a href="%s" rel="tooltip" title="show-action" class="btn" role="button" data-target="#ajaxAmountEdit" data-toggle="modal"> <i class="i"></i> %s </a>', $this->router->generate('payment_edit', array('id'=> $payment->getId())), 'Amount Edit');
+            }
+        }else{
+            $html = sprintf('<a href="%s" rel="tooltip" title="show-action" class="btn" role="button" data-target="#ajaxAmountEdit" data-toggle="modal"> <i class="i"></i> %s </a>', $this->router->generate('payment_edit', array('id'=> $payment->getId())), 'Amount Edit');
+        }
+
 
         return $html;
     }
