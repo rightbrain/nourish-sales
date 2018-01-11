@@ -41,6 +41,8 @@ class SmsParse
     protected $orderItems = array();
     protected $payments = array();
 
+    public $paymentMode;
+
     public function __construct($em, ContainerInterface $c, $mobileNumber)
     {
         $this->em = $em;
@@ -67,6 +69,7 @@ class SmsParse
         $this->payments = array();
         $this->payment = null;
         $this->error;
+        $this->paymentMode = 'FP';
         $this->validate();
         return $this->createOrder();
     }
@@ -79,7 +82,9 @@ class SmsParse
         $agentId = isset($splitMsg[0]) ? trim($splitMsg[0]) : 0;
         $orderInfo = isset($splitMsg[1]) ? trim($splitMsg[1]) : '';
         $bankAccountCode = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
+        $paymentMode = isset($splitMsg[3]) ? trim($splitMsg[3]) : 'FP';
 
+        $this->setPaymentMode($paymentMode);
         $this->setAgent($agentId);
         $this->setOrderItems($orderInfo);
         $this->setPayment($bankAccountCode, $agentId);
@@ -118,6 +123,7 @@ class SmsParse
         $this->order->setDeliveryState(Order::DELIVERY_STATE_PENDING);
         $this->order->setOrderVia('SMS');
         $this->order->setRefSMS($this->sms);
+        $this->order->setPaymentMode($this->paymentMode);
         $this->em->persist($this->order);
 
         $this->orderIncentiveFlag->setOrder($this->order);
@@ -166,6 +172,18 @@ class SmsParse
         }
 
         return $this->agent;
+    }
+
+    protected function setPaymentMode($paymentMode)
+    {
+        $allPaymentMode = array('FP','PP','HO','DP','OP');
+
+        if (!in_array($paymentMode, $allPaymentMode)) {
+            $this->setError('Invalid Payment Mode');
+            $this->markError($paymentMode);
+        }
+
+        return $this->paymentMode = $paymentMode;
     }
 
     protected function setOrderItems($orderInfo)
@@ -236,7 +254,7 @@ class SmsParse
                 list($fxCx, $agentBank, $nourishBank, $amount) = explode(':', $account);
 
                 $nourishBankAccount = $this->em->getRepository('RbsCoreBundle:BankAccount')->findOneBy(array('code' => $nourishBank));
-                $nourishBankCode = $this->em->getRepository('RbsSalesBundle:AgentNourishBank')->findOneBy(array('account' => $nourishBankAccount));
+                $nourishBankCode = $this->em->getRepository('RbsSalesBundle:AgentNourishBank')->findOneBy(array('account' => $nourishBankAccount, 'agent'=>$agent));
                 $agentBankAccount = $this->em->getRepository('RbsSalesBundle:AgentBank')->findOneBy(array('code' => $agentBank, 'agent' => $agent));
 
                     if (empty($fxCx)) {
@@ -246,7 +264,11 @@ class SmsParse
                         $this->setError('Invalid Parameter, Need FD');
                         break;
                     } else if (!$nourishBankCode) {
-                        $this->setError('Invalid Nourish Bank Code');
+                        $this->setError('Nourish Bank Code is not assigned yet.');
+                        $this->markError($nourishBankCode);
+                        break;
+                    } else if ($nourishBankCode->getAccount()->getCode()!= $nourishBank) {
+                        $this->setError('Invalid Nourish Bank Code.');
                         $this->markError($nourishBankCode);
                         break;
                     } else if (!$agentBankAccount) {

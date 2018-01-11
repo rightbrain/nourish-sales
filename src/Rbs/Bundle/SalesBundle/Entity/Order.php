@@ -151,6 +151,13 @@ class Order
      * @ORM\JoinColumn(name="depo_id", nullable=true)
      */
     private $depo;
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="payment_mode", type="string", length=255, columnDefinition="ENUM('FP', 'PP', 'HO', 'OP', 'DP')", nullable=true)
+     */
+    private $paymentMode;
     
     /**
      * Get id
@@ -589,6 +596,22 @@ class Order
     public function setDepo($depo)
     {
         $this->depo = $depo;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPaymentMode()
+    {
+        return $this->paymentMode;
+    }
+
+    /**
+     * @param array $paymentMode
+     */
+    public function setPaymentMode($paymentMode)
+    {
+        $this->paymentMode = $paymentMode;
     }
 
     public function calculateOrderAmount()
