@@ -96,7 +96,20 @@ class OrderWithoutSmsForm extends AbstractType
 
 
         $builder
-            ->add('remark');
+            ->add('remark')
+
+            ->add('paymentMode', 'choice', array(
+                'empty_value' => 'Select Payment Mode',
+                'choices'  => array(
+                    'FP' => 'Full Payment',
+                    'HO' => 'Head Office',
+                    'PP' => 'Partial Payment',
+                    'OP' => 'Only Payment',
+                    'DP' => 'Depot Payment',
+                ),
+                'required' => true,
+            ))
+        ;
         $builder
             ->add('orderItems', 'collection', array(
                 'type'         => new OrderItemForm($agentAjax),

@@ -24,6 +24,13 @@
 </div>
 
 <div class="form-group">
+    <label class="col-md-2 control-label">Payment Mode *</label>
+    <div class="col-md-6" style="margin-top: 10px;">
+        {{ form_widget(form.paymentMode) }}
+        {{ form_errors(form.paymentMode) }}
+    </div>
+</div>
+<div class="form-group">
     <label class="col-md-2 control-label">Remark</label>
     <div class="col-md-6" style="margin-top: 10px;">
         {{ form_widget(form.remark) }}
