@@ -51,13 +51,15 @@
                                     </tbody></table>
                                 <table class="table">
                                     <tr>
-                                        <th class="col-md-4">Order No</th>
-                                        <th class="col-md-8">Delivery To</th>
+                                        <th class="col-md-2">Order No</th>
+                                        <th class="col-md-3">Payment Mode</th>
+                                        <th class="col-md-7">Delivery To</th>
                                     </tr>
                                     {% for index, order in vehicle.deliveries.orders %}
 
                                         <tr>
                                             <td> {{ order.id }}</td>
+                                            <td> {{ order.paymentMode }}</td>
                                             <td>{{ order.agent.user.profile.fullName }}{{ ', ' }} {{ order.agent.user.profile.cellphone }} </br> {{ order.agent.user.profile.address }}</td>
                                         </tr>
                                     {% endfor %}
