@@ -139,6 +139,13 @@ class Order
     private $remark;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="error_message", type="text", nullable=true)
+     */
+    private $errorMessage;
+
+    /**
      *
      * @ORM\ManyToMany(targetEntity="Delivery", mappedBy="orders")
      */
@@ -370,6 +377,22 @@ class Order
     public function setRemark($remark)
     {
         $this->remark = $remark;
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
+    }
+
+    /**
+     * @param string $errorMessage
+     */
+    public function setErrorMessage($errorMessage)
+    {
+        $this->errorMessage = $errorMessage;
     }
 
     /**
@@ -655,5 +678,22 @@ class Order
         }
 
         return $total;
+    }
+
+    public function getPaymentModeTitle(){
+        $mode = $this->getPaymentMode();
+        switch ($mode){
+            case "FP":
+                return 'Full Payment';
+             case "PP":
+                return 'Partial Payment';
+             case "HO":
+                return 'Head Office';
+             case "OP":
+                return 'Only Payment';
+             case "DP":
+                return 'Depot Payment';
+
+        }
     }
 }

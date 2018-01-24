@@ -51,6 +51,11 @@
                                     <th>Remarks</th>
                                     <td>{{ order.remark }}</td>
                                 </tr>
+
+                                <tr>
+                                    <th>Payment Mode</th>
+                                    <td colspan="3">{{ order.paymentModeTitle | default('N/A') }}</td>
+                                </tr>
                                 <tr><th></th><td></td><th></th><td></td></tr>
                             </table>
                             <br>

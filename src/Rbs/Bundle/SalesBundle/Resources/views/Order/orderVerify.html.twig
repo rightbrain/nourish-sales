@@ -42,6 +42,11 @@
                             </tr>
 
                             <tr><th>Remarks</th><td colspan="3">{{ order.remark }}</td></tr>
+
+                            <tr>
+                                <th>Payment Mode</th>
+                                <td colspan="3">{{ order.paymentModeTitle | default('N/A') }}</td>
+                            </tr>
                         </table>
                         <div style="clear: both"></div>
                         <br><br>

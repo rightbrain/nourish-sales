@@ -43,6 +43,9 @@ class SmsParse
 
     public $paymentMode;
 
+    public $agentSmsSegment;
+    public $paymentInfoSmsSegment;
+
     public function __construct($em, ContainerInterface $c, $mobileNumber)
     {
         $this->em = $em;
@@ -84,10 +87,13 @@ class SmsParse
         $bankAccountCode = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
         $paymentMode = isset($splitMsg[3]) ? trim($splitMsg[3]) : 'FP';
 
-        $this->setPaymentMode($paymentMode);
+        $this->agentSmsSegment = $agentId;
+        $this->paymentInfoSmsSegment = $bankAccountCode;
+
         $this->setAgent($agentId);
+        $this->setPaymentMode($paymentMode);
         $this->setOrderItems($orderInfo);
-        $this->setPayment($bankAccountCode, $agentId);
+
     }
 
     public function createOrder()
@@ -129,15 +135,20 @@ class SmsParse
         $this->orderIncentiveFlag->setOrder($this->order);
         $this->em->persist($this->orderIncentiveFlag);
 
-        $payments = new ArrayCollection();
-        /** @var Payment $payment */
-        foreach ($this->payments as $payment) {
-            $payment->addOrder($this->order);
-            $this->em->persist($payment);
-            $this->order->setPayments($payments);
-            $payments->add($payment);
+        $this->setPayment($this->paymentInfoSmsSegment, $this->agentSmsSegment);
 
+        $payments = new ArrayCollection();
+        if ($this->hasError()) {
+            $this->order->setErrorMessage($this->error);
         }
+            /** @var Payment $payment */
+            foreach ($this->payments as $payment) {
+                $payment->addOrder($this->order);
+                $this->em->persist($payment);
+                $this->order->setPayments($payments);
+                $payments->add($payment);
+
+            }
 
         $this->em->flush();
 
@@ -265,19 +276,19 @@ class SmsParse
                         break;
                     } else if (!$nourishBankCode) {
                         $this->setError('Nourish Bank Code is not assigned yet.');
-                        $this->markError($nourishBankCode);
+//                        $this->markError($nourishBankCode);
                         break;
                     } else if ($nourishBankCode->getAccount()->getCode()!= $nourishBank) {
                         $this->setError('Invalid Nourish Bank Code.');
-                        $this->markError($nourishBankCode);
+//                        $this->markError($nourishBankCode);
                         break;
                     } else if (!$agentBankAccount) {
                         $this->setError('Invalid Agent Bank Code');
-                        $this->markError($agentBankAccount);
+//                        $this->markError($agentBankAccount);
                         break;
                     } else if (!empty($amount) && !preg_match('/^\d+$/', trim($amount))) {
                         $this->setError('Invalid Amount');
-                        $this->markError($amount);
+//                        $this->markError($amount);
                         break;
                     } else {
                         if (!empty($amount)) {
