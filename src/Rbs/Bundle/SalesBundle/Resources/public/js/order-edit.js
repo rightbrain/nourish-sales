@@ -425,6 +425,11 @@ var Order = function()
                 isFormValid = false;
             }
 
+            if (isFormValid && $('#order_paymentMode').val() == '') {
+                toastr.error("Please select a payment mode");
+                isFormValid = false;
+            }
+
             if (isFormValid && orderItem.find('tr').length == 0) {
                 toastr.error("Please add minimum an item");
                 isFormValid = false;
