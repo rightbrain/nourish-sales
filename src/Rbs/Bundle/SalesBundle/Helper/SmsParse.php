@@ -73,8 +73,8 @@ class SmsParse
         $this->payment = null;
         $this->error;
         $this->paymentMode = 'FP';
-        $this->validate();
-        return $this->createOrder();
+       return $this->validate();
+
     }
 
     protected function validate()
@@ -92,8 +92,15 @@ class SmsParse
 
         $this->setAgent($agentId);
         $this->setPaymentMode($paymentMode);
-        $this->setOrderItems($orderInfo);
 
+        if (!empty($agentId) && !empty($orderInfo)){
+            $this->setOrderItems($orderInfo);
+           return $this->createOrder();
+        }
+        if(!empty($agentId) && empty($orderInfo) && !empty($bankAccountCode)){
+          return $this->setPayment($this->paymentInfoSmsSegment, $this->agentSmsSegment, true);
+        }
+//        return false;
     }
 
     public function createOrder()
@@ -135,7 +142,7 @@ class SmsParse
         $this->orderIncentiveFlag->setOrder($this->order);
         $this->em->persist($this->orderIncentiveFlag);
 
-        $this->setPayment($this->paymentInfoSmsSegment, $this->agentSmsSegment);
+        $this->setPayment($this->paymentInfoSmsSegment, $this->agentSmsSegment, false);
 
         $payments = new ArrayCollection();
         if ($this->hasError()) {
@@ -152,8 +159,28 @@ class SmsParse
 
         $this->em->flush();
 
-        $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
-        $smsSender->agentBankInfoSmsAction("Your Order No:".$this->order->getId().".", $this->order->getAgent()->getUser()->getProfile()->getCellphone());
+        $msg = "Dear Customer, Your Order No: ".$this->order->getId()." / ".date('d-m-Y').'. ';
+        if($this->order->getOrderItems()){
+            $msg.='Product Info: ';
+            $i=1;
+            $array_count = count($this->order->getOrderItems());
+            foreach ($this->order->getOrderItems() as $item){
+                $msg.= $item->getItem()->getSku().'-'.$item->getQuantity();
+                if($i==$array_count){
+                    $msg.='.';
+                }else{
+                    $msg.=', ';
+                }
+                $i++;
+            }
+        }
+        $part1s = str_split($msg, $split_length = 160);
+        foreach($part1s as $part){
+            $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
+            $smsSender->agentBankInfoSmsAction($part, $this->order->getAgent()->getUser()->getProfile()->getCellphone());
+        }
+//        $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
+//        $smsSender->agentBankInfoSmsAction("Your Order No:".$this->order->getId().".", $this->order->getAgent()->getUser()->getProfile()->getCellphone());
 
         return array(
             'orderId' => $this->order->getId()
@@ -251,7 +278,7 @@ class SmsParse
         }
     }
 
-    protected function setPayment($accountInfo, $agentId)
+    protected function setPayment($accountInfo, $agentId, $sendSms=false )
     {
         if ($this->hasError()) {
             return;
@@ -302,15 +329,41 @@ class SmsParse
                             $this->payment->setFxCx($fxCx);
                             $this->payment->setAgentBankBranch($agentBankAccount);
 
-                        $this->payment->setAgent($this->agent);
-                        $this->payment->setTransactionType(Payment::CR);
-                        $this->payment->setVerified(false);
+                            $this->payment->setAgent($this->agent);
+                            $this->payment->setTransactionType(Payment::CR);
+                            $this->payment->setVerified(false);
 
                             $this->payments[] = $this->payment;
                             $this->em->persist($this->payment);
                         }
                     }
                 }
+            $this->em->flush();
+
+            if($sendSms){
+
+                $msg = "Dear Customer, Payment Placed Successfully ";
+                if($this->payments){
+                    $i=1;
+                    $total_amount = 0;
+                    $array_count = count($this->payments);
+                    foreach ($this->payments as $payment){
+                        $total_amount += $payment->getDepositedAmount();
+
+                        $i++;
+                    }
+                    $msg .='Tk'. $total_amount .'.';
+                }
+                $part1s = str_split($msg, $split_length = 160);
+                foreach($part1s as $part){
+                    $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
+                    $smsSender->agentBankInfoSmsAction($part, $this->payments[0]->getAgent()->getUser()->getProfile()->getCellphone());
+                }
+            }
+
+            return array(
+                'paymentSuccess' => 'Payment Placed Successfully',
+            );
             }
         catch
             (\Exception $e) {

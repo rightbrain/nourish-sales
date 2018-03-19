@@ -201,8 +201,26 @@ class OrderController extends BaseController
                 
                 $this->flashMessage('success', 'Order Created Successfully');
 
-                $smsSender = $this->get('rbs_erp.sales.service.smssender');
-                $smsSender->agentBankInfoSmsAction("Your Order No:".$order->getId().".", $order->getAgent()->getUser()->getProfile()->getCellphone());
+                $msg = "Dear Customer, Your Order No: ".$order->getId()." / ".date('d-m-Y').'. ';
+                if($order->getOrderItems()){
+                    $msg.='Product Info: ';
+                    $i=1;
+                    $array_count = count($order->getOrderItems());
+                    foreach ($order->getOrderItems() as $item){
+                        $msg.= $item->getItem()->getSku().'-'.$item->getQuantity();
+                        if($i==$array_count){
+                            $msg.='.';
+                        }else{
+                            $msg.=', ';
+                        }
+                        $i++;
+                    }
+                }
+                $part1s = str_split($msg, $split_length = 160);
+                foreach($part1s as $part){
+                    $smsSender = $this->get('rbs_erp.sales.service.smssender');
+                    $smsSender->agentBankInfoSmsAction($part, $order->getAgent()->getUser()->getProfile()->getCellphone());
+                }
 
                 return $this->redirect($this->generateUrl('orders_home'));
             }
@@ -262,15 +280,31 @@ class OrderController extends BaseController
                 $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
 
                 $this->flashMessage('success', 'Order Created Successfully');
-
-                $smsSender = $this->get('rbs_erp.sales.service.smssender');
-                $smsSender->agentBankInfoSmsAction("Your Order No:".$order->getId().".", $order->getAgent()->getUser()->getProfile()->getCellphone());
+                $msg = "Dear Customer, Your Order No: ".$order->getId()." / ".date('d-m-Y').'. ';
+                if($order->getOrderItems()){
+                    $msg.='Product Info: ';
+                    $i=1;
+                    $array_count = count($order->getOrderItems());
+                    foreach ($order->getOrderItems() as $item){
+                        $msg.= $item->getItem()->getSku().'-'.$item->getQuantity();
+                        if($i==$array_count){
+                            $msg.='.';
+                        }else{
+                            $msg.=', ';
+                        }
+                        $i++;
+                    }
+                }
+                $part1s = str_split($msg, $split_length = 160);
+                foreach($part1s as $part){
+                    $smsSender = $this->get('rbs_erp.sales.service.smssender');
+                    $smsSender->agentBankInfoSmsAction($part, $order->getAgent()->getUser()->getProfile()->getCellphone());
+                }
                 if($this->isGranted('ROLE_AGENT')){
                     return $this->redirect($this->generateUrl('orders_my_home'));
                 }
                 return $this->redirect($this->generateUrl('orders_home'));
             }
-//            dump($form->getErrors());die;
             a:
             return $this->redirect($this->generateUrl('order_create_new'));
         }

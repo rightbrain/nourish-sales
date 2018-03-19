@@ -35,4 +35,118 @@ class StockHistoryRepository extends EntityRepository
         $this->_em->flush();
         return $this->_em;
     }
+
+    public function getDailyStocks($data)
+    {
+        $results = array();
+        if(!empty($data)){
+            $query = $this->createQueryBuilder('sh');
+            $query->select('s.id');
+            $query->addSelect('sum(sh.quantity) as totalQuantity');
+            $query->addSelect('i.name as itemName');
+            $query->addSelect('i.id as itemId');
+            $query->addSelect('d.id as depoId');
+            $query->addSelect('i.itemUnit as itemUnit');
+            $query->addSelect('c.name as catName');
+            $query->addSelect('d.name');
+            $query->addSelect('s.onHold');
+            $query->addSelect('s.onHand');
+            $query->addSelect('s.availableOnDemand');
+            $query->join('sh.stock', 's');
+            $query->leftJoin('s.item', 'i');
+            $query->join('i.category', 'c');
+            $query->leftJoin('s.depo', 'd');
+            $query->groupBy('s.id');
+            $query->orderBy('c.id');
+
+            if(!empty($data['depo'])){
+                $this->handleSearchByDepo($data['depo'], $query);
+            }
+            $this->handleSearchByTwoDate($query, $data['start_date'], $data['start_date']);
+
+            foreach ($query->getQuery()->getResult() as $result) {
+                $result['issuedQuantity']= $this->getDailyDeliveryQuantity($result['depoId'], $result['itemId'])[0]['issuedQuantity'];
+                $results[$result['catName']][] = $result;
+            }
+            return $results;
+        } else{
+            return array();
+        }
+    }
+
+    public function getOpeningDailyStocks($data)
+    {
+        $results = array();
+        if(!empty($data)){
+            $query = $this->createQueryBuilder('sh');
+            $query->select('s.id');
+            $query->addSelect('i.id as itemId');
+            $query->addSelect('sum(sh.quantity) as openingQuantity');
+            $query->join('sh.stock', 's');
+            $query->leftJoin('s.item', 'i');
+            $query->join('i.category', 'c');
+            $query->leftJoin('s.depo', 'd');
+            $query->groupBy('s.id');
+//            $query->orderBy('c.id');
+
+            if(!empty($data['depo'])){
+                $this->handleSearchByDepo($data['depo'], $query);
+            }
+            $this->handleSearchOpeningBalanceByTwoDate($query, $data['start_date']);
+
+            foreach ($query->getQuery()->getResult() as $result) {
+                $results[$result['itemId']] = $result;
+            }
+            return $results;
+//            return $query->getQuery()->getResult();
+        } else{
+            return array();
+        }
+    }
+
+    protected function handleSearchByDepo($depo, $query)
+    {
+        if (!empty($depo)) {
+            $query->where('s.depo = :depo');
+            $query->setParameter('depo', $depo);
+        }
+    }
+    protected function handleSearchByTwoDate($query, $startDate, $endDate)
+    {
+        if (!empty($startDate) && !empty($endDate)) {
+            $query->andWhere('sh.updatedAt >= :startDate');
+//            $query->andWhere('sh.updatedAt <= :endDate');
+            $query->setParameter('startDate', $startDate.' 00:00:00');
+//            $query->setParameter('endDate', $endDate.' 23:59:59');
+        }
+    }
+    protected function handleSearchOpeningBalanceByTwoDate($query, $startDate)
+    {
+        if (!empty($startDate)) {
+            $query->andWhere('sh.updatedAt < :startDate');
+            $query->setParameter('startDate', $startDate.' 00:00:00');
+        }
+    }
+
+
+    public function getDailyDeliveryQuantity($depo,$item)
+    {
+        $query = $this->_em->getRepository('RbsSalesBundle:Delivery');
+        $query = $query->createQueryBuilder('d');
+        $query->join('d.deliveryItems', 'di');
+        $query->join('di.orderItem', 'oi');
+        $query->join('oi.item', 'i');
+        $query->select('i.id as itemId');
+        $query->addSelect('sum(di.qty) as issuedQuantity');
+        $query->where('d.depo = :depo');
+        $query->setParameter('depo', $depo);
+        $query->andWhere('i.id = :item');
+        $query->setParameter('item', $item);
+        $query->andWhere('d.shipped = 1');
+//        $query->where('d.createdAt >= :startDate');
+//        $query->andWhere('d.createdAt <= :endDate');
+//        $query->setParameters(array('startDate'=>$firstDateOfPreviousMonth, 'endDate'=>$lastDateOfPreviousMonth, 'SHIPPED'=>Order::DELIVERY_STATE_SHIPPED, 'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
+
+        return $query->getQuery()->getResult();
+    }
 }

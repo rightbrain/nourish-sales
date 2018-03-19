@@ -1,0 +1,100 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Stock {% endblock %}
+
+{% block body %}
+
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-list"></i>Stock Report
+                </div>
+            </div>
+            <div class="portlet-body">
+
+                <form method="get" novalidate="novalidate" class="form-inline" style="margin-bottom: 20px;">
+
+                    <div class="form-group hidden-print">
+                        <span class="visible-print-inline">Depot:</span>
+                        {{ form_widget(formSearch.depo) }}
+                    </div>
+                    <div class="form-group hidden-print">
+                            <div class="input-group input-daterange">
+                                {{ form_widget(formSearch.start_date) }}
+                            </div>
+                    </div>
+                    <input type="hidden" name="_csrf_token"
+                           value="{{ csrf_token('authenticate') }}"
+                    >
+                    <div class="form-group">
+                        <div class="col-md-1">
+                            <input type="submit" value="Search" class="btn blue hidden-print">
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <button type="button" class="btn green hidden-print" onclick="print()">Print</button>
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Sl</th>
+                                <th>Item Name</th>
+                                <th>Unit</th>
+                                <th>Opening</th>
+                                <th>Received Quantity</th>
+                                <th>Issued Quantity</th>
+                                <th>On Hand</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for catName, result in stacks %}
+                                <tr>
+                                    <td></td>
+                                    <td colspan="6" style="font-weight: bold">{{ catName }}</td>
+
+                                </tr>
+                                {% set totalReceived = 0 %}
+                                {% set sl = 1 %}
+                                {% for row in result %}
+                                    <tr>
+                                        <td>{{ sl }}</td>
+                                        <td>{{ row.itemName }}- {{ row.itemId }}</td>
+                                        <td>{{ row.itemUnit }}</td>
+                                        <td>
+                                            {% if row.itemId in openingStock|keys %}
+                                            {{ openingStock[row.itemId]['openingQuantity'] }}
+                                                {% else %}
+                                                {{ 0 }}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ row.totalQuantity }}</td>
+                                        <td>{{ (row.issuedQuantity?row.issuedQuantity:0) }}</td>
+                                        <td>{{ row.onHand }}</td>
+                                    </tr>
+                                    {% set sl = sl + 1 %}
+                                    {% set totalReceived = totalReceived + row.totalQuantity %}
+                                    {% endfor %}
+                                <tr style="font-weight: bold">
+                                    <td></td>
+                                    <td >Total</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ totalReceived }}</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+{% endblock %}

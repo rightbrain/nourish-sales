@@ -89,7 +89,12 @@ class DefaultController extends BaseController
 
                 if ($orderType == 'chick' or $orderType == 'feed'){
                     if ($response) {
-                        $this->flashMessage('success', 'Order Created Successfully, Order ID: ' . $response['orderId']);
+                        if (isset($response['orderId'])){
+                            $this->flashMessage('success', 'Order Created Successfully, Order ID: ' . $response['orderId']);
+                        }else{
+                            $this->flashMessage('success', $response['paymentSuccess']);
+                        }
+
                     } else {
                         $this->flashMessage('error', $smsParse->error);
 
