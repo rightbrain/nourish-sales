@@ -50,6 +50,7 @@ class PaymentWithoutSmsForm extends AbstractType
             ))
             ->add('bankAccount', 'choice', array(
                 'required' => false,
+                'empty_value' => 'Select Bank',
                 'choices' => $this->getAccountList(),
                 'attr' => array('class' => 'select2me')
             ))
@@ -145,6 +146,6 @@ class PaymentWithoutSmsForm extends AbstractType
 
     private function getAccountList()
     {
-        return $this->em->getRepository('RbsCoreBundle:BankAccount')->getAccountListWithBankBranch();
+        return $this->em->getRepository('RbsCoreBundle:BankAccount')->getAccountListWithBankBranchByAgent($this->agent);
     }
 }

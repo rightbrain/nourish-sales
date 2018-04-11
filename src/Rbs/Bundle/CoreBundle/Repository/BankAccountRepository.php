@@ -29,4 +29,28 @@ class BankAccountRepository extends EntityRepository
 
         return $data;
     }
+
+    public function getAccountListWithBankBranchByAgent($agent)
+    {
+        $qb = $this->createQueryBuilder('account');
+        $qb->select("bank.name AS bankName, branch.name as branchName, account.id, account.name as accountName, account.code as accountCode");
+        $qb->join('account.branch', 'branch');
+        $qb->join('account.agentNourishBank', 'agent_nourish_bank');
+        $qb->join('agent_nourish_bank.agent', 'agent');
+        $qb->join('branch.bank', 'bank');
+        if($agent){
+            $qb->andWhere('agent.id = :agent');
+            $qb->setParameter('agent', $agent);
+        }
+        $qb->addOrderBy('bank.name', 'asc');
+        $qb->addOrderBy('branch.name', 'asc');
+       $results = $qb->getQuery()->getResult();
+
+        $data = array();
+        foreach ($results as $row) {
+            $data[$row['id']] = $row['accountCode'].' - '.$row['accountName'] . ' - ' . $row['bankName'] . ' - ' . $row['branchName'];
+        }
+
+        return $data;
+    }
 }

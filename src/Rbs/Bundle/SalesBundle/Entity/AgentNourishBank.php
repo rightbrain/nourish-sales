@@ -35,7 +35,7 @@ class AgentNourishBank
     /**
      * @var BankAccount
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\BankAccount")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\BankAccount", inversedBy="agentNourishBank")
      * @ORM\JoinColumn(name="nourish_account_id")
      */
     private $account;

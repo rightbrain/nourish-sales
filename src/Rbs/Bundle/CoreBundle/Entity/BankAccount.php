@@ -58,6 +58,14 @@ class BankAccount
      */
     private $payments;
 
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\AgentNourishBank", mappedBy="account")
+     */
+    private $agentNourishBank;
+
     /**
      * Get id
      *
@@ -150,4 +158,14 @@ class BankAccount
     {
         return "Account: ".$this->getName()." ".$this->branch->getBank()->getName().", ".$this->branch->getName().", Code: ".$this->code;
     }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAgentNourishBank()
+    {
+        return $this->agentNourishBank;
+    }
+
+
 }
