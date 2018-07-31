@@ -42,6 +42,7 @@ class SmsParse
     protected $payments = array();
 
     public $paymentMode;
+    public $orderVia;
 
     public $agentSmsSegment;
     public $paymentInfoSmsSegment;
@@ -73,6 +74,7 @@ class SmsParse
         $this->payment = null;
         $this->error;
         $this->paymentMode = 'FP';
+        $this->orderVia = 'SMS';
        return $this->validate();
 
     }
@@ -86,12 +88,25 @@ class SmsParse
         $orderInfo = isset($splitMsg[1]) ? trim($splitMsg[1]) : '';
         $bankAccountCode = isset($splitMsg[2]) ? trim($splitMsg[2]) : '';
         $paymentMode = isset($splitMsg[3]) ? trim($splitMsg[3]) : 'FP';
+        $orderVia = isset($splitMsg[4]) ? trim($splitMsg[4]) : 'SMS';
 
         $this->agentSmsSegment = $agentId;
         $this->paymentInfoSmsSegment = $bankAccountCode;
 
-        $this->setAgent($agentId);
-        $this->setPaymentMode($paymentMode);
+        $this->orderVia = $orderVia;
+
+        if($this->orderVia=='APP' && $this->setAgent($agentId)==1){
+            return array('message'=>'Invalid Agent ID');
+        }elseif ($this->orderVia=='APP' && $this->setAgent($agentId)==2){
+            return array('message'=>'Agent mobile no does not match with mobile number of sms');
+        }else{
+            $this->setAgent($agentId);
+        }
+        if($this->orderVia=='APP' && $this->setPaymentMode($paymentMode)==1){
+            return array('message'=>'Invalid Payment Mode');
+        }else{
+            $this->setPaymentMode($paymentMode);
+        }
 
         if (!empty($agentId) && !empty($orderInfo)){
             $this->setOrderItems($orderInfo);
@@ -106,7 +121,9 @@ class SmsParse
     public function createOrder()
     {
         if ($this->hasError()) {
-            $this->smsService();
+            if($this->orderVia!='APP'){
+                $this->smsService();
+            }
             $this->sms->setStatus('UNREAD');
             $this->sms->setRemark($this->error);
             $this->em->persist($this->sms);
@@ -134,7 +151,7 @@ class SmsParse
         $this->order->setOrderState(Order::ORDER_STATE_PENDING);
         $this->order->setPaymentState(Order::PAYMENT_STATE_PENDING);
         $this->order->setDeliveryState(Order::DELIVERY_STATE_PENDING);
-        $this->order->setOrderVia('SMS');
+        $this->order->setOrderVia($this->orderVia);
         $this->order->setRefSMS($this->sms);
         $this->order->setPaymentMode($this->paymentMode);
         $this->em->persist($this->order);
@@ -158,26 +175,27 @@ class SmsParse
             }
 
         $this->em->flush();
-
-        $msg = "Dear Customer, Your Order No: ".$this->order->getId()." / ".date('d-m-Y').'. ';
-        if($this->order->getOrderItems()){
-            $msg.='Product Info: ';
-            $i=1;
-            $array_count = count($this->order->getOrderItems());
-            foreach ($this->order->getOrderItems() as $item){
-                $msg.= $item->getItem()->getSku().'-'.$item->getQuantity();
-                if($i==$array_count){
-                    $msg.='.';
-                }else{
-                    $msg.=', ';
+        if($this->orderVia!='APP') {
+            $msg = "Dear Customer, Your Order No: " . $this->order->getId() . " / " . date('d-m-Y') . '. ';
+            if ($this->order->getOrderItems()) {
+                $msg .= 'Product Info: ';
+                $i = 1;
+                $array_count = count($this->order->getOrderItems());
+                foreach ($this->order->getOrderItems() as $item) {
+                    $msg .= $item->getItem()->getSku() . '-' . $item->getQuantity();
+                    if ($i == $array_count) {
+                        $msg .= '.';
+                    } else {
+                        $msg .= ', ';
+                    }
+                    $i++;
                 }
-                $i++;
             }
-        }
-        $part1s = str_split($msg, $split_length = 160);
-        foreach($part1s as $part){
-            $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
-            $smsSender->agentBankInfoSmsAction($part, $this->order->getAgent()->getUser()->getProfile()->getCellphone());
+            $part1s = str_split($msg, $split_length = 160);
+            foreach ($part1s as $part) {
+                $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
+                $smsSender->agentBankInfoSmsAction($part, $this->order->getAgent()->getUser()->getProfile()->getCellphone());
+            }
         }
 //        $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
 //        $smsSender->agentBankInfoSmsAction("Your Order No:".$this->order->getId().".", $this->order->getAgent()->getUser()->getProfile()->getCellphone());
@@ -199,6 +217,7 @@ class SmsParse
         if (!$this->agent) {
             $this->setError('Invalid Agent ID');
             $this->markError($agentId);
+            return 1;
         } else {
 
             $userMobile = $this->trimMobileNo($this->agent->getUser()->getProfile()->getCellphone());
@@ -206,10 +225,11 @@ class SmsParse
 
             if (!$this->endsWith($userMobile, $smsMobileNo)) {
                 $this->setError('Agent mobile no does not match with mobile number of sms');
+                return  2;
             }
         }
 
-        return $this->agent;
+        return $this->agent->getId();
     }
 
     protected function setPaymentMode($paymentMode)
@@ -219,6 +239,7 @@ class SmsParse
         if (!in_array($paymentMode, $allPaymentMode)) {
             $this->setError('Invalid Payment Mode');
             $this->markError($paymentMode);
+            return 1;
         }
 
         return $this->paymentMode = $paymentMode;
@@ -227,7 +248,9 @@ class SmsParse
     protected function setOrderItems($orderInfo)
     {
         if ($this->hasError()) {
-            $this->smsService();
+            if($this->orderVia!='APP'){
+                $this->smsService();
+            }
             return;
         }
 
@@ -246,17 +269,23 @@ class SmsParse
                 $item = $itemRepo->findOneBy(array('sku' => trim($sku)));
 
                 if (!$item) {
-                    $this->smsService();
+                    if($this->orderVia!='APP'){
+                        $this->smsService();
+                    }
                     $this->setError('Invalid Produce Code');
                     $this->markError($sku);
                     break;
                 } else if (!preg_match('/^\d+$/', trim($qty))) {
-                    $this->smsService();
+                    if($this->orderVia!='APP'){
+                        $this->smsService();
+                    }
                     $this->setError('Invalid Quantity');
                     $this->markError($qty);
                     break;
                 } else if ($this->agent->getItemType() != null and  $this->agent->getItemType() != $item->getItemType()) {
-                    $this->smsService();
+                    if($this->orderVia!='APP'){
+                        $this->smsService();
+                    }
                     $this->setError('Product Type Not Match');
                     $this->markError($sku);
                     break;
@@ -273,7 +302,9 @@ class SmsParse
             }
 
         } catch (\Exception $e) {
-            $this->smsService();
+            if($this->orderVia!='APP'){
+                $this->smsService();
+            }
             $this->setError("Invalid Product:Quantity Format");
         }
     }
@@ -339,25 +370,26 @@ class SmsParse
                     }
                 }
             $this->em->flush();
+            if($this->orderVia!='APP') {
+                if ($sendSms) {
 
-            if($sendSms){
+                    $msg = "Dear Customer, Payment Placed Successfully ";
+                    if ($this->payments) {
+                        $i = 1;
+                        $total_amount = 0;
+                        $array_count = count($this->payments);
+                        foreach ($this->payments as $payment) {
+                            $total_amount += $payment->getDepositedAmount();
 
-                $msg = "Dear Customer, Payment Placed Successfully ";
-                if($this->payments){
-                    $i=1;
-                    $total_amount = 0;
-                    $array_count = count($this->payments);
-                    foreach ($this->payments as $payment){
-                        $total_amount += $payment->getDepositedAmount();
-
-                        $i++;
+                            $i++;
+                        }
+                        $msg .= 'Tk' . $total_amount . '.';
                     }
-                    $msg .='Tk'. $total_amount .'.';
-                }
-                $part1s = str_split($msg, $split_length = 160);
-                foreach($part1s as $part){
-                    $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
-                    $smsSender->agentBankInfoSmsAction($part, $this->payments[0]->getAgent()->getUser()->getProfile()->getCellphone());
+                    $part1s = str_split($msg, $split_length = 160);
+                    foreach ($part1s as $part) {
+                        $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
+                        $smsSender->agentBankInfoSmsAction($part, $this->payments[0]->getAgent()->getUser()->getProfile()->getCellphone());
+                    }
                 }
             }
 

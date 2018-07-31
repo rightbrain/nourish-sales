@@ -33,31 +33,63 @@ class ApiController extends BaseController
             if ($smsApiKey == $request->headers->get('X-API-KEY')) {
                 $msisdn = $request->request->get('msisdn');
                 $timestamp = $request->request->get('timestamp') ? $request->request->get('timestamp') : date('Y-m-d H:i:s');
+                $orderVia = $request->request->get('orderVia');
                 $message = $request->request->get('message');
                 $messageid = $request->request->get('messageid') ? $request->request->get('messageid') : 0;
 
                 if ($msisdn == null and $message == null) {
                     $response = new Response(json_encode(array("message" => 'Bad request. Invalid Parameter')), 400);
-                } else {
-                    try {
-                        $entity = new Sms();
-                        $entity->setMsg($message);
-                        $entity->setDate(new \DateTime($timestamp));
-                        $entity->setMobileNo($msisdn);
-                        $entity->setSl($messageid);
-                        $entity->setStatus('NEW');
-                        $entity->setType('FD');
-                        $this->getDoctrine()->getManager()->persist($entity);
-                        $this->getDoctrine()->getManager()->flush();
+                }elseif (!empty($msisdn) && $orderVia=='APP'){
 
-                        $smsParse = new SmsParse($this->getDoctrine()->getManager(), $this->container, $msisdn);
-                        $smsParse->parse($entity);
+                    $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getAgentByPhone($msisdn);
+                    if($agent){
+                        try {
+                            $entity = new Sms();
+                            $entity->setMsg($message);
+                            $entity->setDate(new \DateTime($timestamp));
+                            $entity->setMobileNo($msisdn);
+                            $entity->setSl($messageid);
+                            $entity->setStatus('NEW');
+                            $entity->setType('FD');
+                            $this->getDoctrine()->getManager()->persist($entity);
+                            $this->getDoctrine()->getManager()->flush();
 
-                        $response = new Response(json_encode(array("message" => 'SMS received Successfully')), 200);
-                    } catch (\Exception $e) {
-                        $response = new Response(json_encode(array("message" => 'Server Internal Error')), 500);
+                            $smsParse = new SmsParse($this->getDoctrine()->getManager(), $this->container, $msisdn);
+                            $return_value= $smsParse->parse($entity);
+                            if (array_key_exists("orderId",$return_value))
+                            {
+                                $orderId = $return_value['orderId'];
+                                $return_value = array('message'=>'Order received Successfully. Your order id '.$orderId);
+                            }
+                            $response = new Response(json_encode($return_value), 200);
+
+                        } catch (\Exception $e) {
+                            $response = new Response(json_encode(array("message" => 'Server Internal Error')), 500);
+                        }
+                    }else{
+                        $response = new Response(json_encode(array("message" => 'Agent mobile no does not match.')), 401);
                     }
-                }
+                }else {
+                        try {
+                            $entity = new Sms();
+                            $entity->setMsg($message);
+                            $entity->setDate(new \DateTime($timestamp));
+                            $entity->setMobileNo($msisdn);
+                            $entity->setSl($messageid);
+                            $entity->setStatus('NEW');
+                            $entity->setType('FD');
+                            $this->getDoctrine()->getManager()->persist($entity);
+                            $this->getDoctrine()->getManager()->flush();
+
+                            $smsParse = new SmsParse($this->getDoctrine()->getManager(), $this->container, $msisdn);
+                            $smsParse->parse($entity);
+
+                            $response = new Response(json_encode(array("message" => 'SMS received Successfully')), 200);
+                        } catch (\Exception $e) {
+                            $response = new Response(json_encode(array("message" => 'Server Internal Error')), 500);
+                        }
+                    }
+
             } else {
                 $response = new Response(json_encode(array("message" => 'Authentication Fail')), 401);
             }
@@ -215,6 +247,32 @@ class ApiController extends BaseController
                         $response = new Response(json_encode(array("message" => 'Server Internal Error')), 500);
                     }
                 }
+            } else {
+                $response = new Response(json_encode(array("message" => 'Authentication Fail')), 401);
+            }
+        } else {
+            $response = new Response(json_encode(array("message" => 'Invalid Request')), 404);
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/api/products", name="api_product_list")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getProductListAction(Request $request)
+    {
+        $smsApiKey = "79b8428a0dea686430a7f20ccbe857bd";
+
+        if ('GET' === $request->getMethod()) {
+            if ($smsApiKey == $request->headers->get('X-API-KEY')) {
+                $items = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->getAllItems();
+                $response= new Response(json_encode($items));
+
             } else {
                 $response = new Response(json_encode(array("message" => 'Authentication Fail')), 401);
             }

@@ -27,6 +27,23 @@ class ItemRepository extends EntityRepository
 
         return $data;
     }
+    public function getAllItems()
+    {
+        $query = $this->createQueryBuilder('i');
+        $query->join('i.bundles', 'b');
+        $query->join('i.category', 'c');
+        $query->select('i.name as name');
+        $query->addSelect('i.sku as code');
+        $query->addSelect('c.name as category');
+        $query->where('b.id = :bundle');
+        $query->setParameter('bundle', RbsSalesBundle::ID);
+        $query->groupBy('i.id');
+        $query->orderBy('i.name');
+
+        $result = $query->getQuery()->getResult();
+        return $result;
+
+    }
     
     public function getItemName()
     {

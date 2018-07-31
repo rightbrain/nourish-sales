@@ -38,4 +38,5 @@ security:
         - { path: ^/resetting, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/sms_receive, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/sms_vehicle_receive, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/products, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: ROLE_USER }
