@@ -56,12 +56,15 @@ class ApiController extends BaseController
 
                             $smsParse = new SmsParse($this->getDoctrine()->getManager(), $this->container, $msisdn);
                             $return_value= $smsParse->parse($entity);
+//                            var_dump($return_value);die;
                             if (array_key_exists("orderId",$return_value))
                             {
                                 $orderId = $return_value['orderId'];
-                                $return_value = array('message'=>'Order received Successfully. Your order id '.$orderId);
+
+                                $return_value = array('message'=>'Order received Successfully. Your order id '.$orderId, 'orderId'=>$orderId);
+                                $return_value['code']=200;
                             }
-                            $response = new Response(json_encode($return_value), 200);
+                            $response = new Response(json_encode($return_value), $return_value['code']);
 
                         } catch (\Exception $e) {
                             $response = new Response(json_encode(array("message" => 'Server Internal Error')), 500);

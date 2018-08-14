@@ -120,7 +120,7 @@ class ChickOrderSmsParser
 
         $this->em->persist($orderItem);
         $this->em->persist($order);
-        $this->em->flush();
+//        $this->em->flush();
         $this->orderIds[] = $order->getId();
 
         return true;
