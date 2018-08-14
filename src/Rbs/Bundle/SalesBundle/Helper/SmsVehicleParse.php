@@ -42,7 +42,9 @@ class SmsVehicleParse
     public function parse($message)
     {
         $this->error;
-        $this->validate($message);
+        if ($this->validate($message)['status']==401){
+            return $this->validate($message);
+        }
         return $this->create($message);
     }
 
@@ -52,17 +54,19 @@ class SmsVehicleParse
         $splitMsgVehicles = array_filter(explode(':', $splitMsg[0]));
 
         if (sizeof($splitMsg)>1){
+
             if($this->user->getUserType() == User::AGENT) {
                 $order = $this->em->getRepository('RbsSalesBundle:Order')->find($splitMsg[1]);
                 if($order == null){
                     $this->setError('Invalid Order Number');
-                    return;
+//                    return 'ok';
+                    return array('message'=>'Invalid Order Number','status'=>401);
                 }
             }else{
                 $depo =  $this->em->getRepository('RbsCoreBundle:Depo')->findByName($splitMsg[1]);
                 if($depo == null){
                     $this->setError('Invalid Depo Name');
-                    return;
+                    return array('message'=>'Invalid Depo Name','status'=>401);
                 }
             }
             foreach($splitMsgVehicles as $vehicle){
@@ -71,25 +75,25 @@ class SmsVehicleParse
                 if(sizeof($vehicleInfo)>0){
                     if($vehicleInfo[0] == null){
                         $this->setError('Invalid Vehicle Number');
-                        return;
+                        return array('message'=>'Invalid Vehicle Number','status'=>401);
                     }
                 }
                 if(sizeof($vehicleInfo)>1) {
                     if ($vehicleInfo[1] == null) {
                         $this->setError('Invalid Driver Name');
-                        return;
+                        return array('message'=>'Invalid Driver Name','status'=>401);
                     }
                 }
                 if(sizeof($vehicleInfo)>2) {
                     if ($vehicleInfo[2] == null) {
                         $this->setError('Invalid Driver Phone Number');
-                        return;
+                        return array('message'=>'Invalid Driver Phone Number','status'=>401);
                     }
                 }
             }
         }else{
             $this->setError('Invalid Parameter');
-            return;
+            return array('message'=>'Invalid Parameter','status'=>401);
         }
     }
 
@@ -145,6 +149,9 @@ class SmsVehicleParse
         }
 
         return array(
+            'status'=>200,
+            'message'=>'SMS received Successfully.',
+            'orderId' => $splitMsg[1],
             'vehicleId' => $this->vehicle->getId()
         );
     }

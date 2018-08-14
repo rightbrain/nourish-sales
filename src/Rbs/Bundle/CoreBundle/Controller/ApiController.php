@@ -131,9 +131,9 @@ class ApiController extends BaseController
                     } else {
                         try {
                             $smsVehicleParse = new SmsVehicleParse($this->getDoctrine()->getManager(), $user[0]);
-                            $smsVehicleParse->parse($message);
+                            $return_value =  $smsVehicleParse->parse($message);
 
-                            $response = new Response(json_encode(array("message" => 'SMS received Successfully')), 200);
+                            $response = new Response(json_encode($return_value), $return_value['status']);
                         } catch (\Exception $e) {
                             $response = new Response(json_encode(array("message" => 'Server Internal Error')), 500);
                         }
