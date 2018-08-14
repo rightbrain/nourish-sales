@@ -96,14 +96,14 @@ class SmsParse
         $this->orderVia = $orderVia;
 
         if($this->orderVia=='APP' && $this->setAgent($agentId)==1){
-            return array('message'=>'Invalid Agent ID','code'=>401);
+            return array('message'=>'Invalid Agent ID','status'=>401);
         }elseif ($this->orderVia=='APP' && $this->setAgent($agentId)==2){
-            return array('message'=>'Agent mobile no does not match with mobile number of sms','code'=>401);
+            return array('message'=>'Agent mobile no does not match with mobile number of sms','status'=>401);
         }else{
             $this->setAgent($agentId);
         }
         if($this->orderVia=='APP' && $this->setPaymentMode($paymentMode)==1){
-            return array('message'=>'Invalid Payment Mode','code'=>404);
+            return array('message'=>'Invalid Payment Mode','status'=>404);
         }else{
             $this->setPaymentMode($paymentMode);
         }

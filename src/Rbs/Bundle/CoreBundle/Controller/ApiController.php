@@ -62,9 +62,9 @@ class ApiController extends BaseController
                                 $orderId = $return_value['orderId'];
 
                                 $return_value = array('message'=>'Order received Successfully. Your order id '.$orderId, 'orderId'=>$orderId);
-                                $return_value['code']=200;
+                                $return_value['status']=200;
                             }
-                            $response = new Response(json_encode($return_value), $return_value['code']);
+                            $response = new Response(json_encode($return_value), $return_value['status']);
 
                         } catch (\Exception $e) {
                             $response = new Response(json_encode(array("message" => 'Server Internal Error')), 500);
