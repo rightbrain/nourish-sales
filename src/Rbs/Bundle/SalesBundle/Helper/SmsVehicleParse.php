@@ -150,7 +150,7 @@ class SmsVehicleParse
 
         return array(
             'status'=>200,
-            'message'=>'SMS received Successfully.',
+            'message'=>'Truck information received Successfully.',
             'orderId' => $splitMsg[1],
             'vehicleId' => $this->vehicle->getId()
         );
