@@ -1,0 +1,36 @@
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-horizontal" method="post" action="{{ path('order_chick_add') }}">
+            <div class="form-group">
+                <label class="col-sm-2 control-label required">Date:
+                    <span class="visible-print-inline" style="margin-right: 50px">{{ date }}</span>
+                </label>
+                <div class="col-sm-4">
+                    <input name="date" type="text" autocomplete="off"
+                           class="date-picker form-control hidden-print"
+                           value="{{ date }}">
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label required">
+                    Regions:
+                </label>
+                <div class="col-md-8">
+                    <select multiple="multiple" class="form-control hidden-print" name="region[]">
+                        {% for regionId, regionName in regions %}
+                            <option value="{{ regionId }}"  {% if regionId in selectedRegions %}{{ ' selected="selected"' }}{% endif %}>{{ regionName }}</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+
+            </div>
+            <div class="form-group">
+                <div class="col-md-6" style="text-align: center">
+                    <input type="submit" class="btn btn-primary hidden-print" value="Generate Order">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

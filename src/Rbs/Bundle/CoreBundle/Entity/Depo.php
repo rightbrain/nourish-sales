@@ -49,8 +49,11 @@ class Depo
     private $description;
 
     /**
-     * @ORM\OneToOne(targetEntity="Location")
-     **/
+     * @var Location
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Location")
+     * @ORM\JoinColumn(name="location_id", nullable=true)
+     */
     private $location;
 
     /**

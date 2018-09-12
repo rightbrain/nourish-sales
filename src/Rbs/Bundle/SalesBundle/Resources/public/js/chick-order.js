@@ -34,6 +34,64 @@ var ChickOrder = function()
         });
 
         initGotoViewPage();
+
+        $('.check_order_generate tbody').on("click keyup", ".quantity", (totalPriceCalculation));
+
+        $("input.tr_clone_add").live('click', function() {
+            var selected_table = $('.active .check_order_generate');
+            var $tr    = $(selected_table).find('tbody').find("tr:first");
+            var $tr_last = $(selected_table).find('tbody').find("tr:last");
+            var $clone = $tr.clone();
+            $clone.find(':text').val('');
+            $clone.find('select.agent_id').val('');
+            $clone.find('input[type=hidden]').val('');
+            $clone.find(':button').removeClass('hidden');
+            $clone.find('div.order_status').removeClass('old_item').addClass('new_item');
+            $clone.find('div.order_status').text('New');
+            $tr_last.after($clone);
+        });
+
+
+        $('.active .check_order_generate').on('change','.depot, .item', function () {
+            var element = $(this);
+            var depot = $(this).closest('tr').find('.depot').val();
+            var item = $(this).closest('tr').find('.item').val();
+
+            if(depot==''){
+                return false;
+            }
+            if(item==''){
+                return false;
+            }
+
+            $.ajax({
+                type: "post",
+                url: Routing.generate('find_item_price_depo_ajax', {
+                    item: item,
+                    depo: depot
+                }),
+                dataType: 'json',
+                success: function (response) {
+                    var price = response.price;
+                    element.closest('tr').find('.quantity').val('');
+                    element.closest('tr').find('.itemPrice').val(price);
+
+                }
+            });
+
+
+        });
+
+
+        $(document).on('click','button.remove_item', function() {
+            var r = confirm('Are you sure delete?');
+            if (r == true) {
+                $(this).closest('tr').remove();
+            }
+            return false;
+        });
+
+
     }
 
     function save(sendToDeliver){
@@ -104,6 +162,17 @@ var ChickOrder = function()
             total += parseInt($(this).text());
         });
         $('.grand-total span').text(total);
+    }
+
+    function totalPriceCalculation() {
+        // alert($(this));
+        var row = $(this).closest('tr');
+        var price = parseFloat(row.find('.itemPrice').val());
+        var quantity = parseFloat(row.find('.quantity').val());
+        if (!price) { price = 0; }
+        if (!quantity) { quantity = 0; }
+        row.find('.total_amount').val((price * quantity).toFixed(2));
+        // totalAmountCalculate();
     }
 
     return {
