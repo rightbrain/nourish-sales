@@ -40,6 +40,9 @@ class ConfigureMenuListener extends ContextAwareListener
                 if ($this->authorizationChecker->isGranted(array('ROLE_CHICK_ORDER_MANAGE'))) {
                     $menu2->addChild('Manage Chick Order', array('route' => 'order_manage_chick'))->setAttribute('icon', 'fa fa-th-list');
                 }
+                if ($this->authorizationChecker->isGranted(array('ROLE_CHICK_ORDER_MANAGE'))) {
+                    $menu2->addChild('Add Chick Order', array('route' => 'order_chick_add'))->setAttribute('icon', 'fa fa-th-list');
+                }
 
                 if ($this->isMatch('order_create') || $this->isMatch('order_update') || $this->isMatch('order_details')) {
                     $menu['Sales']->getChild('Orders')->setCurrent(true);
@@ -50,6 +53,9 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
                 if ($this->isMatch('order_manage_chick')) {
                     $menu2['Manage Chick Order']->setCurrent(true);
+                }
+                if ($this->isMatch('order_chick_add')) {
+                    $menu2['Add Chick Order']->setCurrent(true);
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {

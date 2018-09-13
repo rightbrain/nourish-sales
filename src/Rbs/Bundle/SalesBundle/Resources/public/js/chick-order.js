@@ -46,13 +46,15 @@ var ChickOrder = function()
             $clone.find('select.agent_id').val('');
             $clone.find('input[type=hidden]').val('');
             $clone.find(':button').removeClass('hidden');
+            $clone.find(':button').val('');
+            $clone.find('button.remove_item').data('order_id',0);
             $clone.find('div.order_status').removeClass('old_item').addClass('new_item');
             $clone.find('div.order_status').text('New');
             $tr_last.after($clone);
         });
 
 
-        $('.active .check_order_generate').on('change','.depot, .item', function () {
+        $('.check_order_generate').on('change','.depot, .item', function () {
             var element = $(this);
             var depot = $(this).closest('tr').find('.depot').val();
             var item = $(this).closest('tr').find('.item').val();
@@ -84,9 +86,26 @@ var ChickOrder = function()
 
 
         $(document).on('click','button.remove_item', function() {
+            var element = $(this);
             var r = confirm('Are you sure delete?');
+            var order_id = $(this).data('order_id');
+
             if (r == true) {
-                $(this).closest('tr').remove();
+                if(order_id!=0){
+                    $.ajax({
+                        type: "post",
+                        url: Routing.generate('delete_check_order_ajax', {
+                            order: order_id
+                        }),
+                        dataType: 'json',
+                        success: function (response) {
+                            $(element).closest('tr').remove();
+                        }
+                    });
+                }else {
+                    $(element).closest('tr').remove();
+                }
+
             }
             return false;
         });

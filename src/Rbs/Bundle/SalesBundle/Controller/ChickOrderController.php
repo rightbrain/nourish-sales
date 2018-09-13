@@ -212,9 +212,13 @@ class ChickOrderController extends BaseController
         $qb->join('a.user', 'u');
         $qb->join('u.profile', 'p');
         $qb->join('u.zilla', 'z');
+//        $qb->join('a.itemType', 'i');
 
         $qb->where('u.userType = :AGENT');
         $qb->setParameter('AGENT', User::AGENT);
+
+        /*$qb->andWhere('i.itemType = :itemType');
+        $qb->setParameter('itemType', ItemType::Chick);*/
 
         //$qb->andWhere('o.orderState IN :orderState')->setParameter('orderState', $orderState);
         $qb->andWhere($qb->expr()->in('z.parentId', ':parentId'))->setParameter('parentId', $regionId);
@@ -278,9 +282,9 @@ class ChickOrderController extends BaseController
         $itemPrice = $request->request->get('itemPrice');
         $date = $request->request->get('order_date') ? date('Y-m-d H:i:s', strtotime($request->request->get('order_date'))) : date('Y-m-d H:i:s', time());
 //       $total_amount = $request->request->get('total_amount');
-
+        $data= array();
        foreach ($quantities as $key=>$quantity){
-           if(!empty($quantity)){
+           if(!empty($quantity) && !empty($agentId[$key]) && !empty($depotId[$key]) && !empty($itemId[$key])){
                //var_dump( $item[$key]);die;
                $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find(array('id' => $agentId[$key]));
 
@@ -316,13 +320,18 @@ class ChickOrderController extends BaseController
                $order->setDeliveryState(Order::DELIVERY_STATE_PENDING);
                $order->setOrderVia('SYSTEM');
                $order->setCreatedAt(new \DateTime($date) );
-               $order->setUpdatedAt(new \DateTime($date) );
 
                $order->calculateOrderAmount();
 
                $this->getDoctrine()->getManager()->persist($orderItem);
                $this->getDoctrine()->getManager()->persist($order);
+               $data[]= $order->getId();
            }
+       }
+       if (in_array(null, $data)){
+           $this->flashMessage('success', 'Order add Successfully.');
+       }else{
+           $this->flashMessage('success', 'Order update Successfully.');
        }
 
 
@@ -366,7 +375,7 @@ class ChickOrderController extends BaseController
      * @Route("find_item_price_depo_ajax/{item}/{depo}", name="find_item_price_depo_ajax", options={"expose"=true})
      * @param Request $request
      * @return Response
-     * @JMS\Secure(roles="ROLE_AGENT, ROLE_ORDER_VIEW, ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
+     * @JMS\Secure(roles="ROLE_CHICK_ORDER_MANAGE")
      */
     public function findItemPriceDepoAction(Request $request, Item $item, Depo $depo)
     {
@@ -375,26 +384,36 @@ class ChickOrderController extends BaseController
         /** Getting Item Price */
         $price = 0;
         $orderItem = null;
-        /*$order = $em->getRepository('RbsSalesBundle:Order')->find($request->query->get('order', 0));
-        if ($order) { // edit mode and item already added
-            $orderItem = $em->getRepository('RbsSalesBundle:OrderItem')->findOneBy(
-                array('order' => $order, 'item' => $item)
-            );
-            $price = $orderItem ? $orderItem->getPrice() : 0;
-        }*/
 
-        // new entry or new item add to edit mode
-//        if (!$price) {
             $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
                 $item, $depo->getLocation()
             );
-//        }
 
           $response = array(
                 'price'     => number_format($price, 2),
             );
 
         return new JsonResponse($response);
+    }
+
+    /**
+     * delete order ajax
+     * @Route("delete_check_order_ajax/{order}", name="delete_check_order_ajax", options={"expose"=true})
+     * @return Response
+     * @JMS\Secure(roles="ROLE_CHICK_ORDER_MANAGE")
+     */
+    public function deleteCheckOrderAction($order)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $orderObj = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find(array('id'=>$order));
+        foreach ($orderObj->getOrderItems() as $item){
+            $orderObj->removeOrderItem($item);
+        }
+
+        $em->remove($orderObj);
+        $em->flush();
+        return new JsonResponse(array('success'=>'Order successfully removed.'));
     }
 
 }

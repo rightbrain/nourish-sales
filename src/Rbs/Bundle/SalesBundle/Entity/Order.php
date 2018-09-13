@@ -38,7 +38,7 @@ class Order
     const DELIVERY_STATE_SHIPPED = 'SHIPPED';
 
     use ORMBehaviors\Timestampable\Timestampable,
-        ORMBehaviors\SoftDeletable\SoftDeletable,
+//        ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
 
     /**
