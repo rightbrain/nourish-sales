@@ -206,10 +206,10 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    {% stylesheets
+    {% stylesheets  filter='cssrewrite'
     "assets/global/plugins/jquery-multi-select/css/multi-select.css"
     'assets/global/plugins/bootstrap-toastr/toastr.min.css'
-    filter='cssrewrite' output='css/compiled/datatable.css' %}
+    %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 {% endblock %}
