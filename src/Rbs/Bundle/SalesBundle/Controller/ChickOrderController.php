@@ -345,6 +345,8 @@ class ChickOrderController extends BaseController
         $qb = $repo->createQueryBuilder('oi');
 
         $qb->select('oi');
+        $qb->join('oi.item', 'i');
+        $qb->join('i.itemType', 'it');
         $qb->join('oi.order', 'o');
         $qb->join('o.agent', 'a');
         $qb->join('a.user', 'u');
@@ -353,6 +355,9 @@ class ChickOrderController extends BaseController
 
         $qb->where($qb->expr()->between('o.createdAt', ':start', ':end'));
         $qb->setParameters(array('start' => $date . ' 00:00:00', 'end' => $date . ' 23:59:59'));
+
+        $qb->andWhere('it.itemType = :itemType');
+        $qb->setParameter('itemType', ItemType::Chick);
 
         $qb->andWhere($qb->expr()->in('z.parentId', ':parentId'))->setParameter('parentId', $zone);
         $qb->andWhere($qb->expr()->in('o.orderState', ':orderState'))->setParameter('orderState', $orderState);
