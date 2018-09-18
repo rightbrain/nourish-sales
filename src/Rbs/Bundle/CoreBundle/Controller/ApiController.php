@@ -63,6 +63,9 @@ class ApiController extends BaseController
 
                                 $return_value = array('message'=>'Order received Successfully. Your order id '.$orderId, 'orderId'=>$orderId);
                                 $return_value['status']=200;
+                            }elseif (array_key_exists('paymentSuccess', $return_value)){
+                                $return_value= array('message'=>$return_value['paymentSuccess']);
+                                $return_value['status']= 200;
                             }
                             $response = new Response(json_encode($return_value), $return_value['status']);
 
@@ -85,9 +88,20 @@ class ApiController extends BaseController
                             $this->getDoctrine()->getManager()->flush();
 
                             $smsParse = new SmsParse($this->getDoctrine()->getManager(), $this->container, $msisdn);
-                            $smsParse->parse($entity);
+                            $return_value=$smsParse->parse($entity);
+                            if (array_key_exists("orderId",$return_value))
+                            {
+                                $orderId = $return_value['orderId'];
 
-                            $response = new Response(json_encode(array("message" => 'SMS received Successfully')), 200);
+                                $return_value = array('message'=>'Order received Successfully. Your order id '.$orderId, 'orderId'=>$orderId);
+                                $return_value['status']=200;
+                            }elseif (array_key_exists('paymentSuccess', $return_value)){
+                                $return_value= array('message'=>$return_value['paymentSuccess']);
+                                $return_value['status']= 200;
+                            }
+                            $response = new Response(json_encode($return_value), $return_value['status']);
+
+//                            $response = new Response(json_encode(array("message" => 'SMS received Successfully')), 200);
                         } catch (\Exception $e) {
                             $response = new Response(json_encode(array("message" => 'Server Internal Error')), 500);
                         }

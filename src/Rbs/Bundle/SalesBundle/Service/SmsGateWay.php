@@ -39,11 +39,11 @@ class SmsGateWay
                 ]
             );
             $content  = $response->getBody()->getContents();
-            var_dump($content);
+//            var_dump($content);
         } catch (RequestException $e) {
-            var_dump($e->getRequest());
+//            var_dump($e->getRequest());
             if ($e->hasResponse()) {
-                var_dump($e->getResponse()->getReasonPhrase());
+//                var_dump($e->getResponse()->getReasonPhrase());
             }
         }
 

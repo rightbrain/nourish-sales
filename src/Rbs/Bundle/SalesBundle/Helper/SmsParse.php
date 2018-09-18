@@ -128,7 +128,7 @@ class SmsParse
             $this->sms->setRemark($this->error);
             $this->em->persist($this->sms);
             $this->em->flush();
-            return false;
+            return array('message'=>$this->error, 'status'=>404);
         }
 
         $this->order = new Order();
@@ -272,7 +272,7 @@ class SmsParse
                     if($this->orderVia!='APP'){
                         $this->smsService();
                     }
-                    $this->setError('Invalid Produce Code');
+                    $this->setError('Invalid Product Code');
                     $this->markError($sku);
                     break;
                 } else if (!preg_match('/^\d+$/', trim($qty))) {
@@ -306,6 +306,7 @@ class SmsParse
                 $this->smsService();
             }
             $this->setError("Invalid Product:Quantity Format");
+            return 5;
         }
     }
 
