@@ -59,9 +59,13 @@ class ApiController extends BaseController
 //                            var_dump($return_value);die;
                             if (array_key_exists("orderId",$return_value))
                             {
+                                $paymentError = '';
+                                if (array_key_exists('errorMessage',$return_value) && $return_value['errorMessage']!=''){
+                                    $paymentError.= 'But payment does not paid. Because '.$return_value['errorMessage'];
+                                }
                                 $orderId = $return_value['orderId'];
 
-                                $return_value = array('message'=>'Order received Successfully. Your order id '.$orderId, 'orderId'=>$orderId);
+                                $return_value = array('message'=>'Order received Successfully. Your order id '.$orderId.'.'.$paymentError, 'orderId'=>$orderId);
                                 $return_value['status']=200;
                             }elseif (array_key_exists('paymentSuccess', $return_value)){
                                 $return_value= array('message'=>$return_value['paymentSuccess']);
@@ -91,9 +95,14 @@ class ApiController extends BaseController
                             $return_value=$smsParse->parse($entity);
                             if (array_key_exists("orderId",$return_value))
                             {
+                                $paymentError = '';
+                                if (array_key_exists('errorMessage',$return_value) && $return_value['errorMessage']!=''){
+                                    $paymentError.= 'But payment does not paid. Because '.$return_value['errorMessage'];
+                                }
+//                                var_dump($return_value);
                                 $orderId = $return_value['orderId'];
 
-                                $return_value = array('message'=>'Order received Successfully. Your order id '.$orderId, 'orderId'=>$orderId);
+                                $return_value = array('message'=>'Order received Successfully. Your order id '.$orderId.'.'.$paymentError, 'orderId'=>$orderId);
                                 $return_value['status']=200;
                             }elseif (array_key_exists('paymentSuccess', $return_value)){
                                 $return_value= array('message'=>$return_value['paymentSuccess']);

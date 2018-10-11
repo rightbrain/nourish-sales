@@ -108,11 +108,14 @@ class SmsParse
             $this->setPaymentMode($paymentMode);
         }
 
-        if (!empty($agentId) && !empty($orderInfo)){
+        if (!empty($agentId) && !empty($orderInfo) && !empty($bankAccountCode)){
             $this->setOrderItems($orderInfo);
+            $this->setPayment($this->paymentInfoSmsSegment, $this->agentSmsSegment, false);
            return $this->createOrder();
-        }
-        if(!empty($agentId) && empty($orderInfo) && !empty($bankAccountCode)){
+        }elseif(!empty($agentId) && !empty($orderInfo) && empty($bankAccountCode)){
+            $this->setOrderItems($orderInfo);
+            return $this->createOrder();
+        }elseif(!empty($agentId) && empty($orderInfo) && !empty($bankAccountCode)){
           return $this->setPayment($this->paymentInfoSmsSegment, $this->agentSmsSegment, true);
         }
 //        return false;
@@ -159,20 +162,23 @@ class SmsParse
         $this->orderIncentiveFlag->setOrder($this->order);
         $this->em->persist($this->orderIncentiveFlag);
 
-        $this->setPayment($this->paymentInfoSmsSegment, $this->agentSmsSegment, false);
+//        $this->setPayment($this->paymentInfoSmsSegment, $this->agentSmsSegment, false);
 
         $payments = new ArrayCollection();
         if ($this->hasError()) {
             $this->order->setErrorMessage($this->error);
         }
-            /** @var Payment $payment */
-            foreach ($this->payments as $payment) {
-                $payment->addOrder($this->order);
-                $this->em->persist($payment);
-                $this->order->setPayments($payments);
-                $payments->add($payment);
+            if($this->payments){
+                /** @var Payment $payment */
+                foreach ($this->payments as $payment) {
+                    $payment->addOrder($this->order);
+                    $this->em->persist($payment);
+                    $this->order->setPayments($payments);
+                    $payments->add($payment);
 
+                }
             }
+
 
         $this->em->flush();
         if($this->orderVia!='APP') {
@@ -197,11 +203,16 @@ class SmsParse
                 $smsSender->agentBankInfoSmsAction($part, $this->order->getAgent()->getUser()->getProfile()->getCellphone());
             }
         }
-//        $smsSender = $this->container->get('rbs_erp.sales.service.smssender');
-//        $smsSender->agentBankInfoSmsAction("Your Order No:".$this->order->getId().".", $this->order->getAgent()->getUser()->getProfile()->getCellphone());
+
+        if(!empty($this->order->getErrorMessage())){
+            $error = $this->order->getErrorMessage();
+        }else{
+            $error = '';
+        }
 
         return array(
-            'orderId' => $this->order->getId()
+            'orderId' => $this->order->getId(),
+            'errorMessage'=> $error
         );
     }
 
@@ -329,25 +340,27 @@ class SmsParse
 
                     if (empty($fxCx)) {
                         $this->setError('Invalid Payment For');
+                        $this->markError($fxCx);
                         break;
                     } else if ($fxCx != "FD") {
                         $this->setError('Invalid Parameter, Need FD');
+                        $this->markError($fxCx);
                         break;
                     } else if (!$nourishBankCode) {
                         $this->setError('Nourish Bank Code is not assigned yet.');
-//                        $this->markError($nourishBankCode);
+                        $this->markError($nourishBank);
                         break;
                     } else if ($nourishBankCode->getAccount()->getCode()!= $nourishBank) {
                         $this->setError('Invalid Nourish Bank Code.');
-//                        $this->markError($nourishBankCode);
+                        $this->markError($nourishBank);
                         break;
                     } else if (!$agentBankAccount) {
                         $this->setError('Invalid Agent Bank Code');
-//                        $this->markError($agentBankAccount);
+                        $this->markError($agentBank);
                         break;
                     } else if (!empty($amount) && !preg_match('/^\d+$/', trim($amount))) {
                         $this->setError('Invalid Amount');
-//                        $this->markError($amount);
+                        $this->markError($amount);
                         break;
                     } else {
                         if (!empty($amount)) {
