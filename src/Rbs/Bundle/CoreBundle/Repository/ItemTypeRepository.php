@@ -15,6 +15,17 @@ class ItemTypeRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+    public function getActiveItemType()
+    {
+        $query = $this->createQueryBuilder('it');
+        $query->select('it.id');
+        $query->addSelect('it.itemType as name');
+        $query->where('it.deletedAt IS NULL');
+        $query->orderBy('it.itemType', 'ASC');
+
+        return $query->getQuery()->getResult();
+    }
     public function getItemTypeCount()
     {
         $query = $this->createQueryBuilder('it');

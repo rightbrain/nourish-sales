@@ -310,4 +310,30 @@ class ApiController extends BaseController
 
         return $response;
     }
+
+    /**
+     * @Route("/api/itemTypes", name="api_item_type_list")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getItemTypeListAction(Request $request)
+    {
+        $smsApiKey = "79b8428a0dea686430a7f20ccbe857bd";
+
+        if ('GET' === $request->getMethod()) {
+            if ($smsApiKey == $request->headers->get('X-API-KEY')) {
+                $itemTypes = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemType')->getActiveItemType();
+                $response= new Response(json_encode($itemTypes));
+
+            } else {
+                $response = new Response(json_encode(array("message" => 'Authentication Fail')), 401);
+            }
+        } else {
+            $response = new Response(json_encode(array("message" => 'Invalid Request')), 404);
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
 }
