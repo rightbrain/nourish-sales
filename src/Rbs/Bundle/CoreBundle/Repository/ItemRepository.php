@@ -32,9 +32,11 @@ class ItemRepository extends EntityRepository
         $query = $this->createQueryBuilder('i');
         $query->join('i.bundles', 'b');
         $query->join('i.category', 'c');
+        $query->join('i.itemType', 'it');
         $query->select('i.name as name');
         $query->addSelect('i.sku as code');
         $query->addSelect('c.name as category');
+        $query->addSelect('it.itemType as itemType');
         $query->where('b.id = :bundle');
         $query->setParameter('bundle', RbsSalesBundle::ID);
         $query->groupBy('i.id');
