@@ -34,8 +34,15 @@ var ChickOrder = function()
         });
 
         initGotoViewPage();
-
-        $('.check_order_generate tbody').on("click keyup", ".quantity", (totalPriceCalculation));
+        $(".quantity").contextmenu(function () {
+            return false;
+        });
+        $(".itemPrice").contextmenu(function () {
+            return false;
+        });
+        var order_generate_table_body = $('.check_order_generate tbody');
+        order_generate_table_body.on("click keyup", ".quantity", (totalPriceCalculation));
+        order_generate_table_body.on("click keyup", ".itemPrice", (totalPriceCalculation));
 
         $("input.tr_clone_add").live('click', function() {
             var selected_table = $('.active .check_order_generate');

@@ -102,7 +102,7 @@
                                                                 </select>
                                                             </td>
                                                             <td><input autocomplete="off" class="form-control quantity" type="text" name="quantity[]" value="{% if orderItem.quantity !=''%}{{ orderItem.quantity }}{% endif %}"></td>
-                                                            <td><input class="form-control itemPrice" readonly="readonly" type="text" name="itemPrice[]" value="{% if orderItem.price !=''%}{{ orderItem.price }}{% endif %}"></td>
+                                                            <td><input class="form-control itemPrice" type="text" name="itemPrice[]" value="{% if orderItem.price !=''%}{{ orderItem.price }}{% endif %}"></td>
                                                             <td><input class="form-control total_amount" readonly="readonly" type="text" name="total_amount[]" value="{% if orderItem.totalAmount !=''%}{{ orderItem.totalAmount }}{% endif %}"></td>
                                                             <td><button type="button" value="{{ orderItem.order.id }}" data-order_id="{{ orderItem.order.id }}" class="btn btn-danger btn-xs remove_item"><i class="fa fa-remove"></i> </button></td>
                                                         </tr>
@@ -138,7 +138,7 @@
                                                                 </select>
                                                             </td>
                                                             <td><input autocomplete="off" class="form-control quantity" type="text" name="quantity[]" value=""></td>
-                                                            <td><input class="form-control itemPrice" readonly="readonly" type="text" name="itemPrice[]" value=""></td>
+                                                            <td><input class="form-control itemPrice" type="text" name="itemPrice[]" value=""></td>
                                                             <td><input class="form-control total_amount" readonly="readonly" type="text" name="total_amount[]" value=""></td>
                                                             <td><button type="button" value="" data-order_id="0" class="btn btn-danger btn-xs remove_item hidden"><i class="fa fa-remove"></i> </button></td>
                                                         </tr>
