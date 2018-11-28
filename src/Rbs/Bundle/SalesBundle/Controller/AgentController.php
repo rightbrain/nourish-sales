@@ -3,6 +3,8 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\Upload;
+use Rbs\Bundle\CoreBundle\Form\Type\UploadForm;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentDoc;
 use Rbs\Bundle\SalesBundle\Entity\Order;
@@ -10,6 +12,8 @@ use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentDocForm;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentUpdateForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
+use Rbs\Bundle\UserBundle\Entity\Group;
+use Rbs\Bundle\UserBundle\Entity\Profile;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Form\Type\UserUpdatePasswordForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -292,5 +296,130 @@ class AgentController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+
+    /**
+     * @Route("/agent/import", name="agent_import")
+     * @Template("RbsSalesBundle:Agent:agent_import.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_USER_CREATE, ROLE_ADMIN")
+     */
+    public function agentImprotAction(Request $request)
+    {
+        $user = new User();
+        $group = $this->getDoctrine()->getRepository('RbsUserBundle:Group')->findOneBy(array('name'=>'Agent User'));
+        $profile = new Profile();
+        $agent = new Agent();
+
+        $upload = new Upload();
+        $form = $this->createForm(new UploadForm(), $upload);
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $file = $upload->getFile();
+                $fileName = md5(uniqid()).'.csv';
+                $file->move(
+                    $this->getParameter('brochures_directory'),
+                    $fileName
+                );
+                $upload->setFile($fileName);
+
+                $file = $this->get('request')->getSchemeAndHttpHost().'/uploads/sales/csv-import/'.$fileName;
+
+                $data = $this->getCSVFileData($file);
+                $i = 0;
+                $j = 1;
+                foreach ($data as $row) {
+                    if ($i == 0) {$i++; continue;}
+
+                    $zilla = $row[0];
+                    $upazilla = $row[1];
+                    $username = $row[2];
+                    $email = $row[3];
+                    $password = $row[4];
+                    $itemType = $row[5];
+                    $depot = $row[6];
+                    $openingBalance = $row[7];
+                    $openingBalanceType = $row[8];
+                    $agentCode = $row[9];
+                    $fullName = $row[10];
+                    $cellPhone = $row[11];
+                    $designation = $row[12];
+                    $address = $row[13];
+
+                    if($zilla==''||$upazilla==''||$username==''||$email==''){
+                        continue;
+                    }
+
+                    $user->setEnabled(true);
+                    $user->setRoles(array("ROLE_AGENT"));
+                    $user->setUserType( User::AGENT);
+//                    $user->addGroup(array(1));
+
+                    $user->setZilla($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($zilla));
+                    $user->setUpozilla($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($upazilla));
+                    $user->setUsername($username);
+                    $user->setEmail($email);
+                    $user->setPlainPassword($password);
+                    $user->addGroup($group);
+                    $this->getDoctrine()->getManager()->persist($user);
+                    $profile->setUser($user);
+                    $profile->setCellphone($cellPhone);
+                    $profile->setFullName($fullName);
+                    $profile->setAddress($address);
+                    $profile->setDesignation($designation);
+                    $this->getDoctrine()->getManager()->persist($profile);
+                    $agent->setUser($user);
+                    $agent->setItemType($this->getDoctrine()->getRepository('RbsCoreBundle:ItemType')->find($itemType));
+                    $agent->setDepo($this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($depot));
+
+                    $agent->setAgentID($agentCode);
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
+
+                    if($openingBalance!='' && in_array($openingBalanceType,array('CR','DR'))){
+                        $payment = new Payment();
+                        $agent->setOpeningBalance($openingBalance);
+                        $agent->setOpeningBalanceType($openingBalanceType);
+                        $agent->setOpeningBalanceFlag(true);
+                        $payment->setAgent($agent);
+                        $payment->setAmount($agent->getOpeningBalance());
+                        $payment->setPaymentMethod(Payment::PAYMENT_METHOD_OPENING_BALANCE);
+                        $payment->setRemark('Agents opening balance.');
+//                    $payment->setDepositDate(date("Y-m-d"));
+                        $payment->setTransactionType($agent->getOpeningBalanceType());
+                        $payment->setVerified(true);
+                        $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->create($payment);
+
+
+                    }
+
+                    $j++;
+                }
+
+                $this->get('session')->getFlashBag()->add(
+                    'success',
+                    'User Created Successfully'
+                );
+
+                return $this->redirect($this->generateUrl('agents_home'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
+    }
+
+    public function getCSVFileData($webPath) {
+        $fileData = array();
+        $file = fopen($webPath,"r");
+        while(! feof($file)) {
+            $fileData[] = fgetcsv($file, 1024);
+        }
+        fclose($file);
+        return $fileData;
     }
 }
