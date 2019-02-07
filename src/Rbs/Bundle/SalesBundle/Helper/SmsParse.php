@@ -383,7 +383,7 @@ class SmsParse
                         }
                     }
                 }
-            $this->em->flush();
+//            $this->em->flush();
             if($this->orderVia!='APP') {
                 if ($sendSms) {
 
@@ -408,7 +408,7 @@ class SmsParse
             }
 
             return array(
-                'paymentSuccess' => 'Payment Placed Successfully',
+                'message' => 'Payment Placed Successfully',
             );
             }
         catch

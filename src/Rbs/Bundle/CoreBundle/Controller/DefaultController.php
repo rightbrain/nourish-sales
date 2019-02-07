@@ -92,7 +92,7 @@ class DefaultController extends BaseController
                         if (isset($response['orderId'])){
                             $this->flashMessage('success', 'Order Created Successfully, Order ID: ' . $response['orderId']);
                         }else{
-                            $this->flashMessage('success', $response['paymentSuccess']);
+                            $this->flashMessage('success', $response['message']);
                         }
 
                     } else {
