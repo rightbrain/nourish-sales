@@ -110,13 +110,13 @@ class SmsParse
 
         if (!empty($agentId) && !empty($orderInfo) && !empty($bankAccountCode)){
             $this->setOrderItems($orderInfo);
-            $this->setPayment($this->paymentInfoSmsSegment, $this->agentSmsSegment, false);
+            $this->setPayment($this->paymentInfoSmsSegment, $this->agentSmsSegment, false, false);
            return $this->createOrder();
         }elseif(!empty($agentId) && !empty($orderInfo) && empty($bankAccountCode)){
             $this->setOrderItems($orderInfo);
             return $this->createOrder();
         }elseif(!empty($agentId) && empty($orderInfo) && !empty($bankAccountCode)){
-          return $this->setPayment($this->paymentInfoSmsSegment, $this->agentSmsSegment, true);
+          return $this->setPayment($this->paymentInfoSmsSegment, $this->agentSmsSegment, true, true);
         }
 //        return false;
     }
@@ -321,7 +321,7 @@ class SmsParse
         }
     }
 
-    protected function setPayment($accountInfo, $agentId, $sendSms=false )
+    protected function setPayment($accountInfo, $agentId, $sendSms=false, $onlyPayment=false )
     {
         if ($this->hasError()) {
             return;
@@ -383,7 +383,9 @@ class SmsParse
                         }
                     }
                 }
-//            $this->em->flush();
+                if($onlyPayment){
+                    $this->em->flush();
+                }
             if($this->orderVia!='APP') {
                 if ($sendSms) {
 
