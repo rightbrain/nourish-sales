@@ -377,6 +377,7 @@ class SmsParse
                             $this->payment->setAgent($this->agent);
                             $this->payment->setTransactionType(Payment::CR);
                             $this->payment->setVerified(false);
+                            $this->payment->setPaymentMode($this->paymentMode);
 
                             $this->payments[] = $this->payment;
                             $this->em->persist($this->payment);
