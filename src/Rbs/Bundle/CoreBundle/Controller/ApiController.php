@@ -67,8 +67,8 @@ class ApiController extends BaseController
 
                                 $return_value = array('message'=>'Order received Successfully. Your order id '.$orderId.'.'.$paymentError, 'orderId'=>$orderId);
                                 $return_value['status']=200;
-                            }elseif (array_key_exists('paymentSuccess', $return_value)){
-                                $return_value= array('message'=>$return_value['paymentSuccess']);
+                            }elseif (array_key_exists('message', $return_value)){
+                                $return_value= array('message'=>$return_value['message']);
                                 $return_value['status']= 200;
                             }
                             $response = new Response(json_encode($return_value), $return_value['status']);
@@ -104,8 +104,8 @@ class ApiController extends BaseController
 
                                 $return_value = array('message'=>'Order received Successfully. Your order id '.$orderId.'.'.$paymentError, 'orderId'=>$orderId);
                                 $return_value['status']=200;
-                            }elseif (array_key_exists('paymentSuccess', $return_value)){
-                                $return_value= array('message'=>$return_value['paymentSuccess']);
+                            }elseif (array_key_exists('message', $return_value)){
+                                $return_value= array('message'=>$return_value['message']);
                                 $return_value['status']= 200;
                             }
                             $response = new Response(json_encode($return_value), $return_value['status']);
