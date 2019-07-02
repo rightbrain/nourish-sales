@@ -35,4 +35,17 @@ class AgentNourishBankRepository extends EntityRepository
         $this->_em->flush();
         return $this->_em;
     }
+
+    public function getAgentNourishBankByAgentCodeAndBankCode($agentCode, $bankCode)
+    {
+        $query = $this->createQueryBuilder('anb');
+        $query->join('anb.agent', 'a');
+        $query->join('anb.account', 'acc');
+        $query->where('a.agentID = :code');
+        $query->andWhere('acc.code = :bankcode');
+        $query->setParameter('code', $agentCode );
+        $query->setParameter('bankcode', $bankCode);
+
+        return $query->getQuery()->getResult();
+    }
 }

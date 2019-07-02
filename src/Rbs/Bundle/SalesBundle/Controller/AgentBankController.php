@@ -3,6 +3,11 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\Bank;
+use Rbs\Bundle\CoreBundle\Entity\BankAccount;
+use Rbs\Bundle\CoreBundle\Entity\BankBranch;
+use Rbs\Bundle\CoreBundle\Entity\Upload;
+use Rbs\Bundle\CoreBundle\Form\Type\UploadForm;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentBank;
 use Rbs\Bundle\SalesBundle\Entity\AgentNourishBank;
@@ -212,4 +217,127 @@ class AgentBankController extends BaseController
 
         return $this->redirect($this->generateUrl('agent_nourish_banks'));
     }
+
+    /**
+     * @Route("/agent/bank/import", name="agent_bank_import")
+     * @Template("RbsSalesBundle:Agent:agent_bank_import.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_USER_CREATE, ROLE_ADMIN")
+     */
+    public function agentBankImprotAndNourishBankAsignAction(Request $request)
+    {
+        set_time_limit(0);
+        $upload = new Upload();
+        $form = $this->createForm(new UploadForm(), $upload);
+        $em = $this->getDoctrine()->getManager();
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+
+            if ($form->isValid()) {
+                $file = $upload->getFile();
+                $fileName = md5(uniqid()).'_bank.csv';
+                $file->move(
+                    $this->getParameter('brochures_directory'),
+                    $fileName
+                );
+                $upload->setFile($fileName);
+
+                $file = $this->get('request')->getSchemeAndHttpHost().'/uploads/sales/csv-import/'.$fileName;
+
+                $data = $this->getCSVFileData($file);
+                $i = 0;
+                $j = 1;
+                foreach ($data as $row) {
+                    $agentBank = new AgentBank();
+
+                    if ($i == 0) {$i++; continue;}
+
+                    $agentCode = $row[0];
+                    $fullName = $row[1];
+                    $agentBankName = $row[2];
+                    $agentBankBranch = $row[3];
+                    $cellPhone = $row[4];
+                    $nourishBankCode = $row[5];
+                    $nourishBankAccountName = $row[6];
+                    $nourishBankName = $row[7];
+                    $nourishBankBrnachName = $row[8];
+
+                    if($agentCode=='' || $nourishBankCode==''){
+                        continue;
+                    }
+
+                    $existingNourishBank = $this->getDoctrine()->getRepository('RbsCoreBundle:BankAccount')->findOneBy(array('code'=>$nourishBankCode));
+                    if(!$existingNourishBank){
+                        $bank= new Bank();
+                        $branch = new BankBranch();
+                        $bankAccount = new BankAccount();
+                        $bank->setName($nourishBankName);
+                        $em->persist($bank);
+                        $branch->setName($nourishBankBrnachName);
+                        $branch->setBank($bank);
+                        $em->persist($branch);
+
+                        $bankAccount->setName($nourishBankAccountName);
+                        $bankAccount->setBranch($branch);
+                        $bankAccount->setCode($nourishBankCode);
+                        $em->persist($bankAccount);
+
+                        $em->flush();
+                    }
+
+                    $existingAgentNourishBank = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentNourishBank')->getAgentNourishBankByAgentCodeAndBankCode($agentCode, $nourishBankCode);
+                    $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array('agentID'=>$agentCode));
+                    if($nourishBankCode!='' && !$existingAgentNourishBank && $agent){
+
+                        $bankAccount = $this->getDoctrine()->getRepository('RbsCoreBundle:BankAccount')->findOneBy(array('code'=>$nourishBankCode));
+
+                        $agentNourishBank = new AgentNourishBank();
+                        $agentNourishBank->setAgent($agent);
+                        $agentNourishBank->setAccount($bankAccount);
+                        $em->persist($agentNourishBank);
+                        $em->flush();
+                    }
+
+                    $existingAgentBank= $this->getDoctrine()->getRepository('RbsSalesBundle:AgentBank')->findOneBy(array('agent'=>$agent,'bank'=>$agentBankName,'branch'=>$agentBankBranch));
+                    if(!$existingAgentBank){
+                        $agentBanks = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentBank')->getByAgent($agent);
+                        $agentBank->setCode($this->unique_id($agentBanks));
+                        $agentBank->setCellphone('+88'.$cellPhone);
+                        $agentBank->setBank($agentBankName);
+                        $agentBank->setBranch($agentBankBranch);
+                        $agentBank->setAgent($agent);
+                        $this->getDoctrine()->getRepository('RbsSalesBundle:AgentBank')->create($agentBank);
+                    }
+
+                    $j++;
+                }
+
+                $this->get('session')->getFlashBag()->add(
+                    'success',
+                    'Agent Bank and Nourish bank assigned Successfully'
+                );
+
+                return $this->redirect($this->generateUrl('agent_bank_info_sms'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
+    }
+
+
+
+    public function getCSVFileData($webPath) {
+        $fileData = array();
+        $file = fopen($webPath,"r");
+        while(! feof($file)) {
+            $fileData[] = fgetcsv($file, 1024);
+        }
+        fclose($file);
+        return $fileData;
+    }
+
+
 }

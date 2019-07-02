@@ -307,11 +307,8 @@ class AgentController extends BaseController
      */
     public function agentImprotAction(Request $request)
     {
-        $user = new User();
+        set_time_limit(0);
         $group = $this->getDoctrine()->getRepository('RbsUserBundle:Group')->findOneBy(array('name'=>'Agent User'));
-        $profile = new Profile();
-        $agent = new Agent();
-
         $upload = new Upload();
         $form = $this->createForm(new UploadForm(), $upload);
 
@@ -333,6 +330,11 @@ class AgentController extends BaseController
                 $i = 0;
                 $j = 1;
                 foreach ($data as $row) {
+                    $user = new User();
+
+                    $profile = new Profile();
+                    $agent = new Agent();
+
                     if ($i == 0) {$i++; continue;}
 
                     $zilla = $row[0];
@@ -354,27 +356,46 @@ class AgentController extends BaseController
                         continue;
                     }
 
+                    $exitingAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array('agentID'=>$agentCode));
+
+                    if($exitingAgent){
+                        continue;
+                    }
+                    $zillaObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findOneBy(array('name'=>$zilla,'level'=>4));
+
+                    $upazillaObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findOneBy(array('name'=>$upazilla,'level'=>5));
+
+                    $depotObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->findOneBy(array('name'=>$depot));
+
+                    $exitingUser = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findOneBy(array('email'=>$email));
+                    $exitingUserByusername = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findOneBy(array('username'=>$username));
+                    $exitingProfileByCellphone = $this->getDoctrine()->getRepository('RbsUserBundle:Profile')->findOneBy(array('cellphone'=>'+880'.$cellPhone));
+
+                    if($exitingUser || $exitingUserByusername || $exitingProfileByCellphone){
+                        continue;
+                    }
+
                     $user->setEnabled(true);
                     $user->setRoles(array("ROLE_AGENT"));
                     $user->setUserType( User::AGENT);
 //                    $user->addGroup(array(1));
 
-                    $user->setZilla($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($zilla));
-                    $user->setUpozilla($this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($upazilla));
+                    $user->setZilla($zillaObj?$zillaObj:null);
+                    $user->setUpozilla($upazillaObj? $upazillaObj:null);
                     $user->setUsername($username);
                     $user->setEmail($email);
                     $user->setPlainPassword($password);
                     $user->addGroup($group);
                     $this->getDoctrine()->getManager()->persist($user);
                     $profile->setUser($user);
-                    $profile->setCellphone($cellPhone);
+                    $profile->setCellphone('+880'.$cellPhone);
                     $profile->setFullName($fullName);
                     $profile->setAddress($address);
                     $profile->setDesignation($designation);
                     $this->getDoctrine()->getManager()->persist($profile);
                     $agent->setUser($user);
                     $agent->setItemType($this->getDoctrine()->getRepository('RbsCoreBundle:ItemType')->find($itemType));
-                    $agent->setDepo($this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($depot));
+                    $agent->setDepo($depotObj?$depotObj:null);
 
                     $agent->setAgentID($agentCode);
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
