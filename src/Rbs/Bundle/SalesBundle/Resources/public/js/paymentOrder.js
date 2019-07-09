@@ -88,6 +88,7 @@ var Payment = function()
         $("#payment_agent").change(function () {
             var ordersElm = $('#payment_orders');
             var payment_agentBankBranch = $('#payment_agentBankBranch');
+            var payment_nourishBankAccount = $('#payment_bankAccount');
             var agent = $(this).val();
             if (agent=='') {
                 ordersElm.find('option').remove();
@@ -118,6 +119,22 @@ var Payment = function()
                     for (var i=0; i < data.length; i++) {
                         var arr = data[i];
                         payment_agentBankBranch.append('<option value="'+arr['id']+'">'+arr['text']+'</option>');
+                    }
+                },
+                error: function(){
+                    toastr.error('Server Error');
+                }
+            });
+
+            $.ajax({
+                type: "post",
+                url: Routing.generate('nourish_bank_by_agent_id', {id: agent}),
+                dataType: 'json',
+                success: function(data) {
+                    payment_nourishBankAccount.find('option').remove();
+                    for (var i=0; i < data.length; i++) {
+                        var arr = data[i];
+                        payment_nourishBankAccount.append('<option value="'+arr['id']+'">'+arr['text']+'</option>');
                     }
                 },
                 error: function(){

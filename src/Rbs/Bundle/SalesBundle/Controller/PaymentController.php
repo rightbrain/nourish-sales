@@ -4,6 +4,7 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
+use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Search\Type\AgentSearchType;
 use Rbs\Bundle\SalesBundle\Form\Search\Type\TwoDateSearchType;
@@ -143,10 +144,12 @@ class PaymentController extends BaseController
         $orders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getAgentWiseOrder($agent->getId());
 
         $orderArr = array();
-        foreach ($orders as $order) {
-            $orderArr[] = array('id' => $order->getId(), 'text' => $order->getOrderIdAndDueAmount());
+        if($orders){
+            /** @var Order $order */
+            foreach ($orders as $order) {
+                $orderArr[] = array('id' => $order->getId(), 'text' => $order->getOrderIdAndDueAmount());
+            }
         }
-
         return new JsonResponse($orderArr);
     }
 
@@ -166,6 +169,24 @@ class PaymentController extends BaseController
         }
 
         return new JsonResponse($agentBankArr);
+    }
+
+    /**
+     * @Route("/payment/nourish_bank/{id}", name="nourish_bank_by_agent_id", options={"expose"=true})
+     * @param Agent $agent
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_HEAD_OFFICE_USER, ROLE_PAYMENT_CREATE, ROLE_PAYMENT_APPROVE, ROLE_PAYMENT_OVER_CREDIT_APPROVE")
+     */
+    public function getNourishBankByAgentId(Agent $agent)
+    {
+        $nourishBanks = $this->getDoctrine()->getRepository('RbsCoreBundle:BankAccount')->getAccountListWithBankBranchByAgent($agent);
+
+        $nourishBankArr = array();
+        foreach ($nourishBanks as $key=>$nourishBank) {
+            $nourishBankArr[] = array('id' => $key, 'text' => $nourishBank);
+        }
+
+        return new JsonResponse($nourishBankArr);
     }
 
     /**

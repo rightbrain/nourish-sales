@@ -128,7 +128,7 @@ class OrderRepository extends EntityRepository
     function getAgentWiseOrder($agent, $returnQuery = false)
     {
         $query = $this->createQueryBuilder('o')
-            ->where('o.deletedAt IS NULL')
+            ->where('o.deletedBy IS NULL')
             ->orderBy('o.id', 'DESC')
             ->andWhere('o.orderState != :complete or o.orderState != :cancel')
             ->andWhere('o.paymentState != :paid')

@@ -300,7 +300,7 @@ class AgentBankController extends BaseController
                     }
 
                     $existingAgentBank= $this->getDoctrine()->getRepository('RbsSalesBundle:AgentBank')->findOneBy(array('agent'=>$agent,'bank'=>$agentBankName,'branch'=>$agentBankBranch));
-                    if(!$existingAgentBank){
+                    if(!$existingAgentBank && $agent){
                         $agentBanks = $this->getDoctrine()->getRepository('RbsSalesBundle:AgentBank')->getByAgent($agent);
                         $agentBank->setCode($this->unique_id($agentBanks));
                         $agentBank->setCellphone('+88'.$cellPhone);
