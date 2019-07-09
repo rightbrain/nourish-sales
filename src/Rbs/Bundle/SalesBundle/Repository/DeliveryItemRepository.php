@@ -63,6 +63,36 @@ class DeliveryItemRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function getDeliveredItemsByDepo($data)
+    {
+        if(!empty($data['depo'])) {
+            $query = $this->createQueryBuilder('di');
+            $query->join('di.delivery', 'd');
+            $query->join('d.depo', 'depo');
+            $query->join('di.orderItem', 'oi');
+            $query->join('oi.item', 'i');
+            $query->join('i.category', 'c');
+            $query->select('i.id');
+            $query->addSelect('i.name as itemName');
+            $query->addSelect('i.sku as itemCode');
+            $query->addSelect('depo.name as depoName');
+            $query->addSelect('c.id as catId');
+            $query->addSelect('c.name as catName');
+            $query->addSelect('SUM(di.qty) AS totalDeliveredQuantity');
+            if (!empty($data['depo'])) {
+                $this->handleSearchByDepo($data['depo'], $query);
+            }
+            $this->handleSearchByDate($query, $data['start_date']);
+            $query->groupBy('i.id');
+            $query->addGroupBy('d.depo');
+            $query->orderBy('c.id', 'ASC');
+
+            return $query->getQuery()->getResult();
+        }else{
+           return array();
+        }
+    }
+
     public function getDeliveryIncentive($deliveryId)
     {
         $query = $this->createQueryBuilder('di');
@@ -82,5 +112,22 @@ class DeliveryItemRepository extends EntityRepository
         $query->setParameters(array('deliveryId'=>$deliveryId));
 
         return $query->getQuery()->getResult();
+    }
+
+    protected function handleSearchByDepo($depo, $query)
+    {
+        if (!empty($depo)) {
+            $query->andWhere('d.depo = :depo');
+            $query->setParameter('depo', $depo);
+        }
+    }
+    protected function handleSearchByDate($query, $startDate)
+    {
+        if (!empty($startDate)) {
+            $query->andWhere('d.createdAt >= :startDate');
+            $query->andWhere('d.createdAt <= :endDate');
+            $query->setParameter('startDate', $startDate.' 00:00:00');
+            $query->setParameter('endDate', $startDate.' 23:59:59');
+        }
     }
 }

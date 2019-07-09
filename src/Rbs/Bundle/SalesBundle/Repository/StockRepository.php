@@ -178,6 +178,7 @@ class StockRepository extends EntityRepository
             $query->addSelect('s.availableOnDemand');
             $query->leftJoin('s.item', 'i');
             $query->leftJoin('s.depo', 'd');
+            $query->where('s.deletedAt IS NULL');
 
             if(!empty($data['depo'])){
                 $this->handleSearchByDepo($data['depo'], $query);
@@ -195,7 +196,7 @@ class StockRepository extends EntityRepository
     protected function handleSearchByDepo($depo, $query)
     {
         if (!empty($depo)) {
-            $query->where('s.depo = :depo');
+            $query->andWhere('s.depo = :depo');
             $query->setParameter('depo', $depo);
         }
     }
@@ -203,7 +204,7 @@ class StockRepository extends EntityRepository
     protected function handleSearchByItem($item, $query)
     {
         if (!empty($item)) {
-            $query->where('s.item = :item');
+            $query->andWhere('s.item = :item');
             $query->setParameter('item', $item);
         }
     }

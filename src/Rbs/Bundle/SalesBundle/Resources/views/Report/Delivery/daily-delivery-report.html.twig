@@ -1,0 +1,77 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Delivery {% endblock %}
+
+{% block body %}
+
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-list hidden-print"></i>Daily Delivery Report
+
+                </div>
+                {% if data['start_date'] is defined %}
+                    <div style="float: right; text-align: right; padding: 10px 5px"> {{ data['start_date']|date('d-m-Y')}}</div>
+                {% endif %}
+            </div>
+            <div class="portlet-body">
+
+                <form method="get" novalidate="novalidate" class="form-inline" style="margin-bottom: 20px;">
+
+                    <div class="form-group hidden-print">
+                        <span class="visible-print-inline">Depot:</span>
+                        {{ form_widget(formSearch.depo) }}
+                    </div>
+                    <div class="form-group hidden-print">
+                            <div class="input-group input-daterange">
+                                {{ form_widget(formSearch.start_date) }}
+                            </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-1">
+                            <input type="submit" value="Search" class="btn blue hidden-print">
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <button type="button" class="btn green hidden-print" onclick="print()">Print</button>
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Unit Name</th>
+                                <th>Category Code</th>
+                                <th>Category Name</th>
+                                <th>Item Code</th>
+                                <th>Item Name</th>
+                                <th>Total</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if deliveries %}
+                            {% for delivery in deliveries %}
+
+                                <tr>
+                                    <td>{{ delivery.depoName }}</td>
+                                    <td>{{ delivery.catId }}</td>
+                                    <td>{{ delivery.catName }}</td>
+                                    <td>{{ delivery.itemCode }}</td>
+                                    <td>{{ delivery.itemName }}</td>
+                                    <td>{{ delivery.totalDeliveredQuantity }}</td>
+                                </tr>
+
+                            {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+{% endblock %}
