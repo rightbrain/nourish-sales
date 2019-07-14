@@ -32,8 +32,8 @@ class OrderDepoDatatable extends BaseDatatable
             $line["totalAmount"] = number_format($order->getTotalAmount(), 2);
             $line["paidAmount"] = number_format($order->getPaidAmount(), 2);
             if ($this->showAgentName) {
-                $line["fullName"] = $order->getAgent()->getUser()->getProfile()->getFullName();
-                $line["agentDistrict"] = $order->getAgent()->getUser()->getZilla()->getName();
+                $line["fullName"] =$order->getAgent()->getUser()->getProfile()? $order->getAgent()->getUser()->getProfile()->getFullName():'';
+                $line["agentDistrict"] =$order->getAgent()->getUser()->getZilla()? $order->getAgent()->getUser()->getZilla()->getName():'';
             }
             $line["actionButtons"] = $this->generateActionList($order);
             return $line;

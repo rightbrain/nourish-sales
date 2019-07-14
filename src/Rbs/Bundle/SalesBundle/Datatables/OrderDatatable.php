@@ -35,9 +35,8 @@ class OrderDatatable extends BaseDatatable
             $line["paymentAmount"] = $order->getPaymentState() != Order::PAYMENT_STATE_PENDING ? number_format($order->getTotalPaymentDepositedAmount(), 2): number_format(0, 2);
             $line["actualAmount"] = $order->getPaymentState() != Order::PAYMENT_STATE_PENDING ? number_format($order->getTotalPaymentActualAmount(), 2): number_format(0, 2);
             if ($this->showAgentName) {
-//                $line["fullName"] = Agent::agentIdNameFormat($order->getAgent()->getAgentID(), $order->getAgent()->getUser()->getProfile()->getFullName());
                 $line["fullName"] = $order->getAgent()->getUser()->getProfile()->getFullName();
-                $line["agentDistrict"] = $order->getAgent()->getUser()->getZilla()->getName();
+                $line["agentDistrict"] = $order->getAgent()->getUser()->getZilla()?$order->getAgent()->getUser()->getZilla()->getName():'';
             }
 
             $line["actionButtons"] = $this->generateActionList($order);
