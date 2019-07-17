@@ -3,7 +3,13 @@
 {% block title %}{{ parent() }} : Delivery {% endblock %}
 
 {% block body %}
-
+    <style>
+        @media print {
+           .table tr th, .table tr td{
+               font-size: 11px!important;
+           }
+        }
+    </style>
     <div class="col-md-12">
         <div class="portlet box blue">
             <div class="portlet-title">
@@ -17,7 +23,7 @@
             </div>
             <div class="portlet-body">
 
-                <form method="get" novalidate="novalidate" class="form-inline" style="margin-bottom: 20px;">
+                <form method="get" novalidate="novalidate" class="form-inline hidden-print" style="margin-bottom: 20px;">
 
                     <div class="form-group hidden-print">
                         <span class="visible-print-inline">Depot:</span>
@@ -53,18 +59,42 @@
                             </thead>
                             <tbody>
                             {% if deliveries %}
-                            {% for delivery in deliveries %}
+                                {% set grandTotalReceived = 0 %}
+                                {% set depoName = '' %}
+                            {% for catName, result in deliveries %}
+                                {% set totalReceived = 0 %}
+                                {% set depoName = result[0].depoName %}
+                                {% set sl = 1 %}
+                                {% for delivery in result %}
 
-                                <tr>
-                                    <td>{{ delivery.depoName }}</td>
-                                    <td>{{ delivery.catId }}</td>
-                                    <td>{{ delivery.catName }}</td>
-                                    <td>{{ delivery.itemCode }}</td>
-                                    <td>{{ delivery.itemName }}</td>
-                                    <td>{{ delivery.totalDeliveredQuantity }}</td>
+                                    <tr>
+                                        <td>{{ delivery.depoName }}</td>
+                                        <td>{{ delivery.catId }}</td>
+                                        <td>{{ delivery.catName }}</td>
+                                        <td>{{ delivery.itemCode }}</td>
+                                        <td>{{ delivery.itemName }}</td>
+                                        <td>{{ delivery.totalDeliveredQuantity }}</td>
+                                    </tr>
+                                    {% set sl = sl + 1 %}
+                                    {% set totalReceived = totalReceived + delivery.totalDeliveredQuantity %}
+                                {% endfor %}
+                                <tr style="font-weight: bold">
+                                    <td style="text-align: center" colspan="2">Total</td>
+                                    <td>{{ catName }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ totalReceived }}</td>
                                 </tr>
+                                {% set grandTotalReceived = grandTotalReceived + totalReceived %}
 
                             {% endfor %}
+                                <tr style="font-weight: bold">
+                                    <td>{{ depoName }}</td>
+                                    <td style="text-align: center" colspan="2">Grand Total</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ grandTotalReceived }}</td>
+                                </tr>
                                 {% else %}
                                 <tr><td colspan="8">No record found.</td></tr>
                             {% endif %}

@@ -65,6 +65,8 @@ class DeliveryItemRepository extends EntityRepository
 
     public function getDeliveredItemsByDepo($data)
     {
+
+        $results= array();
         if(!empty($data['depo'])) {
             $query = $this->createQueryBuilder('di');
             $query->join('di.delivery', 'd');
@@ -79,6 +81,7 @@ class DeliveryItemRepository extends EntityRepository
             $query->addSelect('c.id as catId');
             $query->addSelect('c.name as catName');
             $query->addSelect('SUM(di.qty) AS totalDeliveredQuantity');
+            $query->where('d.shipped = 1');
             if (!empty($data['depo'])) {
                 $this->handleSearchByDepo($data['depo'], $query);
             }
@@ -87,7 +90,10 @@ class DeliveryItemRepository extends EntityRepository
             $query->addGroupBy('d.depo');
             $query->orderBy('c.id', 'ASC');
 
-            return $query->getQuery()->getResult();
+            foreach ($query->getQuery()->getResult() as $result) {
+                $results[$result['catName']][] = $result;
+            }
+            return $results;
         }else{
            return array();
         }
