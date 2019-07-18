@@ -1,0 +1,78 @@
+<style>
+    @media print {
+        .table{
+            border: 1px;
+            width: 100%;
+        }
+        .table tr th, .table tr td {
+            font-size: 12px !important;
+        }
+    }
+</style>
+<h4 style="text-align: center;margin-bottom: 5px">Nourish Poultry & Hatchery Ltd.</h4>
+<table width="100%" cellpadding="2px" cellspacing="0" style="margin: 0">
+    <tr>
+        <td>Daily Delivery Order</td>
+        <td>
+            {% if data['start_date'] is defined %}
+                <div style="float: right; text-align: right;"> {{ data['start_date']|date('d-m-Y')}}</div>
+            {% endif %}
+        </td>
+    </tr>
+</table>
+<table class="table" cellpadding="5px" cellspacing="0" border="1" width="100%">
+    <thead>
+    <tr>
+        <th>Unit Name</th>
+        <th>Category Code</th>
+        <th>Category Name</th>
+        <th>Item Code</th>
+        <th>Item Name</th>
+        <th>Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% if deliveries %}
+        {% set grandTotalReceived = 0 %}
+        {% set depoName = '' %}
+        {% for catName, result in deliveries %}
+            {% set totalReceived = 0 %}
+            {% set depoName = result[0].depoName %}
+            {% set sl = 1 %}
+            {% for delivery in result %}
+
+                <tr>
+                    <td>{{ delivery.depoName }}</td>
+                    <td style="text-align: center">{{ delivery.catId }}</td>
+                    <td>{{ delivery.catName }}</td>
+                    <td style="text-align: center">{{ delivery.itemCode }}</td>
+                    <td>{{ delivery.itemName }}</td>
+                    <td style="text-align: right">{{ delivery.totalDeliveredQuantity }}</td>
+                </tr>
+                {% set sl = sl + 1 %}
+                {% set totalReceived = totalReceived + delivery.totalDeliveredQuantity %}
+            {% endfor %}
+            <tr style="font-weight: bold">
+                <td style="text-align: center" colspan="2">Total</td>
+                <td>{{ catName }}</td>
+                <td></td>
+                <td></td>
+                <td style="text-align: right">{{ totalReceived }}</td>
+            </tr>
+            {% set grandTotalReceived = grandTotalReceived + totalReceived %}
+
+        {% endfor %}
+        <tr style="font-weight: bold">
+            <td>{{ depoName }}</td>
+            <td style="text-align: center" colspan="2">Grand Total</td>
+            <td></td>
+            <td></td>
+            <td style="text-align: right">{{ grandTotalReceived }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td colspan="8">No record found.</td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>

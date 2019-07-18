@@ -26,3 +26,8 @@ parameters:
     beanstalkd_host: localhost
     beanstalkd_port: 11300
     beanstalkd_tube: nsm
+    sms_username: username
+    #sms_username: username
+    sms_password: password
+    #sms_password: password
+    sms_api_key: '123456789adfadfdfff'

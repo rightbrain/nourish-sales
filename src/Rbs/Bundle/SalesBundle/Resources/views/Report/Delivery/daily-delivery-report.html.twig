@@ -14,7 +14,7 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-list hidden-print"></i>Daily Delivery Report
+                    <i class="fa fa-list hidden-print"></i>Daily Delivery Order
 
                 </div>
                 {% if data['start_date'] is defined %}
@@ -40,6 +40,7 @@
                         </div>
                     </div>
                     <div class="pull-right">
+                        <button type="submit" name="pdf_create" value="1" class="btn blue hidden-print">PDF</button>
                         <button type="button" class="btn green hidden-print" onclick="print()">Print</button>
                     </div>
                 </form>
@@ -69,11 +70,11 @@
 
                                     <tr>
                                         <td>{{ delivery.depoName }}</td>
-                                        <td>{{ delivery.catId }}</td>
+                                        <td style="text-align: center">{{ delivery.catId }}</td>
                                         <td>{{ delivery.catName }}</td>
-                                        <td>{{ delivery.itemCode }}</td>
+                                        <td style="text-align: center">{{ delivery.itemCode }}</td>
                                         <td>{{ delivery.itemName }}</td>
-                                        <td>{{ delivery.totalDeliveredQuantity }}</td>
+                                        <td style="text-align: right">{{ delivery.totalDeliveredQuantity }}</td>
                                     </tr>
                                     {% set sl = sl + 1 %}
                                     {% set totalReceived = totalReceived + delivery.totalDeliveredQuantity %}
@@ -83,7 +84,7 @@
                                     <td>{{ catName }}</td>
                                     <td></td>
                                     <td></td>
-                                    <td>{{ totalReceived }}</td>
+                                    <td style="text-align: right">{{ totalReceived }}</td>
                                 </tr>
                                 {% set grandTotalReceived = grandTotalReceived + totalReceived %}
 
@@ -93,7 +94,7 @@
                                     <td style="text-align: center" colspan="2">Grand Total</td>
                                     <td></td>
                                     <td></td>
-                                    <td>{{ grandTotalReceived }}</td>
+                                    <td style="text-align: right">{{ grandTotalReceived }}</td>
                                 </tr>
                                 {% else %}
                                 <tr><td colspan="8">No record found.</td></tr>

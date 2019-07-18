@@ -29,6 +29,7 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle(),
             new Leezy\PheanstalkBundle\LeezyPheanstalkBundle(),
             new EightPoints\Bundle\GuzzleBundle\GuzzleBundle(),
+            new Knp\Bundle\SnappyBundle\KnpSnappyBundle(),
 
             new Rbs\Bundle\CoreBundle\RbsCoreBundle(),
             new Rbs\Bundle\UserBundle\RbsUserBundle(),
