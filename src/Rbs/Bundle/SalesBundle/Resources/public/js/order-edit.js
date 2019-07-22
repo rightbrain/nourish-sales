@@ -1,5 +1,6 @@
 var Order = function()
 {
+    totalQuantityCalculate();
     var agent = $("#order_agent").val();
 
     function bindItemChangeEvent(collectionHolder) {
@@ -45,6 +46,7 @@ var Order = function()
         }
         $('#order-item-'+index).remove();
         totalAmountCalculate();
+        totalQuantityCalculate();
     }
 
     function deleteOrderPaymentHandler(collectionHolderPayment, index)
@@ -123,6 +125,7 @@ var Order = function()
         if (item == "") {
             setOrderItemValue(index, 0, 0, false, 0, '');
             totalAmountCalculate();
+            totalQuantityCalculate();
             return false;
         }
 
@@ -180,6 +183,20 @@ var Order = function()
         $("#order_totalAmount").val(totalAmount.toFixed(2));
     }
 
+    function totalQuantityCalculate() {
+        var subTotalQuantity = 0;
+        var totalQuantity = 0;
+        $('.quantity').each(function () {
+            subTotalQuantity = parseFloat($(this).val());
+            if (subTotalQuantity) {
+                totalQuantity += subTotalQuantity;
+            }
+
+        });
+
+        $("#order_totalQuantity").html(totalQuantity.toFixed(0));
+    }
+
     function recalculateItemPriceOnEdit() {
         setTimeout(function(){
             //$('.order-item-list tbody .quantity').each(totalPriceCalculation);
@@ -194,6 +211,7 @@ var Order = function()
         if (!quantity) { quantity = 0; }
         row.find('.total_price').val((price * quantity).toFixed(2));
         totalAmountCalculate();
+        totalQuantityCalculate();
     }
 
     function setOrderItemValue(index, onHand, onHold, availableOnDemand, price, itemUnit, itemQty){

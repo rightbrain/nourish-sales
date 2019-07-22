@@ -1,43 +1,43 @@
 {{ form_start(form, {'method': 'POST', attr: { novalidate: 'novalidate'}}) }}
 
-
-<div class="form-group">
-    <label class="col-md-2 control-label">Agent *</label>
-    <div class="col-md-6" style="margin-top: 10px;">
-        {#{{ form_widget(form.agent, {'attr' : agentAttr}) }}
-        {{ form_errors(form.agent) }}#}
-        <input type="hidden" value="{{ order.agent.id }}" id="order_agent">
-        <input id="order_id" type="hidden" value="{{ order.id }}">
-        {{ order.agent.agentID ~ " - " ~ order.agent.user.profile.fullName }}
+<div class="col-md-6">
+    <div class="form-group">
+        <label class="col-md-2 control-label">Agent *</label>
+        <div class="col-md-6" style="margin-top: 10px;">
+            {#{{ form_widget(form.agent, {'attr' : agentAttr}) }}
+            {{ form_errors(form.agent) }}#}
+            <input type="hidden" value="{{ order.agent.id }}" id="order_agent">
+            <input id="order_id" type="hidden" value="{{ order.id }}">
+            {{ order.agent.agentID ~ " - " ~ order.agent.user.profile.fullName }}
+        </div>
     </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">Payment Mode *</label>
+        <div class="col-md-6" style="margin-top: 10px;">
+            {{ form_widget(form.paymentMode) }}
+            {{ form_errors(form.paymentMode) }}
+        </div>
+    </div>
+
+</div>
+<div class="col-md-6">
+    <div class="form-group">
+        <label class="col-md-2 control-label">Depo *</label>
+        <div class="col-md-6" style="margin-top: 10px;">
+            {{ form_widget(form.depo, {'attr' : depoAttr}) }}
+            {{ form_errors(form.depo) }}
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-2 control-label">Remark</label>
+        <div class="col-md-6" style="margin-top: 10px;">
+            {{ form_widget(form.remark) }}
+        </div>
+    </div>
+
 </div>
 
-
-<div class="form-group">
-    <label class="col-md-2 control-label">Depo *</label>
-    <div class="col-md-6" style="margin-top: 10px;">
-        {{ form_widget(form.depo, {'attr' : depoAttr}) }}
-        {{ form_errors(form.depo) }}
-    </div>
-</div>
-
-<div class="form-group">
-    <label class="col-md-2 control-label">Payment Mode *</label>
-    <div class="col-md-6" style="margin-top: 10px;">
-        {{ form_widget(form.paymentMode) }}
-        {{ form_errors(form.paymentMode) }}
-    </div>
-</div>
-
-<div class="form-group">
-    <label class="col-md-2 control-label">Remark</label>
-    <div class="col-md-6" style="margin-top: 10px;">
-        {{ form_widget(form.remark) }}
-    </div>
-</div>
-
-<br/>
-<div class="order-item-list" style="overflow-x:auto;">
+<div class="order-item-list">
     <table class="table table-condensed table-hover" style="margin-bottom:0!important;">
         <thead>
         <tr>
@@ -72,11 +72,11 @@
         </tbody>
         <tfoot>
         <tr>
+            <th style="text-align: right">Total</th>
+            <th style="text-align: right" id="order_totalQuantity"></th>
             <td></td>
             <td></td>
             <td></td>
-            <td></td>
-            <th>Total</th>
             <th colspan="2">{{ form_widget(form.totalAmount, { 'attr': {'style': ''}} ) }}</th>
         </tr>
         </tfoot>
