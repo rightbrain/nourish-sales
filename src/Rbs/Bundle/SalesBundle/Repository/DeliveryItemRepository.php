@@ -130,6 +130,7 @@ class DeliveryItemRepository extends EntityRepository
     protected function handleSearchByDate($query, $startDate)
     {
         if (!empty($startDate)) {
+            $startDate = date('Y-m-d', strtotime($startDate));
             $query->andWhere('d.createdAt >= :startDate');
             $query->andWhere('d.createdAt <= :endDate');
             $query->setParameter('startDate', $startDate.' 00:00:00');

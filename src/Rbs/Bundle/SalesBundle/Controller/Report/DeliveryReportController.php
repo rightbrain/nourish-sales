@@ -32,9 +32,6 @@ class DeliveryReportController extends Controller
         $data = $request->query->get($form->getName());
         $pdf_create = $request->query->get('pdf_create');
         $formSearch = $this->createForm($form, $data);
-        if ($request->query->get('delivery_report[start_date]', null, true)) {
-            $data['start_date'] = date('Y-m-d', strtotime($data['start_date']));
-        }
 
         $formSearch->submit($data);
         $deliveries = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItemsByDepo($data);
