@@ -44,6 +44,7 @@ class OrderItemForm extends AbstractType
                         ->where('i.deletedAt IS NULL')
                         ->orderBy('i.name','ASC')
                         ->join('i.bundles', 'bundles')
+                        ->where('i.status=1')
                         ->andWhere('bundles.id = :saleBundleId')->setParameter('saleBundleId', RbsSalesBundle::ID);
                     if ($itemTypeId) {
                         $qb->join('i.itemType', 'it');

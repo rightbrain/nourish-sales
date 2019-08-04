@@ -38,6 +38,7 @@ class ItemRepository extends EntityRepository
         $query->addSelect('c.name as category');
         $query->addSelect('it.itemType as itemType');
         $query->where('b.id = :bundle');
+        $query->andWhere('i.status=1');
         $query->setParameter('bundle', RbsSalesBundle::ID);
         $query->groupBy('i.id');
         $query->orderBy('i.name');
