@@ -305,7 +305,7 @@ class AgentController extends BaseController
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_USER_CREATE, ROLE_ADMIN")
      */
-    public function agentImprotAction(Request $request)
+    public function agentImportAction(Request $request)
     {
         set_time_limit(0);
         $group = $this->getDoctrine()->getRepository('RbsUserBundle:Group')->findOneBy(array('name'=>'Agent User'));
@@ -316,6 +316,7 @@ class AgentController extends BaseController
             $form->handleRequest($request);
 
             if ($form->isValid()) {
+                $agent_type = $request->request->get('agent_type');
                 $file = $upload->getFile();
                 $fileName = md5(uniqid()).'.csv';
                 $file->move(
@@ -358,21 +359,77 @@ class AgentController extends BaseController
 
                     $exitingAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array('agentID'=>$agentCode));
 
-                    if($exitingAgent){
+                    if($exitingAgent && $agent_type=='FEED'){
+                        continue;
+                    }
+
+                    $exitingChickAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->findOneBy(array('chickAgentID'=>$agentCode));
+
+                    if($exitingChickAgent && $agent_type=='CHICK'){
                         continue;
                     }
                     $zillaObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findOneBy(array('name'=>$zilla,'level'=>4));
 
-                    $upazillaObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findOneBy(array('name'=>$upazilla,'level'=>5));
+                    $upazillaObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findOneBy(array('name'=>$upazilla,'level'=>5,'parentId'=>$zillaObj?$zillaObj->getId():''));
 
                     $depotObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->findOneBy(array('name'=>$depot));
 
                     $exitingUser = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findOneBy(array('email'=>$email));
                     $exitingUserByusername = $this->getDoctrine()->getRepository('RbsUserBundle:User')->findOneBy(array('username'=>$username));
-                    $exitingProfileByCellphone = $this->getDoctrine()->getRepository('RbsUserBundle:Profile')->findOneBy(array('cellphone'=>'+880'.$cellPhone));
+                    $exitingProfileByCellphone = $this->getDoctrine()->getRepository('RbsUserBundle:Profile')->findOneBy(array('cellphone'=>'+88'.$cellPhone));
 
                     if($exitingUser || $exitingUserByusername || $exitingProfileByCellphone){
+                        if($exitingUser){
+                            $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($exitingUser->getAgent()?$exitingUser->getAgent()->getId():null);
+                        }elseif ($exitingUserByusername){
+                            $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($exitingUserByusername->getAgent()?$exitingUserByusername->getAgent()->getId():null);
+                        }elseif ($exitingUser && $exitingUserByusername){
+                            $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($exitingUserByusername->getAgent()?$exitingUserByusername->getAgent()->getId():null);
+                        }
+                        if($exitingProfileByCellphone){
+                            $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($exitingProfileByCellphone->getUser()->getAgent()?$exitingProfileByCellphone->getUser()->getAgent()->getId():null);
+                        }
+
+                        if (!$agent){
+                            continue;
+                        }
+
+                        if($agent_type=='FEED'){
+                            $agent->setAgentID($agentCode);
+                            $agent->setDepo($depotObj);
+                        }
+
+                        if($agent_type=='CHICK'){
+                            $agent->setChickAgentID($agentCode);
+                            $agent->setDepotForChick($depotObj);
+                        }
+                        $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->update($agent);
+                        if($openingBalance!='' && in_array($openingBalanceType,array('CR','DR'))){
+                            $payment = new Payment();
+                            if($agent_type=='FEED'){
+                                $agent->setOpeningBalance($openingBalance);
+                                $agent->setOpeningBalanceType($openingBalanceType);
+                                $agent->setOpeningBalanceFlag(true);
+                            }
+                            if ($agent_type=='CHICK'){
+                                $agent->setOpeningBalanceForChick($openingBalance);
+                                $agent->setOpeningBalanceTypeForChick($openingBalanceType);
+                                $agent->setOpeningBalanceFlag(true);
+                            }
+                            $payment->setAgent($agent);
+                            $payment->setAmount($agent->getOpeningBalance());
+                            $payment->setPaymentMethod(Payment::PAYMENT_METHOD_OPENING_BALANCE);
+                            $payment->setRemark('Agents opening balance.');
+                            $payment->setFxCx($agent_type=='CHICK'?'CK':'FD');
+                            $payment->setTransactionType($agent->getOpeningBalanceType());
+                            $payment->setVerified(true);
+                            $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->create($payment);
+
+
+                        }
+
                         continue;
+
                     }
 
                     $user->setEnabled(true);
@@ -388,27 +445,40 @@ class AgentController extends BaseController
                     $user->addGroup($group);
                     $this->getDoctrine()->getManager()->persist($user);
                     $profile->setUser($user);
-                    $profile->setCellphone('+880'.$cellPhone);
+                    $profile->setCellphone('+88'.$cellPhone);
                     $profile->setFullName($fullName);
                     $profile->setAddress($address);
                     $profile->setDesignation($designation);
                     $this->getDoctrine()->getManager()->persist($profile);
                     $agent->setUser($user);
                     $agent->setItemType($this->getDoctrine()->getRepository('RbsCoreBundle:ItemType')->find($itemType));
-                    $agent->setDepo($depotObj?$depotObj:null);
 
-                    $agent->setAgentID($agentCode);
+                    $agent->setDepo($depotObj&&$agent_type=='FEED'?$depotObj:null);
+
+                    $agent->setDepotForChick($depotObj&&$agent_type=='CHICK'?$depotObj:null);
+
+                    $agent->setAgentID($agentCode&&$agent_type=='FEED'?$agentCode:null);
+                    $agent->setChickAgentID($agentCode&&$agent_type=='CHICK'?$agentCode:null);
+
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
 
                     if($openingBalance!='' && in_array($openingBalanceType,array('CR','DR'))){
                         $payment = new Payment();
-                        $agent->setOpeningBalance($openingBalance);
-                        $agent->setOpeningBalanceType($openingBalanceType);
-                        $agent->setOpeningBalanceFlag(true);
+                        if($agent_type=='FEED'){
+                            $agent->setOpeningBalance($openingBalance);
+                            $agent->setOpeningBalanceType($openingBalanceType);
+                            $agent->setOpeningBalanceFlag(true);
+                        }
+                        if ($agent_type=='CHICK'){
+                            $agent->setOpeningBalanceForChick($openingBalance);
+                            $agent->setOpeningBalanceTypeForChick($openingBalanceType);
+                            $agent->setOpeningBalanceFlag(true);
+                        }
                         $payment->setAgent($agent);
                         $payment->setAmount($agent->getOpeningBalance());
                         $payment->setPaymentMethod(Payment::PAYMENT_METHOD_OPENING_BALANCE);
                         $payment->setRemark('Agents opening balance.');
+                        $payment->setFxCx($agent_type=='CHICK'?'CK':'FD');
 //                    $payment->setDepositDate(date("Y-m-d"));
                         $payment->setTransactionType($agent->getOpeningBalanceType());
                         $payment->setVerified(true);
@@ -432,6 +502,32 @@ class AgentController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+    /**
+     * @Route("/agent/username/change", name="agent_username_change")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_USER_CREATE, ROLE_ADMIN")
+     */
+    public function changeAgentUserName(){
+        set_time_limit(0);
+        $agents = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->agents();
+        /** @var Agent $agent */
+        foreach ($agents as $agent){
+
+            $user = $this->getDoctrine()->getRepository('RbsUserBundle:User')->find($agent->getUser()->getId());
+            if($agent->getAgentID()==$user->getUsername()){
+                $user->setUsername(ltrim($user->getProfile()->getCellphone(),"+88"));
+                $this->getDoctrine()->getRepository('RbsUserBundle:User')->update($user);
+
+            }
+
+        }
+        $this->get('session')->getFlashBag()->add(
+            'success',
+            'Agent Username changed successfully'
+        );
+        return $this->redirect($this->generateUrl('agents_home'));
     }
 
     public function getCSVFileData($webPath) {

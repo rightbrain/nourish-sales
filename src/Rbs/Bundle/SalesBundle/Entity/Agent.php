@@ -17,7 +17,6 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  * @ORM\Table(name="sales_agents")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\AgentRepository")
  * @ORMSubscribedEvents()
- * @UniqueEntity("agentID")
  */
 class Agent
 {
@@ -85,6 +84,20 @@ class Agent
     private $openingBalanceType;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="opening_balance_for_chick", type="float", nullable=true)
+     */
+    private $openingBalanceForChick = 0;
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="opening_balance_type_for_chick", type="string", length=255, columnDefinition="ENUM('DR', 'CR')", nullable=true)
+     */
+    private $openingBalanceTypeForChick;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="opening_balance_flag", type="boolean", nullable=true)
@@ -94,10 +107,16 @@ class Agent
     /**
      * @var string
      *
-     * @ORM\Column(name="agent_ID", type="string", length=255, nullable=false, unique=true)
-     * @Assert\NotBlank()
+     * @ORM\Column(name="agent_ID", type="string", length=255, nullable=true)
      */
     private $agentID;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="chick_agent_id", type="string", length=255, nullable=true)
+     */
+    private $chickAgentID;
 
     /**
      * @var ItemType
@@ -127,9 +146,18 @@ class Agent
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Depo")
      * @ORM\JoinColumn(name="depo", nullable=true)
-     * @Assert\NotBlank()
+     *
      */
     private $depo;
+
+    /**
+     * @var Depo
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Depo")
+     * @ORM\JoinColumn(name="depot_for_chick", nullable=true)
+     *
+     */
+    private $depotForChick;
 
     /**
      * @var ArrayCollection
@@ -343,6 +371,70 @@ class Agent
     public function setOpeningBalanceType($openingBalanceType)
     {
         $this->openingBalanceType = $openingBalanceType;
+    }
+
+    /**
+     * @return float
+     */
+    public function getOpeningBalanceForChick()
+    {
+        return $this->openingBalanceForChick;
+    }
+
+    /**
+     * @param float $openingBalanceForChick
+     */
+    public function setOpeningBalanceForChick($openingBalanceForChick)
+    {
+        $this->openingBalanceForChick = $openingBalanceForChick;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOpeningBalanceTypeForChick()
+    {
+        return $this->openingBalanceTypeForChick;
+    }
+
+    /**
+     * @param array $openingBalanceTypeForChick
+     */
+    public function setOpeningBalanceTypeForChick($openingBalanceTypeForChick)
+    {
+        $this->openingBalanceTypeForChick = $openingBalanceTypeForChick;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChickAgentID()
+    {
+        return $this->chickAgentID;
+    }
+
+    /**
+     * @param string $chickAgentID
+     */
+    public function setChickAgentID($chickAgentID)
+    {
+        $this->chickAgentID = $chickAgentID;
+    }
+
+    /**
+     * @return Depo
+     */
+    public function getDepotForChick()
+    {
+        return $this->depotForChick;
+    }
+
+    /**
+     * @param Depo $depotForChick
+     */
+    public function setDepotForChick($depotForChick)
+    {
+        $this->depotForChick = $depotForChick;
     }
 
     /**

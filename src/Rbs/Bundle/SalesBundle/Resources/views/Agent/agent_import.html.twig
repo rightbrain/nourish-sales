@@ -10,6 +10,15 @@
             </div>
             <div class="portlet-body">
                 {{ form_start(form) }}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label required" for="agent_type">Agent Type</label>
+                    <div class="col-sm-4">
+                        <select name="agent_type" id="agent_type" class="form-control">
+                            <option value="FEED">Feed</option>
+                            <option value="CHICK">Chick</option>
+                        </select>
+                    </div>
+                </div>
                 {{ form_row(form.file) }}
                 {{ form_end(form) }}
             </div>
