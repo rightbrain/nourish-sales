@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\CoreBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Rbs\Bundle\UserBundle\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
@@ -20,6 +21,12 @@ class DepoForm extends AbstractType
     {
         $builder
             ->add('name')
+            ->add('depotType', 'choice', array(
+                'choices'  => array(
+                    'FEED' => Depo::DEPOT_TYPE_FEED,
+                    'CHICK' => Depo::DEPOT_TYPE_CHICK
+                ),
+            ))
             ->add('description', 'textarea', array(
                 'required' => false
             ))

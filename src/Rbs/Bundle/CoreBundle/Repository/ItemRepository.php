@@ -3,6 +3,7 @@ namespace Rbs\Bundle\CoreBundle\Repository;
 
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\SalesBundle\RbsSalesBundle;
 
 class ItemRepository extends EntityRepository
@@ -58,6 +59,15 @@ class ItemRepository extends EntityRepository
             $query->andWhere('l.parentId = :zilla');
             $query->setParameter('zilla', $zilla);
         }
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getChickItems() {
+        $query = $this->createQueryBuilder('i');
+        $query->join('i.itemType', 'it');
+        $query->where('it.itemType = :itemType');
+        $query->setParameter('itemType', ItemType::Chick);
 
         return $query->getQuery()->getResult();
     }

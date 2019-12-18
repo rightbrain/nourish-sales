@@ -28,7 +28,7 @@
                                             <th colspan="4"><h4>Agent Profile Information</h4></th>
                                         </tr>
                                         <tr>
-                                            <th><h4 class="modal-title">Agent ID <span class="badge badge-primary">{{ agent.agentID }}</span></h4></th>
+                                            <th><h4 class="modal-title">Agent ID <span class="badge badge-primary">{{ agent.agentType=='CHICK'?agent.chickAgentID:agent.agentID }}</span></h4></th>
                                             <td>
                                                 {% if agent.user.profile.path != null %}
                                                     <img src='{{ asset('uploads/user/'~agent.user.profile.path) }}' style="width: 60px;height: 60px;"/>
@@ -41,7 +41,7 @@
                                             <th>Agent Name</th>
                                             <td>{{ agent.user.profile.fullname | default('') }}</td>
                                             <th>Cellphone</th>
-                                            <td>{{ agent.user.profile.cellphone | default('') }}</td>
+                                            <td>{{ agent.agentType=='CHICK'? agent.user.profile.cellphoneForChick | default(''):agent.user.profile.cellphone | default('') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Created By</th>

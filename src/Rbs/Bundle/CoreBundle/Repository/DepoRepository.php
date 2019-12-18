@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 
 /**
  * DepoRepository
@@ -64,6 +65,16 @@ class DepoRepository extends EntityRepository
         $query->select('d.name');
         $query->where('d.deletedAt IS NULL');
         $query->andWhere('d.usedInTransport = 1');
+        $query->orderBy('d.name', 'ASC');
+
+        return $query->getQuery()->getResult();
+    }
+    public function getAllActiveDepotForChick()
+    {
+        $query = $this->createQueryBuilder('d');
+        $query->where('d.deletedAt IS NULL');
+        $query->andWhere('d.depotType = :type');
+        $query->setParameter('type',Depo::DEPOT_TYPE_CHICK);
         $query->orderBy('d.name', 'ASC');
 
         return $query->getQuery()->getResult();

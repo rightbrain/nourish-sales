@@ -94,6 +94,24 @@ class LoadVehicleDatatable extends BaseDatatable
                         'render_if' => array('isStart', 'isInFalse', 'isDeliveryTrue', 'isShipped', 'isDeliveryShipped')
                     ),
                     array(
+                        'route' => 'truck_start',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Start Load',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'disable-action',
+                            'class' => 'btn btn-primary btn-xs delete-list-btn',
+                            'role' => 'button'
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_CHICK_TRUCK_START',
+                        'render_if' => array('isStart', 'isInFalse', 'isDeliveryTrue', 'isShipped', 'isDeliveryShipped')
+                    ),
+                    array(
                         'route' => 'truck_finish',
                         'route_parameters' => array(
                             'id' => 'id'
@@ -109,6 +127,24 @@ class LoadVehicleDatatable extends BaseDatatable
                         'confirm' => false,
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_TRUCK_FINISH',
+                        'render_if' => array('isFinish', 'isStartFalse', 'isShipped', 'isDeliveryShipped')
+                    ),
+                    array(
+                        'route' => 'chick_truck_finish',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Finish Load',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'disable-action',
+                            'class' => 'btn btn-primary btn-xs delete-list-btn green',
+                            'role' => 'button'
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_CHICK_TRUCK_FINISH',
                         'render_if' => array('isFinish', 'isStartFalse', 'isShipped', 'isDeliveryShipped')
                     )
                 )

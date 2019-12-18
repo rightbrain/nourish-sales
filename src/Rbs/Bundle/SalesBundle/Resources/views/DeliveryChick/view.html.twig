@@ -1,0 +1,196 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Orders {% endblock %}
+{% block body %}
+{% if delivery.deliveryAdd == false %}
+<div class="action-content-cancel">
+    <form id="delivery-item-form sf" action="{{ path('chick_delivery_save', {id: delivery.id }) }}" method="post" novalidate="novalidate">
+    <div class="modal-header portlet-title blue">
+        <h4 class="modal-title">Delivery ID <span class="badge badge-primary">
+                {{ delivery.id }}
+            </span></h4>
+        <h4 class="modal-title">Order No <span class="badge badge-primary">
+            {% for index, order in delivery.orders %}
+                {{ (delivery.orders|length) > (index+1) ? (order.id)~',' : (order.id)  }}
+            {% endfor %}
+            </span></h4>
+    </div>
+    <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="portlet">
+                        <div class="portlet-title">
+                            <div class="caption"> Order Items </div>
+                        </div>
+                        <div class="portlet-body">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>SL</th>
+                                    <th>Order Id</th>
+                                    <th>Code</th>
+                                    <th>Name Of Agent</th>
+                                    <th>Location</th>
+                                    <th>Item</th>
+                                    <th>Rate</th>
+                                    <th class="align-right">Actual</th>
+                                    <th class="align-right">Bonus</th>
+                                    <th class="align-right">Total</th>
+                                    <th class="align-center">Mor.</th>
+                                    <th class="align-right">Actual Total</th>
+                                </tr>
+                                </thead>
+                                <tbody class="orderItems">
+                                {% set totalBonusQuantity = 0 %}
+                                {% set totalQuantity = 0 %}
+                                {% set totalDamageQty = 0 %}
+                                {% for order in delivery.orders %}
+
+                                    {% for index, item in order.orderItems %}
+                                        {% set bonusQuantity = (item.quantity/item.item.packetWeight)|number_format(0,'.') %}
+                                        {% set totalBonusQuantity = totalBonusQuantity + bonusQuantity %}
+                                        {% set totalDamageQty = totalDamageQty + item.damageQuantity %}
+                                        {% if item.quantity != 0 %}
+                                            {% set totalQuantity = totalQuantity + item.quantity %}
+                                            {% if order.deliveryState == 'PARTIALLY_SHIPPED' and partialItems[order.id][item.id] is defined %}
+                                                {% if (item.quantity > partialItems[order.id][item.id]['delivered']) %}
+                                                    <tr>
+                                                        <td>{{ index+1 }}</td>
+                                                        <td>{{ order.id }}</td>
+                                                        <td>{{ order.agent.chickAgentID }}</td>
+                                                        <td>{{ order.agent.user.profile.fullName }}</td>
+                                                        <td>{{ order.agent.user.zilla.name }}</td>
+                                                        <td>{{ item.item.name }}</td>
+                                                        <td>{{ item.price }}</td>
+                                                        <td class="align-right item-qty">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
+                                                        <td class="align-right">{{ bonusQuantity|number_format(0,'.') }}</td>
+                                                        <td class="align-right">{{ item.quantity + bonusQuantity }}</td>
+                                                        <td class="damage"><input type="text" name="damage-qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall damage-qty" value="{{ item.damageQuantity }}"></td>
+                                                        <td class="align-right">{{ item.quantity + bonusQuantity -item.damageQuantity }}</td>
+                                                        <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
+                                                        <td class="deliver"><input type="hidden" name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
+                                                    </tr>
+                                                {% endif %}
+                                            {% else %}
+                                                <tr>
+                                                    <td>{{ index+1 }}</td>
+                                                    <td>{{ order.id }}</td>
+                                                    <td>{{ order.agent.chickAgentID }}</td>
+                                                    <td>{{ order.agent.user.profile.fullName }}</td>
+                                                    <td>{{ order.agent.user.zilla.name }}</td>
+                                                    <td>{{ item.item.name }}</td>
+                                                    <td>{{ item.price }}</td>
+                                                    <td class="align-right item-qty">
+                                                        {{ item.quantity }}
+
+                                                    </td>
+                                                    <td class="align-right">{{ bonusQuantity }}</td>
+                                                    <td class="align-right">{{ item.quantity + bonusQuantity }}</td>
+                                                    <td class="damage"><input type="text" name="damage-qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall allDamageQty damage-qty" value="{{ item.damageQuantity }}"></td>
+                                                    <td class="align-right totalDeliveryQty">{{ item.quantity - item.damageQuantity }}</td>
+                                                    <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
+                                                    <td class="deliver"><input type="hidden" name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="{{ item.quantity }}"></td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="align-right bold" colspan="2">Total</td>
+                                    <td class="align-right bold">{{ totalQuantity }}</td>
+                                    <td class="align-right bold">{{ totalBonusQuantity }}</td>
+                                    <td class="align-right bold">{{ totalQuantity + totalBonusQuantity }}</td>
+                                    <td class="align-right bold total_damage">{{ totalDamageQty }}</td>
+                                    <td class="align-right bold grandTotalDeliveryQty">{{ totalQuantity-totalDamageQty }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <input type="hidden" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">
+                    </div>
+
+                    <div class="portlet">
+                        <div class="portlet-title partial-delivered-items">
+                            <div class="caption"> Vehicles Info </div>
+                        </div>
+                        <div class="portlet-body partial-delivered-items">
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>Sl</th>
+                                    <th>Vehicle</th>
+                                    <th>Driver Name</th>
+                                    <th>Vehicle Number</th>
+                                    <th>Mobile Number</th>
+                                    <th>Vehicle In</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% set vehicleCount = 0 %}
+                                {% for index, vehicle in delivery.vehicles %}
+                                    {% if vehicle.shipped == 0 and vehicle.vehicleIn != null %}
+                                    <tr>
+                                        <td>{{ index + 1 }}</td>
+                                        <td>{{ vehicle.id }}</td>
+                                        <td>{{ vehicle.driverName }}</td>
+                                        <td>{{ vehicle.truckNumber }}</td>
+                                        <td>{{ vehicle.driverPhone }}</td>
+                                        <td>{{ vehicle.vehicleIn | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
+                                    </tr>
+                                    {% set vehicleCount = vehicleCount+1 %}
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="modal-footer">
+        {% if vehicleCount > 0 %}
+            <button type="submit" class="btn blue green" id="save-chick-delivery"> Delivery Set </button>
+        {% endif %}
+        <a class="btn default" data-dismiss="modal"> Close </a>
+    </div>
+    </form>
+</div>
+
+{% endif %}
+{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+        'assets/global/plugins/datatables/examples/resources/bootstrap/3/dataTables.bootstrap.css'
+        'assets/global/plugins/bootstrap-toastr/toastr.min.css'
+        "bundles/rbssales/css/style.css"
+        filter='cssrewrite' output='css/compiled/datatable.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        'assets/global/plugins/datatables/all.min.js'
+        'assets/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js'
+        'assets/global/plugins/moment.min.js'
+        'assets/global/plugins/bootstrap-toastr/toastr.min.js'
+        'bundles/rbssales/js/delivery-for-chick.js' %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    {#{{ datatable_render_js(datatable) }}#}
+{% endblock %}
+
+{% block documentReady %}
+    {{ parent() }}
+    Delivery.init();
+{% endblock %}
+

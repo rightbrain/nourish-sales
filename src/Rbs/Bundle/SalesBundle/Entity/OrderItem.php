@@ -46,6 +46,18 @@ class OrderItem
      * @ORM\Column(name="quantity", type="integer")
      */
     private $quantity = 0;
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="damage_quantity", type="integer")
+     */
+    private $damageQuantity = 0;
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="bonus_quantity", type="integer")
+     */
+    private $bonusQuantity = 0;
 
     /**
      * @var float
@@ -113,6 +125,38 @@ class OrderItem
     public function setQuantity($quantity)
     {
         $this->quantity = $quantity;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDamageQuantity()
+    {
+        return $this->damageQuantity;
+    }
+
+    /**
+     * @param int $damageQuantity
+     */
+    public function setDamageQuantity($damageQuantity)
+    {
+        $this->damageQuantity = $damageQuantity;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBonusQuantity()
+    {
+        return $this->bonusQuantity;
+    }
+
+    /**
+     * @param int $bonusQuantity
+     */
+    public function setBonusQuantity($bonusQuantity)
+    {
+        $this->bonusQuantity = $bonusQuantity;
     }
 
     /**
@@ -197,5 +241,9 @@ class OrderItem
     public function getDeliveredQuantity()
     {
         return ($this->getQuantity() - $this->getPaidAmount());
+    }
+
+    public function calculateBonusQuantity(){
+      return  $this->getQuantity()/$this->getItem()->getPacketWeight();
     }
 }

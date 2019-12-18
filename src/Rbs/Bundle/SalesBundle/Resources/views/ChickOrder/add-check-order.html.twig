@@ -19,160 +19,14 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-globe"></i>Chick Orders
+                    <i class="fa fa-globe"></i>Chick Orders &nbsp; &nbsp; &nbsp;  Date: {{ date }}
                 </div>
+                <a href="javascript:void(0)" title="Stock Update" class="stock_item pull-right btn btn-success"><i class="fa fa-edit fa-2x"></i></a>
             </div>
             <div class="portlet-body">
                 {{ include('RbsSalesBundle:ChickOrder:_filter_add_check_form.html.twig') }}
 
-
 {#{{ dump(agents) }}#}
-                    <div class="portlet box blue">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                <i class="fa fa-gift"></i>Input Order Information </div>
-                        </div>
-                        <div class="portlet-body">
-                            {% if agents is not empty %}
-
-
-                            <div class="tabbable-custom nav-justified">
-                                <ul class="nav nav-tabs nav-justified">
-                                    {% for regionId, agent in agents %}
-                                        <li class="{% if loop.first %}{{ 'active' }}{% endif %}">
-                                            <a href="#region_{{ regionId }}" data-toggle="tab"> {{ regions[regionId] }} </a>
-                                        </li>
-
-                                    {% endfor %}
-
-                                </ul>
-                                <form method="post" action="{{ path('order_chick_save')  }}" id="chick-order-create-form">
-                                    <input name="order_date" type="hidden" class="form-control hidden-print"
-                                           value="{{ orderDate }}">
-                                <div class="tab-content">
-
-                                    {% for regionId, agent in agents %}
-                                        <div class="tab-pane {% if loop.first %}{{ 'active' }}{% endif %}" id="region_{{ regionId }}">
-
-                                                <input style="float: right" type="button" name="add" value="Add Item" class="btn btn-primary tr_clone_add">
-                                            <table class="check_order_generate table">
-                                                <thead>
-                                                    <tr>
-                                                        <td style="width: 25%">Name</td>
-                                                        {#<td class="col-md-1">Upazila</td>#}
-                                                        <td style="width: 17%">Depot</td>
-                                                        <td style="width: 17%">Item</td>
-                                                        <td style="width: 10%">Quantity</td>
-                                                        <td style="width: 10%">Unit Price</td>
-                                                        <td style="width: 17%">Amount</td>
-                                                        <td style="width: 5%">Action</td>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                {% if regionId in zoneAllOrders|keys %}
-                                                    {% for orderItem in zoneAllOrders[regionId] %}
-
-                                                        <tr class="tr_clone">
-                                                            <td style="position: relative">
-                                                                <div class="order_status old_item">Old</div>
-                                                                <input type="hidden" name="order_id[]" value="{{ orderItem.order.id }}">
-                                                                <input type="hidden" name="orderItem_id[]" value="{{ orderItem.id }}">
-                                                                <select class="form-control agent_id" name="agentId[]">
-                                                                    <option value="">Select Agent</option>
-                                                                    {% for value in agent %}
-                                                                        <option value="{{ value.id }}"{% if  value.id == orderItem.order.agent.id %}{{ ' selected="selected"' }}{% endif %}>{{ value.idName }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                            </td>
-                                                            {#<td>{{ value.user.upozilla }}</td>#}
-                                                            <td>
-                                                                <select class="form-control depot" name="depot[]">
-                                                                    <option value="">Select Depot</option>
-                                                                    {% for depot in depots %}
-                                                                        <option value="{{ depot.id }}" {% if  depot.id == orderItem.order.depo.id %}{{ ' selected="selected"' }}{% endif %}>{{ depot.name }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                            </td>
-                                                            <td>
-                                                                <select class="form-control item" name="item[]">
-                                                                    <option value="">Select Item</option>
-                                                                    {% for item in chickItems %}
-                                                                        <option value="{{ item.id }}" {% if  item.id == orderItem.item.id %}{{ ' selected="selected"' }}{% endif %}>{{ item.name }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                            </td>
-                                                            <td><input autocomplete="off" class="form-control quantity" type="text" name="quantity[]" value="{% if orderItem.quantity !=''%}{{ orderItem.quantity }}{% endif %}"></td>
-                                                            <td><input class="form-control itemPrice" type="text" name="itemPrice[]" value="{% if orderItem.price !=''%}{{ orderItem.price }}{% endif %}"></td>
-                                                            <td><input class="form-control total_amount" readonly="readonly" type="text" name="total_amount[]" value="{% if orderItem.totalAmount !=''%}{{ orderItem.totalAmount }}{% endif %}"></td>
-                                                            <td><button type="button" value="{{ orderItem.order.id }}" data-order_id="{{ orderItem.order.id }}" class="btn btn-danger btn-xs remove_item"><i class="fa fa-remove"></i> </button></td>
-                                                        </tr>
-                                                    {% endfor %}
-                                                    {% else %}
-                                                        <tr class="tr_clone">
-                                                            <td style="position: relative">
-                                                                <div class="order_status new_item">New</div>
-                                                                <input type="hidden" name="order_id[]" value="">
-                                                                <input type="hidden" name="orderItem_id[]" value="">
-                                                                <select class="form-control agent_id" name="agentId[]">
-                                                                    <option value="">Select Agent</option>
-                                                                    {% for value in agent %}
-                                                                        <option value="{{ value.id }}">{{ value.idName }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                            </td>
-                                                            {#<td>{{ value.user.upozilla }}</td>#}
-                                                            <td>
-                                                                <select class="form-control depot hidden-print" name="depot[]">
-                                                                    <option value="">Select Depot</option>
-                                                                    {% for depot in depots %}
-                                                                        <option value="{{ depot.id }}">{{ depot.name }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                            </td>
-                                                            <td>
-                                                                <select class="form-control item hidden-print" name="item[]">
-                                                                    <option value="">Select Item</option>
-                                                                    {% for item in chickItems %}
-                                                                        <option value="{{ item.id }}">{{ item.name }}</option>
-                                                                    {% endfor %}
-                                                                </select>
-                                                            </td>
-                                                            <td><input autocomplete="off" class="form-control quantity" type="text" name="quantity[]" value=""></td>
-                                                            <td><input class="form-control itemPrice" type="text" name="itemPrice[]" value=""></td>
-                                                            <td><input class="form-control total_amount" readonly="readonly" type="text" name="total_amount[]" value=""></td>
-                                                            <td><button type="button" value="" data-order_id="0" class="btn btn-danger btn-xs remove_item hidden"><i class="fa fa-remove"></i> </button></td>
-                                                        </tr>
-                                                {% endif %}
-
-                                                </tbody>
-
-                                            </table>
-
-
-
-
-                                        </div>
-
-
-                                    {% endfor %}
-
-
-                                </div>
-
-                                    <div class="row" style="    border-top: 1px solid #efefef; padding-top: 10px;">
-                                        <div class="col-md-6" style="text-align: center">
-                                            <input type="submit" class="btn btn-success" value="Order Add" name="chick_add">
-                                        </div>
-                                    </div>
-
-                                </form>
-                            </div>
-
-                            {% endif %}
-
-                        </div>
-                    </div>
-
 
             </div>
         </div>
@@ -201,26 +55,36 @@
             padding: 0px 3px;
             font-weight: bold;
         }
-    </style>
-{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {% stylesheets  filter='cssrewrite'
-    "assets/global/plugins/jquery-multi-select/css/multi-select.css"
-    'assets/global/plugins/bootstrap-toastr/toastr.min.css'
-    %}
-    <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
+        .fixed_header{
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+
+        .fixed_header tbody{
+            display:block;
+            width: 100%;
+            overflow: auto;
+            height: 400px;
+        }
+
+        .fixed_header thead tr {
+            display: flex;
+        }
+
+        .fixed_header thead {
+            background: black;
+            color:#fff;
+        }
+    </style>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-    "assets/global/plugins/select2/select2.min.js"
-    "assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js"
-    'assets/global/plugins/bootstrap-toastr/toastr.min.js'
-    'bundles/rbssales/js/chick-order.js' %}
+    'bundles/rbssales/js/daily-depot-stock.js'
+    'bundles/rbssales/js/chick-order-temp.js' %}
     <script src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
@@ -229,8 +93,25 @@
 
 {% block documentReady %}
     {{ parent() }}
+    DailyDepotSock.ManageInit();
+    ChickOrderTemp.ManageInit();
 
-    ChickOrder.ManageInit();
-    $("select[multiple=multiple]").multiSelect();
-    {#$('.check_order_generate tr:not(:first-child)').find('button').removeClass('hidden');#}
+    function toggleIcon(e) {
+    $(e.target)
+    .prev('.panel-heading')
+    .find(".more-less")
+    .toggleClass('fa-plus fa-minus');
+    }
+    $('.panel-group').on('hidden.bs.collapse', toggleIcon);
+    $('.panel-group').on('shown.bs.collapse', toggleIcon);
+
+    $(".myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    console.log(value);
+    var tableId = $(this).next('table').attr('id');
+    $("#"+tableId+" tbody tr").filter(function() {
+    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+    });
+
 {% endblock documentReady %}

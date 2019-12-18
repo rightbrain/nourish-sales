@@ -1,30 +1,106 @@
 <div class="row">
     <div class="col-md-12">
-        <form class="form-horizontal" method="post" action="{{ path('order_chick_add') }}">
-            <div class="form-group">
+        <form class="form-horizontal" method="post" action="{{ path('order_chick_save', { 'id': depot.id }) }}">
+            <div class="form-group visible-print-inline">
                 <label class="col-sm-2 control-label required">Date:
                     <span class="visible-print-inline" style="margin-right: 50px">{{ date }}</span>
                 </label>
                 <div class="col-sm-4">
-                    <input name="date" type="text" autocomplete="off"
+                    <input name="date" type="hidden" autocomplete="off"
                            class="date-picker form-control hidden-print"
                            value="{{ date }}">
                 </div>
 
             </div>
-            <div class="form-group">
-                <label class="col-sm-2 control-label required">
-                    Regions:
-                </label>
-                <div class="col-md-8">
-                    <select multiple="multiple" class="form-control hidden-print" name="region[]">
-                        {% for regionId, regionName in regions %}
-                            <option value="{{ regionId }}"  {% if regionId in selectedRegions %}{{ ' selected="selected"' }}{% endif %}>{{ regionName }}</option>
-                        {% endfor %}
-                    </select>
+            <div class="row">
+                <div class="col-md-12">
 
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <td style="width: 5%" rowspan="2">Agent Code</td>
+                            <td style="width: 15%" rowspan="2">Name</td>
+                            {% for item in chickItems %}
+                                <td>
+                                    {{ item.sku }}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        <tr>
+                            {% for item in chickItems %}
+                                <td style="width: 9%">
+                                    <input style="display: none" class="form-control item_stock" type="text" data-id="{{ dailyStocks[depot.id][item.id]['id'] }}" data-item="{{ dailyStocks[depot.id][item.id]['iId'] }}" value="{{ dailyStocks[depot.id][item.id]['onHand'] }}">
+                                    <input type="hidden" data-daily-stock-id="{{ dailyStocks[depot.id][item.id]['id'] }}" class="item_{{ dailyStocks[depot.id][item.id]['iId'] }}">
+                                    <span class="stock_item item_{{ dailyStocks[depot.id][item.id]['iId'] }}_quantity">{{ dailyStocks[depot.id][item.id]['onHand'] - dailyStocks[depot.id][item.id]['onHold'] }}</span>
+                                </td>
+                            {% endfor %}
+                        </tr>
+                        </thead>
+                    </table>
+                    <div class="panel-group" id="accordion" style="overflow-y: scroll;height: 430px; margin-right: -15px">
+                    {% for region in locationsRegions %}
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 style="text-align: center" class="panel-title">
+                                    <a class="card-header bold" data-toggle="collapse" data-parent="#accordion" href="#{{ region.id }}">
+                                        {{ region.name }}<i style="float: right" class="more-less fa fa-plus"></i></a>
+                                </h4>
+                            </div>
+                            <div id="{{ region.id }}" class="panel-collapse collapse">
+                                <div class="panel-body" style="padding-left: 1px; padding-right: 1px">
+                                    <input type="text" class="form-control myInput" value="" placeholder="Search....">
+                                    <table id="table_{{ region.id }}" class="table table-bordered table-striped chick-order-region-summary">
+                                        <thead>
+                                        <tr>
+                                            <td width="20%" colspan="2">Total</td>
+                                            {% for item in chickItems %}
+                                                <td data-region-item="{{ region.id }}_{{ item.id }}" data-region-item-id="{{ item.id }}" class="region region_item_total_{{ region.id }}_{{ item.id }}" style="width: 9%">
+                                                </td>
+                                            {% endfor %}
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        {% for district in locationsDistricts %}
+                                            {% if district.parentId == region.id %}
+                                                <tr>
+                                                    <td colspan="20" class="col-md-1 bold" style="width: 100px;">{{ district.name }}</td>
+                                                </tr>
+                                                {% if district.id in agentsList|keys %}
+
+                                                    {% for agent in agentsList[district.id] %}
+                                                        <tr>
+                                                            <td style="width: 5%">
+                                                                <input type="hidden" class="agent_id" name="agent[]" value="{{ agent['id'] }}">
+                                                                {{ agent['chickAgentID'] }}
+                                                            </td>
+                                                            <td style="width: 15%">{{ agent['fullName'] }}</td>
+                                                            {% for item in chickItems %}
+                                                                <td style="width: 9%">
+
+                                                                    <input type="text" data-region-id="{{ region.id }}" data-item-id="{{ ordersTemp[agent['id']][item.id]['iId'] }}" data-order-id="{{ ordersTemp[agent['id']][item.id]['oId'] }}"  data-order-item-id="{{ ordersTemp[agent['id']][item.id]['oiId'] }}" class="form-control item_quantity temp_item_qty_{{ item.id }}" name="item_quantity[]" value="{{ ordersTemp[agent['id']][item.id]['quantity'] }}">
+                                                                    {#{{ item.id }}#}
+                                                                </td>
+                                                            {% endfor %}
+                                                        </tr>
+                                                    {% endfor %}
+                                                {% endif %}
+
+                                            {% endif %}
+                                        {% endfor %}
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    {% endfor %}
+                    </div>
                 </div>
-
             </div>
             <div class="form-group">
                 <div class="col-md-6" style="text-align: center">

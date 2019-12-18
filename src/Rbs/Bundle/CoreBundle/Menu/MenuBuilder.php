@@ -13,7 +13,7 @@ class MenuBuilder extends ContainerAware
     {
         $menu = $factory->createItem('root')
             ->setChildrenAttributes(array(
-                'class' => 'page-sidebar-menu',
+                'class' => 'page-sidebar-menu page-sidebar-menu-closed',
                 'data-keep-expanded' => 'false',
                 'data-auto-scroll' => 'true',
                 'data-slide-speed' => '200',

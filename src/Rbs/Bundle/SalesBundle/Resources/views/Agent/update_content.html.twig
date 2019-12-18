@@ -3,15 +3,20 @@
     <h4>Agent Profile Information</h4>
 
         {{ form_row(form.VIP) }}
-        {{ form_row(form.agentID) }}
+        {{ form_row(form.agentCodeForDatatable) }}
         {{ form_row(form.itemType) }}
         {{ form_row(form.user.profile.fullName) }}
         {% if agent.openingBalanceFlag != 1 %}
             {{ form_row(form.openingBalance) }}
             {{ form_row(form.openingBalanceType) }}
         {% endif %}
+        {% if agent.agentType=='CHICK' %}
+        {{ form_row(form.depotForChick) }}
+        {% endif %}
+        {% if agent.agentType=='FEED' %}
         {{ form_row(form.depo) }}
-        {{ form_row(form.user.profile.cellphone) }}
+        {% endif %}
+        {{ form_row(form.user.profile.cellphoneForMapping) }}
         {{ form_row(form.user.profile.address) }}
         {{ form_row(form.agentGroup) }}
 

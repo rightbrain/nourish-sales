@@ -35,17 +35,23 @@
                             <table class="table table-bordered chick-order-region-summary">
                                 <thead>
                                 <tr>
-                                    <th colspan="2"
+                                    <th colspan="6"
                                         class="text-center">{{ regions[regionId] }}</th>
                                 </tr>
                                 <tr>
-                                    <th class="col-md-11">Customer Name</th>
+                                    <th class="col-md-2">Order Id</th>
+                                    <th class="col-md-4">Depot Name</th>
+                                    <th class="col-md-2">Agent Code</th>
+                                    <th class="col-md-3">Agent Name</th>
                                     <th class="col-md-1 text-right">Qty</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {% for orderItem in orderItems %}
                                     <tr>
+                                        <td>{{ orderItem.order.id }}</td>
+                                        <td>{{ orderItem.order.depo.name|default('') }}</td>
+                                        <td>{{ orderItem.order.agent.chickAgentID }}</td>
                                         <td>{{ orderItem.order.agent.user.profile.fullName }}</td>
                                         <td class="qty text-right">{{ orderItem.quantity }}</td>
                                     </tr>
@@ -53,7 +59,7 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
-                                    <td class="text-right">Total</td>
+                                    <td colspan="4" class="text-right">Total</td>
                                     <td class="total-qty text-right"></td>
                                 </tr>
                                 </tfoot>

@@ -55,6 +55,41 @@ class DeliveryReportController extends Controller
 
     }
 
+    /**
+     * @Route("/report/chick/delivery", name="report_chick_delivery")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SALES_REPORT")
+     */
+    public function chickDeliveryReportAction(Request $request)
+    {
+        $form = new DeliveryReportType();
+        $data = $request->query->get($form->getName());
+        $pdf_create = $request->query->get('pdf_create');
+        $formSearch = $this->createForm($form, $data);
+
+        $formSearch->submit($data);
+        $deliveries = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getChickDeliveredItemsByDepo($data);
+        if(empty($pdf_create)){
+
+            return $this->render('RbsSalesBundle:Report/Delivery:daily-chick-delivery-report.html.twig', array(
+                'formSearch' => $formSearch->createView(),
+                'data' => $data,
+                'deliveries' => $deliveries,
+            ));
+
+        }else{
+            $html = $this->renderView('RbsSalesBundle:Report/Delivery:daily-chick-delivery-report-pdf.html.twig', array(
+                    'formSearch' => $formSearch->createView(),
+                    'data' => $data,
+                    'deliveries' => $deliveries,
+                )
+            );
+            $this->downloadPdf($html,'dailyDeliveryReportPdf.pdf');
+        }
+
+    }
+
     public function downloadPdf($html,$fileName = '')
     {
         $wkhtmltopdfPath = 'xvfb-run --server-args="-screen 0, 1280x1024x24" /usr/bin/wkhtmltopdf --use-xserver';

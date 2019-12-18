@@ -64,7 +64,7 @@ class AgentRepository extends EntityRepository
     public function getAgentListKeyValue()
     {
         $query = $this->createQueryBuilder('a');
-        $query->select('a.id, a.agentID, p.fullName');
+        $query->select('a.id, a.agentID, a.chickAgentID, a.agentType, p.fullName');
         $query->join('a.user', 'u');
         $query->join('u.profile', 'p');
         $query->where('u.userType = :AGENT');
@@ -80,7 +80,36 @@ class AgentRepository extends EntityRepository
 
         $output[''] = 'Select';
         foreach ($result as $agent) {
-            $output[$agent['id']] = Agent::agentIdNameFormat($agent['agentID'], $agent['fullName']);
+            if($agent['agentType']==Agent::AGENT_TYPE_CHICK){
+                $output[$agent['id']] ='(CK) '. Agent::agentIdNameFormat($agent['chickAgentID'], $agent['fullName']);
+            }else{
+                $output[$agent['id']] ='(FD) '. Agent::agentIdNameFormat($agent['agentID'], $agent['fullName']);
+            }
+        }
+
+        return $output;
+    }
+
+    public function getChickAgentsListByDistrict()
+    {
+        $query = $this->createQueryBuilder('a');
+        $query->select('a.id, a.agentID, a.chickAgentID, p.fullName, z.id as zId');
+        $query->join('a.user', 'u');
+        $query->join('u.profile', 'p');
+        $query->join('u.zilla', 'z');
+        $query->where('u.userType = :AGENT');
+        $query->andWhere('u.enabled = 1');
+        $query->andWhere('u.deletedAt IS NULL');
+        $query->andWhere('a.chickAgentID IS NOT NULL');
+        $query->setParameter('AGENT', User::AGENT);
+        $query->orderBy('p.fullName','ASC');
+
+        $result = $query->getQuery()->getResult();
+
+        $output = array();
+
+        foreach ($result as $agent) {
+            $output[$agent['zId']][] = $agent;
         }
 
         return $output;

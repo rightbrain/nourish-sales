@@ -27,7 +27,7 @@ class SecurityPermissionProvider implements ProviderInterface
             ),
 
             'DELIVERY' => array(
-                'ROLE_DELIVERY_MANAGE'
+                'ROLE_DELIVERY_MANAGE','ROLE_CHICK_DELIVERY_MANAGE'
             ),
 
             'TARGET' => array(
@@ -68,6 +68,10 @@ class SecurityPermissionProvider implements ProviderInterface
 
             'TRUCK' => array(
                 'ROLE_TRUCK_MANAGE', 'ROLE_TRUCK_IN', 'ROLE_TRUCK_OUT', 'ROLE_TRUCK_START', 'ROLE_TRUCK_FINISH'
+            ),
+
+            'TRUCK_CHICK' => array(
+                'ROLE_CHICK_TRUCK_MANAGE', 'ROLE_CHICK_TRUCK_IN', 'ROLE_CHICK_TRUCK_OUT', 'ROLE_CHICK_TRUCK_START', 'ROLE_CHICK_TRUCK_FINISH'
             )
 
         );

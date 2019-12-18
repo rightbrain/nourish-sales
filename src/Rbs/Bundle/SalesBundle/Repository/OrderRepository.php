@@ -182,7 +182,7 @@ class OrderRepository extends EntityRepository
         }
     }
 
-    public function updateDeliveryState($orders)
+    public function updateDeliveryState($orders, $forChick=false)
     {
         $orderItemRepo = $this->_em->getRepository('RbsSalesBundle:OrderItem');
         $deliveryItemRepo = $this->_em->getRepository('RbsSalesBundle:DeliveryItem');
@@ -192,8 +192,14 @@ class OrderRepository extends EntityRepository
 
             if ((int)$deliveryItemRepo->getTotalDeliveryItemByOrder($order) < (int)$orderItemRepo->getTotalOrderItemByOrder($order)) {
                 $order->setDeliveryState(Order::DELIVERY_STATE_PARTIALLY_SHIPPED);
+                if($forChick){
+                    $order->setVehicleState(Order::VEHICLE_STATE_PARTIALLY_SHIPPED);
+                }
             } else {
                 $order->setDeliveryState(Order::DELIVERY_STATE_SHIPPED);
+                if($forChick){
+                    $order->setVehicleState(Order::VEHICLE_STATE_OUT);
+                }
             }
             $order->setOrderState(Order::ORDER_STATE_COMPLETE);
             $this->_em->persist($order);

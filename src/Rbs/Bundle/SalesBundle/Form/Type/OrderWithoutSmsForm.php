@@ -51,8 +51,10 @@ class OrderWithoutSmsForm extends AbstractType
                             $query = $repository->createQueryBuilder('c')
                                 ->join('c.user', 'u')
                                 ->join('u.profile', 'p')
+                                ->join('u.agent', 'a')
                                 ->where('u.deletedAt IS NULL')
                                 ->andWhere('u.enabled = 1')
+                                ->andWhere('a.agentID IS NOT NULL')
                                 ->andWhere('u.userType = :AGENT')
                                 ->setParameter('AGENT', User::AGENT)
                                 ->orderBy('p.fullName','ASC');

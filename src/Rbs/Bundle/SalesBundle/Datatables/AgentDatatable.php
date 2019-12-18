@@ -25,9 +25,10 @@ class AgentDatatable extends BaseDatatable
         ));
 
         $this->columnBuilder
-            ->add('agentID', 'column', array('title' => 'Agent ID'))
+            ->add('agentCodeForDatatable', 'column', array('title' => 'Agent ID'))
+            ->add('agentType', 'column', array('title' => 'Type'))
             ->add('user.profile.fullName', 'column', array('title' => 'Agent name'))
-            ->add('user.profile.cellphone', 'column', array('title' => 'Cell Phone'))
+            ->add('user.profile.cellphoneForMapping', 'column', array('title' => 'Cell Phone'))
             ->add(null, 'action', array(
                 'width' => '200px',
                 'title' => 'Update',

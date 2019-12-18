@@ -33,7 +33,8 @@ class DeliveryReportType extends AbstractType
             ))
             ->add('start_date', 'text', array(
                 'attr' => array(
-                    'class' => 'date-picker input-small form-control'
+                    'class' => 'date-picker input-small form-control',
+                    'autocomplete'=>'off'
                 )
             ))
         ;

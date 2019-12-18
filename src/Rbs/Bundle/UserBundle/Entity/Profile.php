@@ -11,10 +11,15 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
 /**
  * @ORM\Entity
  * @ORM\Table(name="user_profiles")
+ * @ORM\Entity(repositoryClass="Rbs\Bundle\UserBundle\Repository\UserRepository")
  * @ORM\HasLifecycleCallbacks
  * @ORMSubscribedEvents()
  * @UniqueEntity(
  *     fields={"cellphone"},
+ *     message="This cellphone no is already in use."
+ * )
+ * @UniqueEntity(
+ *     fields={"cellphoneForChick"},
  *     message="This cellphone no is already in use."
  * )
  */
@@ -56,6 +61,22 @@ class Profile
     /**
      * @var string
      *
+     * @ORM\Column(name="cellphoneForChick", type="string", length=15, unique=true)
+     * @Assert\NotBlank()
+     */
+    private $cellphoneForChick;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="cellphone_for_mapping", type="string", length=20, nullable=true)
+     *
+     */
+    private $cellphoneForMapping;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="designations", type="string", length=255, nullable=true)
      */
     private $designation;
@@ -78,6 +99,12 @@ class Profile
     public $file;
 
     public $temp;
+
+    public function __construct()
+    {
+        $this->cellphone= time();
+        $this->cellphoneForChick= time();
+    }
 
     /**
      * Get id
@@ -159,6 +186,22 @@ class Profile
     }
 
     /**
+     * @return string
+     */
+    public function getCellphoneForChick()
+    {
+        return $this->cellphoneForChick;
+    }
+
+    /**
+     * @param string $cellphoneForChick
+     */
+    public function setCellphoneForChick($cellphoneForChick)
+    {
+        $this->cellphoneForChick = $cellphoneForChick;
+    }
+
+    /**
      * Set designation
      *
      * @param string $designation
@@ -179,6 +222,22 @@ class Profile
     public function getDesignation()
     {
         return $this->designation;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCellphoneForMapping()
+    {
+        return $this->cellphoneForMapping;
+    }
+
+    /**
+     * @param string $cellphoneForMapping
+     */
+    public function setCellphoneForMapping($cellphoneForMapping)
+    {
+        $this->cellphoneForMapping = $cellphoneForMapping;
     }
 
     /**

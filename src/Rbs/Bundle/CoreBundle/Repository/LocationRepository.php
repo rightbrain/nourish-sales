@@ -114,10 +114,30 @@ class LocationRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function getRegionsForChick()
+    {
+        $query = $this->createQueryBuilder('l');
+        $query->select('l.id, l.name');
+        $query->where('l.level = 3');
+        $query->orderBy('l.name','ASC');
+
+        return $query->getQuery()->getResult();
+    }
+
     public function getDistricts()
     {
         $query = $this->createQueryBuilder('l');
         $query->where('l.level = 4');
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getDistrictsForChick()
+    {
+        $query = $this->createQueryBuilder('l');
+        $query->select('l.id, l.name, l.parentId');
+        $query->where('l.level = 4');
+        $query->orderBy('l.name','ASC');
 
         return $query->getQuery()->getResult();
     }

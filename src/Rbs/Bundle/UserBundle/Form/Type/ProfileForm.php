@@ -20,7 +20,7 @@ class ProfileForm extends AbstractType
                 'constraints' => array(
                 )
             ))
-            ->add('cellphone', 'text', array(
+            ->add('cellphoneForMapping', 'text', array(
                 'constraints' => array(
                     new Regex(array(
                         'pattern'   => '/^(\+?\(?\d{2,4}\)?[\d\s-]{3,})$/',
@@ -28,6 +28,7 @@ class ProfileForm extends AbstractType
                         'message' =>'Wrong phone number'
                     ))
                 ),
+                'label'         => 'Cellphone',
                 'attr' => array(
                     'class' => 'input-mask-phone'
                 )

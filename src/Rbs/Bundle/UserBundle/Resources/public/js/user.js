@@ -43,15 +43,26 @@ var Area = function()
     function userOrAgent()
     {
         $("#user_userType").change(function () {
-            var x = document.getElementById('user_level2');
-            x.style.visibility = 'hidden';
+            var agent_type = document.getElementById('agent_type');
+            // var x = document.getElementById('user_upozilla');
+            // var u = document.getElementById('s2id_user_upozilla');
+            // x.style.visibility = 'hidden';
+            // u.style.visibility = 'hidden';
 
             if($(this).val() == 'AGENT'){
-                x.style.visibility = 'visible';
+                agent_type.style.display = 'block';
+                /*x.style.visibility = 'visible';
+                if(u) {
+                    u.style.visibility = 'visible';
+                }*/
             }else {
-                x.style.visibility = 'hidden';
+                agent_type.style.display = 'none';
+                /*x.style.visibility = 'hidden';
+                if(u) {
+                    u.style.visibility = 'hidden';
+                }*/
             }
-        });
+        }).change();
     }
 
     function init()

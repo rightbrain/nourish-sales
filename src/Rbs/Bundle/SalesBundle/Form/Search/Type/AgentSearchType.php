@@ -30,12 +30,14 @@ class AgentSearchType extends AbstractType
             ))
             ->add('start_date', 'text', array(
                 'attr' => array(
-                    'class' => 'date-picker input-small form-control'
+                    'class' => 'date-picker input-small form-control',
+                    'autocomplete'=>'off',
                 )
             ))
             ->add('end_date', 'text', array(
                 'attr' => array(
-                    'class' => 'date-picker input-small form-control'
+                    'class' => 'date-picker input-small form-control',
+                    'autocomplete'=>'off',
                 )
             ))
         ;

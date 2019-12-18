@@ -1,0 +1,138 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Delivery {% endblock %}
+
+{% block body %}
+    <style>
+        @media print {
+           .table tr th, .table tr td{
+               font-size: 11px!important;
+           }
+        }
+    </style>
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-list hidden-print"></i>Daily Delivery Order
+
+                </div>
+                {% if data['start_date'] is defined %}
+                    <div style="float: right; text-align: right; padding: 10px 5px"> {{ data['start_date']|date('d-m-Y')}}</div>
+                {% endif %}
+            </div>
+            <div class="portlet-body">
+
+                <form method="get" novalidate="novalidate" class="form-inline hidden-print" style="margin-bottom: 20px;">
+
+                    <div class="form-group hidden-print">
+                        <span class="visible-print-inline">Depot:</span>
+                        {{ form_widget(formSearch.depo) }}
+                    </div>
+                    <div class="form-group hidden-print">
+                            <div class="input-group input-daterange">
+                                {{ form_widget(formSearch.start_date) }}
+                            </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-1">
+                            <input type="submit" value="Search" class="btn blue hidden-print">
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <button type="submit" name="pdf_create" value="1" class="btn blue hidden-print">PDF</button>
+                        <button type="button" class="btn green hidden-print" onclick="print()">Print</button>
+                    </div>
+                </form>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name of Agent</th>
+                                <th>Location</th>
+                                <th>Grade</th>
+                                <th>Rate</th>
+                                <th>Transport</th>
+                                <th>Actual</th>
+                                <th>Bonus</th>
+                                <th>Total</th>
+                                <th>Mor.</th>
+                                <th>Actual</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if deliveries %}
+                                {% set grandTotalReceived = 0 %}
+                                {% set grandTotalBonus = 0 %}
+                                {% set grandTotalDamage = 0 %}
+                                {% set depoName = '' %}
+                            {% for catName, result in deliveries %}
+                                {% set totalReceived = 0 %}
+                                {% set totalBonus = 0 %}
+                                {% set totalDamage = 0 %}
+                                {% set depoName = result[0].depoName %}
+                                {% set sl = 1 %}
+                                {% for delivery in result %}
+
+                                    <tr>
+                                        <td>{{ delivery.agentCodeForDatatable }}</td>
+                                        <td>{{ delivery.fullName }}</td>
+                                        <td>{{ delivery.zillaName }}</td>
+                                        <td>{{ delivery.itemName }} ({{ delivery.itemCode }})</td>
+                                        <td>{{ delivery.price }}</td>
+                                        <td>{{ delivery.transportGiven }}</td>
+                                        <td style="text-align: right">{{ delivery.totalDeliveredQuantity }}</td>
+                                        <td style="text-align: right">{{ delivery.bonusQuantity }}</td>
+                                        <td style="text-align: right">{{ delivery.totalDeliveredQuantity + delivery.bonusQuantity  }}</td>
+                                        <td style="text-align: right">{{ delivery.damageQuantity  }}</td>
+                                        <td style="text-align: right">{{ delivery.totalDeliveredQuantity - delivery.damageQuantity  }}</td>
+                                    </tr>
+                                    {% set sl = sl + 1 %}
+                                    {% set totalReceived = totalReceived + delivery.totalDeliveredQuantity %}
+                                    {% set totalBonus = totalBonus + delivery.bonusQuantity %}
+                                    {% set totalDamage = totalDamage + delivery.damageQuantity %}
+                                {% endfor %}
+                                <tr style="font-weight: bold">
+                                    <td style="text-align: center" colspan="2">Total</td>
+                                    <td>{{ catName }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td style="text-align: right">{{ totalReceived }}</td>
+                                    <td style="text-align: right">{{ totalBonus }}</td>
+                                    <td style="text-align: right">{{ totalReceived + totalBonus }}</td>
+                                    <td style="text-align: right">{{ totalDamage }}</td>
+                                    <td style="text-align: right">{{ totalReceived - totalDamage }}</td>
+                                </tr>
+                                {% set grandTotalReceived = grandTotalReceived + totalReceived %}
+                                {% set grandTotalBonus = grandTotalBonus + totalBonus %}
+                                {% set grandTotalDamage = grandTotalDamage + totalDamage %}
+
+                            {% endfor %}
+                                <tr style="font-weight: bold">
+                                    <td>{{ depoName }}</td>
+                                    <td style="text-align: center" colspan="2">Grand Total</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td style="text-align: right">{{ grandTotalReceived }}</td>
+                                    <td style="text-align: right">{{ grandTotalBonus }}</td>
+                                    <td style="text-align: right">{{ grandTotalReceived + grandTotalBonus }}</td>
+                                    <td style="text-align: right">{{ grandTotalDamage }}</td>
+                                    <td style="text-align: right">{{ grandTotalReceived - grandTotalDamage }}</td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="8">No record found.</td></tr>
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+{% endblock %}

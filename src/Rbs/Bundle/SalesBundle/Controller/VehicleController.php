@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Vehicle;
@@ -55,8 +56,13 @@ class VehicleController extends BaseController
         {
             $qb->join("sales_vehicles.depo", "d");
             $qb->join("d.users", "u");
-            $qb->andWhere("u = :user");
-            $qb->setParameter('user', $user);
+            $qb->where('d.depotType IS NULL OR d.depotType = :type');
+            $qb->setParameter('type',Depo::DEPOT_TYPE_FEED);
+            if(!in_array('ROLE_SUPER_ADMIN', $user->getRoles())){
+                $qb->andWhere("u = :user");
+                $qb->setParameter('user', $user);
+            }
+
         };
         $query->addWhereAll($function);
 
@@ -152,7 +158,7 @@ class VehicleController extends BaseController
      * @Route("/vehicle/load/list", name="vehicle_info_load_list", options={"expose"=true})
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
+     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_MANAGE, ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
      */
     public function loadIndexAction()
     {
@@ -167,7 +173,7 @@ class VehicleController extends BaseController
     /**
      * @Route("/vehicle_info_load_list_ajax", name="vehicle_info_load_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
+     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_MANAGE,ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
      */
     public function loadListAjaxAction()
     {
@@ -205,7 +211,7 @@ class VehicleController extends BaseController
     /**
      * @Route("/vehicle/set/list", name="vehicle_info_set_list", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
+     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_MANAGE, ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
      */
     public function setIndexAction()
     {
@@ -220,7 +226,7 @@ class VehicleController extends BaseController
     /**
      * @Route("/vehicle_info_set_list_ajax", name="vehicle_info_set_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
+     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_MANAGE, ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
      */
     public function setListAjaxAction()
     {
@@ -301,7 +307,7 @@ class VehicleController extends BaseController
      * @Route("/vehicle/start/{id}", name="truck_start", options={"expose"=true})
      * @param Vehicle $vehicle
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
-     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_START")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_START, ROLE_CHICK_DELIVERY_MANAGE, ROLE_CHICK_TRUCK_START")
      */
     public function loadStartAction(Vehicle $vehicle)
     {
@@ -336,7 +342,7 @@ class VehicleController extends BaseController
                 $order = $this->em()->getRepository('RbsSalesBundle:Order')->find($orderId);
                 $delivery->addOrder($order);
                 $delivery->setDepo($order->getDepo());
-                $orderText =+ $orderId .', ';
+                $orderText .= $orderId .', ';
             }
             $delivery->setShipped(false);
             $delivery->setTransportGiven(Delivery::NOURISH);

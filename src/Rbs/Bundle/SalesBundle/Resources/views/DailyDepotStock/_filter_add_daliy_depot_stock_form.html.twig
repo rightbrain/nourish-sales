@@ -1,0 +1,50 @@
+<div class="row">
+    <div class="col-md-12">
+        <form class="form-horizontal" method="post" action="{{ path('hatchery_stock_create') }}">
+            <div class="form-group">
+                <label class="col-sm-2 control-label required">Date:
+                    <span class="visible-print-inline" style="margin-right: 50px">{{ date }}</span>
+                </label>
+                <div class="col-sm-4">
+                    <input name="date" type="text" autocomplete="off"
+                           class="custom-date-picker form-control hidden-print"
+                           value="{{ date }}">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-6" style="text-align: center">
+                    <input type="submit" class="btn btn-primary hidden-print" value="Generate Stock">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% if dailyStock %}
+<div class="row">
+    <div class="col-md-12">
+
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th style="width: 12%">Depot Name</th>
+                {% for item in items %}
+                <th>{{ item.name }}</th>
+                {% endfor %}
+                <th>Action</th>
+            </tr>
+            {% for depot in depots %}
+            <tr>
+                <td>{{ depot.name }}</td>
+                {% set totalOnHand=0 %}
+                {% set totalOnHold=0 %}
+                {% for item in items %}
+                    {% set totalOnHand=totalOnHand+dailyStock[depot.id][item.id]['onHand'] %}
+                    {% set totalOnHold=totalOnHold+dailyStock[depot.id][item.id]['onHold'] %}
+                    <th><input class="form-control item_stock" type="text" data-id="{{ dailyStock[depot.id][item.id]['id'] }}" data-depot="{{ depot.id }}" data-item="{{ item.id }}" value="{{ dailyStock[depot.id][item.id]['onHand'] }}"></th>
+                {% endfor %}
+                <td style="vertical-align: middle"><a style="{{ totalOnHand<=totalOnHold?'display: none':'' }}" href="{{ path('order_chick_add', { 'id': depot.id }) }}?order_date={{ date }}" class="btn btn-primary btn-xs chick_order_generate">Order Generate</a> </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endif %}

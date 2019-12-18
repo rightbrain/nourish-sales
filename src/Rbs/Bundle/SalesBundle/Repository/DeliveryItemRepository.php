@@ -3,7 +3,9 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
+use Rbs\Bundle\SalesBundle\Entity\DeliveryItem;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 
 /**
@@ -31,6 +33,17 @@ class DeliveryItemRepository extends EntityRepository
                 $row['orderId'] = $order->getId();
                 $data[$row['orderId']][$row['id']] = $row;
             }
+        }
+        return $data;
+    }
+
+    public function getDeliveredItemId(Delivery $delivery)
+    {
+        $deliveryItems = $delivery->getDeliveryItems();
+        $data = array();
+        /** @var DeliveryItem $deliveryItem */
+        foreach ($deliveryItems as $deliveryItem) {
+            $data[$delivery->getId()][$deliveryItem->getOrder()->getId()][$deliveryItem->getOrderItem()->getId()]= $deliveryItem->getId();
         }
         return $data;
     }
@@ -89,6 +102,56 @@ class DeliveryItemRepository extends EntityRepository
             $query->groupBy('i.id');
             $query->addGroupBy('d.depo');
             $query->orderBy('c.id', 'ASC');
+
+            foreach ($query->getQuery()->getResult() as $result) {
+                $results[$result['catName']][] = $result;
+            }
+            return $results;
+        }else{
+           return array();
+        }
+    }
+
+    public function getChickDeliveredItemsByDepo($data)
+    {
+
+        $results= array();
+        if(!empty($data['depo'])) {
+            $query = $this->createQueryBuilder('di');
+            $query->join('di.delivery', 'd');
+            $query->join('d.depo', 'depo');
+            $query->join('di.orderItem', 'oi');
+            $query->join('di.order', 'o');
+            $query->join('o.agent', 'a');
+            $query->join('a.user', 'u');
+            $query->join('u.profile', 'p');
+            $query->join('u.zilla', 'z');
+            $query->join('oi.item', 'i');
+            $query->join('i.category', 'c');
+            $query->select('i.id');
+            $query->addSelect('i.name as itemName');
+            $query->addSelect('i.sku as itemCode');
+            $query->addSelect('depo.name as depoName');
+            $query->addSelect('c.id as catId');
+            $query->addSelect('c.name as catName');
+            $query->addSelect('d.transportGiven');
+            $query->addSelect('di.qty as totalDeliveredQuantity');
+            $query->addSelect('oi.damageQuantity');
+            $query->addSelect('oi.bonusQuantity');
+            $query->addSelect('oi.price');
+            $query->addSelect('p.fullName');
+            $query->addSelect('z.name as zillaName');
+            $query->addSelect('a.agentCodeForDatatable');
+            $query->where('d.shipped = 1');
+            $query->andWhere('o.orderType = :type');
+            $query->setParameter('type', Order::ORDER_TYPE_CHICK);
+            if (!empty($data['depo'])) {
+                $this->handleSearchByDepo($data['depo'], $query);
+            }
+            $this->handleSearchByDate($query, $data['start_date']);
+//            $query->groupBy('i.id');
+//            $query->addGroupBy('d.depo');
+//            $query->orderBy('c.id', 'ASC');
 
             foreach ($query->getQuery()->getResult() as $result) {
                 $results[$result['catName']][] = $result;

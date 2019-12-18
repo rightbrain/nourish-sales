@@ -4,8 +4,19 @@
 
     {{ form_row(form.profile.fullName) }}
     {{ form_row(form.userType) }}
+<div id="agent_type" class="agent_type">
+    <div class="form-group">
+        <label class="col-sm-2 control-label required" for="user_agentType">Agent Type</label>
+        <div class="col-sm-10">
+            <select id="user_agentType" name="agentType" class="form-control">
+                <option value="FEED">FEED</option>
+                <option value="CHICK">CHICK</option>
+            </select>
+        </div>
+    </div>
+</div>
     {{ form_row(form.profile.designation) }}
-    {{ form_row(form.profile.cellphone) }}
+    {{ form_row(form.profile.cellphoneForMapping) }}
     {{ form_row(form.profile.address) }}
     {{ form_row(form.zilla, { 'attr': {'class': 'zilla-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'ZillaZilla'} }) }}
     {{ form_row(form.upozilla, { 'attr': {'class': 'thana-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'Thana/UpoZilla'} }) }}

@@ -81,12 +81,26 @@ class UserController extends Controller
             if ($form->isValid()) {
 
                 $user->setEnabled(true);
-
+                $profile = $user->getProfile();
                 if($request->request->get('user')['userType'] == User::AGENT){
+
                     $user->setRoles(array("ROLE_AGENT"));
+
+                    if($request->request->get('agentType')== Agent::AGENT_TYPE_CHICK){
+                        $profile->setCellphoneForChick($profile->getCellphoneForMapping());
+                    }else{
+                        $profile->setCellphone($profile->getCellphoneForMapping());
+                    }
+
                     $this->getDoctrine()->getRepository('RbsUserBundle:User')->create($user);
                     $agent->setUser($this->getDoctrine()->getRepository('RbsUserBundle:User')->find($user->getId()));
-                    $agent->setAgentID($user->getId());
+                    $agent->setAgentCodeForDatatable($user->getId());
+                    $agent->setAgentType($request->request->get('agentType'));
+                    if($request->request->get('agentType')== Agent::AGENT_TYPE_CHICK){
+                      $agent->setChickAgentID($user->getId());
+                    }else{
+                      $agent->setAgentID($user->getId());
+                    }
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->create($agent);
                     return $this->redirect($this->generateUrl('agent_update', array('id' => $agent->getId())));
                 }elseif ($request->request->get('user')['userType'] == User::RSM){
@@ -96,7 +110,7 @@ class UserController extends Controller
                 }elseif($request->request->get('user')['userType'] == User::ZM){
                     $user->setRoles(array("ROLE_ZM_GROUP"));
                 }
-
+                $profile->setCellphone($profile->getCellphoneForMapping());
                 $this->getDoctrine()->getRepository('RbsUserBundle:User')->create($user);
 
                 $this->get('session')->getFlashBag()->add(

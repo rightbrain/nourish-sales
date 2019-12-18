@@ -194,7 +194,7 @@ class Vehicle
     }
 
     /**
-     * @return User
+     * @return Agent
      */
     public function getAgent()
     {
@@ -202,7 +202,7 @@ class Vehicle
     }
 
     /**
-     * @param User $agent
+     * @param Agent $agent
      */
     public function setAgent($agent)
     {
@@ -427,7 +427,9 @@ class Vehicle
 
     public function isDeliveryFalse()
     {
-        if($this->deliveries == null){
+        if($this->deliveries == null ){
+            return false;
+        }elseif (count($this->deliveries->getDeliveryItems())<=0){
             return false;
         }
         return true;

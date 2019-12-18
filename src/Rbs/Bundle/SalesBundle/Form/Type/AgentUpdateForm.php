@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\CoreBundle\Repository\ItemTypeRepository;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
@@ -26,6 +27,8 @@ class AgentUpdateForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $agentId = $builder->getData()->getAgentID();
+        $agentType = $builder->getData()->getAgentType();
+//        var_dump($agentType);die;
         $isAgentIdDisabled = false;//!empty($agentId);
         $builder
             ->add('VIP', 'choice', array(
@@ -54,7 +57,7 @@ class AgentUpdateForm extends AbstractType
                 )
             )
             ->add(
-                'agentID', null, array(
+                'agentCodeForDatatable', null, array(
                     'label' => 'Agent ID',
                     'disabled' => $isAgentIdDisabled
                 )
@@ -75,12 +78,13 @@ class AgentUpdateForm extends AbstractType
                 );
         }
 
-        $builder
-            ->add(
-                'depo',
+        if($agentType==Agent::AGENT_TYPE_CHICK){
+            $builder->add(
+                'depotForChick',
                 'entity',
                 array(
                     'class'         => 'RbsCoreBundle:Depo',
+                    'label'         => 'Depo',
                     'property'      => 'name',
                     'required'      => true,
                     'empty_value'   => 'Select Depo',
@@ -88,11 +92,34 @@ class AgentUpdateForm extends AbstractType
                     'query_builder' => function (DepoRepository $repository) {
                         return $repository->createQueryBuilder('w')
                             ->where('w.deletedAt IS NULL')
+                            ->andWhere('w.depotType = :type')
+                            ->setParameter('type',Depo::DEPOT_TYPE_CHICK)
                             ->orderBy('w.name', 'ASC');
                     },
                 )
-            )
-            ->add(
+            );
+        }
+        if($agentType==Agent::AGENT_TYPE_FEED){
+
+            $builder
+                ->add(
+                    'depo',
+                    'entity',
+                    array(
+                        'class'         => 'RbsCoreBundle:Depo',
+                        'property'      => 'name',
+                        'required'      => true,
+                        'empty_value'   => 'Select Depo',
+                        'empty_data'    => null,
+                        'query_builder' => function (DepoRepository $repository) {
+                            return $repository->createQueryBuilder('w')
+                                ->where('w.deletedAt IS NULL')
+                                ->orderBy('w.name', 'ASC');
+                        },
+                    )
+                );
+        }
+           $builder ->add(
                 'agentGroup',
                 'entity',
                 array(

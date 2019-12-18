@@ -6,9 +6,14 @@ use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\CoreBundle\Entity\Item;
 use Rbs\Bundle\CoreBundle\Entity\ItemType;
+use Rbs\Bundle\CoreBundle\Entity\Location;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
+use Rbs\Bundle\SalesBundle\Entity\DailyDepotStock;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Entity\OrderChickTemp;
 use Rbs\Bundle\SalesBundle\Entity\OrderIncentiveFlag;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
+use Rbs\Bundle\SalesBundle\Entity\OrderItemChickTemp;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
 use Rbs\Bundle\UserBundle\Entity\User;
@@ -27,6 +32,59 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class ChickOrderController extends BaseController
 {
+
+    /**
+     * @Route("/chick_orders", name="chick_orders_home")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     */
+    public function chickOrdersAction()
+    {
+        if($this->isGranted('ROLE_DEPO_USER') and !$this->isGranted('ROLE_ADMIN')){
+            $datatable = $this->get('rbs_erp.sales.datatable.chick.order.depo');
+        }else{
+            $datatable = $this->get('rbs_erp.sales.datatable.chick.order');
+        }
+        $datatable->buildDatatable();
+
+        return $this->render('RbsSalesBundle:Order:index-chick.html.twig', array(
+            'datatable' => $datatable,
+        ));
+    }
+
+    /**
+     * @Route("/chick_orders_list_ajax", name="chick_orders_list_ajax", options={"expose"=true})
+     * @Method("GET")
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     */
+    public function chickListAjaxAction()
+    {
+        if($this->isGranted('ROLE_DEPO_USER') and !$this->isGranted('ROLE_ADMIN')){
+            $datatable = $this->get('rbs_erp.sales.datatable.chick.order.depo');
+        }else{
+            $datatable = $this->get('rbs_erp.sales.datatable.chick.order');
+        }
+        $datatable->buildDatatable();
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+
+        /** @var QueryBuilder $qb */
+        $function = function($qb)
+        {
+            if($this->isGranted('ROLE_DEPO_USER')){
+                $qb->join('sales_orders.depo', 'd');
+                $qb->join('d.users', 'u');
+                $qb->andWhere('u.id = :user');
+                $qb->setParameter('user', $this->getUser()->getId());
+            }
+            $qb->andWhere('sales_orders.orderType = :type');
+            $qb->setParameter('type', Order::ORDER_TYPE_CHICK);
+        };
+        $query->addWhereAll($function);
+
+        return $query->getResponse();
+    }
+
+
     /**
      * @Route("/orders/manage/chick", name="order_manage_chick")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -37,6 +95,7 @@ class ChickOrderController extends BaseController
         $regions = array();
         $orderItemResult = array();
         $item = null;
+        $dailyStock = array();
         $date = $request->query->get('date') ? date('Y-m-d', strtotime($request->query->get('date'))) : null;
         $chickItems = $this->getChickItems();
         if ($itemId = $request->query->get('item')) {
@@ -44,8 +103,10 @@ class ChickOrderController extends BaseController
         }
 
         if ($item && $date) {
-            $orderItemResult = $this->getChickOrders($date, $item, [Order::ORDER_STATE_PENDING]);
+            $orderItemResult = $this->getChickOrders($date, $item, [Order::ORDER_STATE_PENDING, Order::ORDER_STATE_PROCESSING]);
             $regions = $this->getRegions();
+
+            $dailyStock = $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStock')->getDailyStockByDateAndItem($date,$item);
         }
 
         return $this->render('RbsSalesBundle:ChickOrder:manage-order.html.twig', array(
@@ -54,6 +115,7 @@ class ChickOrderController extends BaseController
                 'date'            => $request->query->get('date'),
                 'regions'         => $regions,
                 'selectedItem'    => $itemId,
+                'dailyStock'    => $dailyStock,
             )
         );
     }
@@ -236,97 +298,220 @@ class ChickOrderController extends BaseController
     }
 
     /**
-     * @Route("/orders/chick/add", name="order_chick_add")
+     * @Route("/orders/chick/{id}/add", name="order_chick_add")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_CHICK_ORDER_MANAGE")
      */
-    public function addAction(Request $request)
+    public function addAction(Depo $depo, Request $request)
     {
-        $time = date('H:i:s', time());
-        $date = $request->request->get('date') ? date('Y-m-d', strtotime($request->request->get('date')) ) .' '. $time : null;
-        $getRegions = $request->request->get('region')? $request->request->get('region'):array();
-        $regions = $this->getRegions();
-        $agents = $this->getChickAgents($getRegions);
+
+        set_time_limit(0);
+        ini_set('memory_limit','1024M');
+        $em = $this->getDoctrine()->getManager();
+        $date = $request->query->get('order_date') ? date('Y-m-d H:i:s', strtotime($request->query->get('order_date'))) : date('Y-m-d H:i:s', time());
+
+        $locationsRegions = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->getRegionsForChick();
+        $locationsDistricts = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->getDistrictsForChick();
+        $agentLists = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getChickAgentsListByDistrict();
+
+        $dailyStocks = $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStock')->getDailyStock($date);
+
         $chickItems = $this->getChickItems();
         $depots = $this->getDepots();
-        $addedOrders = $this->getChickOrdersByZone(date('Y-m-d', strtotime($request->request->get('date')) ), $getRegions,  [Order::ORDER_STATE_PENDING] );
 
+        if ($request->query->get('order_date')){
+            /** @var Location $district */
+            foreach ($locationsDistricts as $district){
+                if (array_key_exists($district['id'],$agentLists)){
+                    /** @var Agent $agent */
+                    foreach ($agentLists[$district['id']] as $agent){
+                        $agentObj = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($agent['id']);
+                       if(!$this->getChickOrdersByDateAgentDepotItem($date,$agentObj,$depo)){
+                           $order = new OrderChickTemp();
+                           $order->setAgent($agentObj);
+                           $order->setDepo($depo);
+                           $order->setOrderType(Order::ORDER_TYPE_CHICK);
+                           $order->setLocation($agentObj->getUser()->getUpozilla()?$agentObj->getUser()->getUpozilla():null);
+                           $order->setCreatedAt(new \DateTime($date));
+
+                           $em->persist($order);
+
+
+                           $this->insertOrderItem($order, $chickItems);
+                       }
+                    }
+                    $em->flush();
+                }
+            }
+
+            $addedData = $this->getChickOrdersByDate($date);
+        }
 
         return $this->render('RbsSalesBundle:ChickOrder:add-check-order.html.twig', array(
-                'date'            => $request->request->get('date'),
+                'date'            => $request->query->get('order_date'),
                 'orderDate'            => $date,
-                'regions'         => $regions,
-                'selectedRegions'         => $getRegions,
-                'agents'         => $agents,
+                'agentsList'         => $agentLists,
                 'chickItems'         => $chickItems,
-                'depots'         => $depots,
-                'zoneAllOrders'         => $addedOrders,
+                'depot'         => $depo,
+                'ordersTemp'         => $addedData,
+                'dailyStocks'         => $dailyStocks,
+                'locationsRegions' => $locationsRegions,
+                'locationsDistricts' => $locationsDistricts,
             )
         );
     }
+
+    private function insertOrderItem(OrderChickTemp $order,$items)
+    {
+        $em = $this->getDoctrine()->getManager();
+        /** @var Item $item */
+       foreach ($items as $item){
+           $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+               $item, $order->getDepo()->getLocation()
+           );
+           $orderItem = new OrderItemChickTemp();
+           $orderItem->setItem($item);
+           $orderItem->setOrder($order);
+           $orderItem->setQuantity(0);
+           $orderItem->setPrice($price);
+           $orderItem->setTotalAmount(0);
+           $em->persist($orderItem);
+       }
+       $em->flush();
+
+    }
+
+    private function getChickOrdersByDateAgentDepotItem($date, $agent, $depot) {
+        $repo = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderChickTemp');
+        $qb = $repo->createQueryBuilder('o');
+
+        $qb->select('o.id');
+        $qb->join('o.orderItems', 'oi');
+
+        $qb->where($qb->expr()->between('o.createdAt', ':start', ':end'));
+        $qb->setParameters(array('start' => $date . ' 00:00:00', 'end' => $date . ' 23:59:59'));
+
+        $qb->andWhere('o.agent = :agent');
+        $qb->setParameter('agent', $agent);
+
+        $qb->andWhere('o.depo = :depo');
+        $qb->setParameter('depo', $depot);
+
+        $result = $qb->getQuery()->getResult();
+
+        return $result;
+    }
+
+    private function getChickOrdersByDate($date) {
+        $repo = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItemChickTemp');
+        $qb = $repo->createQueryBuilder('oi');
+        $qb->select('o.id as oId, oi.id as oiId, oi.quantity as quantity, a.id as aId, i.id as iId');
+        $qb->join('oi.order', 'o');
+        $qb->join('oi.item','i');
+        $qb->join('o.agent','a');
+
+        $qb->where($qb->expr()->between('o.createdAt', ':start', ':end'));
+        $qb->setParameters(array('start' => $date , 'end' => $date ));
+
+        $results = $qb->getQuery()->getResult();
+        $dataArray = array();
+
+        foreach ($results as $result){
+            $dataArray[$result['aId']][$result['iId']]= $result;
+        }
+//        var_dump($dataArray);die;
+        return $dataArray;
+    }
+
+
     /**
-     * @Route("/orders/chick/save", name="order_chick_save")
+     * update order and order item ajax
+     * @Route("update_chick_order_item_temp_ajax/{order}/{orderItem}/{stock}", name="update_chick_order_item_temp_ajax", options={"expose"=true})
+     * @param Request $request
+     * @return Response
+     * @JMS\Secure(roles="ROLE_CHICK_ORDER_MANAGE")
+     */
+    public function updateChickOrderItemTempQuantityAction(Request $request, OrderChickTemp $order, OrderItemChickTemp $orderItem, DailyDepotStock $stock)
+    {
+        $itemQuantity = $request->request->get('quantity');
+        $em = $this->getDoctrine()->getManager();
+
+        $previousOrderItemQuantity = $orderItem->getQuantity();
+
+
+//        $order->setT($stock->getOnHand() + $stockItemOnHand);
+        if($stock->getOnHand()>=$itemQuantity){
+            $orderItem->setQuantity($itemQuantity);
+            $orderItem->calculateTotalAmount(true);
+
+            $order->setTotalAmount($order->getItemsTotalAmount());
+
+            $stock->setOnHold(($stock->getOnHold() - $previousOrderItemQuantity) + $itemQuantity);
+
+            $em->persist($orderItem);
+            $em->persist($order);
+            $em->flush();
+        }
+
+        $response = array(
+            'itemQuantity'     => $orderItem->getQuantity(),
+            'stockRemainingQuantity'     => $stock->getOnHand()- $stock->getOnHold(),
+        );
+
+        return new JsonResponse($response);
+    }
+
+    /**
+     * @Route("/orders/chick/{id}/save", name="order_chick_save")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_CHICK_ORDER_MANAGE")
      */
 
-    public function createOrderAction(Request $request)
+    public function createOrderAction(Depo $depo, Request $request)
     {
 
-        $quantities = $request->request->get('quantity');
-        $order_id = $request->request->get('order_id');
-        $orderItem_id = $request->request->get('orderItem_id');
-        $agentId = $request->request->get('agentId');
-        $depotId = $request->request->get('depot');
-        $itemId = $request->request->get('item');
-        $itemPrice = $request->request->get('itemPrice');
-        $date = $request->request->get('order_date') ? date('Y-m-d H:i:s', strtotime($request->request->get('order_date'))) : date('Y-m-d H:i:s', time());
+        $date = $request->request->get('date') ? date('Y-m-d', strtotime($request->request->get('date'))) : date('Y-m-d', time());
 //       $total_amount = $request->request->get('total_amount');
         $data= array();
-       foreach ($quantities as $key=>$quantity){
-           if(!empty($quantity) && !empty($agentId[$key]) && !empty($depotId[$key]) && !empty($itemId[$key])){
-               //var_dump( $item[$key]);die;
-               $agent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find(array('id' => $agentId[$key]));
+        $orderChickTemps = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderChickTemp')->getOrderChickTempByOrderDate($date, $depo);
 
-               $itemObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->find(array('id' => $itemId[$key]));
-               $depotObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find(array('id' => $depotId[$key]));
+        /** @var OrderChickTemp $orderChickTemp */
+        foreach ($orderChickTemps as $orderChickTemp){
+            if($orderChickTemp->getTotalAmount()>0){
+                $order = new Order();
 
+                $order->setAgent($orderChickTemp->getAgent());
+                $order->setDepo($orderChickTemp->getDepo());
+                $order->setTotalAmount($orderChickTemp->getTotalAmount());
+                $order->setLocation($orderChickTemp->getAgent()->getUser()->getUpozilla());
+                $order->setDeliveryState(Order::DELIVERY_STATE_READY);
+                $order->setOrderState(Order::ORDER_STATE_PROCESSING);
+                $order->setPaymentState(Order::PAYMENT_STATE_PENDING);
+                $order->setOrderType(Order::ORDER_TYPE_CHICK);
+                $order->setOrderVia('SYSTEM');
+                $order->setCreatedAt(new \DateTime($date) );
 
-               if (!empty($orderItem_id[$key])){
-                   $orderItem = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->find(array('id' => $orderItem_id[$key]));
-               }else{
-                   $orderItem = new OrderItem();
-               }
+                $this->getDoctrine()->getManager()->persist($order);
 
-               $orderItem->setItem($itemObj);
-               $orderItem->setQuantity($quantity);
-               $orderItem->setPrice($itemPrice[$key]);
+                /** @var OrderItemChickTemp $orderChickItemTemp */
+                foreach ($orderChickTemp->getOrderItems() as $orderChickItemTemp){
+                    if($orderChickItemTemp->getQuantity()>0){
+                        $orderItem = new OrderItem();
+                        $orderItem->setQuantity($orderChickItemTemp->getQuantity());
+                        $orderItem->setPrice($orderChickItemTemp->getPrice());
+                        $orderItem->setTotalAmount($orderChickItemTemp->getTotalAmount());
+                        $orderItem->setItem($orderChickItemTemp->getItem());
+                        $orderItem->setOrder($order);
+                        $this->getDoctrine()->getManager()->persist($orderItem);
+                    }
 
-               if (!empty($order_id[$key])){
-                   $order = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find(array('id' => $order_id[$key]));
-               }else{
-                   $order = new Order();
-               }
+                    $orderChickTemp->removeOrderItem($orderChickItemTemp);
 
-               $orderItem->setOrder($order);
+                }
 
-               $order->addOrderItem($orderItem);
-               $order->setAgent($agent);
-               $order->setDepo($depotObj);
-               $order->setLocation($agent->getUser()->getUpozilla());
-               $order->setTotalAmount($order->getItemsTotalAmount());
-               $order->setOrderState(Order::ORDER_STATE_PENDING);
-               $order->setPaymentState(Order::PAYMENT_STATE_PENDING);
-               $order->setDeliveryState(Order::DELIVERY_STATE_PENDING);
-               $order->setOrderVia('SYSTEM');
-               $order->setCreatedAt(new \DateTime($date) );
-
-               $order->calculateOrderAmount();
-
-               $this->getDoctrine()->getManager()->persist($orderItem);
-               $this->getDoctrine()->getManager()->persist($order);
-               $data[]= $order->getId();
-           }
+                $data[]= $order->getId();
+            }
+            $this->getDoctrine()->getManager()->remove($orderChickTemp);
        }
        if (in_array(null, $data)){
            $this->flashMessage('success', 'Order add Successfully.');
@@ -337,43 +522,8 @@ class ChickOrderController extends BaseController
 
         $this->getDoctrine()->getManager()->flush();
 
-        return $this->redirect($this->generateUrl('order_chick_add'));
+        return $this->redirect($this->generateUrl('chick_orders_home'));
     }
-
-    private function getChickOrdersByZone($date, $zone, $orderState) {
-        $repo = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem');
-        $qb = $repo->createQueryBuilder('oi');
-
-        $qb->select('oi');
-        $qb->join('oi.item', 'i');
-        $qb->join('i.itemType', 'it');
-        $qb->join('oi.order', 'o');
-        $qb->join('o.agent', 'a');
-        $qb->join('a.user', 'u');
-        $qb->join('u.profile', 'p');
-        $qb->join('u.zilla', 'z');
-
-        $qb->where($qb->expr()->between('o.createdAt', ':start', ':end'));
-        $qb->setParameters(array('start' => $date . ' 00:00:00', 'end' => $date . ' 23:59:59'));
-
-        $qb->andWhere('it.itemType = :itemType');
-        $qb->setParameter('itemType', ItemType::Chick);
-
-        $qb->andWhere($qb->expr()->in('z.parentId', ':parentId'))->setParameter('parentId', $zone);
-        $qb->andWhere($qb->expr()->in('o.orderState', ':orderState'))->setParameter('orderState', $orderState);
-
-        $qb->orderBy('z.parentId');
-        $qb->addOrderBy('z.name');
-        $qb->addOrderBy('p.fullName');
-        $result = $qb->getQuery()->getResult();
-        $orderItemResult = array();
-        foreach ($result as $row) {
-            $orderItemResult[$row->getOrder()->getAgent()->getUser()->getZilla()->getParentId()][] = $row;
-        }
-
-        return $orderItemResult;
-    }
-
 
     /**
      * find stock item ajax

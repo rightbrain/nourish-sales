@@ -20,6 +20,10 @@ use Symfony\Component\Validator\Constraints AS Assert;
  */
 class Depo
 {
+    const DEPOT_TYPE_FEED = 'FEED';
+    const DEPOT_TYPE_CHICK = 'CHICK';
+
+
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
@@ -69,6 +73,13 @@ class Depo
      * @ORM\Column(name="used_in_transport", type="boolean", nullable=true)
      */
     private $usedInTransport = false;
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="depot_type", type="string", length=255, columnDefinition="ENUM('FEED', 'CHICK')")
+     */
+    private $depotType=self::DEPOT_TYPE_FEED;
 
     public function __construct()
     {
@@ -197,4 +208,22 @@ class Depo
     {
         return $id . ' - ' . $name;
     }
+
+    /**
+     * @return array
+     */
+    public function getDepotType()
+    {
+        return $this->depotType;
+    }
+
+    /**
+     * @param array $depotType
+     */
+    public function setDepotType($depotType)
+    {
+        $this->depotType = $depotType;
+    }
+
+
 }

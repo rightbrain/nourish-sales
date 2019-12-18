@@ -29,7 +29,7 @@ class UserAgentUpdateForm extends AbstractType
         ;
 
         $builder
-            ->add('profile', new AgentProfileForm());
+            ->add('profile', new AgentProfileUpdateForm());
     }
 
     /**

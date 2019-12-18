@@ -92,6 +92,38 @@ var Delivery = function()
                 remain.text(qty - deliveryQtq);
             }
 
+            var item_qty_sum = 0;
+            $('body .item-qty').each(function() {
+                var value = $(this).text();
+                if(!isNaN(value) && value.length != 0) {
+                    item_qty_sum += parseFloat(value);
+                }
+            });
+
+            $('.totalItemQty').text(item_qty_sum);
+
+
+            var delivery_qty_sum = 0;
+            $('body .deliver-qty').each(function() {
+                var value = $(this).val();
+                if(!isNaN(value) && value.length != 0) {
+                    delivery_qty_sum += parseFloat(value);
+                }
+            });
+
+            $('.totalDeliveryQty').text(delivery_qty_sum);
+
+
+            var sum = 0;
+            $('body .remain').each(function() {
+                var value = $(this).text();
+                if(!isNaN(value) && value.length != 0) {
+                    sum += parseFloat(value);
+                }
+            });
+
+            $('.totalRemainingQty').text(sum);
+
         }).blur();
     }
 

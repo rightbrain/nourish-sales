@@ -93,7 +93,7 @@
                                             {{ laser['remark'] | default('') }}
                                         {% else %}
                                             {% for id, item in json_decode(laser['remark']) %}
-                                                <div>{{ item.name ~ '(' ~ item.qty ~ 'Kg ' ~ item.amount|number_format(2, '.', ',') ~ 'Tk)'}}</div>
+                                                <div>{{ item.name ~ '(' ~ item.qty ~ item.unit ~' ' ~ item.amount|number_format(2, '.', ',') ~ 'Tk)'}}</div>
                                             {% endfor %}
                                         {% endif %}
                                     </td>

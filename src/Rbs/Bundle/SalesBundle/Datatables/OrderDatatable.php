@@ -87,7 +87,8 @@ class OrderDatatable extends BaseDatatable
             $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName'));
             $this->columnBuilder->add('agentDistrict', 'virtual', array('title' => 'Agent District'));
         }
-        $this->columnBuilder->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
+        $this->columnBuilder->add('depo.name', 'column', array('title' => 'Depot'))
+            ->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
             ->add('orderState', 'column', array('title' => 'Order State', 'render' => 'Order.OrderStateFormat'))
             ->add('paymentState', 'column', array('title' => 'Payment State', 'render' => 'Order.OrderStateFormat'))
             ->add('deliveryState', 'column', array('title' => 'Delivery State', 'render' => 'Order.OrderStateFormat'))

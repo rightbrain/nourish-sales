@@ -82,6 +82,16 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.chick.order:
+        class: Rbs\Bundle\SalesBundle\Datatables\ChickOrderDatatable
+        tags:
+            - { name: sg.datatable.view }
+
+    rbs_erp.sales.datatable.chick.order.depo:
+        class: Rbs\Bundle\SalesBundle\Datatables\ChickOrderDepoDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.order.individual:
         class: Rbs\Bundle\SalesBundle\Datatables\OrderMyDatatable
         tags:
@@ -102,6 +112,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.chick.vehicle:
+        class: Rbs\Bundle\SalesBundle\Datatables\VehicleChickDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.my.vehicle:
         class: Rbs\Bundle\SalesBundle\Datatables\MyVehicleDatatable
         tags:
@@ -109,6 +124,11 @@ services:
 
     rbs_erp.sales.datatable.in.out.vehicle:
         class: Rbs\Bundle\SalesBundle\Datatables\InOutVehicleDatatable
+        tags:
+            - { name: sg.datatable.view }
+
+    rbs_erp.sales.datatable.in.out.chick.vehicle:
+        class: Rbs\Bundle\SalesBundle\Datatables\InOutChickVehicleDatatable
         tags:
             - { name: sg.datatable.view }
 
@@ -158,6 +178,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.delivery.chick:
+        class: Rbs\Bundle\SalesBundle\Datatables\DeliveryChickDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.registration.form.type:
         class: Rbs\Bundle\SalesBundle\Form\Type\AgentForm
         tags:
@@ -183,3 +208,8 @@ services:
     rbs_erp.sales.service.smssender:
         class: Rbs\Bundle\SalesBundle\Service\SmsSender
         arguments: [ @doctrine, @rbs_erp.sales.sms_gateway ]
+
+    rbs_erp.sales.datatable.VehicleNourish:
+        class: Rbs\Bundle\SalesBundle\Datatables\VehicleNourishDatatable
+        tags:
+            - { name: sg.datatable.view }

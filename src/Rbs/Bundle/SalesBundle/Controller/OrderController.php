@@ -69,6 +69,8 @@ class OrderController extends BaseController
                 $qb->andWhere('u.id = :user');
                 $qb->setParameter('user', $this->getUser()->getId());
             }
+            $qb->andWhere('sales_orders.orderType = :type');
+            $qb->setParameter('type', Order::ORDER_TYPE_FEED);
         };
         $query->addWhereAll($function);
 

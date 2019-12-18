@@ -88,6 +88,24 @@ class SetVehicleDatatable extends BaseDatatable
                         'confirm_message' => 'Are you sure?',
                         'role' => 'ROLE_DELIVERY_MANAGE',
                         'render_if' => array('isStart', 'isInFalse', 'isDeliveryFalse')
+                    ),
+                    array(
+                        'route' => 'chick_delivery_set',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Delivery Set',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'disable-action',
+                            'class' => 'btn btn-primary btn-xs delete-list-btn',
+                            'role' => 'button'
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_CHICK_DELIVERY_MANAGE',
+                        'render_if' => array('isStart', 'isInFalse', 'isDeliveryFalse')
                     )
                 )
             ))

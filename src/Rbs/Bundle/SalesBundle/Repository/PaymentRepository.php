@@ -315,6 +315,13 @@ class PaymentRepository extends EntityRepository
         );
     }
 
+    public function updateDeliveredProductValue(Delivery $delivery)
+    {
+        $this->updatePaymentByDeliveryItemExtractedSummary(
+            $this->extractDeliveryItemSummary($delivery)
+        );
+    }
+
     private function extractDeliveryItemSummary(Delivery $delivery)
     {
         $data = [];
@@ -323,7 +330,9 @@ class PaymentRepository extends EntityRepository
         foreach ($delivery->getDeliveryItems() as $deliveryItem) {
             $order = $deliveryItem->getOrder();
             $itemPrice = $deliveryItem->getOrderItem()->getPrice();
+            $itemDamageQty = $deliveryItem->getOrderItem()->getDamageQuantity();
             $itemQty = $deliveryItem->getQty();
+            $itemQty = $itemQty - $itemDamageQty;
             $amount = $itemPrice * $itemQty;
 
             if (!array_key_exists($order->getId(), $data)) {
@@ -362,6 +371,32 @@ class PaymentRepository extends EntityRepository
             $payment->addOrder($order);
 
             $this->_em->persist($payment);
+            $this->_em->flush();
+        }
+    }
+
+    private function updatePaymentByDeliveryItemExtractedSummary($data)
+    {
+        foreach ($data as $orderId => $deliveryItemSummaries) {
+            $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
+            $total = array_sum(array_column($data[$orderId], 'amount'));
+            $quantity = array_sum(array_column($data[$orderId], 'qty'));
+            $payments = $order->getPayments();
+            /** @var Payment $payment */
+            foreach ($payments as $payment){
+                $payment->setAgent($order->getAgent());
+                $payment->setAmount($total);
+                $payment->setQuantity($quantity);
+                $payment->setDepositedAmount($total);
+                $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+                $payment->setRemark(json_encode($deliveryItemSummaries));
+//            $payment->setDepositDate(date("Y-m-d"));
+                $payment->setTransactionType(Payment::DR);
+                $payment->setVerified(true);
+                $payment->addOrder($order);
+
+                $this->_em->persist($payment);
+            }
             $this->_em->flush();
         }
     }

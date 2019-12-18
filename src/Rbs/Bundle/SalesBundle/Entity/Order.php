@@ -37,6 +37,13 @@ class Order
     const DELIVERY_STATE_PARTIALLY_SHIPPED = 'PARTIALLY_SHIPPED';
     const DELIVERY_STATE_SHIPPED = 'SHIPPED';
 
+    const VEHICLE_STATE_IN = 'VEHICLE_IN';
+    const VEHICLE_STATE_OUT = 'VEHICLE_OUT';
+    const VEHICLE_STATE_PARTIALLY_SHIPPED = 'PARTIALLY_SHIPPED';
+
+    const ORDER_TYPE_FEED = 'FEED';
+    const ORDER_TYPE_CHICK = 'CHICK';
+
     use ORMBehaviors\Timestampable\Timestampable,
 //        ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
@@ -94,6 +101,13 @@ class Order
     /**
      * @var array $type
      *
+     * @ORM\Column(name="vehicle_state", type="string", length=255, columnDefinition="ENUM('VEHICLE_IN', 'VEHICLE_OUT', 'PARTIALLY_SHIPPED')", nullable=true)
+     */
+    private $vehicleState;
+
+    /**
+     * @var array $type
+     *
      * @ORM\Column(name="payment_state", type="string", length=255, columnDefinition="ENUM('PENDING', 'PARTIALLY_PAID', 'PAID', 'CREDIT_APPROVAL')", nullable=true)
      */
     private $paymentState;
@@ -104,6 +118,13 @@ class Order
      * @ORM\Column(name="order_state", type="string", length=255, columnDefinition="ENUM('PENDING', 'HOLD', 'PROCESSING', 'COMPLETE', 'CANCEL')", nullable=true)
      */
     private $orderState;
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="order_type", type="string", length=255, columnDefinition="ENUM('FEED', 'CHICK')")
+     */
+    private $orderType=self::ORDER_TYPE_FEED;
 
     /**
      * @var float
@@ -265,6 +286,22 @@ class Order
     public function setDeliveryState($deliveryState)
     {
         $this->deliveryState = $deliveryState;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVehicleState()
+    {
+        return $this->vehicleState;
+    }
+
+    /**
+     * @param string $vehicleState
+     */
+    public function setVehicleState($vehicleState)
+    {
+        $this->vehicleState = $vehicleState;
     }
 
     /**
@@ -636,6 +673,23 @@ class Order
     {
         $this->paymentMode = $paymentMode;
     }
+
+    /**
+     * @return array
+     */
+    public function getOrderType()
+    {
+        return $this->orderType;
+    }
+
+    /**
+     * @param array $orderType
+     */
+    public function setOrderType($orderType)
+    {
+        $this->orderType = $orderType?$orderType:self::ORDER_TYPE_FEED;
+    }
+
 
     public function calculateOrderAmount()
     {

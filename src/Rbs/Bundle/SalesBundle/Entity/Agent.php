@@ -23,6 +23,9 @@ class Agent
     const DR = 'DR';
     const CR = 'CR';
 
+    const AGENT_TYPE_FEED = 'FEED';
+    const AGENT_TYPE_CHICK = 'CHICK';
+
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
@@ -84,20 +87,6 @@ class Agent
     private $openingBalanceType;
 
     /**
-     * @var float
-     *
-     * @ORM\Column(name="opening_balance_for_chick", type="float", nullable=true)
-     */
-    private $openingBalanceForChick = 0;
-
-    /**
-     * @var array $type
-     *
-     * @ORM\Column(name="opening_balance_type_for_chick", type="string", length=255, columnDefinition="ENUM('DR', 'CR')", nullable=true)
-     */
-    private $openingBalanceTypeForChick;
-
-    /**
      * @var boolean
      *
      * @ORM\Column(name="opening_balance_flag", type="boolean", nullable=true)
@@ -117,6 +106,13 @@ class Agent
      * @ORM\Column(name="chick_agent_id", type="string", length=255, nullable=true)
      */
     private $chickAgentID;
+
+    /**
+     * @var string
+     * @ORM\Column(name="agent_code_for_datatable", type="string", length=255, nullable=true)
+     *
+     */
+    private $agentCodeForDatatable;
 
     /**
      * @var ItemType
@@ -165,7 +161,14 @@ class Agent
      * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\ChickenSetForAgent", mappedBy="agent")
      */
     private $chickenSetForAgent;
-    
+
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="agent_type", type="string", length=255, columnDefinition="ENUM('FEED', 'CHICK')")
+     */
+    private $agentType=self::AGENT_TYPE_FEED;
+
     /**
      * Get id
      *
@@ -374,38 +377,6 @@ class Agent
     }
 
     /**
-     * @return float
-     */
-    public function getOpeningBalanceForChick()
-    {
-        return $this->openingBalanceForChick;
-    }
-
-    /**
-     * @param float $openingBalanceForChick
-     */
-    public function setOpeningBalanceForChick($openingBalanceForChick)
-    {
-        $this->openingBalanceForChick = $openingBalanceForChick;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOpeningBalanceTypeForChick()
-    {
-        return $this->openingBalanceTypeForChick;
-    }
-
-    /**
-     * @param array $openingBalanceTypeForChick
-     */
-    public function setOpeningBalanceTypeForChick($openingBalanceTypeForChick)
-    {
-        $this->openingBalanceTypeForChick = $openingBalanceTypeForChick;
-    }
-
-    /**
      * @return string
      */
     public function getChickAgentID()
@@ -469,6 +440,39 @@ class Agent
         $this->chickenSetForAgent = $chickenSetForAgent;
     }
 
+    /**
+     * @return array
+     */
+    public function getAgentType()
+    {
+        return $this->agentType;
+    }
+
+    /**
+     * @param array $agentType
+     */
+    public function setAgentType($agentType)
+    {
+        $this->agentType = $agentType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAgentCodeForDatatable()
+    {
+        return $this->agentCodeForDatatable;
+    }
+
+    /**
+     * @param string $agentCodeForDatatable
+     */
+    public function setAgentCodeForDatatable($agentCodeForDatatable)
+    {
+        $this->agentCodeForDatatable = $agentCodeForDatatable;
+    }
+
+
     public function getName()
     {
         return !empty($this->getUser()->getProfile()->getFullName()) 
@@ -483,6 +487,14 @@ class Agent
 
     public function getIdName()
     {
-        return Agent::agentIdNameFormat($this->getAgentID(), $this->getUser()->getProfile()->getFullName());
+        if($this->agentType == Agent::AGENT_TYPE_CHICK){
+            return Agent::agentIdNameFormat($this->getChickAgentID(), $this->getUser()->getProfile()->getFullName());
+        }else{
+            return Agent::agentIdNameFormat($this->getAgentID(), $this->getUser()->getProfile()->getFullName());
+        }
+    }
+    public function getIdNameForChick()
+    {
+        return Agent::agentIdNameFormat($this->getChickAgentID(), $this->getUser()->getProfile()->getFullName());
     }
 }

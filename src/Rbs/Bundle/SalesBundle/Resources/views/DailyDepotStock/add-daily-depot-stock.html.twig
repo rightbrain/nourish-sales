@@ -1,0 +1,49 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Stock Generate {% endblock %}
+
+{% block body %}
+
+    <div class="modal fade" id="ajaxSummeryView" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="{{ asset('assets/global/img/loading-spinner-grey.gif') }}" alt="" class="loading">
+                    <span> &nbsp;&nbsp;Loading... </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>Stock Generate
+                </div>
+            </div>
+            <div class="portlet-body">
+                {{ include('RbsSalesBundle:DailyDepotStock:_filter_add_daliy_depot_stock_form.html.twig') }}
+
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        'bundles/rbssales/js/daily-depot-stock.js' %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+{% endblock %}
+
+
+{% block documentReady %}
+    {{ parent() }}
+    DailyDepotSock.ManageInit();
+{% endblock documentReady %}

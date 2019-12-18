@@ -5,6 +5,11 @@ var ChickOrder = function()
             var currentRegion = $(this);
             var totalElm = $(this).find('.total-qty');
             $(this).find('.qty').keyup(function(){
+                if($(this).val()>parseInt($(this).closest('tr').find('.remaining_qty').text())){
+                    alert('Remaining quantity are not available.');
+                    $(this).val($(this).attr('data-item-qty'));
+                    // return false;
+                }
                 calcTotalOfCurrentRegion(currentRegion, totalElm);
                 calTotalOfAllRegion();
             });
