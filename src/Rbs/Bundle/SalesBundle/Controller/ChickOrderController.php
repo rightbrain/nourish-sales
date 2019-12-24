@@ -344,7 +344,7 @@ class ChickOrderController extends BaseController
                 }
             }
 
-            $addedData = $this->getChickOrdersByDate($date);
+            $addedData = $this->getChickOrdersByDate($date, $depo);
         }
 
         return $this->render('RbsSalesBundle:ChickOrder:add-check-order.html.twig', array(
@@ -402,16 +402,20 @@ class ChickOrderController extends BaseController
         return $result;
     }
 
-    private function getChickOrdersByDate($date) {
+    private function getChickOrdersByDate($date, $depot) {
         $repo = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItemChickTemp');
         $qb = $repo->createQueryBuilder('oi');
-        $qb->select('o.id as oId, oi.id as oiId, oi.quantity as quantity, a.id as aId, i.id as iId');
+        $qb->select('o.id as oId, oi.id as oiId, oi.quantity as quantity, a.id as aId, i.id as iId, d.id as dId');
         $qb->join('oi.order', 'o');
         $qb->join('oi.item','i');
         $qb->join('o.agent','a');
+        $qb->join('o.depo','d');
 
         $qb->where($qb->expr()->between('o.createdAt', ':start', ':end'));
         $qb->setParameters(array('start' => $date , 'end' => $date ));
+
+        $qb->andWhere('o.depo = :depot');
+        $qb->setParameter('depot', $depot);
 
         $results = $qb->getQuery()->getResult();
         $dataArray = array();
