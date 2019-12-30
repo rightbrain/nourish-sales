@@ -1,0 +1,136 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Order {% endblock %}
+
+{% block body %}
+
+    <div class="modal fade" id="ajaxSummeryView" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="{{ asset('assets/global/img/loading-spinner-grey.gif') }}" alt="" class="loading">
+                    <span> &nbsp;&nbsp;Loading... </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>Chick Orders &nbsp; &nbsp; &nbsp;  Date: {{ orderDate|date('d-m-Y') }} &nbsp;&nbsp;&nbsp; {{ depot?depot.name:'' }}
+                </div>
+            </div>
+            <div class="portlet-body">
+                {{ form_start(form, {'method': 'POST', attr: { novalidate: 'novalidate'}}) }}
+
+
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label">Depot
+                        </label>
+                        <div class="col-sm-3">
+                            {{ form_widget(form.depot) }}
+                        </div>
+                        <label class="col-sm-1 control-label">Date
+                        </label>
+                        <div class="col-sm-3">
+                            {{ form_widget(form.order_date) }}
+                        </div>
+                        <div class="col-sm-2">
+                            {{ form_widget(form.submit) }}
+                        </div>
+                    </div>
+                {{ form_end(form) }}
+
+                {% if(ordersTemp) %}
+
+                {{ include('RbsSalesBundle:ChickOrder:_filter_list_check_form.html.twig') }}
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+    <style>
+        .old_item{
+            background-color: red;
+            position: absolute;
+            top: 15px;
+            transform: rotate(45deg);
+            -webkit-transform: rotate(-90deg);
+            color: #ffffff;
+            left: -6px;
+            padding: 0px 4px;
+            font-weight: bold;
+        }
+        .new_item{
+            background-color: green;
+            position: absolute;
+            top: 15px;
+            transform: rotate(45deg);
+            -webkit-transform: rotate(-90deg);
+            color: #ffffff;
+            left: -6px;
+            padding: 0px 3px;
+            font-weight: bold;
+        }
+
+        .fixed_header{
+            width: 100%;
+            table-layout: fixed;
+            border-collapse: collapse;
+        }
+
+        .fixed_header tbody{
+            display:block;
+            width: 100%;
+            overflow: auto;
+            height: 400px;
+        }
+
+        .fixed_header thead tr {
+            display: flex;
+        }
+
+        .fixed_header thead {
+            background: black;
+            color:#fff;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+    'bundles/rbssales/js/daily-depot-stock.js'
+    'bundles/rbssales/js/chick-order-temp.js' %}
+    <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+{% endblock %}
+
+
+{% block documentReady %}
+    {{ parent() }}
+    DailyDepotSock.ManageInit();
+    ChickOrderTemp.ManageInit();
+
+    function toggleIcon(e) {
+    $(e.target)
+    .prev('.panel-heading')
+    .find(".more-less")
+    .toggleClass('fa-plus fa-minus');
+    }
+    $('.panel-group').on('hidden.bs.collapse', toggleIcon);
+    $('.panel-group').on('shown.bs.collapse', toggleIcon);
+
+    $(".myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    var tableId = $(this).next('table').attr('id');
+    $("#"+tableId+" tbody tr").filter(function() {
+    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+    });
+
+{% endblock documentReady %}

@@ -7,6 +7,7 @@ use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\CoreBundle\Entity\Item;
 use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\CoreBundle\Entity\Location;
+use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\DailyDepotStock;
 use Rbs\Bundle\SalesBundle\Entity\Order;
@@ -344,7 +345,7 @@ class ChickOrderController extends BaseController
                 }
             }
 
-            $addedData = $this->getChickOrdersByDate($date, $depo);
+            $addedData = $this->getTempChickOrdersByDateDepot($date, $depo);
         }
 
         return $this->render('RbsSalesBundle:ChickOrder:add-check-order.html.twig', array(
@@ -357,6 +358,88 @@ class ChickOrderController extends BaseController
                 'dailyStocks'         => $dailyStocks,
                 'locationsRegions' => $locationsRegions,
                 'locationsDistricts' => $locationsDistricts,
+            )
+        );
+    }
+
+
+    /**
+     * @Route("/orders/chick/list", name="order_chick_lists")
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CHICK_ORDER_MANAGE, ROLE_DEPO_USER")
+     */
+    public function orderListAction( Request $request)
+    {
+
+        set_time_limit(0);
+        ini_set('memory_limit','1024M');
+        $data = array();
+        $form = $this->createFormBuilder();
+        $form->add('depot', 'entity', array(
+                'class' => 'RbsCoreBundle:Depo',
+                'placeholder' => 'Select Depo',
+                'property' => 'name',
+                'required'=>true,
+                'query_builder' => function (DepoRepository $repository)
+                {
+                    return $repository->createQueryBuilder('d')
+                        ->where("d.depotType = :depotType")
+                        ->setParameter('depotType', Depo::DEPOT_TYPE_CHICK);
+
+
+                }
+            ))
+            ->add('order_date', 'date', array(
+                'widget' => 'single_text',
+                'html5' => false,
+                'format' => 'dd-MM-yyyy',
+                'attr' => array(
+                    'autocomplete'=>'off',
+                    'class' => 'date-picker'
+                )
+            ))
+            ->add('submit','submit',array('attr'=>array('class'=>'btn btn-primary'),'label'=>'Submit'));
+        $form = $form->getForm();
+
+        $date = $request->request->get('order_date') ? date('Y-m-d H:i:s', strtotime($request->query->get('order_date'))) : date('Y-m-d H:i:s', time());
+        $addedData = array();
+
+        $locationsRegions = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->getRegionsForChick();
+        $locationsDistricts = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->getDistrictsForChick();
+        $locationsUpazilas = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->getUpozillas();
+        $locationsDistrictByUpazilla = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->getDistrictByUpozillas();
+        $agentLists = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getChickAgentsListByDistrict();
+
+        $dailyStocks = array();
+
+        $chickItems = $this->getChickItems();
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $data = $form->getData();
+            $date = $data['order_date'] ? $data['order_date'] : date('Y-m-d H:i:s', time());
+            if ($data['order_date']){
+
+
+                $addedData = $this->getFinalChickOrdersByDateDepot($date, $data['depot']);
+
+
+                $onlyDate = $date->format('Y-m-d');
+                $dailyStocks = $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStock')->getDailyStock($onlyDate);
+            }
+        }
+
+        return $this->render('RbsSalesBundle:ChickOrder:list-check-order.html.twig', array(
+                'depot'            => $data?$data['depot']:null,
+                'orderDate'            => $date,
+                'agentsList'         => $agentLists,
+                'chickItems'         => $chickItems,
+                'ordersTemp'         => $addedData,
+                'dailyStocks'         => $dailyStocks,
+                'locationsRegions' => $locationsRegions,
+                'locationsDistricts' => $locationsDistricts,
+                'locationsUpazilas' => $locationsUpazilas,
+                'locationsDistrictByUpazilla' => $locationsDistrictByUpazilla,
+                'form' => $form->createView(),
             )
         );
     }
@@ -402,7 +485,7 @@ class ChickOrderController extends BaseController
         return $result;
     }
 
-    private function getChickOrdersByDate($date, $depot) {
+    private function getTempChickOrdersByDateDepot($date, $depot) {
         $repo = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItemChickTemp');
         $qb = $repo->createQueryBuilder('oi');
         $qb->select('o.id as oId, oi.id as oiId, oi.quantity as quantity, a.id as aId, i.id as iId, d.id as dId');
@@ -424,6 +507,39 @@ class ChickOrderController extends BaseController
             $dataArray[$result['aId']][$result['iId']]= $result;
         }
 //        var_dump($dataArray);die;
+        return $dataArray;
+    }
+
+    private function getFinalChickOrdersByDateDepot($date, $depot) {
+        $repo = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem');
+        $qb = $repo->createQueryBuilder('oi');
+        $qb->select('o.id as oId, oi.id as oiId, SUM(oi.quantity) as quantity, a.id as aId, i.id as iId, d.id as dId, l.parentId as lId');
+        $qb->join('oi.order', 'o');
+        $qb->join('oi.item','i');
+        $qb->join('o.agent','a');
+        $qb->join('o.depo','d');
+        $qb->join('o.location','l');
+
+        $qb->where($qb->expr()->between('o.createdAt', ':start', ':end'));
+        $qb->setParameters(array('start' => $date , 'end' => $date ));
+
+        $qb->andWhere('o.orderState=:orderSate');
+        $qb->setParameter('orderSate', Order::ORDER_STATE_PROCESSING);
+        $qb->andWhere('o.deliveryState=:deliveryState');
+        $qb->setParameter('deliveryState', Order::DELIVERY_STATE_READY);
+
+
+        $qb->andWhere('o.depo = :depot');
+        $qb->setParameter('depot', $depot);
+
+        $qb->groupBy('d.id, a.id, i.id, o.createdAt');
+
+        $results = $qb->getQuery()->getResult();
+        $dataArray = array();
+
+        foreach ($results as $result){
+            $dataArray[$result['lId']][$result['aId']][$result['iId']]= $result;
+        }
         return $dataArray;
     }
 

@@ -142,6 +142,30 @@ class LocationRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function getDistrictById($id)
+    {
+        $query = $this->createQueryBuilder('l');
+        $query->select('l.id, l.name, l.parentId');
+        $query->where('l.level = 4');
+        $query->orderBy('l.name','ASC');
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getDistrictByUpozillas()
+    {
+        $query = $this->createQueryBuilder('l');
+        $query->where('l.level = 5');
+        $arrayData= array();
+
+        foreach ($query->getQuery()->getResult() as $upozilla){
+          $arrayData[$upozilla->getId()]=  $this->find(array('id'=>$upozilla->getParentId()));
+
+        }
+
+        return $arrayData;
+    }
+
     public function getUpozillas()
     {
         $query = $this->createQueryBuilder('l');

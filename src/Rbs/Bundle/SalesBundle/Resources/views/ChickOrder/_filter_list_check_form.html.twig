@@ -1,0 +1,130 @@
+<div class="row">
+    <div class="col-md-12">
+
+        <div class="form-group visible-print-inline">
+            <label class="col-sm-2 control-label required">Date:
+                <span class="visible-print-inline" style="margin-right: 50px">{{ orderDate|date('d-m-Y') }}</span>
+            </label>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+
+                <table class="table table-bordered table-striped">
+                    <thead>
+                    <tr>
+                        <td style="width: 5%" rowspan="2">Agent Code</td>
+                        <td style="width: 15%" rowspan="2">Name</td>
+                        {% for item in chickItems %}
+                            <td>
+                                {{ item.sku }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        {% for item in chickItems %}
+                            <td class="{{ item.id }}" style="width: 9%">
+                                {#{{ depot.id }}#}
+                                {{ dailyStocks[depot.id][item.id]['onHold'] }}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                </table>
+                <div class="panel-group" id="">
+                        {% set total=[] %}
+
+                    {% for region in locationsRegions %}
+
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h4 style="text-align: center" class="panel-title">
+                                    {{ region.name }}
+                                </h4>
+                            </div>
+                            <div id="{{ region.id }}" class="">
+                                <div class="panel-body" style="padding-left: 1px; padding-right: 1px">
+
+                                    <input type="text" class="form-control myInput" value="" placeholder="Search....">
+                                    <table id="table_{{ region.id }}" class="table table-bordered table-striped chick-order-region-summary">
+
+                                        <tbody>
+                                        {% for district in locationsDistricts %}
+                                            {% if district.parentId == region.id %}
+                                                {% if district.id in ordersTemp|keys %}
+                                                    <tr>
+                                                        <td colspan="20" class="col-md-1 bold" style="width: 100px;">{{ district.name }}</td>
+                                                    </tr>
+
+                                                    {% for agent in agentsList[district.id] %}
+                                                        {% if agent['id'] in ordersTemp[district.id]|keys %}
+                                                        <tr>
+                                                            <td class="agentId_{{ agent['id'] }}" style="width: 5%">
+                                                                <input type="hidden" class="agent_id" name="agent[]" value="{{ agent['id'] }}">
+                                                                {{ agent['chickAgentID'] }}
+                                                            </td>
+                                                            <td style="width: 15%">{{ agent['fullName'] }}</td>
+                                                            {% for item in chickItems %}
+                                                                {% if item.id in ordersTemp[district.id][agent['id']]|keys %}
+                                                                <td class="order_{{ ordersTemp[district.id][agent['id']][item.id]['oId'] }}" style="width: 9%">
+                                                                    {{ ordersTemp[district.id][agent['id']][item.id]['quantity'] }}
+
+                                                                    {% if not attribute(total, region.id~'_' ~ item.id) is defined %}
+                                                                        {% set total = total|merge({ (region.id~'_' ~ item.id) : [ordersTemp[district.id][agent['id']][item.id]['quantity']] }) %}
+                                                                    {% else %}
+                                                                        {% set titles = attribute(total, region.id~'_' ~ item.id) %}
+                                                                        {% set titles = titles|merge([ordersTemp[district.id][agent['id']][item.id]['quantity']]) %}
+                                                                        {% set total = total|merge({ (region.id~'_' ~ item.id) : titles }) %}
+                                                                    {% endif %}
+
+                                                                </td>
+                                                                    {% else %}
+                                                                <td style="width: 9%">
+                                                                    0
+                                                                    {#{{ item.id }}#}
+                                                                </td>
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </tr>
+                                                        {% endif %}
+                                                    {% endfor %}
+
+                                                {% endif %}
+
+
+                                            {% endif %}
+
+                                        {% endfor %}
+
+                                        </tbody>
+                                        <tfoot>
+                                        <tr style="font-weight: bold">
+                                            <td width="20%" colspan="2" style="text-align: right">Total</td>
+                                            {% for item in chickItems %}
+                                                {% if region.id~'_' ~ item.id in total|keys %}
+                                                <td data-region-item="{{ region.id }}_{{ item.id }}" data-region-item-id="{{ item.id }}" class="region region_item_total_{{ region.id }}_{{ item.id }}" style="width: 9%">
+                                                {% set regionTotal=0 %}
+                                                    {% for totalQnt in total[region.id~'_' ~ item.id] %}
+                                                    {% set regionTotal = regionTotal+totalQnt %}
+                                                    {% endfor %}
+                                                    {{ regionTotal }}
+                                                </td>
+                                                {% else %}
+                                                    <td data-region-item="{{ region.id }}_{{ item.id }}" data-region-item-id="{{ item.id }}" class="region region_item_total_{{ region.id }}_{{ item.id }}" style="width: 9%">
+                                                        0
+                                                    </td>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endfor %}
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>

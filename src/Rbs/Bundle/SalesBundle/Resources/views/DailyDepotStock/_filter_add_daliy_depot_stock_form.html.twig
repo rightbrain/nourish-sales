@@ -27,7 +27,7 @@
             <tr>
                 <th style="width: 12%">Depot Name</th>
                 {% for item in items %}
-                <th>{{ item.sku }}</th>
+                <th title="{{ item.name }}">{{ item.sku }}</th>
                 {% endfor %}
                 <th>Action</th>
             </tr>
