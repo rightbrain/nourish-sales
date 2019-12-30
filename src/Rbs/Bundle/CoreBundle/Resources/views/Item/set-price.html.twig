@@ -14,8 +14,11 @@
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th width="60%">District</th>
+                                        <th width="40%">District</th>
                                         <th width="20%">Price</th>
+                                        {% if item.itemType.itemType=='Chick' %}
+                                        <th width="20%">MRP Price</th>
+                                        {% endif %}
                                         <th width="20%"></th>
                                     </tr>
                                 </thead>
@@ -24,6 +27,9 @@
                                     <tr class="form-group">
                                         <td><label for="amount-{{ index }}">{{ location.name }}</label></td>
                                         <td><input id="amount-{{ index }}" type="text" name="amount[{{ location.id }}]" value="{{ itemPrices[location.id]|default(0) }}" class="form-control input-xsmall amount"></td>
+                                        {% if item.itemType.itemType=='Chick' %}
+                                        <td><input id="mrp-amount-{{ index }}" type="text" name="mrp-amount[{{ location.id }}]" value="{{ itemMrpPrices[location.id]|default(0) }}" class="form-control input-xsmall mrp_amount"></td>
+                                        {% endif %}
                                         <td>
                                             {% if index == 0 %}
                                                 <button type="button" class="btn btn-xs blue" id="set-default-price">

@@ -41,6 +41,20 @@ class ItemPrice
     private $oldPrice;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="mrp_price", type="float")
+     */
+    private $mrpPrice;
+
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="old_mrp_price", type="float")
+     */
+    private $oldMrpPrice;
+
+    /**
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item")
      * @ORM\JoinColumn(name="item_id", referencedColumnName="id")
      */
@@ -174,6 +188,38 @@ class ItemPrice
         $this->active = $active;
 
         return $this;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMrpPrice()
+    {
+        return $this->mrpPrice;
+    }
+
+    /**
+     * @param float $mrpPrice
+     */
+    public function setMrpPrice($mrpPrice)
+    {
+        $this->mrpPrice = $mrpPrice;
+    }
+
+    /**
+     * @return float
+     */
+    public function getOldMrpPrice()
+    {
+        return $this->oldMrpPrice;
+    }
+
+    /**
+     * @param float $oldMrpPrice
+     */
+    public function setOldMrpPrice($oldMrpPrice)
+    {
+        $this->oldMrpPrice = $oldMrpPrice;
     }
 
 

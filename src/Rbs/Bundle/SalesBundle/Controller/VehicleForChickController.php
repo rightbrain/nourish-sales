@@ -125,7 +125,10 @@ class VehicleForChickController extends BaseController
      */
     public function chickDeliverySetAction(Request $request, Vehicle $vehicle)
     {
-        $form = $this->createForm(new VehicleDeliverySetChickForm($this->getUser(), $vehicle));
+        $form = $this->createForm(new VehicleDeliverySetChickForm($this->getDoctrine()->getManager(),$this->getUser(), $vehicle));
+
+//        $agent = $vehicle->getAgent()?$vehicle->getAgent():null;
+//        $orders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getOrdersZoneWise($this->getUser(), $agent);
 
         if ('POST' === $request->getMethod()) {
             if(!isset($request->request->get('vehicle_delivery_form')['orders'])){
@@ -160,7 +163,8 @@ class VehicleForChickController extends BaseController
         }
 
         return array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+//            'orders'=>$orders
         );
     }
 

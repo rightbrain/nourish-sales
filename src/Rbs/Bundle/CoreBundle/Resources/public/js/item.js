@@ -66,6 +66,12 @@ var Item = function()
 
                 $(this).val(amount);
             });
+            var mrp_amount = 0;
+            $('.mrp_amount').each(function(index, el){
+                if (index == 0) mrp_amount = $(this).val();
+
+                $(this).val(mrp_amount);
+            });
         });
     }
 

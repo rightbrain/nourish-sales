@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\CoreBundle\Entity\Location;
 use Rbs\Bundle\SalesBundle\Entity\Incentive;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
@@ -295,5 +296,63 @@ class OrderRepository extends EntityRepository
         $query->setParameters(array('COMPLETE'=>Order::ORDER_STATE_COMPLETE));
 
         return $query->getQuery()->getResult();
+    }
+
+
+    public function getOrdersZoneWise($user, $agent)
+    {
+        $regions = $this->getEntityManager()->getRepository('RbsCoreBundle:Location')->getRegionsForChick();
+        $districts = $this->getEntityManager()->getRepository('RbsCoreBundle:Location')->getDistrictsForChick();
+
+        $orders = $this->getOrdersOption($user, $agent);
+        $dataArray = array();
+        /** @var  Location $region */
+        foreach ($regions as $region){
+            /** @var  Location $district */
+            foreach ($districts as $district){
+                if($district['parentId']==$region['id']){
+
+                    if (array_key_exists($district['id'], $orders)){
+                        foreach ($orders[$district['id']] as $key=>$order){
+                            $dataArray[$region['name']][$key]=$order;
+                        }
+                    }
+
+                }
+
+
+            }
+        }
+
+        return $dataArray;
+
+
+    }
+
+    private function getOrdersOption($user, $agent){
+        $qp = $this->createQueryBuilder('o');
+        $qp->join('o.depo', 'd');
+        $qp->join('d.users', 'u');
+        $qp->join('o.location', 'l');
+        $qp->where('o.deliveryState = :PARTIALLY_SHIPPED OR o.deliveryState = :READY');
+        $qp->andWhere('o.orderType = :orderType');
+        $qp->andWhere('u.id = :user');
+        $qp->andWhere('o.vehicleState IS NULL or o.vehicleState = :vehicle');
+        $qp->setParameters(array('PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED, 'READY'=>Order::DELIVERY_STATE_READY,
+            'user' => $user->getId()));
+        $qp->setParameter('orderType', Order::ORDER_TYPE_CHICK);
+        $qp->setParameter('vehicle', Order::VEHICLE_STATE_PARTIALLY_SHIPPED);
+        if($agent){
+            $qp->andWhere('o.agent = :agent');
+            $qp->setParameter('agent', $agent);
+        }
+        $qp->orderBy('o.id', 'desc');
+        $arrayData = array();
+        /** @var  Order $item */
+        foreach ($qp->getQuery()->getResult() as $item){
+            $arrayData[$item->getLocation()->getParentId()][$item->getId()]= $item->getOrderInfoWithAgentForChick().', Qty:'.$item->getOrderItemsTotalQuantity();
+        }
+
+        return $arrayData;
     }
 }

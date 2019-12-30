@@ -13,7 +13,18 @@
             <div class="portlet-body">
                 {{ include('_elements/_back_to_list_button.html.twig', {url: path('vehicle_info_set_list'), label: 'Back to List', 'icon': 'chevron-left'}) }}
                 {{ form_start(form, {'method': 'POST', attr: { novalidate: 'novalidate'}}) }}
-
+                <div class="form-group">
+                    <label class="col-sm-1 control-label required" for="vehicle_delivery_form_vehicle">Vehicle</label>
+                    <div class="col-sm-8">
+                        {{ form_widget(form.vehicle) }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-1 control-label required" for="vehicle_delivery_form_orders">Orders</label>
+                    <div class="col-sm-11">
+                        {{ form_widget(form.orders) }}
+                    </div>
+                </div>
                 {{ form_end(form) }}
             </div>
         </div>
@@ -24,9 +35,9 @@
 {% block stylesheets %}
     {{ parent() }}
     {% stylesheets  filter='cssrewrite'
-    "assets/global/plugins/bootstrap-toastr/toastr.min.css"
+        "assets/global/plugins/jquery-multi-select/css/multi-select.css"
     %}
-    <link rel="stylesheet" href="{{ asset_url }}" />
+        <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
 
 {% endblock stylesheets %}
@@ -34,15 +45,36 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-    "assets/global/plugins/bootstrap-toastr/toastr.min.js"
+        "assets/global/plugins/select2/select2.min.js"
+        "assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js"
 
-    "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
-    "assets/admin/pages/scripts/form-validation.js"
+        "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
+        "assets/admin/pages/scripts/form-validation.js"
     %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
+        <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
+
+    <style>
+        .ms-container .ms-optgroup-label {
+            margin: 0;
+            padding: 5px 0px 0px 5px;
+            cursor: pointer;
+            color: #000;
+            font-weight: bold;
+            font-size: 16px;
+            text-align: center;
+            border-bottom: 1px solid #000;
+            border-top: 1px solid #000;
+        }
+        .ms-container .ms-list{
+            height: 400px;
+        }
+    </style>
+
 {% endblock javascripts %}
 
 {% block documentReady %}
     {{ parent() }}
+    FormValidation.init();
+    $("select[multiple=multiple]").multiSelect({selectableOptgroup: true});
 {% endblock documentReady %}

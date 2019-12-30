@@ -45,9 +45,23 @@ class ItemPriceRepository extends EntityRepository
         return $output;
     }
 
-    public function save($postDate, $locations, $item, $itemPrices)
+    public function getCurrentMrpPriceAsArray(Item $item)
+    {
+        $output = array();
+
+        /** @var ItemPrice $item */
+        foreach ($this->getAllCurrentPrice($item) as $item) {
+            $output[$item->getLocation()->getId()] = $item->getMrpPrice();
+        }
+
+        return $output;
+    }
+
+    public function save($postDate, $locations, $item, $itemPrices, $itemMrpPrices)
     {
         $amount = $postDate['amount'];
+
+        $mrpAmount = isset($postDate['mrp-amount'])?$postDate['mrp-amount']:array();
 
         /** @var Location $location */
 
@@ -55,7 +69,14 @@ class ItemPriceRepository extends EntityRepository
             $currentPrice = isset($itemPrices[$location->getId()]) ? (float)$itemPrices[$location->getId()] : 0;
             $newPrice = (float)$amount[$location->getId()];
 
-            if ($currentPrice != $newPrice) {
+            $currentMrpPrice = isset($itemMrpPrices[$location->getId()]) ? (float)$itemMrpPrices[$location->getId()] : 0;
+            $newMrpPrice = 0;
+            if(array_key_exists($location->getId(), $mrpAmount)){
+
+                $newMrpPrice =  (float)$mrpAmount[$location->getId()];
+            }
+
+            if ($currentPrice != $newPrice || $currentMrpPrice != $newMrpPrice) {
 
                 /** @var ItemPrice $oldItemPrice */
                 $oldItemPrice = $this->findOneBy(array('active' => 1, 'item' => $item, 'location' => $location));
@@ -67,6 +88,8 @@ class ItemPriceRepository extends EntityRepository
                 $itemPrice->setLocation($location);
                 $itemPrice->setPrice($amount[$location->getId()]);
                 $itemPrice->setOldPrice($oldItemPrice ? $oldItemPrice->getPrice() : 0);
+                $itemPrice->setMrpPrice($newMrpPrice);
+                $itemPrice->setOldMrpPrice($oldItemPrice ? $oldItemPrice->getMrpPrice() : 0);
                 $itemPrice->setItem($item);
                 $itemPrice->setActive(true);
                 $this->_em->persist($itemPrice);

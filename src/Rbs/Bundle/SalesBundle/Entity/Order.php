@@ -572,6 +572,14 @@ class Order
             : $this->getAgent()->getUser()->getUsername()). ', Date : '. $date->format('Y-F-d, h:i A');
     }
 
+    public function getOrderInfoWithAgentForChick()
+    {
+        $date = $this->getCreatedAt()->setTimezone(new \DateTimeZone( 'Asia/Dhaka' ));
+        return 'Order: '. $this->getId(). ', Agent: ' .
+            ($this->getAgent()->getUser()->getProfile()->getFullName() ? $this->getAgent()->getUser()->getProfile()->getFullName()
+            : $this->getAgent()->getUser()->getUsername()). ', Date: '. $date->format('d-m-Y');
+    }
+
     public function getDueAmount()
     {
         return ($this->getTotalAmount() - $this->getPaidAmount());

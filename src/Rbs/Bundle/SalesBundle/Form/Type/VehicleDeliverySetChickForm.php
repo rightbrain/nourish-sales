@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Doctrine\ORM\EntityManager;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\Vehicle;
@@ -20,12 +21,15 @@ class VehicleDeliverySetChickForm extends AbstractType
     private $user;
     private $agent;
     private $vehicleId;
+    /** @var  EntityManager */
+    private $em;
 
-    public function __construct($user, $vehicle)
+    public function __construct($entityManager, $user, $vehicle)
     {
         /** @var Vehicle $vehicle */
         $this->user = $user;
         $this->vehicleId = $vehicle->getId();
+        $this->em = $entityManager;
         $this->agent = $vehicle->getAgent()?$vehicle->getAgent():null;
     }
 
@@ -46,7 +50,12 @@ class VehicleDeliverySetChickForm extends AbstractType
                         ->setParameter('vehicleId', $this->vehicleId);
                 }
             ))
-            ->add('orders', 'entity', array(
+            ->add('orders', 'choice', array(
+                'required' => true,
+                'multiple' => true,
+                'choices' => $this->getOrdersList(),
+            ))
+            /*->add('orders', 'entity', array(
                 'class' => 'RbsSalesBundle:Order',
                 'property' => 'getOrderInfoWithAgent',
                 'required' => true,
@@ -69,7 +78,7 @@ class VehicleDeliverySetChickForm extends AbstractType
                         $qp->orderBy('o.id', 'desc');
                     return $qp;
                 }
-            ))
+            ))*/
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')
             ))
@@ -89,5 +98,10 @@ class VehicleDeliverySetChickForm extends AbstractType
     public function getName()
     {
         return 'vehicle_delivery_form';
+    }
+
+    private function getOrdersList()
+    {
+        return $this->em->getRepository('RbsSalesBundle:Order')->getOrdersZoneWise($this->user, $this->agent);
     }
 }

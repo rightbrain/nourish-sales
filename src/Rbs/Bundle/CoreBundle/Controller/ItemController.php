@@ -334,15 +334,17 @@ class ItemController extends BaseController
         $locations = $em->getRepository('RbsCoreBundle:Location')
             ->findBy(array('level' => 4), array('name' => 'ASC'));
         $itemPrices = $em->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPriceAsArray($item);
+        $itemMrpPrices = $em->getRepository('RbsCoreBundle:ItemPrice')->getCurrentMrpPriceAsArray($item);
 
         if ($request->isMethod('POST')) {
-            $em->getRepository('RbsCoreBundle:ItemPrice')->save($request->request->all(), $locations, $item, $itemPrices);
+            $em->getRepository('RbsCoreBundle:ItemPrice')->save($request->request->all(), $locations, $item, $itemPrices, $itemMrpPrices);
         }
 
         return $this->render('RbsCoreBundle:Item:set-price.html.twig', array(
             'item' => $item,
             'locations' => $locations,
             'itemPrices' => $itemPrices,
+            'itemMrpPrices' => $itemMrpPrices,
         ));
     }
 }
