@@ -69,6 +69,13 @@ class OrderItem
     /**
      * @var float
      *
+     * @ORM\Column(name="mrp_price", type="float")
+     */
+    private $mrpPrice = 0;
+
+    /**
+     * @var float
+     *
      * @ORM\Column(name="total_amount", type="float")
      */
     private $totalAmount = 0;
@@ -173,6 +180,22 @@ class OrderItem
     public function setPrice($price)
     {
         $this->price = $price;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMrpPrice()
+    {
+        return $this->mrpPrice;
+    }
+
+    /**
+     * @param float $mrpPrice
+     */
+    public function setMrpPrice($mrpPrice)
+    {
+        $this->mrpPrice = $mrpPrice;
     }
 
     /**

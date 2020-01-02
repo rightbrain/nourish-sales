@@ -60,7 +60,6 @@ class VehicleChickDatatable extends BaseDatatable
             ->add('driverPhone', 'column', array('title' => 'Driver Phone'))
             ->add('truckNumber', 'column', array('title' => 'Truck Number'))
             ->add('status', 'column', array('title' => 'Status'))
-            ->add('smsText', 'column', array('title' => 'SMS Text'))
             ->add('isDeliveryFalse', 'virtual', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '',
@@ -74,11 +73,27 @@ class VehicleChickDatatable extends BaseDatatable
                             'id' => 'id'
                         ),
                         'label' => 'View',
-                        'icon' => 'glyphicon glyphicon-edit',
+                        'icon' => 'glyphicon glyphicon-eye-open',
                         'attributes' => array(
                             'rel' => 'tooltip',
                             'title' => 'edit-action',
                             'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button'
+                        ),
+                        'render_if' => array('isDeliveryFalse'),
+                        'role' => 'ROLE_USER',
+                    ),
+                    array(
+                        'route' => 'chick_vehicle_challan',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Challan',
+                        'icon' => 'glyphicon glyphicon-print',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'challan view',
+                            'class' => 'btn btn-success btn-xs',
                             'role' => 'button'
                         ),
                         'render_if' => array('isDeliveryFalse'),

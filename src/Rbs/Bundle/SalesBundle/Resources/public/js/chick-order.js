@@ -4,11 +4,16 @@ var ChickOrder = function()
         $('.chick-order-region-summary').each(function(){
             var currentRegion = $(this);
             var totalElm = $(this).find('.total-qty');
-            $(this).find('.qty').keyup(function(){
-                if($(this).val()>parseInt($(this).closest('tr').find('.remaining_qty').text())){
+            $(this).find('.qty').change(function(){
+                var currentElement = $(this);
+
+                var currentRemainQty = parseInt($(this).closest('tr').find('.remaining_qty').text());
+                if(parseInt($(this).val())>(parseInt($(this).attr('data-item-qty'))+currentRemainQty)){
                     alert('Remaining quantity are not available.');
                     $(this).val($(this).attr('data-item-qty'));
                     // return false;
+                }else {
+                    updateChickOrderAndDailyStock(currentElement)
                 }
                 calcTotalOfCurrentRegion(currentRegion, totalElm);
                 calTotalOfAllRegion();
@@ -35,7 +40,7 @@ var ChickOrder = function()
 
         $('#chick-order-manage-form').submit(function(e){
             e.preventDefault();
-            save(false);
+            //save(false);
         });
 
         initGotoViewPage();
@@ -158,6 +163,41 @@ var ChickOrder = function()
             error: function(){
                 Metronic.unblockUI(form);
                 $('input[type=submit]').attr('disabled', false);
+            }
+        });
+    }
+
+    function updateChickOrderAndDailyStock(currentElement ) {
+
+        var depotId = currentElement.attr('data-depot-id');
+        var stockId = currentElement.attr('data-stock-id');
+        var orderId = currentElement.attr('data-order-id');
+        var orderItemId = currentElement.attr('data-order-item-id');
+        var itemQuantity = parseInt(currentElement.val());
+
+        if(orderId===''){
+            return false;
+        }
+        if(orderItemId===''){
+            return false;
+        }
+        $.ajax({
+            type: "post",
+            url: Routing.generate('update_final_chick_order_item_ajax', {
+                order: orderId,
+                orderItem: orderItemId,
+                stock: stockId,
+            }),
+            data: {
+                quantity:itemQuantity,
+            } ,
+            dataType: 'json',
+            success: function (response) {
+
+                currentElement.attr('data-item-qty',Number(response.itemQuantity));
+                currentElement.val(Number(response.itemQuantity));
+                $('.remaining_qty_'+depotId).text(response.stockRemainingQuantity);
+
             }
         });
     }

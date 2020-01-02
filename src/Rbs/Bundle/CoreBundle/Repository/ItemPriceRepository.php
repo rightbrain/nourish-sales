@@ -28,6 +28,18 @@ class ItemPriceRepository extends EntityRepository
         return $itemPrice ? $itemPrice->getPrice() : 0;
     }
 
+    /**
+     * @param Item $item
+     * @param Location $location
+     * @return float
+     */
+    public function getCurrentMrpPrice(Item $item, Location $location)
+    {
+        $itemPrice = $this->findOneBy(array('active' => 1, 'item' => $item, 'location' => $location));
+
+        return $itemPrice ? $itemPrice->getMrpPrice() : 0;
+    }
+
     public function getAllCurrentPrice(Item $item)
     {
         return $this->findBy(array('active' => 1, 'item' => $item));

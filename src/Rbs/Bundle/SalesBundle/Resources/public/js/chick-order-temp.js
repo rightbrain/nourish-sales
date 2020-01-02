@@ -66,6 +66,29 @@ var ChickOrderTemp = function()
                 calcTotalOfCurrentRegion(currentRegion, totalElm);
             });
         });
+
+        $('.final-chick-order-region-summary').each(function(){
+            var currentRegion = $(this);
+            $(this).find('tfoot tr:nth-child(1) td.region').each(function () {
+
+                var regionTag = $(this).attr('data-region-item');
+                var totalElm = $(currentRegion).find('.region_item_total_'+regionTag);
+
+                var itemId = $(totalElm).attr('data-region-item-id');
+                var total = 0;
+                $('.temp_item_qty_'+itemId).each(function(){
+                    var val =  $(this).text();
+
+                    if(val>0){
+
+                        total += parseInt(val);
+                    }
+
+
+                });
+                $('.grandTotal_'+itemId).text(total);
+            });
+        });
         calTotalOfAllRegion();
     }
 
@@ -80,6 +103,7 @@ var ChickOrderTemp = function()
         });
         totalElm.text(total);
     }
+
 
     function calTotalOfAllRegion() {
         var total = 0;

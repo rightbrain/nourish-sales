@@ -1,0 +1,136 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Orders {% endblock %}
+{% block body %}
+<div class="main-content">
+    <div class="modal-header portlet-title blue hidden-print">
+        <h3 class="modal-title uppercase text-center hidden-print">Delivery Challan</h3>
+    </div>
+
+    {% for order in vehicle.deliveries.orders %}
+    <div class="modal-body">
+        <div class="row">
+            <table width="100%" class="table-full-width">
+                <tr>
+                    <td class="col-md-6" style="vertical-align: top; width: 60%">
+                        <h3>NOURISH POULTRY & HATCHERY LTD</h3>
+                        <p><strong>Hatchery:</strong> Anayatpur, Fulbaria, Mymensingh. Tel: 06825-1222
+                            Mobile: 01708-429539, 01741630124
+                        </p>
+                        <p>Head Office: 39, Takia Center, Sector # 07, Uttara, Dhaka.</p>
+                        <p>Tel: 7913023-27, Fax: 7913022, Web: www.nourish.com.bd</p>
+                    </td>
+                    <td class="col-md-6" style="vertical-align: middle; width: 40%">
+                       <h4><strong>Challan: {{ order.id }}</strong></h4>
+                        <p><strong>Date: {{ order.createdAt|date('d-m-Y') }}</strong></p>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="col-md-12">
+                <div class="portlet">
+                    <div class="portlet-title">
+                        <table class="table" style="margin-bottom: 0">
+                            <tr>
+                                <td width="50%" style="border: none"><div class="col-md-6" style="text-align: center"><div class="caption" style="font-size: 18px;line-height: 18px;padding: 10px 0;"><strong>INVOICE HATCHERY</strong></div></div></td>
+                                <td width="50%" style="border: none"><div class="col-md-6"><div class="caption" style="font-size: 18px;line-height: 18px;padding: 10px 0;"><strong>{{ vehicle.depo.name  }}</strong></div></div></td>
+                            </tr>
+                        </table>
+
+
+                    </div>
+                    <div class="portlet-body">
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <td colspan="10"><h4><strong>Name & Address: {{ order.agent.user.profile.fullName }}, {{ order.agent.user.zilla.name }}; Mobile No: {{ order.agent.user.profile.cellphoneForMapping }}</strong></h4></td>
+                            </tr>
+                            <tr>
+                                <th>SL. No.</th>
+                                <th>Item</th>
+                                <th>Actual (Qty)</th>
+                                <th>Bonus (Qty)</th>
+                                <th>Rate (MRP)</th>
+                                <th>Amount (Tk.)</th>
+                            </tr>
+                            </thead>
+                            <tbody class="orderItems">
+                            {% set totalQuentity = 0 %}
+                            {% set totalDeliveredQuantity = 0 %}
+                            {% set totalBonus = 0 %}
+                            {% set totalDamageQuantity = 0 %}
+                            {% set totalAmount = 0 %}
+
+                                {% for index, item in order.orderItems %}
+                                    {% if item.quantity != 0 %}
+                                        {% set totalQuentity= totalQuentity + item.quantity %}
+                                        {% set partialQty=0 %}
+                                        {% if order.id in partialItems|keys %}
+                                            {% set partialQty = partialItems[order.id][item.id]['delivered'] %}
+                                        {% endif %}
+                                        {% set totalDeliveredQuantity= totalDeliveredQuantity + partialQty %}
+                                        {% set totalBonus= totalBonus + item.bonusQuantity %}
+                                        {% set totalDamageQuantity= totalDamageQuantity + item.damageQuantity %}
+                                        {% set totalAmount= totalAmount+(partialQty*item.mrpPrice) %}
+                                            <tr>
+                                                <td>{{ index+1 }}</td>
+                                                <td>{{ item.item.getItemCodeName }}</td>
+
+                                                <td class="deliver">
+                                                    {{ partialQty }}
+                                                </td>
+                                                <td>{{item.bonusQuantity }}</td>
+                                                <td>{{ item.mrpPrice }}</td>
+
+                                                <td>{{partialQty*item.mrpPrice }}</td>
+                                            </tr>
+                                    {% endif %}
+                                {% endfor %}
+
+                            </tbody>
+                                <tr class="bold">
+                                    <td></td>
+                                    <td class="bold">Total</td>
+                                    <td>{{ totalDeliveredQuantity }}</td>
+                                    <td>{{ totalBonus }}</td>
+                                    <td></td>
+                                    <td>{{ totalAmount }}</td>
+                                </tr>
+                        </table>
+                        <table class="table" style="margin-bottom: 0">
+
+                            <tr>
+                                <td style="height: 35px; border: none">Contract No.</td>
+                                <td rowspan="2" style="text-align: left; border: none">Delivery By:</td>
+                            </tr>
+                            <tr>
+                                <td style="border: none">Money Receipt No.</td>
+                            </tr>
+
+                        </table>
+
+                    </div>
+                    {#<input type="hidden" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">#}
+                </div>
+            </div>
+        </div>
+    </div>
+        {% if not loop.last %}
+        <div style="page-break-after: always"></div>
+        {% endif %}
+    {% endfor %}
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-primary hidden-print" onclick="window.print();">Print</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+        "bundles/rbssales/css/modal-print.css"
+        filter='cssrewrite' output='css/compiled/datatable.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}

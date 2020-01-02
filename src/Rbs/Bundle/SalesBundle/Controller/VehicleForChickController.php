@@ -288,4 +288,19 @@ class VehicleForChickController extends BaseController
         ));
     }
 
+    /**
+     * @Route("/chick/challan/{id}", name="chick_vehicle_challan", options={"expose"=true})
+     * @param Vehicle $vehicle
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_USER")
+     */
+    public function challan(Vehicle $vehicle)
+    {
+        $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($vehicle->getDeliveries());
+        return $this->render('RbsSalesBundle:Vehicle:view-chick-challan.html.twig', array(
+            'vehicle'      => $vehicle,
+            'partialItems'  => $partialItems,
+        ));
+    }
+
 }

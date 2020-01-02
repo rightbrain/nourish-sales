@@ -5,6 +5,15 @@
                                                   value="{{ date }}">
             <span class="visible-print-inline" style="margin-right: 50px">{{ date }}</span>
         </label>
+
+        <label class="control-label">
+            Depot: <select class="form-control hidden-print" name="depot">
+                <option>select Depot</option>
+                {% for depot in depots %}
+                    <option value="{{ depot.id }}" {% if selectedDepot == depot.id %}{{ ' selected="selected"' }}{% endif %}>{{ depot.name }}</option>
+                {% endfor %}
+            </select>
+        </label>
         <label class="control-label">
             Item: <select class="form-control hidden-print" name="item">
                 {% for item in chickItems %}

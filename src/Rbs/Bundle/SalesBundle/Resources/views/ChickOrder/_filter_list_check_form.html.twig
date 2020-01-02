@@ -25,7 +25,7 @@
                         {% for item in chickItems %}
                             <td class="{{ item.id }}" style="width: 9%">
                                 {#{{ depot.id }}#}
-                                {{ dailyStocks[depot.id][item.id]['onHold'] }}
+                                {{ dailyStocks[depot.id][item.id]['onHand'] - dailyStocks[depot.id][item.id]['onHold'] }}
                             </td>
                         {% endfor %}
                     </tr>
@@ -33,6 +33,7 @@
                 </table>
                 <div class="panel-group" id="">
                         {% set total=[] %}
+                        {% set grandTotal=[] %}
 
                     {% for region in locationsRegions %}
 
@@ -46,7 +47,7 @@
                                 <div class="panel-body" style="padding-left: 1px; padding-right: 1px">
 
                                     <input type="text" class="form-control myInput" value="" placeholder="Search....">
-                                    <table id="table_{{ region.id }}" class="table table-bordered table-striped chick-order-region-summary">
+                                    <table id="table_{{ region.id }}" class="table table-bordered table-striped final-chick-order-region-summary">
 
                                         <tbody>
                                         {% for district in locationsDistricts %}
@@ -80,7 +81,7 @@
                                                                 </td>
                                                                     {% else %}
                                                                 <td style="width: 9%">
-                                                                    0
+
                                                                     {#{{ item.id }}#}
                                                                 </td>
                                                                 {% endif %}
@@ -102,7 +103,7 @@
                                             <td width="20%" colspan="2" style="text-align: right">Total</td>
                                             {% for item in chickItems %}
                                                 {% if region.id~'_' ~ item.id in total|keys %}
-                                                <td data-region-item="{{ region.id }}_{{ item.id }}" data-region-item-id="{{ item.id }}" class="region region_item_total_{{ region.id }}_{{ item.id }}" style="width: 9%">
+                                                <td  data-region-item="{{ region.id }}_{{ item.id }}" data-region-item-id="{{ item.id }}" class="region region_item_total_{{ region.id }}_{{ item.id }} temp_item_qty_{{ item.id }}" style="width: 9%">
                                                 {% set regionTotal=0 %}
                                                     {% for totalQnt in total[region.id~'_' ~ item.id] %}
                                                     {% set regionTotal = regionTotal+totalQnt %}
@@ -111,7 +112,7 @@
                                                 </td>
                                                 {% else %}
                                                     <td data-region-item="{{ region.id }}_{{ item.id }}" data-region-item-id="{{ item.id }}" class="region region_item_total_{{ region.id }}_{{ item.id }}" style="width: 9%">
-                                                        0
+
                                                     </td>
                                                 {% endif %}
                                             {% endfor %}
@@ -123,6 +124,22 @@
                         </div>
 
                     {% endfor %}
+
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                        <tr style="font-weight: bold">
+
+                            <td style="width: 22%; text-align: right" colspan="2">Grand Total</td>
+                            {% for item in chickItems %}
+                                <td class="grandTotal_{{ item.id }}">
+                                    {{ item.sku }}
+                                </td>
+                            {% endfor %}
+                        </tr>
+
+                        </thead>
+                    </table>
+
                     </div>
             </div>
         </div>
