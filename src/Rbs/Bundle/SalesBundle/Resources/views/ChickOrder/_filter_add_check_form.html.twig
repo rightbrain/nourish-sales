@@ -79,7 +79,7 @@
                                                             {% for item in chickItems %}
                                                                 <td style="width: 9%">
 
-                                                                    <input type="text" data-region-id="{{ region.id }}" data-item-id="{{ ordersTemp[agent['id']][item.id]['iId'] }}" data-order-id="{{ ordersTemp[agent['id']][item.id]['oId'] }}"  data-order-item-id="{{ ordersTemp[agent['id']][item.id]['oiId'] }}" class="form-control item_quantity temp_item_qty_{{ item.id }}" name="item_quantity[]" value="{{ ordersTemp[agent['id']][item.id]['quantity'] }}">
+                                                                    <input type="text" data-region-id="{{ region.id }}" data-item-id="{{ ordersTemp[agent['id']][item.id]['iId'] }}" data-order-id="{{ ordersTemp[agent['id']][item.id]['oId'] }}"  data-order-item-id="{{ ordersTemp[agent['id']][item.id]['oiId'] }}" class="form-control item_quantity temp_item_qty_{{ item.id }}" name="item_quantity[]" data-item-value="{{ ordersTemp[agent['id']][item.id]['quantity'] }}" value="{{ ordersTemp[agent['id']][item.id]['quantity'] }}">
                                                                     {#{{ item.id }}#}
                                                                 </td>
                                                             {% endfor %}

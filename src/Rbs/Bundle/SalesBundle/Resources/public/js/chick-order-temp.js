@@ -8,6 +8,7 @@ var ChickOrderTemp = function()
             var orderId = $(this).attr('data-order-id');
             var orderItemId = $(this).attr('data-order-item-id');
             var itemQuantity = $(this).val();
+            var prevItemQuantity = $(this).attr('data-item-value');
 
             var stockId = $('.item_'+itemId).attr('data-daily-stock-id');
             var stock_quantity = $('.item_'+itemId+'_quantity').text();
@@ -19,9 +20,10 @@ var ChickOrderTemp = function()
                 return false;
             }
 
-            if(Number(stock_quantity) < Number(itemQuantity)){
+            if((parseInt(stock_quantity)+parseInt(prevItemQuantity)) < Number(itemQuantity)){
                 alert('This Item remaining quantity not available');
-                $(this).val(0);
+                $(this).val(parseInt(prevItemQuantity));
+                updateRegionTotal();
                 return false;
             }
 
@@ -39,6 +41,7 @@ var ChickOrderTemp = function()
                 success: function (response) {
 
                     element.val(Number(response.itemQuantity));
+                    element.attr('data-item-value', Number(response.itemQuantity));
                     $('.item_'+itemId+'_quantity').text(response.stockRemainingQuantity);
 
                     // console.log(response.onHand)
@@ -111,6 +114,20 @@ var ChickOrderTemp = function()
             total += parseInt($(this).text());
         });
         $('.grand-total span').text(total);
+    }
+
+    function updateRegionTotal() {
+
+        $('.chick-order-region-summary').each(function(){
+            var currentRegion = $(this);
+            $(this).find('thead tr:nth-child(1) td.region').each(function () {
+
+                var regionTag = $(this).attr('data-region-item');
+                var totalElm = $(currentRegion).find('.region_item_total_'+regionTag);
+
+                calcTotalOfCurrentRegion(currentRegion, totalElm);
+            });
+        });
     }
 
 

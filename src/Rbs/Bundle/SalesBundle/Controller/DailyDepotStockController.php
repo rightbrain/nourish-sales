@@ -97,7 +97,9 @@ class DailyDepotStockController extends Controller
         $em = $this->getDoctrine()->getManager();
 
 
-        $stock->setOnHand($stockItemOnHand);
+        if($stockItemOnHand >= $stock->getOnHold()){
+            $stock->setOnHand($stockItemOnHand);
+        }
 
         $em->persist($stock);
         $em->flush();
