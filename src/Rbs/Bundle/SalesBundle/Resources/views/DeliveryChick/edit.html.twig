@@ -24,6 +24,7 @@
                             <div class="caption"> Order Items </div>
                         </div>
                         <div class="portlet-body">
+                            {{ include('_elements/_back_to_list_button.html.twig', {url: path('chick_truck_info_list'), label: 'BACK TO LIST', 'icon': 'chevron-left'}) }}
                             <table class="table">
                                 <thead>
                                 <tr>
@@ -159,7 +160,7 @@
     </div>
     <div class="modal-footer">
             <button type="submit" class="btn blue green" id="save-chick-delivery"> Delivery Update </button>
-        <a class="btn default" data-dismiss="modal"> Close </a>
+
     </div>
     </form>
 </div>

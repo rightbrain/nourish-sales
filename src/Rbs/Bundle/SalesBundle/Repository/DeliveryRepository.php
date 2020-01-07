@@ -181,7 +181,7 @@ class DeliveryRepository extends EntityRepository
             foreach ($deliveryItems as $itemId => $qty) {
                 $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
                 $item = $this->_em->getRepository('RbsSalesBundle:OrderItem')->find($itemId);
-
+                $item->setQuantity($qty);
                 $item->setBonusQuantity($item->calculateBonusQuantity());
                 $item->setDamageQuantity($data['damage-qty'][$orderId][$itemId]);
 

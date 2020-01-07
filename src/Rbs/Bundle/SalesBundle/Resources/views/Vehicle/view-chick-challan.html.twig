@@ -4,6 +4,7 @@
 {% block body %}
 <div class="main-content">
     <div class="modal-header portlet-title blue hidden-print">
+        <div class="hidden-print">{{ include('_elements/_back_to_list_button.html.twig', {url: path('chick_truck_info_list'), label: 'BACK TO LIST', 'icon': 'chevron-left'}) }}</div>
         <h3 class="modal-title uppercase text-center hidden-print">Delivery Challan</h3>
     </div>
 

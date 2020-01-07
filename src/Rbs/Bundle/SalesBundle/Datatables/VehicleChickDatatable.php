@@ -77,7 +77,7 @@ class VehicleChickDatatable extends BaseDatatable
                         'attributes' => array(
                             'rel' => 'tooltip',
                             'title' => 'edit-action',
-                            'class' => 'btn btn-primary btn-xs',
+                            'class' => 'btn btn-primary btn-xs margin-bottom-5',
                             'role' => 'button'
                         ),
                         'render_if' => array('isDeliveryFalse'),
@@ -93,7 +93,7 @@ class VehicleChickDatatable extends BaseDatatable
                         'attributes' => array(
                             'rel' => 'tooltip',
                             'title' => 'challan view',
-                            'class' => 'btn btn-success btn-xs',
+                            'class' => 'btn btn-success btn-xs margin-bottom-5',
                             'role' => 'button'
                         ),
                         'render_if' => array('isDeliveryFalse'),
@@ -109,7 +109,7 @@ class VehicleChickDatatable extends BaseDatatable
                         'attributes' => array(
                             'rel' => 'tooltip',
                             'title' => 'edit-action',
-                            'class' => 'btn btn-success btn-xs',
+                            'class' => 'btn btn-info btn-xs',
                             'role' => 'button'
                         ),
                         'render_if' => array('isDeliveryFalse'),

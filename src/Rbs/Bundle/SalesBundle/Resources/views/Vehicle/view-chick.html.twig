@@ -3,8 +3,9 @@
 {% block title %}{{ parent() }} : Orders {% endblock %}
 {% block body %}
 <div class="main-content">
+
     <div class="modal-header portlet-title blue">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <div class="hidden-print">{{ include('_elements/_back_to_list_button.html.twig', {url: path('chick_truck_info_list'), label: 'BACK TO LIST', 'icon': 'chevron-left'}) }}</div>
         <h3 class="modal-title uppercase text-center">Delivery Challan</h3>
     </div>
 
