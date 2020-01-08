@@ -94,7 +94,8 @@ class VehicleChickDatatable extends BaseDatatable
                             'rel' => 'tooltip',
                             'title' => 'challan view',
                             'class' => 'btn btn-success btn-xs margin-bottom-5',
-                            'role' => 'button'
+                            'role' => 'button',
+                            'target'=>'_blank'
                         ),
                         'render_if' => array('isDeliveryFalse'),
                         'role' => 'ROLE_USER',

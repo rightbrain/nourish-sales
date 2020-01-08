@@ -331,6 +331,7 @@ class ItemController extends BaseController
     public function setItemPriceAction(Request $request, Item $item)
     {
         $em = $this->getDoctrine()->getManager();
+        $locationsRegions = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->getRegionsForChick();
         $locations = $em->getRepository('RbsCoreBundle:Location')
             ->findBy(array('level' => 4), array('name' => 'ASC'));
         $itemPrices = $em->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPriceAsArray($item);
@@ -342,6 +343,7 @@ class ItemController extends BaseController
 
         return $this->render('RbsCoreBundle:Item:set-price.html.twig', array(
             'item' => $item,
+            'locationsRegions' => $locationsRegions,
             'locations' => $locations,
             'itemPrices' => $itemPrices,
             'itemMrpPrices' => $itemMrpPrices,

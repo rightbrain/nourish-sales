@@ -1,28 +1,32 @@
-{% extends '::base.html.twig' %}
-
-{% block title %}{{ parent() }} : Orders {% endblock %}
-{% block body %}
+<style>
+    .table tr th, .table tr td {
+        font-size: 16px !important;
+    }
+    .table-bordered > thead > tr > th,
+    .table-bordered > tbody > tr > th,
+    .table-bordered > tfoot > tr > th,
+    .table-bordered > thead > tr > td,
+    .table-bordered > tbody > tr > td,
+    .table-bordered > tfoot > tr > td {
+        border-bottom: .2ex solid #000;
+    }
+</style>
 <div class="main-content">
-    <div class="modal-header portlet-title blue hidden-print">
-        <div class="hidden-print">{{ include('_elements/_back_to_list_button.html.twig', {url: path('chick_truck_info_list'), label: 'BACK TO LIST', 'icon': 'chevron-left'}) }}</div>
-        <h3 class="modal-title uppercase text-center hidden-print">Delivery Challan</h3>
-    </div>
-
+    {% set i=1 %}
     {% for order in vehicle.deliveries.orders %}
-    <div class="modal-body">
+    <div class="modal-body" style="{{ i%2!=0?'margin-bottom: 100px':''  }}">
         <div class="row">
-            <table width="100%" class="table-full-width">
+            <table width="100%" class="table table-full-width">
                 <tr>
                     <td class="col-md-6" style="vertical-align: top; width: 60%">
-                        <h3>NOURISH POULTRY & HATCHERY LTD</h3>
-                        <p><strong>Hatchery:</strong> Anayatpur, Fulbaria, Mymensingh. Tel: 06825-1222
-                            Mobile: 01708-429539, 01741630124
+                        <h3 style="padding: 0;margin: 0">NOURISH POULTRY & HATCHERY LTD</h3>
+                        <p style="padding: 5px 0;margin: 0"><strong>Hatchery:</strong> {{ vehicle.depo.description|nl2br  }}
                         </p>
-                        <p>Head Office: 39, Takia Center, Sector # 07, Uttara, Dhaka.</p>
-                        <p>Tel: 7913023-27, Fax: 7913022, Web: www.nourish.com.bd</p>
+                        <p style="padding: 5px 0;margin: 0">Head Office: 39, Takia Center, Sector # 07, Uttara, Dhaka.</p>
+                        <p style="padding: 5px 0;margin: 0">Tel: 7913023-27, Fax: 7913022, Web: www.nourish.com.bd</p>
                     </td>
                     <td class="col-md-6" style="vertical-align: middle; width: 40%">
-                       <h4><strong>Challan: {{ order.id }}</strong></h4>
+                        <h4><strong>Challan: {{ order.id }}</strong></h4>
                         <p><strong>Date: {{ order.createdAt|date('d-m-Y') }}</strong></p>
                     </td>
                 </tr>
@@ -31,7 +35,7 @@
             <div class="col-md-12">
                 <div class="portlet">
                     <div class="portlet-title">
-                        <table class="table" style="margin-bottom: 0">
+                        <table width="100%" class="table" style="margin-bottom: 0">
                             <tr>
                                 <td width="50%" style="border: none"><div class="col-md-6" style="text-align: center"><div class="caption" style="font-size: 18px;line-height: 18px;padding: 10px 0;"><strong>INVOICE HATCHERY</strong></div></div></td>
                                 <td width="50%" style="border: none"><div class="col-md-6"><div class="caption" style="font-size: 18px;line-height: 18px;padding: 10px 0;"><strong>{{ vehicle.depo.name  }}</strong></div></div></td>
@@ -41,10 +45,10 @@
 
                     </div>
                     <div class="portlet-body">
-                        <table class="table table-bordered">
+                        <table cellpadding="5px" border="1" collapse="0" cellspacing="0" width="100%" class="table table-bordered">
                             <thead>
                             <tr>
-                                <td colspan="10"><h4><strong>Name & Address: {{ order.agent.user.profile.fullName }}, {{ order.agent.user.zilla.name }}; Mobile No: {{ order.agent.user.profile.cellphoneForMapping }}</strong></h4></td>
+                                <td style="border-top: .2ex solid #000; vertical-align: middle" colspan="10"><strong>Name & Address: {{ order.agent.user.profile.fullName }}, {{ order.agent.user.zilla.name }}; Mobile No: {{ order.agent.user.profile.cellphoneForMapping }}</strong></td>
                             </tr>
                             <tr>
                                 <th>SL. No.</th>
@@ -77,28 +81,28 @@
                                                 <td>{{ index+1 }}</td>
                                                 <td>{{ item.item.getItemCodeName }}</td>
 
-                                                <td class="deliver">
+                                                <td align="right" class="deliver">
                                                     {{ partialQty }}
                                                 </td>
-                                                <td>{{item.bonusQuantity }}</td>
-                                                <td>{{ item.mrpPrice }}</td>
+                                                <td align="right">{{item.bonusQuantity }}</td>
+                                                <td align="right">{{ item.mrpPrice }}</td>
 
-                                                <td>{{partialQty*item.mrpPrice }}</td>
+                                                <td align="right">{{partialQty*item.mrpPrice }}</td>
                                             </tr>
                                     {% endif %}
                                 {% endfor %}
 
                             </tbody>
-                                <tr class="bold">
+                                <tr style="font-weight: bold" class="bold">
                                     <td></td>
                                     <td class="bold">Total</td>
-                                    <td>{{ totalDeliveredQuantity }}</td>
-                                    <td>{{ totalBonus }}</td>
+                                    <td align="right">{{ totalDeliveredQuantity }}</td>
+                                    <td align="right">{{ totalBonus }}</td>
                                     <td></td>
-                                    <td>{{ totalAmount }}</td>
+                                    <td align="right">{{ totalAmount }}</td>
                                 </tr>
                         </table>
-                        <table class="table" style="margin-bottom: 0">
+                        <table width="100%" class="table" style="margin-bottom: 0">
 
                             <tr>
                                 <td style="height: 35px; border: none">Contract No.</td>
@@ -116,22 +120,10 @@
             </div>
         </div>
     </div>
-        {% if not loop.last %}
+        {% if i%2==0 and not loop.last %}
         <div style="page-break-after: always"></div>
         {% endif %}
+    {% set i=i+1 %}
     {% endfor %}
-    <div class="modal-footer">
-
-        <button type="button" class="btn btn-primary hidden-print" onclick="window.print();">Print</button>
-    </div>
 </div>
-{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    {% stylesheets
-        "bundles/rbssales/css/modal-print.css"
-        filter='cssrewrite' output='css/compiled/datatable.css' %}
-        <link rel="stylesheet" href="{{ asset_url }}" />
-    {% endstylesheets %}
-{% endblock %}

@@ -30,7 +30,7 @@
                         <table class="table chick-order-region-summary table-bordered">
                             <thead>
                             <tr>
-                                <th colspan="6"
+                                <th colspan="8"
                                     class="text-center">{{ regions[regionId] }}</th>
                             </tr>
                             <tr>
@@ -38,6 +38,8 @@
                                 <th class="col-md-3">Depot Name</th>
                                 <th class="col-md-1">Agent Code</th>
                                 <th class="col-md-3">Agent Name</th>
+                                <th class="col-md-1 text-right">Mrp Price</th>
+                                <th class="col-md-1 text-right">Price</th>
                                 <th class="col-md-2 text-right">Remaining Qty</th>
                                 <th class="col-md-1 text-right">Qty</th>
                             </tr>
@@ -50,14 +52,16 @@
                                     <td>{{ orderItem.order.depo.name|default('') }}</td>
                                     <td>{{ orderItem.order.agent.chickAgentID }}</td>
                                     <td>{{ orderItem.order.agent.user.profile.fullName }}</td>
+                                    <td style="text-align: right"><input class="form-control input-xsmall pull-right itemMrpPrice" name="orderItemMrpPrice[{{ orderItem.order.id }}][{{ orderItem.Id }}]" value="{{ orderItem.mrpPrice }}"></td>
+                                    <td style="text-align: right"><input class="form-control input-xsmall pull-right itemPrice" name="orderItemPrice[{{ orderItem.order.id }}][{{ orderItem.Id }}]" value="{{ orderItem.price }}"></td>
                                     <td style="text-align: right" class="remaining_qty remaining_qty_{{ orderItem.order.depo.id }}">{{ dailyStock[orderItem.order.depo.id]['onHand'] - dailyStock[orderItem.order.depo.id]['onHold'] }}</td>
-                                    <td><input data-depot-id="{{ orderItem.order.depo.id }}" data-stock-id="{{ dailyStock[orderItem.order.depo.id]['id'] }}" data-order-id="{{ orderItem.order.id }}" data-order-item-id="{{ orderItem.Id }}" data-item-qty="{{ orderItem.quantity }}" class="form-control qty input-xsmall input-mask-number pull-right" name="orderItem[{{ orderItem.order.id }}][{{ orderItem.Id }}]" value="{{ orderItem.quantity }}"></td>
+                                    <td><input data-depot-id="{{ orderItem.order.depo.id }}" data-stock-id="{{ dailyStock[orderItem.order.depo.id]['id'] }}" data-order-id="{{ orderItem.order.id }}" data-order-item-id="{{ orderItem.Id }}" data-item-qty="{{ orderItem.quantity }}" class="form-control qty input-small input-mask-number pull-right" name="orderItem[{{ orderItem.order.id }}][{{ orderItem.Id }}]" value="{{ orderItem.quantity }}"></td>
                                 </tr>
                             {% endfor %}
                             </tbody>
                             <tfoot>
                             <tr>
-                                <td colspan="5" class="text-right">Total</td>
+                                <td colspan="7" class="text-right">Total</td>
                                 <td class="total-qty text-right"></td>
                             </tr>
                             </tfoot>

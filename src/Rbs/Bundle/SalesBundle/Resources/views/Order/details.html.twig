@@ -12,7 +12,11 @@
                 </div>
             </div>
             <div class="portlet-body">
+                {% if order.orderType=='CHICK' %}
+                {{ include('_elements/_back_to_list_button.html.twig', {url: path('chick_orders_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}
+                {% else %}
                 {{ include('_elements/_back_to_list_button.html.twig', {url: path('orders_home'), label: 'Back to List', 'icon': 'chevron-left'}) }}
+                {% endif %}
                 <div class="dataTables_wrapper no-footer">
 
                     <div class="row">

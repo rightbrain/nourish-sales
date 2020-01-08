@@ -137,6 +137,8 @@ class ChickOrderController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
         $data = $request->request->get('orderItem');
+        $itemMrpPrice = $request->request->get('itemMrpPrice');
+        $price = $request->request->get('orderItemPrice');
         $deliver = $request->request->get('deliver');
 
         $output = ['skipped' => [], 'update' => []];
@@ -157,6 +159,8 @@ class ChickOrderController extends BaseController
                     $output['old'][$orderId] = $order->getItemsTotalAmount();
 
                     $output['update'][] = $orderItemId;
+                    $orderItem->setMrpPrice($itemMrpPrice[$orderId][$orderItemId]);
+                    $orderItem->setPrice($price[$orderId][$orderItemId]);
                     $orderItem->setQuantity((int) $orderItemValue);
 
                     $order->calculateOrderAmount();
@@ -616,12 +620,16 @@ class ChickOrderController extends BaseController
     public function updateFinalChickOrderItemQuantityAction(Request $request, Order $order, OrderItem $orderItem, DailyDepotStock $stock)
     {
         $itemQuantity = $request->request->get('quantity');
+        $itemMrpPrice = $request->request->get('itemMrpPrice');
+        $itemPrice = $request->request->get('itemPrice');
         $em = $this->getDoctrine()->getManager();
 
         $previousOrderItemQuantity = $orderItem->getQuantity();
 
 
         if($stock->getOnHand()>=(($stock->getOnHold() - $previousOrderItemQuantity) + $itemQuantity)){
+            $orderItem->setMrpPrice($itemMrpPrice);
+            $orderItem->setPrice($itemPrice);
             $orderItem->setQuantity($itemQuantity);
             $orderItem->calculateTotalAmount(true);
 

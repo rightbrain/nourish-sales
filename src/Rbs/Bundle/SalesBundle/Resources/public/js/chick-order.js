@@ -174,6 +174,8 @@ var ChickOrder = function()
         var orderId = currentElement.attr('data-order-id');
         var orderItemId = currentElement.attr('data-order-item-id');
         var itemQuantity = parseInt(currentElement.val());
+        var itemMrpPrice = Number(currentElement.closest('tr').find('.itemMrpPrice').val());
+        var itemPrice = Number(currentElement.closest('tr').find('.itemPrice').val());
 
         if(orderId===''){
             return false;
@@ -190,6 +192,8 @@ var ChickOrder = function()
             }),
             data: {
                 quantity:itemQuantity,
+                itemMrpPrice:itemMrpPrice,
+                itemPrice:itemPrice,
             } ,
             dataType: 'json',
             success: function (response) {
@@ -213,7 +217,7 @@ var ChickOrder = function()
     }
 
     function getChickOrderViewPageUrl() {
-        return Routing.generate('order_manage_chick_summary', {'date': $('form.chick-order-filter').find('input[type=text]').val(), 'item': $('form.chick-order-filter').find('select').val()})
+        return Routing.generate('order_manage_chick_summary', {'date': $('form.chick-order-filter').find('input[type=text]').val(), 'depot': $('form.chick-order-filter').find('select[name=depot]').val(), 'item': $('form.chick-order-filter').find('select[name=item]').val()})
     }
 
     function initGotoViewPage() {

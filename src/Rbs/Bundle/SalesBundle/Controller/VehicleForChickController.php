@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Knp\Snappy\Pdf;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
@@ -297,10 +298,25 @@ class VehicleForChickController extends BaseController
     public function challan(Vehicle $vehicle)
     {
         $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($vehicle->getDeliveries());
-        return $this->render('RbsSalesBundle:Vehicle:view-chick-challan.html.twig', array(
+        $html = $this->renderView('RbsSalesBundle:Vehicle:view-chick-challan.html.twig', array(
             'vehicle'      => $vehicle,
             'partialItems'  => $partialItems,
         ));
+
+        $this->downloadPdf($html,'dailyDeliveryReportPdf.pdf');
+//        return $html;
+    }
+
+
+    public function downloadPdf($html,$fileName = '')
+    {
+        $wkhtmltopdfPath = 'xvfb-run --server-args="-screen 0, 1280x1024x24" /usr/bin/wkhtmltopdf --use-xserver';
+        $snappy          = new Pdf($wkhtmltopdfPath);
+        $pdf             = $snappy->getOutputFromHtml($html);
+        header('Content-Type: application/pdf');
+//        header("Content-Disposition: attachment; filename={$fileName}");
+        echo $pdf;
+        return new Response('');
     }
 
 }

@@ -41,7 +41,7 @@
                     {% set totalOnHold=totalOnHold+dailyStock[depot.id][item.id]['onHold'] %}
                     <th><input class="form-control item_stock" type="text" data-id="{{ dailyStock[depot.id][item.id]['id'] }}" data-depot="{{ depot.id }}" data-item="{{ item.id }}" value="{{ dailyStock[depot.id][item.id]['onHand'] }}"></th>
                 {% endfor %}
-                <td style="vertical-align: middle"><a style="{{ totalOnHand<=totalOnHold?'display: none':'' }}" href="{{ path('order_chick_add', { 'id': depot.id }) }}?order_date={{ date }}" class="btn btn-primary btn-xs chick_order_generate">Order Generate</a> </td>
+                <td style="vertical-align: middle"><a target="_blank" style="{{ totalOnHand<=totalOnHold?'display: none':'' }}" href="{{ path('order_chick_add', { 'id': depot.id }) }}?order_date={{ date }}" class="btn btn-primary btn-xs chick_order_generate">Order Generate</a> </td>
             </tr>
             {% endfor %}
         </table>
