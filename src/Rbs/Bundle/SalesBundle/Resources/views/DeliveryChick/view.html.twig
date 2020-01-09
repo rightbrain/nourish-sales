@@ -39,6 +39,7 @@
                                     <th class="align-right">Total</th>
                                     <th class="align-center">Mor.</th>
                                     <th class="align-right">Actual Total</th>
+                                    <th class="align-right">Action</th>
                                 </tr>
                                 </thead>
                                 <tbody class="orderItems">
@@ -91,6 +92,7 @@
                                                     <td class="align-right totalDeliveryQty">{{ item.quantity - item.damageQuantity }}</td>
                                                     <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
                                                     <td class="deliver"><input type="hidden" name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="{{ item.quantity }}"></td>
+                                                    <td ><a href="{{ path('chick_order_reomve_from_delivery', {delivery: delivery.id, order: order.id}) }}">remove</a> </td>
                                                 </tr>
                                             {% endif %}
                                         {% endif %}

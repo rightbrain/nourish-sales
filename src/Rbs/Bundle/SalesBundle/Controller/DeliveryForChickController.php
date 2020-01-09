@@ -321,6 +321,23 @@ class DeliveryForChickController extends BaseController
         return $this->redirect($this->generateUrl('chick_truck_info_list'));
     }
 
+    /**
+     * @Route("/chick/order-remove-form-delivery/{delivery}/{order}", name="chick_order_reomve_from_delivery")
+     * @param Request $request
+     * @param Delivery $delivery
+     * @param Order $order
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_MANAGE, ROLE_SUPER_ADMIN")
+     */
+    public function removeOrderFormDelivery(Request $request, Delivery $delivery, Order $order){
+
+        $delivery->removeOrder($order);
+        $this->em()->persist($delivery);
+        $this->em()->flush();
+
+
+    }
+
     private function updateVehicleStatus(Vehicle $vehicle){
 
         $vehicle->setShipped(true);

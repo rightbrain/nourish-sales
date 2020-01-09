@@ -131,13 +131,18 @@ class VehicleForChickController extends BaseController
 //        $agent = $vehicle->getAgent()?$vehicle->getAgent():null;
 //        $orders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getOrdersZoneWise($this->getUser(), $agent);
 
+            $delivery = new Delivery();
+            $orderText=null;
+            if($vehicle->getDeliveries()){
+                $delivery = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->find($vehicle->getDeliveries()->getId());
+                $orderText.=$vehicle->getOrderText();
+            }
         if ('POST' === $request->getMethod()) {
             if(!isset($request->request->get('vehicle_delivery_form')['orders'])){
                 $this->get('session')->getFlashBag()->add('error', 'Please select at least Order');
                 return $this->redirect($this->generateUrl('chick_delivery_set', array('id' => $request->attributes->all()['id'])));
             }
-            $delivery = new Delivery();
-            $orderText=null;
+
             foreach ($request->request->get('vehicle_delivery_form')['orders'] as $orderId){
                 $order = $this->em()->getRepository('RbsSalesBundle:Order')->find($orderId);
                 $delivery->addOrder($order);
