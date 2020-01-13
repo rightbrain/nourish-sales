@@ -272,7 +272,7 @@ class DeliveryForChickController extends BaseController
 
         $this->dispatch('delivery.delivered', new DeliveryEvent($delivery));
 
-        $this->flashMessage('success', 'Delivery Completed Successfully');
+        $this->flashMessage('success', $delivery->getId().' Delivery Completed Successfully');
 
         return $this->redirect($this->generateUrl('chick_truck_info_list'));
     }
@@ -331,9 +331,14 @@ class DeliveryForChickController extends BaseController
      */
     public function removeOrderFormDelivery(Request $request, Delivery $delivery, Order $order){
 
+        $order->setVehicleState(null);
+
         $delivery->removeOrder($order);
+        $this->em()->persist($order);
         $this->em()->persist($delivery);
         $this->em()->flush();
+
+        return $this->redirect($this->generateUrl('chick_delivery_view', array('id' => $delivery->getId())));
 
 
     }

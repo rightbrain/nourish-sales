@@ -45,6 +45,10 @@ class DeliveryChickDatatable extends BaseDatatable
                 'title' => 'Orders',
                 'data' => 'orders[, ].id'
             ))
+            ->add('vehicles.id', 'array', array(
+                'title' => 'Vehicle',
+                'data' => 'vehicles[, ].id'
+            ))
             ->add('depo.name', 'column', array('title' => 'Depo'))
             ->add(null, 'action', array(
                 'width' => '200px',
@@ -58,11 +62,26 @@ class DeliveryChickDatatable extends BaseDatatable
                             'id' => 'id'
                         ),
                         'label' => 'View',
-                        'icon' => 'glyphicon glyphicon-edit',
+                        'icon' => 'glyphicon glyphicon-eye-open',
                         'attributes' => array(
                             'rel' => 'tooltip',
                             'title' => 'edit-action',
                             'class' => 'btn btn-primary btn-xs',
+                            'role' => 'button'
+                        ),
+                        'role' => 'ROLE_USER',
+                    ),
+                    array(
+                        'route' => 'chick_delivery_set',
+                        'route_parameters' => array(
+                            'id' => 'vehicles[0].id'
+                        ),
+                        'label' => 'Edit',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'edit-action',
+                            'class' => 'btn btn-success btn-xs',
                             'role' => 'button'
                         ),
                         'role' => 'ROLE_USER',

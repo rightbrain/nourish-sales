@@ -59,7 +59,7 @@ class VehicleForChickController extends BaseController
         {
             $qb->join("sales_vehicles.depo", "d");
             $qb->join("d.users", "u");
-            $qb->where('d.depotType = :type');
+            $qb->andWhere('d.depotType = :type');
             $qb->setParameter('type',Depo::DEPOT_TYPE_CHICK);
             if(!in_array('ROLE_SUPER_ADMIN', $user->getRoles())){
                 $qb->andWhere("u = :user");
@@ -81,7 +81,7 @@ class VehicleForChickController extends BaseController
         $datatable = $this->get('rbs_erp.sales.datatable.in.out.chick.vehicle');
         $datatable->buildDatatable();
 
-        return $this->render('RbsSalesBundle:Delivery:vehicle.html.twig', array(
+        return $this->render('RbsSalesBundle:DeliveryChick:vehicle.html.twig', array(
             'datatable' => $datatable
         ));
     }
@@ -114,6 +114,24 @@ class VehicleForChickController extends BaseController
         $query->addWhereAll($function);
 
         return $query->getResponse();
+    }
+
+
+    /**
+     * @Route("/chick/vehicle/in/{id}", name="chick_truck_in", options={"expose"=true})
+     * @param Vehicle $vehicle
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_MANAGE, ROLE_CHICK_TRUCK_IN")
+     */
+    public function vehicleInAction(Vehicle $vehicle)
+    {
+        $vehicle->setVehicleIn(new \DateTime());
+        $vehicle->setTransportStatus(Vehicle::IN);
+        $this->vehicleRepo()->update($vehicle);
+        $this->get('session')->getFlashBag()->add('success', 'Vehicle In Successfully');
+
+//        return $this->redirect($this->generateUrl('truck_info_in_out_list'));
+        return $this->redirect($this->generateUrl('deliveries_home'));
     }
 
     /**
@@ -160,7 +178,7 @@ class VehicleForChickController extends BaseController
             $vehicle->setTruckInvoiceAttachedAt(new \DateTime());
             $vehicle->setDeliveries($delivery);
             $vehicle->setShipped(false);
-            $vehicle->setOrderText($orderText);
+            $vehicle->setOrderText($this->setOrderText($delivery->getOrders()));
 
             $this->vehicleRepo()->update($vehicle);
             $this->get('session')->getFlashBag()->add('success', 'Vehicle Delivery Set Started Successfully');
@@ -172,6 +190,15 @@ class VehicleForChickController extends BaseController
             'form' => $form->createView(),
 //            'orders'=>$orders
         );
+    }
+
+    private function setOrderText($orders){
+        $returnText = '';
+        /** @var Order $order */
+        foreach ($orders as $order){
+            $returnText .= $order->getId().', ';
+        }
+        return $returnText;
     }
 
     /**

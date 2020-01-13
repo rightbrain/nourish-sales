@@ -56,7 +56,7 @@ class VehicleController extends BaseController
         {
             $qb->join("sales_vehicles.depo", "d");
             $qb->join("d.users", "u");
-            $qb->where('d.depotType IS NULL OR d.depotType = :type');
+            $qb->andWhere('d.depotType IS NULL OR d.depotType = :type');
             $qb->setParameter('type',Depo::DEPOT_TYPE_FEED);
             if(!in_array('ROLE_SUPER_ADMIN', $user->getRoles())){
                 $qb->andWhere("u = :user");

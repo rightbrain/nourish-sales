@@ -7,7 +7,7 @@ var Item = function()
 
         var focused = false;
         var isFormValid = true;
-        form.find('tbody.items tr').each(function(index, e){
+        form.find('tbody.items tr.district').each(function(index, e){
             var elm = $(e);
             var amountElm = elm.find('.amount');
             var amount = parseFloat(amountElm.val());

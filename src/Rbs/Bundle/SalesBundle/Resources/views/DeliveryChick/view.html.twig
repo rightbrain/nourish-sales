@@ -4,6 +4,7 @@
 {% block body %}
 {% if delivery.deliveryAdd == false %}
 <div class="action-content-cancel">
+    <div class="hidden-print">{{ include('_elements/_back_to_list_button.html.twig', {url: path('chick_deliveries_home'), label: 'BACK TO LIST', 'icon': 'chevron-left'}) }}</div>
     <form id="delivery-item-form sf" action="{{ path('chick_delivery_save', {id: delivery.id }) }}" method="post" novalidate="novalidate">
     <div class="modal-header portlet-title blue">
         <h4 class="modal-title">Delivery ID <span class="badge badge-primary">
@@ -49,7 +50,7 @@
                                 {% for order in delivery.orders %}
 
                                     {% for index, item in order.orderItems %}
-                                        {% set bonusQuantity = (item.quantity/item.item.packetWeight)|number_format(0,'.') %}
+                                        {% set bonusQuantity = (item.quantity/item.item.packetWeight)|number_format(0,'.','') %}
                                         {% set totalBonusQuantity = totalBonusQuantity + bonusQuantity %}
                                         {% set totalDamageQty = totalDamageQty + item.damageQuantity %}
                                         {% if item.quantity != 0 %}
@@ -92,7 +93,11 @@
                                                     <td class="align-right totalDeliveryQty">{{ item.quantity - item.damageQuantity }}</td>
                                                     <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
                                                     <td class="deliver"><input type="hidden" name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="{{ item.quantity }}"></td>
-                                                    <td ><a href="{{ path('chick_order_reomve_from_delivery', {delivery: delivery.id, order: order.id}) }}">remove</a> </td>
+                                                    <td >
+                                                    {% if index==0 %}
+                                                        <a onclick="return confirm('Are you sure you want to delete this record?')" title="Remove" class="btn btn-danger btn-xs" href="{{ path('chick_order_reomve_from_delivery', {delivery: delivery.id, order: order.id}) }}"><i class="fa fa-trash"></i> </a>
+                                                    {% endif %}
+                                                    </td>
                                                 </tr>
                                             {% endif %}
                                         {% endif %}

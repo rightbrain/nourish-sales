@@ -16,3 +16,6 @@
 .align-center{
     text-align: center;
 }
+div.dataTables_filter input.form-control {
+    width: 10em;
+}

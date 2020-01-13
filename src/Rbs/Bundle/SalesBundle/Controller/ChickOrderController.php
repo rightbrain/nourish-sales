@@ -137,7 +137,7 @@ class ChickOrderController extends BaseController
     {
         $em = $this->getDoctrine()->getManager();
         $data = $request->request->get('orderItem');
-        $itemMrpPrice = $request->request->get('itemMrpPrice');
+        $itemMrpPrice = $request->request->get('orderItemMrpPrice');
         $price = $request->request->get('orderItemPrice');
         $deliver = $request->request->get('deliver');
 
@@ -162,6 +162,7 @@ class ChickOrderController extends BaseController
                     $orderItem->setMrpPrice($itemMrpPrice[$orderId][$orderItemId]);
                     $orderItem->setPrice($price[$orderId][$orderItemId]);
                     $orderItem->setQuantity((int) $orderItemValue);
+                    $orderItem->setBonusQuantity((int) $orderItemValue/$orderItem->getItem()->getPacketWeight());
 
                     $order->calculateOrderAmount();
 
@@ -631,6 +632,7 @@ class ChickOrderController extends BaseController
             $orderItem->setMrpPrice($itemMrpPrice);
             $orderItem->setPrice($itemPrice);
             $orderItem->setQuantity($itemQuantity);
+            $orderItem->setBonusQuantity($itemQuantity/$orderItem->getItem()->getPacketWeight());
             $orderItem->calculateTotalAmount(true);
 
             $order->setTotalAmount($order->getItemsTotalAmount());
@@ -692,6 +694,7 @@ class ChickOrderController extends BaseController
                         $orderItem->setMrpPrice($orderChickItemTemp->getMrpPrice());
                         $orderItem->setTotalAmount($orderChickItemTemp->getTotalAmount());
                         $orderItem->setItem($orderChickItemTemp->getItem());
+                        $orderItem->setBonusQuantity($orderChickItemTemp->getQuantity()/$orderChickItemTemp->getItem()->getPacketWeight());
                         $orderItem->setOrder($order);
                         $this->getDoctrine()->getManager()->persist($orderItem);
                     }

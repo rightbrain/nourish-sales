@@ -74,7 +74,7 @@ class InOutChickVehicleDatatable extends BaseDatatable
                 'end_html' => '</div>',
                 'actions' => array(
                     array(
-                        'route' => 'truck_in',
+                        'route' => 'chick_truck_in',
                         'route_parameters' => array(
                             'id' => 'id'
                         ),

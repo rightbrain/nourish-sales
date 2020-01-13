@@ -403,6 +403,7 @@ var Order = function()
         var orderFilterContainer = $('#order_datatable_filter');
         // Add class to select to match with theme
         orderFilterContainer.find('select').addClass("form-control");
+        orderFilterContainer.find('input[type=text]').addClass("form-control");
 
         // Remove global search box
         orderFilterContainer.addClass('pull-right').find('label').remove();

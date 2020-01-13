@@ -134,6 +134,6 @@ class VehicleChickDatatable extends BaseDatatable
      */
     public function getName()
     {
-        return 'truck_info_datatable';
+        return 'chick_truck_info_datatable';
     }
 }

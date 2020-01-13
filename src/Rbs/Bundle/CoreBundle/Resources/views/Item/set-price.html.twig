@@ -29,7 +29,7 @@
                                     <tr><td colspan="6" align="center"><strong>{{ region.name }}</strong></td></tr>
                                     {% for index, location in locations %}
                                         {% if location.parentId==region.id %}
-                                            <tr class="form-group">
+                                            <tr class="form-group district">
                                                 <td><label for="amount-{{ index }}">{{ location.name }}</label></td>
                                                 <td><input id="amount-{{ index }}" type="text" name="amount[{{ location.id }}]" value="{{ itemPrices[location.id]|default(0) }}" class="form-control input-xsmall amount"></td>
                                                 {% if item.itemType.itemType=='Chick' %}
