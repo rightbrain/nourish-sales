@@ -475,10 +475,10 @@ class ChickOrderController extends BaseController
         /** @var Item $item */
        foreach ($items as $item){
            $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
-               $item, $order->getDepo()->getLocation()
+               $item, $order->getAgent()->getUser()->getZilla()
            );
            $mrpPrice = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentMrpPrice(
-               $item, $order->getDepo()->getLocation()
+               $item, $order->getAgent()->getUser()->getZilla()
            );
            $orderItem = new OrderItemChickTemp();
            $orderItem->setItem($item);
