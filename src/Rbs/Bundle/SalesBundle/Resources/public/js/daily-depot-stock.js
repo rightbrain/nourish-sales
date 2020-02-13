@@ -32,8 +32,17 @@ var DailyDepotSock = function()
                 dataType: 'json',
                 success: function (response) {
                     element.val(Number(response.onHand));
-                    element.closest('tr').find('.chick_order_generate').show();
+
                     element.closest('td').find('span.stock_item').text(response.onRemaining);
+                    var total = 0;
+                    element.closest('tr').find('span.remainingQty').each (function() {
+                        total += parseInt($(this).text());
+                    });
+                    if(total>0){
+                        element.closest('tr').find('.chick_order_generate').show();
+                    }else {
+                        element.closest('tr').find('.chick_order_generate').hide();
+                    }
                 }
             });
         })

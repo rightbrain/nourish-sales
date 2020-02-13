@@ -589,7 +589,7 @@ class ChickOrderController extends BaseController
 
 
 //        $order->setT($stock->getOnHand() + $stockItemOnHand);
-        if($stock->getOnHand()>=$itemQuantity){
+        if($stock->getRemainingQuantity()>=$itemQuantity){
             $orderItem->setQuantity($itemQuantity);
             $orderItem->calculateTotalAmount(true);
 
@@ -604,7 +604,7 @@ class ChickOrderController extends BaseController
 
         $response = array(
             'itemQuantity'     => $orderItem->getQuantity(),
-            'stockRemainingQuantity'     => $stock->getOnHand()- $stock->getOnHold(),
+            'stockRemainingQuantity'     => $stock->getRemainingQuantity(),
         );
 
         return new JsonResponse($response);

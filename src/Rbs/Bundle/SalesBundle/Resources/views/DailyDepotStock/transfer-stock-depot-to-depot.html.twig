@@ -1,0 +1,90 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Stock Transfer {% endblock %}
+
+{% block body %}
+
+    <div class="modal fade" id="ajaxSummeryView" role="basic" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="{{ asset('assets/global/img/loading-spinner-grey.gif') }}" alt="" class="loading">
+                    <span> &nbsp;&nbsp;Loading... </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>Stock Transfer
+                </div>
+            </div>
+            <div class="portlet-body">
+                <div class="row">
+                    {{ form_start(form, {'method': 'POST', attr: { novalidate: 'novalidate'}}) }}
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">From Hatchery *</label>
+                            <div class="col-md-8" style="margin-top: 10px;">
+                                {{ form_widget(form.transferredFromDepot) }}
+                                {{ form_errors(form.transferredFromDepot) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Item *</label>
+                            <div class="col-md-8" style="margin-top: 10px;">
+                                {{ form_widget(form.item) }}
+                                {{ form_errors(form.item) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">To Hatchery *</label>
+                            <div class="col-md-8" style="margin-top: 10px;">
+                                {{ form_widget(form.transferredToDepot) }}
+                                {{ form_errors(form.transferredToDepot) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Quantity *</label>
+                            <div class="col-md-8" style="margin-top: 10px;">
+                                {{ form_widget(form.transferredQuantity) }}
+                                {{ form_errors(form.transferredQuantity) }}
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-12">
+                        {{ form_row(form.submit,{ 'attr': {'style': 'float:left;'}}) }}
+                    </div>
+                        {{ form_end(form) }}
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        'bundles/rbssales/js/daily-depot-stock.js' %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+{% endblock %}
+
+
+{% block documentReady %}
+    {{ parent() }}
+    DailyDepotSock.ManageInit();
+{% endblock documentReady %}

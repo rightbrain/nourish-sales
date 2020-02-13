@@ -31,7 +31,8 @@
                                 <td style="width: 9%">
                                     <input style="display: none" class="form-control item_stock" type="text" data-id="{{ dailyStocks[depot.id][item.id]['id'] }}" data-item="{{ dailyStocks[depot.id][item.id]['iId'] }}" value="{{ dailyStocks[depot.id][item.id]['onHand'] }}">
                                     <input type="hidden" data-daily-stock-id="{{ dailyStocks[depot.id][item.id]['id'] }}" class="item_{{ dailyStocks[depot.id][item.id]['iId'] }}">
-                                    <span class="stock_item item_{{ dailyStocks[depot.id][item.id]['iId'] }}_quantity">{{ dailyStocks[depot.id][item.id]['onHand'] - dailyStocks[depot.id][item.id]['onHold'] }}</span>
+                                    {#<span class="stock_item item_{{ dailyStocks[depot.id][item.id]['iId'] }}_quantity">{{ dailyStocks[depot.id][item.id]['onHand'] - dailyStocks[depot.id][item.id]['onHold'] }}</span>#}
+                                    <span class="stock_item item_{{ dailyStocks[depot.id][item.id]['iId'] }}_quantity">{{ dailyStocks[depot.id][item.id]['remainingQty'] }}</span>
                                 </td>
                             {% endfor %}
                         </tr>

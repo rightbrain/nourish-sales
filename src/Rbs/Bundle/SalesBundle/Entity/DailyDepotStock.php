@@ -32,6 +32,14 @@ class DailyDepotStock
     private $id;
 
     /**
+     * @var DailyDepotStockTransferred
+     *
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\DailyDepotStockTransferred", mappedBy="dailyDepotStock")
+     */
+    private $dailyDepotStockTransferred;
+
+
+    /**
      * @var Item
      *
      * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item")
@@ -61,6 +69,26 @@ class DailyDepotStock
      */
     private $onHold = 0;
 
+
+    public function __construct()
+    {
+        $this->dailyDepotStockTransferred = new ArrayCollection();
+    }
+
+    public function addDailyDepotStockTransferred(DailyDepotStockTransferred $item)
+    {
+        if (!$this->dailyDepotStockTransferred->contains($item)) {
+            $this->dailyDepotStockTransferred->add($item);
+        }
+
+        return $this;
+    }
+
+    public function removeDailyDepotStockTransferred(DailyDepotStockTransferred $item)
+    {
+        $item->setDailyDepotStock(null);
+        $this->dailyDepotStockTransferred->removeElement($item);
+    }
     /**
      * Get id
      *
@@ -151,6 +179,51 @@ class DailyDepotStock
         $this->depo = $depo;
 
         return $this;
+    }
+
+    /**
+     * @return DailyDepotStockTransferred
+     */
+    public function getDailyDepotStockTransferred()
+    {
+        return $this->dailyDepotStockTransferred;
+    }
+
+    /**
+     * @param DailyDepotStockTransferred $dailyDepotStockTransferred
+     */
+    public function setDailyDepotStockTransferred($dailyDepotStockTransferred)
+    {
+        $this->dailyDepotStockTransferred = $dailyDepotStockTransferred;
+    }
+
+    /** @return float */
+    public function getTotalTransferredQuantity()
+    {
+        $total = 0;
+        /** @var DailyDepotStockTransferred $item */
+        foreach($this->dailyDepotStockTransferred as $item) {
+            $total += $item->getTransferredQuantity();
+        }
+
+        return $total;
+    }
+
+
+    /** @return float */
+    public function getTotalReceivedQuantity()
+    {
+        $total = 0;
+        /** @var DailyDepotStockTransferred $item */
+        foreach($this->dailyDepotStockTransferred as $item) {
+            $total += $item->getReceivedQuantity();
+        }
+
+        return $total;
+    }
+
+    public function getRemainingQuantity(){
+        return $this->getOnHand()+$this->getTotalReceivedQuantity()-$this->getOnHold()-$this->getTotalTransferredQuantity();
     }
 
 }

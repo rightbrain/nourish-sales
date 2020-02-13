@@ -3,7 +3,13 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
+use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
+use Rbs\Bundle\CoreBundle\Repository\ItemRepository;
 use Rbs\Bundle\SalesBundle\Entity\DailyDepotStock;
+use Rbs\Bundle\SalesBundle\Entity\DailyDepotStockTransferred;
+use Rbs\Bundle\SalesBundle\Form\Type\DepotStockTransferForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -97,7 +103,7 @@ class DailyDepotStockController extends Controller
         $em = $this->getDoctrine()->getManager();
 
 
-        if($stockItemOnHand >= $stock->getOnHold()){
+        if($stockItemOnHand >=($stock->getOnHold() + $stock->getTotalTransferredQuantity())){
             $stock->setOnHand($stockItemOnHand);
         }
 
@@ -107,11 +113,134 @@ class DailyDepotStockController extends Controller
         $response = array(
             'onHand'     => $stock->getOnHand(),
             'onHold'     => $stock->getOnHold(),
-            'onRemaining'     => $stock->getOnHand()- $stock->getOnHold(),
+            'onRemaining'     => $stock->getRemainingQuantity(),
         );
 
         return new JsonResponse($response);
     }
+
+
+
+    /**
+     * @Route("/depot/to/depot/stock/transfer", name="depot_to_depot_stock_transfer")
+     * @Template("RbsSalesBundle:DailyDepotStock:transfer-stock-depot-to-depot.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @JMS\Secure(roles="ROLE_STOCK_VIEW, ROLE_STOCK_CREATE")
+     */
+    public function depotToDepotTransferAction(Request $request)
+    {
+        set_time_limit(0);
+        $em = $this->getDoctrine()->getManager();
+
+        $form = $this->createFormBuilder();
+        $form->add('transferredFromDepot', 'entity', array(
+            'class' => 'RbsCoreBundle:Depo',
+            'required' => true,
+            'empty_value' => 'Select Hatchery',
+            'property' => 'name',
+            'query_builder' => function (DepoRepository $repository)
+            {
+                return $repository->createQueryBuilder('d')
+                    ->where('d.deletedAt IS NULL')
+                    ->andWhere("d.depotType = :depotType")
+                    ->setParameter('depotType', Depo::DEPOT_TYPE_CHICK)
+                    ->orderBy('d.name','ASC');
+
+            }
+        ))
+            ->add('transferredToDepot', 'entity', array(
+            'class' => 'RbsCoreBundle:Depo',
+            'required' => true,
+            'empty_value' => 'Select Hatchery',
+            'property' => 'name',
+            'query_builder' => function (DepoRepository $repository)
+            {
+                return $repository->createQueryBuilder('d')
+                    ->where('d.deletedAt IS NULL')
+                    ->andWhere("d.depotType = :depotType")
+                    ->setParameter('depotType', Depo::DEPOT_TYPE_CHICK)
+                    ->orderBy('d.name','ASC');
+
+            }
+            ))
+
+            ->add('item', 'entity', array(
+                'class' => 'RbsCoreBundle:Item',
+                'property' => 'name',
+                'required' => true,
+                'empty_value' => 'Select Item',
+                'empty_data' => null,
+                'query_builder' => function (ItemRepository $repository)
+                {
+                    return $repository->createQueryBuilder('i')
+                        ->join('i.itemType','it')
+                        ->where('i.deletedAt IS NULL')
+                        ->andWhere('it.itemType =:type')
+                        ->setParameter('type', ItemType::Chick)
+                        ->orderBy('i.name','ASC');
+                }
+            ))
+            ->add('transferredQuantity','integer',array(
+                'required'   => true,
+                'attr'=>array('min'=>1)
+            ))
+            ->add('submit', 'submit', array(
+                'attr'     => array('class' => 'btn green')
+            ))
+        ;
+        $form = $form->getForm();
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted()) {
+            $data = $form->getData();
+            $date = date('Y-m-d');
+            $transferredFromStockId = $this->checkExistDailyStock($data['transferredFromDepot'], $data['item'], $date);
+            $transferredToStockId = $this->checkExistDailyStock($data['transferredToDepot'], $data['item'], $date);
+
+            if($transferredFromStockId && $transferredToStockId){
+
+                if($transferredFromStockId[0]['id']!=$transferredToStockId[0]['id']){
+
+                    $transferredDailyStockObj = $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStock')->find($transferredFromStockId[0]['id']);
+                    $receivedDailyStockObj = $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStock')->find($transferredToStockId[0]['id']);
+
+                    $dailyStockTransferred = new DailyDepotStockTransferred();
+                    $dailyStockReceived = new DailyDepotStockTransferred();
+
+                    if($transferredDailyStockObj && $receivedDailyStockObj && $transferredDailyStockObj->getRemainingQuantity()>=$data['transferredQuantity'] ){
+
+                        $dailyStockTransferred->setTransferredQuantity($data['transferredQuantity']);
+                        $dailyStockTransferred->setTransferredToDepot($data['transferredToDepot']);
+                        $dailyStockTransferred->setDailyDepotStock($transferredDailyStockObj);
+
+                        $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStockTransferred')->create($dailyStockTransferred);
+
+                        $dailyStockReceived->setReceivedQuantity($data['transferredQuantity']);
+                        $dailyStockReceived->setTransferredFromDepot($data['transferredFromDepot']);
+                        $dailyStockReceived->setDailyDepotStock($receivedDailyStockObj);
+
+                        $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStockTransferred')->create($dailyStockReceived);
+                        $this->addFlash('success','Stock has been successfully transferred.');
+                    }else{
+                        $this->addFlash('error','Remaining quantity are not available');
+                    }
+
+                }else{
+                    $this->addFlash('error','Stock transfer is not allowed in the same hatchery');
+                }
+            }else{
+                $this->addFlash('error','Stock is not generated on this date');
+            }
+
+        }
+
+        return array(
+            'form' => $form->createView(),
+        );
+    }
+
+
 
 
 

@@ -72,6 +72,21 @@ var Item = function()
 
                 $(this).val(mrp_amount);
             });
+        }).on('click', '.set-default-price-zone', function(){
+
+            var zoneName = $(this).attr('data-zone-name');
+
+            var zone_amount = $(this).closest('tr').find('td').find('.amount').val();
+            var zone_mrp_amount = $(this).closest('tr').find('td').find('.mrp_amount').val();
+
+
+            $('.'+zoneName).find('td').find('.amount').each(function(){
+                $(this).val(zone_amount);
+            });
+            var mrp_amount = 0;
+            $('.'+zoneName).find('td').find('.mrp_amount').each(function(){
+                $(this).val(zone_mrp_amount);
+            });
         });
     }
 

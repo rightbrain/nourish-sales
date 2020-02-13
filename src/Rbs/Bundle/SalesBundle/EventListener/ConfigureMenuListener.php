@@ -56,6 +56,9 @@ class ConfigureMenuListener extends ContextAwareListener
                 if ($this->authorizationChecker->isGranted(array('ROLE_CHICK_ORDER_MANAGE'))) {
                     $menu3->addChild('Generate Stock', array('route' => 'hatchery_stock_create'))->setAttribute('icon', 'fa fa-th-list');
                 }
+                if ($this->authorizationChecker->isGranted(array('ROLE_CHICK_ORDER_MANAGE'))) {
+                    $menu3->addChild('Stock Transfer', array('route' => 'depot_to_depot_stock_transfer'))->setAttribute('icon', 'fa fa-th-list');
+                }
 
                 if ($this->isMatch('order_create') || $this->isMatch('order_update') || $this->isMatch('order_details')) {
                     $menu['Sales']->getChild('Feed Orders')->setCurrent(true);
@@ -73,6 +76,9 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
                 if ($this->isMatch('order_manage_chick')) {
                     $menu3['Manage Chick Order']->setCurrent(true);
+                }
+                if ($this->isMatch('hatchery_stock_create')) {
+                    $menu3['Generate Stock']->setCurrent(true);
                 }
                 if ($this->isMatch('order_chick_lists')) {
                     $menu3['Orders']->setCurrent(true);

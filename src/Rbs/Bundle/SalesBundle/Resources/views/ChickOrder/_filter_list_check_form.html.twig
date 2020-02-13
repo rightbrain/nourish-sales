@@ -25,7 +25,7 @@
                         {% for item in chickItems %}
                             <td class="{{ item.id }}" style="width: 9%">
                                 {#{{ depot.id }}#}
-                                {{ dailyStocks[depot.id][item.id]['onHand'] - dailyStocks[depot.id][item.id]['onHold'] }}
+                                {{ dailyStocks[depot.id][item.id]['remainingQty'] }}
                             </td>
                         {% endfor %}
                     </tr>

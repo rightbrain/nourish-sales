@@ -80,8 +80,14 @@ class DailyDepotStockRepository extends EntityRepository
 
         foreach ($results as $result){
             $arrayResult[$result['dId']][$result['iId']]= $result;
+            $arrayResult[$result['dId']][$result['iId']]['remainingQty']=$this->getDailyDepotStockById($result['id']);
         }
         return $arrayResult;
+    }
+
+    private function getDailyDepotStockById($id){
+        $stock = $this->find($id);
+        return $stock->getRemainingQuantity();
     }
 
     public function getDailyStockByDateAndItem($date, $item){
@@ -103,6 +109,26 @@ class DailyDepotStockRepository extends EntityRepository
             $arrayResult[$result['dId']] = $result;
         }
         return $arrayResult;
+    }
+
+    public function getDailyStockByDateItemDepot($date, $item, $depot){
+
+        $qb = $this->createQueryBuilder('dds');
+        $qb->select('dds.id, d.id as dId, i.id as iId');
+        $qb->join('dds.depo', 'd');
+        $qb->join('dds.item', 'i');
+        $qb->where($qb->expr()->between('dds.createdAt', ':start', ':end'));
+        $qb->setParameters(array('start' => $date . ' 00:00:00', 'end' => $date . ' 23:59:59'));
+
+        $qb->andWhere('d.id = :depot');
+        $qb->setParameter('depot', $depot);
+
+        $qb->andWhere('i.id = :item');
+        $qb->setParameter('item', $item);
+
+        $results = $qb->getQuery()->getResult();
+
+        return $results;
     }
 
 }
