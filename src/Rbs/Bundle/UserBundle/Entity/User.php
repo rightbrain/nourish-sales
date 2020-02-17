@@ -139,6 +139,18 @@ class User extends BaseUser
         return parent::isSuperAdmin();
     }
 
+    public function isChickAdmin()
+    {
+        $groups = $this->getGroups();
+        foreach ($groups as $group) {
+            if ($group->hasRole('ROLE_CHICK_ORDER_MANAGE')) {
+                return true;
+            }
+        }
+//        return false;
+
+    }
+
     /**
      * @param Project $project
      * @return $this

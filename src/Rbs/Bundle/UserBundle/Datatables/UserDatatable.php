@@ -104,6 +104,7 @@ class UserDatatable extends BaseDatatable
                             'confirm' => false,
                             'confirm_message' => 'Are you sure?',
                             'role' => 'ROLE_ADMIN',
+                            'render_if' => array('isSuperAdmin')
                         )
                     )
                 ))
