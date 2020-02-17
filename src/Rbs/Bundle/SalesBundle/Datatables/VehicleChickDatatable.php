@@ -114,7 +114,7 @@ class VehicleChickDatatable extends BaseDatatable
                             'role' => 'button'
                         ),
                         'render_if' => array('isDeliveryFalse'),
-                        'role' => 'ROLE_SUPER_ADMIN',
+                        'role' => 'ROLE_ADMIN',
                     )
                 )
             ))
