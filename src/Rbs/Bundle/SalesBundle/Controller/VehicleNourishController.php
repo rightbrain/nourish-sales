@@ -76,8 +76,24 @@ class VehicleNourishController extends BaseController
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
+
+
             if ($form->isValid()) {
-                $this->vehicleRepo()->create($vehicle);
+
+                $getFormData = $request->request->get('vehicle_nourish');
+                $depots = $getFormData['depo'];
+
+                foreach ($depots as $depot){
+                    $vehicle = new VehicleNourish();
+
+                    $vehicle->setDepo($this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($depot));
+                    $vehicle->setDriverName($getFormData['driverName']);
+                    $vehicle->setDriverPhone($getFormData['driverPhone']);
+                    $vehicle->setTruckNumber($getFormData['truckNumber']);
+                    $this->vehicleRepo()->create($vehicle);
+                }
+
+
                 $this->get('session')->getFlashBag()->add('success', 'Vehicle Info Added Successfully');
                 return $this->redirect($this->generateUrl('nourish_vehicle_info_list'));
             }

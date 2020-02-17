@@ -134,6 +134,60 @@ class VehicleForChickController extends BaseController
         return $this->redirect($this->generateUrl('deliveries_home'));
     }
 
+
+    /**
+     * @Route("/chick/vehicle/set/list", name="chick_vehicle_info_set_list", options={"expose"=true})
+     * @Method("GET")
+     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_MANAGE, ROLE_CHICK_TRUCK_IN, ROLE_CHICK_TRUCK_START, ROLE_TRUCK_START, ROLE_CHICK_TRUCK_FINISH, ROLE_TRUCK_OUT")
+     */
+    public function vehicleSetIndexAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.set.vehicle.chick');
+        $datatable->buildDatatable();
+
+        return $this->render('RbsSalesBundle:DeliveryChick:vehicle.html.twig', array(
+            'datatable' => $datatable
+        ));
+    }
+
+    /**
+     * @Route("/chick_vehicle_info_set_list_ajax", name="chick_vehicle_info_set_list_ajax", options={"expose"=true})
+     * @Method("GET")
+     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_MANAGE, ROLE_CHICK_TRUCK_IN, ROLE_CHICK_TRUCK_START, ROLE_CHICK_TRUCK_FINISH, ROLE_CHICK_TRUCK_OUT")
+     */
+    public function vehicleSetListAjaxAction()
+    {
+        $datatable = $this->get('rbs_erp.sales.datatable.set.vehicle.chick');
+        $datatable->buildDatatable();
+        $depoId = $this->checkUserDepo();
+
+        $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
+        /** @var QueryBuilder $qb */
+        $function = function($qb) use ($depoId)
+        {
+            $qb->join("sales_vehicles.depo", "d");
+            if($depoId == 0){
+                $qb->andWhere('sales_vehicles.vehicleIn IS NOT NULL');
+                $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
+                $qb->andWhere('sales_vehicles.deliveries IS NULL');
+                $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
+            }else{
+
+                $qb->andWhere('d.id =:depoId');
+                $qb->andWhere('sales_vehicles.vehicleIn IS NOT NULL');
+                $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
+                $qb->andWhere('sales_vehicles.deliveries IS NULL');
+                $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
+                $qb->setParameters(array('depoId'=>$depoId));
+            }
+            $qb->andWhere('d.depotType = :type');
+            $qb->setParameter('type',Depo::DEPOT_TYPE_CHICK);
+        };
+        $query->addWhereAll($function);
+
+        return $query->getResponse();
+    }
+
     /**
      * @Route("/chick/delivery/set/{id}", name="chick_delivery_set", options={"expose"=true})
      * @param Vehicle $vehicle

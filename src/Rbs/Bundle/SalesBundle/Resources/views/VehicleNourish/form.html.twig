@@ -23,7 +23,8 @@
 {% block stylesheets %}
     {{ parent() }}
     {% stylesheets  filter='cssrewrite'
-    "assets/global/plugins/bootstrap-toastr/toastr.min.css"
+        "assets/global/plugins/bootstrap-toastr/toastr.min.css"
+        "assets/global/plugins/jquery-multi-select/css/multi-select.css"
     %}
     <link rel="stylesheet" href="{{ asset_url }}" />
     {% endstylesheets %}
@@ -34,6 +35,8 @@
     {{ parent() }}
     {% javascripts
     "assets/global/plugins/bootstrap-toastr/toastr.min.js"
+    "assets/global/plugins/select2/select2.min.js"
+    "assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js"
 
     "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
     "assets/admin/pages/scripts/form-validation.js"
@@ -44,4 +47,5 @@
 
 {% block documentReady %}
     {{ parent() }}
+    $("select[multiple=multiple]").multiSelect({selectableOptgroup: true});
 {% endblock documentReady %}

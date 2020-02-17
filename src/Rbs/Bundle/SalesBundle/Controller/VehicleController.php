@@ -177,23 +177,25 @@ class VehicleController extends BaseController
      */
     public function loadListAjaxAction()
     {
+        $user=$this->getUser();
         $datatable = $this->get('rbs_erp.sales.datatable.load.vehicle');
         $datatable->buildDatatable();
         $depoId = $this->checkUserDepo();
         
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
-        $function = function($qb) use ($depoId)
+        $function = function($qb) use ($depoId, $user)
         {
+            $qb->join("sales_vehicles.depo", "d");
             if($depoId == 0){
-                $qb->join('sales_vehicles.depo', 'd');
+//                $qb->join('sales_vehicles.depo', 'd');
                 $qb->andWhere('sales_vehicles.vehicleIn IS NOT NULL');
                 $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
                 $qb->andWhere('sales_vehicles.finishLoad IS NULL');
                 $qb->andWhere('sales_vehicles.deliveries IS NOT NULL');
                 $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
             }else{
-                $qb->join('sales_vehicles.depo', 'd');
+//                $qb->join('sales_vehicles.depo', 'd');
                 $qb->andWhere('d.id =:depoId');
                 $qb->andWhere('sales_vehicles.vehicleIn IS NOT NULL');
                 $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
@@ -201,6 +203,14 @@ class VehicleController extends BaseController
                 $qb->andWhere('sales_vehicles.deliveries IS NOT NULL');
                 $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
                 $qb->setParameters(array('depoId'=>$depoId));
+            }
+            if(in_array('ROLE_CHICK_DELIVERY_MANAGE', $user->getRoles())){
+                $qb->andWhere('d.depotType = :type');
+                $qb->setParameter('type',Depo::DEPOT_TYPE_CHICK);
+            }
+            if(in_array('ROLE_DELIVERY_MANAGE', $user->getRoles())){
+                $qb->andWhere('d.depotType IS NULL OR d.depotType = :type');
+                $qb->setParameter('type',Depo::DEPOT_TYPE_FEED);
             }
         };
         $query->addWhereAll($function);
@@ -211,7 +221,7 @@ class VehicleController extends BaseController
     /**
      * @Route("/vehicle/set/list", name="vehicle_info_set_list", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_MANAGE, ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
      */
     public function setIndexAction()
     {
@@ -226,7 +236,7 @@ class VehicleController extends BaseController
     /**
      * @Route("/vehicle_info_set_list_ajax", name="vehicle_info_set_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_MANAGE, ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_IN, ROLE_TRUCK_START, ROLE_TRUCK_FINISH, ROLE_TRUCK_OUT")
      */
     public function setListAjaxAction()
     {
@@ -238,13 +248,15 @@ class VehicleController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb) use ($depoId)
         {
+            $qb->join("sales_vehicles.depo", "d");
+
             if($depoId == 0){
                 $qb->andWhere('sales_vehicles.vehicleIn IS NOT NULL');
                 $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
                 $qb->andWhere('sales_vehicles.deliveries IS NULL');
                 $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
             }else{
-                $qb->join('sales_vehicles.depo', 'd');
+//                $qb->join('sales_vehicles.depo', 'd');
                 $qb->andWhere('d.id =:depoId');
                 $qb->andWhere('sales_vehicles.vehicleIn IS NOT NULL');
                 $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
@@ -252,6 +264,8 @@ class VehicleController extends BaseController
                 $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
                 $qb->setParameters(array('depoId'=>$depoId));
             }
+            $qb->andWhere('d.depotType IS NULL OR d.depotType = :type');
+            $qb->setParameter('type',Depo::DEPOT_TYPE_FEED);
         };
         $query->addWhereAll($function);
 

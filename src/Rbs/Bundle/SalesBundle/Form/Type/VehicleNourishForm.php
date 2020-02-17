@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
@@ -27,6 +28,7 @@ class VehicleNourishForm extends AbstractType
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\Depo',
                 'property' => 'name',
                 'required' => true,
+                'multiple' => true,
                 'empty_value' => 'Select Depo',
                 'empty_data' => null,
                 'constraints' => array(
@@ -38,6 +40,8 @@ class VehicleNourishForm extends AbstractType
                 {
                     return $repository->createQueryBuilder('d')
                         ->andWhere('d.deletedAt IS NULL')
+                        ->andWhere('d.depotType = :type')
+                        ->setParameter('type', Depo::DEPOT_TYPE_CHICK)
                         ;
                 }
             ))

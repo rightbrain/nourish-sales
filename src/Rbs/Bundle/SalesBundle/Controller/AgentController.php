@@ -56,17 +56,41 @@ class AgentController extends BaseController
      */
     public function listAjaxAction()
     {
+        $user= $this->getUser();
         $datatable = $this->get('rbs_erp.sales.datatable.agent');
         $datatable->buildDatatable();
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
-        $function = function($qb)
+        $function = function($qb) use ($user)
         {
             $qb->join("sales_agents.user", "u");
             $qb->andWhere("u.userType =:AGENT");
             $qb->andWhere("sales_agents.deletedAt IS NULL");
             $qb->setParameter("AGENT", User::AGENT);
+
+            if(in_array('ROLE_CHICK_ORDER_MANAGE', $user->getRoles())){
+                $qb->andWhere('sales_agents.agentType = :type');
+                $qb->setParameter('type',Agent::AGENT_TYPE_CHICK);
+            }
+            if (in_array('ROLE_FEED_ORDER_MANAGE', $user->getRoles())){
+                $qb->andWhere('sales_agents.agentType IS NULL OR sales_agents.agentType = :type');
+                $qb->setParameter('type',Agent::AGENT_TYPE_FEED);
+            }
+            if (in_array('ROLE_CHICK_ORDER_MANAGE', $user->getRoles()) && in_array('ROLE_FEED_ORDER_MANAGE', $user->getRoles())){
+                /*$qb->andWhere($qb->expr()->orX(
+                    $qb->expr()->eq('sales_agents.agentType', "'".Agent::AGENT_TYPE_FEED."'"),
+                    $qb->expr()->eq('sales_agents.agentType', "'".Agent::AGENT_TYPE_CHICK."'")
+                ));*/
+//                $qb->setParameter('fType',Agent::AGENT_TYPE_FEED);
+//                $qb->setParameter('cType',Agent::AGENT_TYPE_CHICK);
+
+                $qb->andWhere('sales_agents.agentType = :fType');
+                $qb->orWhere('sales_agents.agentType = :cType');
+                $qb->setParameter('fType',Agent::AGENT_TYPE_FEED);
+                $qb->setParameter('cType',Agent::AGENT_TYPE_CHICK);
+            }
+
         };
         $query->addWhereAll($function);
 
@@ -253,9 +277,20 @@ class AgentController extends BaseController
         $qb->select("u.id, CONCAT(c.agentCodeForDatatable, ' - ', p.fullName) AS text");
         $qb->setMaxResults(100);
 //        $qb->where('c.agentID IS NOT NULL');
-
-        if ($q = $request->query->get('q')) {
-            $qb->andWhere("c.agentID LIKE '%{$q}%' OR c.chickAgentID LIKE '%{$q}%' OR p.fullName LIKE '%{$q}%'");
+        if ($this->isGranted('ROLE_FEED_ORDER_MANAGE')) {
+            if ($q = $request->query->get('q')) {
+                $qb->andWhere("c.agentID LIKE '%{$q}%' OR p.fullName LIKE '%{$q}%'");
+            }
+        }
+        if ($this->isGranted('ROLE_CHICK_ORDER_MANAGE')) {
+            if ($q = $request->query->get('q')) {
+                $qb->andWhere("c.chickAgentID LIKE '%{$q}%' OR p.fullName LIKE '%{$q}%'");
+            }
+        }
+        if ($this->isGranted('ROLE_CHICK_ORDER_MANAGE') && $this->isGranted('ROLE_FEED_ORDER_MANAGE')) {
+            if ($q = $request->query->get('q')) {
+                $qb->andWhere("c.agentID LIKE '%{$q}%' OR c.chickAgentID LIKE '%{$q}%' OR p.fullName LIKE '%{$q}%'");
+            }
         }
 
         return new JsonResponse($qb->getQuery()->getResult());

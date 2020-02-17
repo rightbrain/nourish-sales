@@ -142,6 +142,11 @@ services:
         tags:
             - { name: sg.datatable.view }
 
+    rbs_erp.sales.datatable.set.vehicle.chick:
+        class: Rbs\Bundle\SalesBundle\Datatables\SetVehicleForChickDatatable
+        tags:
+            - { name: sg.datatable.view }
+
     rbs_erp.sales.datatable.damage.good:
         class: Rbs\Bundle\SalesBundle\Datatables\DamageGoodDatatable
         tags:

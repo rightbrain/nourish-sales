@@ -28,7 +28,7 @@ class ConfigureMenuListener extends ContextAwareListener
         $sp5 = false;
 
         if ($this->user->getUserType() != User::AGENT) {
-            if ($this->authorizationChecker->isGranted(array('ROLE_DEPO_USER', 'ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL', 'ROLE_CHICK_ORDER_MANAGE'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN','ROLE_DEPO_MENU_ACCESS', 'ROLE_FEED_ORDER_MANAGE'))) {
 
                 $sp1 = true;
                 /** @var \Knp\Menu\MenuItem $menu2 */
@@ -36,11 +36,29 @@ class ConfigureMenuListener extends ContextAwareListener
                     ->setAttribute('icon', 'fa fa-th-list')
                     ->setChildrenAttribute('class', 'sub-menu');
 
+                $menu2->addChild('All Orders', array('route' => 'orders_home'))->setAttribute('icon', 'fa fa-th-list');
+
+                if ($this->isMatch('order_create') || $this->isMatch('order_update') || $this->isMatch('order_details')) {
+                    $menu['Sales']->getChild('Feed Orders')->setCurrent(true);
+                }
+
+                if ($this->isMatch('order_chick_add')) {
+                    $menu['Sales']->getChild('Chick Orders')->setCurrent(true);
+                }
+
+                if ($this->isMatch('orders_home')) {
+                    $menu2['All Orders']->setCurrent(true);
+                }
+            }
+
+            if ($this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN','ROLE_HATCHERY_MENU_ACCESS', 'ROLE_CHICK_ORDER_MANAGE'))) {
+
+                $sp1 = true;
+
                 /** @var \Knp\Menu\MenuItem $menu3 */
                 $menu3 = $menu['Sales']->addChild('Chick Orders', array('route' => 'chick_orders_home'))
                     ->setAttribute('icon', 'fa fa-th-list')
                     ->setChildrenAttribute('class', 'sub-menu');
-                $menu2->addChild('All Orders', array('route' => 'orders_home'))->setAttribute('icon', 'fa fa-th-list');
 
                 $menu3->addChild('All Orders', array('route' => 'chick_orders_home'))->setAttribute('icon', 'fa fa-th-list');
 
@@ -60,17 +78,10 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu3->addChild('Stock Transfer', array('route' => 'depot_to_depot_stock_transfer'))->setAttribute('icon', 'fa fa-th-list');
                 }
 
-                if ($this->isMatch('order_create') || $this->isMatch('order_update') || $this->isMatch('order_details')) {
-                    $menu['Sales']->getChild('Feed Orders')->setCurrent(true);
-                }
-
                 if ($this->isMatch('order_chick_add')) {
                     $menu['Sales']->getChild('Chick Orders')->setCurrent(true);
                 }
 
-                if ($this->isMatch('orders_home')) {
-                    $menu2['All Orders']->setCurrent(true);
-                }
                 if ($this->isMatch('chick_orders_home')) {
                     $menu3['All Orders']->setCurrent(true);
                 }
@@ -87,13 +98,13 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu3['Chick Orders']->setCurrent(true);
                 }*/
             }
-            if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN','ROLE_FEED_ORDER_MANAGE'))) {
                 $sp1 = true;
                 $menu['Sales']->addChild('Orders From SMS', array('route' => 'order_readable_sms'))
                     ->setAttribute('icon', 'fa fa-th-list');
 
             }
-            if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_FEED_ORDER_MANAGE'))) {
                 $sp1 = true;
                 $menu['Sales']->addChild('Unread SMS', array('route' => 'sms_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
@@ -116,7 +127,7 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
-            if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_FEED_ORDER_MANAGE'))) {
                 $sp2 = true;
                 $menu['Sales']->addChild('Payments SMS', array('route' => 'payment_sms_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
@@ -207,11 +218,19 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Sales']->getChild('Vehicle Load')->setCurrent(true);
                 }
             }
-            if ($this->authorizationChecker->isGranted(array('ROLE_DELIVERY_MANAGE', 'ROLE_CHICK_DELIVERY_MANAGE'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_DELIVERY_MANAGE'))) {
                 $sp3 = true;
                 $menu['Sales']->addChild('Nourish Delivery', array('route' => 'vehicle_info_set_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('vehicle_info_set_list') or $this->isMatch('delivery_set') ) {
+                    $menu['Sales']->getChild('Nourish Delivery')->setCurrent(true);
+                }
+            }
+            if ($this->authorizationChecker->isGranted(array('ROLE_CHICK_DELIVERY_MANAGE'))) {
+                $sp3 = true;
+                $menu['Sales']->addChild('Nourish Delivery', array('route' => 'chick_vehicle_info_set_list'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('chick_vehicle_info_set_list') or $this->isMatch('chick_delivery_set') ) {
                     $menu['Sales']->getChild('Nourish Delivery')->setCurrent(true);
                 }
             }
