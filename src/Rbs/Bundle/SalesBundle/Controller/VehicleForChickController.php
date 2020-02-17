@@ -93,7 +93,7 @@ class VehicleForChickController extends BaseController
      */
     public function inOutListAjaxAction()
     {
-        $datatable = $this->get('rbs_erp.sales.datatable.in.out.vehicle');
+        $datatable = $this->get('rbs_erp.sales.datatable.in.out.chick.vehicle');
         $datatable->buildDatatable();
         $depoId = $this->checkUserDepo();
 
@@ -103,6 +103,8 @@ class VehicleForChickController extends BaseController
         {
             $qb->join('sales_vehicles.depo', 'd');
             $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
+            $qb->andWhere('d.depotType =:type');
+            $qb->setParameter('type', Depo::DEPOT_TYPE_CHICK);
 
             $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
 
@@ -131,7 +133,7 @@ class VehicleForChickController extends BaseController
         $this->get('session')->getFlashBag()->add('success', 'Vehicle In Successfully');
 
 //        return $this->redirect($this->generateUrl('truck_info_in_out_list'));
-        return $this->redirect($this->generateUrl('deliveries_home'));
+        return $this->redirect($this->generateUrl('chick_deliveries_home'));
     }
 
 

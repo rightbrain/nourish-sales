@@ -141,7 +141,8 @@ class VehicleController extends BaseController
         {
             $qb->join('sales_vehicles.depo', 'd');
             $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
-
+            $qb->andWhere('d.depotType IS NULL OR d.depotType = :type');
+            $qb->setParameter('type',Depo::DEPOT_TYPE_FEED);
             $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
 
             if($depoId != 0){
