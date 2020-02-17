@@ -103,15 +103,16 @@ class VehicleForChickController extends BaseController
         {
             $qb->join('sales_vehicles.depo', 'd');
             $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
-            $qb->andWhere('d.depotType =:type');
-            $qb->setParameter('type', Depo::DEPOT_TYPE_CHICK);
 
-            $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
 
             if($depoId != 0){
                 $qb->andWhere('d.id =:depoId');
                 $qb->setParameters(array('depoId'=>$depoId));
             }
+            $qb->andWhere('d.depotType =:type');
+            $qb->setParameter('type', Depo::DEPOT_TYPE_CHICK);
+
+            $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
         };
         $query->addWhereAll($function);
 
