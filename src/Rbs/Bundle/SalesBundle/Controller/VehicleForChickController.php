@@ -60,7 +60,7 @@ class VehicleForChickController extends BaseController
             $qb->join("sales_vehicles.depo", "d");
             $qb->andWhere('d.depotType = :type');
             $qb->setParameter('type',Depo::DEPOT_TYPE_CHICK);
-            if(!in_array('ROLE_SUPER_ADMIN', $user->getRoles())||!in_array('ROLE_CHICK_ORDER_MANAGE', $user->getRoles())){
+            if(!in_array('ROLE_ADMIN', $user->getRoles())){
                 $qb->join("d.users", "u");
                 $qb->andWhere("u = :user");
                 $qb->setParameter('user', $user);
