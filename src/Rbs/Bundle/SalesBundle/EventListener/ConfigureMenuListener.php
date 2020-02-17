@@ -234,7 +234,7 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Sales']->getChild('Nourish Delivery')->setCurrent(true);
                 }
             }
-            if ($this->authorizationChecker->isGranted(array('ROLE_STOCK_VIEW', 'ROLE_STOCK_CREATE'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN','ROLE_DELIVERY_MANAGE','ROLE_DEPO_MENU_ACCESS'))) {
                 $sp3 = true;
                 $menu['Sales']->addChild('Stocks', array('route' => 'stocks_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
