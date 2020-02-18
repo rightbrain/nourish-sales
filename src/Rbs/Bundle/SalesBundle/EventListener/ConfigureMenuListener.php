@@ -28,7 +28,7 @@ class ConfigureMenuListener extends ContextAwareListener
         $sp5 = false;
 
         if ($this->user->getUserType() != User::AGENT) {
-            if ($this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN','ROLE_DEPO_USER','ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL', 'ROLE_FEED_ORDER_MANAGE'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN','ROLE_DEPO_MENU_ACCESS','ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL', 'ROLE_FEED_ORDER_MANAGE'))) {
 
                 $sp1 = true;
                 /** @var \Knp\Menu\MenuItem $menu2 */
