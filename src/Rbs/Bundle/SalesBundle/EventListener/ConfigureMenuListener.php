@@ -98,13 +98,13 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu3['Chick Orders']->setCurrent(true);
                 }*/
             }
-            if ($this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN','ROLE_FEED_ORDER_MANAGE'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN','ROLE_FEED_ORDER_MANAGE','ROLE_ORDER_VIEW', 'ROLE_ORDER_CREATE', 'ROLE_ORDER_EDIT', 'ROLE_ORDER_APPROVE', 'ROLE_ORDER_CANCEL'))) {
                 $sp1 = true;
                 $menu['Sales']->addChild('Orders From SMS', array('route' => 'order_readable_sms'))
                     ->setAttribute('icon', 'fa fa-th-list');
 
             }
-            if ($this->authorizationChecker->isGranted(array('ROLE_FEED_ORDER_MANAGE'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_ORDER_VIEW'))) {
                 $sp1 = true;
                 $menu['Sales']->addChild('Unread SMS', array('route' => 'sms_home'))
                     ->setAttribute('icon', 'fa fa-th-list');
