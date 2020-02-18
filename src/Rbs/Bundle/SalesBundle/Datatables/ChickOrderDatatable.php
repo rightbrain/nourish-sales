@@ -122,7 +122,7 @@ class ChickOrderDatatable extends BaseDatatable
     public function generateActionList(Order $order)
     {
         $canEdit = $this->authorizationChecker->isGranted('ROLE_ORDER_EDIT');
-        $canView = $this->authorizationChecker->isGranted('ROLE_ORDER_VIEW');
+        $canView = $this->authorizationChecker->isGranted('ROLE_CHICK_ORDER_MANAGE');
         $canCancel = $this->authorizationChecker->isGranted('ROLE_ORDER_CANCEL');
         $canApproveOrder = $this->authorizationChecker->isGranted('ROLE_ORDER_APPROVE');
         $canApprovePayment = $this->authorizationChecker->isGranted('ROLE_PAYMENT_APPROVE');
