@@ -87,6 +87,32 @@ class ChickOrderController extends BaseController
 
 
     /**
+     * @Route("/chick/order/details/{id}", name="chick_order_details", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CHICK_ORDER_MANAGE")
+     */
+    public function detailsAction(Order $order)
+    {
+        $this->checkViewOrderAccess($order);
+        $deliveryItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->findBy(array(
+            'order' => $order->getId(),
+        ));
+
+        $deliveredItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItems($order);
+        $auditLogs = $this->getDoctrine()->getRepository('RbsCoreBundle:AuditLog')->getByTypeOrObjectId(array(
+            'order.approved', 'order.verified', 'order.hold', 'order.canceled', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
+
+        return $this->render('RbsSalesBundle:Order:details.html.twig', array(
+            'order' => $order,
+            'deliveryItems' => $deliveryItems,
+            'deliveredItems' => $deliveredItems,
+            'auditLogs' => $auditLogs,
+        ));
+    }
+
+
+    /**
      * @Route("/orders/manage/chick", name="order_manage_chick")
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_CHICK_ORDER_MANAGE")
@@ -763,6 +789,23 @@ class ChickOrderController extends BaseController
         $em->remove($orderObj);
         $em->flush();
         return new JsonResponse(array('success'=>'Order successfully removed.'));
+    }
+
+    protected function checkViewOrderAccess(Order $order)
+    {
+        if ($this->isGranted('ROLE_AGENT') && $order->getAgent()->getUser()->getId() != $this->getUser()->getId()) {
+            throw new AccessDeniedException('Access Denied');
+        }
+
+        if ($this->isGranted('ROLE_AGENT')) {
+            $isOwnAgent = $this->agentRepository()->findOneBy(array(
+                'agent' => $this->getUser(),
+                'id' => $order->getAgent()->getId(),
+            ));
+            if (!$isOwnAgent) {
+                throw new AccessDeniedException('Access Denied');
+            }
+        }
     }
 
 }

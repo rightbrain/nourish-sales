@@ -149,7 +149,7 @@ class ChickOrderDatatable extends BaseDatatable
         }*/
 
         if ($canView) {
-            $html .= $this->generateMenuLink('View', 'order_details', array('id' => $order->getId()));
+            $html .= $this->generateMenuLink('View', 'chick_order_details', array('id' => $order->getId()));
         }
 
         /*if($order->getDeliveryState() != Order::DELIVERY_STATE_READY and $order->getDeliveryState() != Order::DELIVERY_STATE_PARTIALLY_SHIPPED and $order->getDeliveryState() != Order::ORDER_STATE_CANCEL) {
