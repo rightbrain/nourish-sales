@@ -36,7 +36,13 @@ class UserDatatable extends BaseDatatable
     public function buildDatatable()
     {
         $this->features->setFeatures($this->defaultFeatures());
-        $this->options->setOptions(array_merge($this->defaultOptions(), array('order' => [[0, 'asc']])));
+        $this->options->setOptions(
+            array_merge($this->defaultOptions(),
+                array(
+                    'length_menu' => array(10, 25, 50, 100, 2000),
+                    'order' => [[0, 'asc']]
+                )
+            ));
 
         $this->ajax->setOptions(array(
             'url' => $this->router->generate('users_list_ajax'),
