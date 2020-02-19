@@ -97,6 +97,28 @@
             background: black;
             color:#fff;
         }
+
+        .sticky_header {
+            padding: 10px 5px 3px;
+            /*background: #555;*/
+            /*color: #f1f1f1;*/
+        }
+
+        .content {
+            /*padding: 16px;*/
+        }
+
+        .sticky {
+            position: fixed;
+            top: 50px;
+            width: 90%;
+            background: #555;
+            color: #f1f1f1;
+        }
+
+        .sticky + .content {
+            padding-top: 102px;
+        }
     </style>
 {% endblock %}
 
@@ -132,5 +154,20 @@
     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
     });
     });
+
+
+    window.onscroll = function() {myFunction()};
+
+    var header = document.getElementById("sticky_header");
+    var sticky = header.offsetTop;
+
+    function myFunction() {
+    if (window.pageYOffset > sticky) {
+    header.classList.add("sticky");
+    } else {
+    header.classList.remove("sticky");
+    }
+    }
+
 
 {% endblock documentReady %}
