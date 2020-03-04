@@ -279,11 +279,15 @@ class AgentController extends BaseController
 //        $qb->where('c.agentID IS NOT NULL');
         if ($this->isGranted('ROLE_FEED_ORDER_MANAGE')) {
             if ($q = $request->query->get('q')) {
+                $qb->andWhere('c.agentType =:agentType');
+                $qb->setParameter('agentType', Agent::AGENT_TYPE_FEED);
                 $qb->andWhere("c.agentID LIKE '%{$q}%' OR p.fullName LIKE '%{$q}%'");
             }
         }
         if ($this->isGranted('ROLE_CHICK_ORDER_MANAGE')) {
             if ($q = $request->query->get('q')) {
+                $qb->andWhere('c.agentType =:agentType');
+                $qb->setParameter('agentType', Agent::AGENT_TYPE_CHICK);
                 $qb->andWhere("c.chickAgentID LIKE '%{$q}%' OR p.fullName LIKE '%{$q}%'");
             }
         }
