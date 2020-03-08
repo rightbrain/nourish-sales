@@ -8,7 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DeliveryReportType extends AbstractType
+class DeliveryReportChickType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -30,9 +30,10 @@ class DeliveryReportType extends AbstractType
                 {
                     return $repository->createQueryBuilder('d')
                         ->where('d.deletedAt IS NULL')
-                        ->andWhere('d.depotType IS NULL or d.depotType =:type')
-                        ->setParameter('type', Depo::DEPOT_TYPE_FEED)
+                        ->andWhere('d.depotType =:type')
+                        ->setParameter('type', Depo::DEPOT_TYPE_CHICK)
                         ;
+
                 }
             ))
             ->add('start_date', 'text', array(

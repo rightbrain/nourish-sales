@@ -8,6 +8,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Controller\Report;
 use Knp\Snappy\Pdf;
+use Rbs\Bundle\SalesBundle\Form\Search\Type\DeliveryReportChickType;
 use Rbs\Bundle\SalesBundle\Form\Search\Type\DeliveryReportType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -63,7 +64,7 @@ class DeliveryReportController extends Controller
      */
     public function chickDeliveryReportAction(Request $request)
     {
-        $form = new DeliveryReportType();
+        $form = new DeliveryReportChickType();
         $data = $request->query->get($form->getName());
         $pdf_create = $request->query->get('pdf_create');
         $formSearch = $this->createForm($form, $data);
