@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\CoreBundle\Repository\ItemRepository;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\RbsSalesBundle;
@@ -44,7 +45,9 @@ class OrderItemForm extends AbstractType
                         ->where('i.deletedAt IS NULL')
                         ->orderBy('i.name','ASC')
                         ->join('i.bundles', 'bundles')
+                        ->join('i.itemType', 'itemType')
                         ->where('i.status=1')
+                        ->andWhere('itemType.itemType <>:itemType')->setParameter('itemType', ItemType::Chick)
                         ->andWhere('bundles.id = :saleBundleId')->setParameter('saleBundleId', RbsSalesBundle::ID);
                     if ($itemTypeId) {
                         $qb->join('i.itemType', 'it');

@@ -484,8 +484,8 @@ var Order = function()
 
                 if (
                     qty.find('input').val() == '' ||
-                    parseInt(qty.find('input').val()) == 0 ||
-                    (stock != 'Available On Demand' && (parseInt(qty.find('input').val()) > parseInt(stock)))
+                    parseInt(qty.find('input').val()) == 0
+                    // (stock != 'Available On Demand' && (parseInt(qty.find('input').val()) > parseInt(stock)))
                 ) {
                     qty.addClass('has-error');
                     isFormValid = false;
