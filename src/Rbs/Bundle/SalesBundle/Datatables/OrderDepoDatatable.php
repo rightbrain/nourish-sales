@@ -29,6 +29,7 @@ class OrderDepoDatatable extends BaseDatatable
             $line["orderState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getOrderState()).'"> '.$order->getOrderState().' </span>';
             $line["paymentState"] = $order->getOrderState() == Order::ORDER_STATE_CANCEL ? '' : '<span class="label label-sm label-'.$this->getStatusColor($order->getPaymentState()).'"> '.$order->getPaymentState().' </span>';
             $line["deliveryState"] = $order->getOrderState() == Order::ORDER_STATE_CANCEL ? '' : '<span class="label label-sm label-'.$this->getStatusColor($order->getDeliveryState()).'"> '.$order->getDeliveryState().' </span>';
+            $line["totalQuantity"] = $order->getOrderItemsTotalQuantity();
             $line["totalAmount"] = number_format($order->getTotalAmount(), 2);
             $line["paidAmount"] = number_format($order->getPaidAmount(), 2);
             $line["paymentMode"] = $order->getPaymentModeTitle();
@@ -88,7 +89,8 @@ class OrderDepoDatatable extends BaseDatatable
                 ->add('orderState', 'column', array('title' => 'Order State', 'render' => 'Order.OrderStateFormat'))
                 ->add('paymentState', 'column', array('title' => 'Payment State', 'render' => 'Order.OrderStateFormat'))
                 ->add('deliveryState', 'column', array('title' => 'Delivery State', 'render' => 'Order.OrderStateFormat'))
-                ->add('totalAmount', 'column', array('title' => 'Total Amount', 'render' => 'Order.OrderPaymentFormat'))
+                ->add('totalQuantity', 'virtual', array('title' => 'Total Qty(KG)', 'render' => 'Order.OrderPaymentFormat'))
+                ->add('totalAmount', 'column', array('title' => 'Trade Value', 'render' => 'Order.OrderPaymentFormat'))
                 ->add('paidAmount', 'column', array('title' => 'Paid Amount', 'render' => 'Order.OrderPaymentFormat'))
                 ->add('paymentMode', 'virtual', array('title' => 'Payment Mode', 'render' => 'Order.OrderPaymentFormat'))
                 ->add('isComplete', 'virtual', array('visible' => false))
