@@ -34,6 +34,7 @@ class OrderDatatable extends BaseDatatable
             $line["totalAmount"] = number_format($order->getTotalAmount(), 2);
             $line["paymentAmount"] = $order->getPaymentState() != Order::PAYMENT_STATE_PENDING ? number_format($order->getTotalPaymentDepositedAmount(), 2): number_format(0, 2);
             $line["actualAmount"] = $order->getPaymentState() != Order::PAYMENT_STATE_PENDING ? number_format($order->getTotalPaymentActualAmount(), 2): number_format(0, 2);
+            $line["paymentMode"] = $order->getPaymentModeTitle();
             if ($this->showAgentName) {
                 $line["fullName"] = $order->getAgent()->getUser()->getProfile()->getFullName();
                 $line["agentDistrict"] = $order->getAgent()->getUser()->getZilla()?$order->getAgent()->getUser()->getZilla()->getName():'';
@@ -95,6 +96,7 @@ class OrderDatatable extends BaseDatatable
             ->add('totalAmount', 'column', array('title' => 'Product Amount', 'render' => 'Order.OrderPaymentFormat'))
             ->add('paymentAmount', 'virtual', array('title' => 'Payment Amount', 'render' => 'Order.OrderPaymentFormat'))
             ->add('actualAmount', 'virtual', array('title' => 'Actual Amount', 'render' => 'Order.OrderPaymentFormat'))
+            ->add('paymentMode', 'virtual', array('title' => 'Payment Mode', 'render' => 'Order.OrderPaymentFormat'))
             ->add('isComplete', 'virtual', array('visible' => false))
             ->add('isCancel', 'virtual', array('visible' => false))
             ->add('enabled', 'virtual', array('visible' => false))
