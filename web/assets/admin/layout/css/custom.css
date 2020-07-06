@@ -141,3 +141,11 @@ input.price{
 input.total_price{
     min-width: 100px;
 }
+.feed_order_table .table>tbody>tr>td,
+.feed_order_table .table>tbody>tr>th,
+.feed_order_table .table>tfoot>tr>td,
+.feed_order_table .table>tfoot>tr>th,
+.feed_order_table .table>thead>tr>td,
+.feed_order_table .table>thead>tr>th{
+    padding: 2px;
+}
