@@ -846,4 +846,20 @@ class OrderController extends BaseController
 
         return new JsonResponse($output);
     }
+
+    /**
+     * @Route("/depo/for/feed", name="depot_for_feed", options={"expose"=true})
+     * @param Request $request
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     */
+    public function getDepotsForFeed() {
+        $depots = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->getAllActiveDepotForFeed();
+        $arrayReturn= array();
+        foreach ($depots as $depot){
+            $arrayReturn[]=$depot->getName();
+        }
+        return new JsonResponse($arrayReturn);
+
+    }
 }

@@ -358,10 +358,26 @@ var Order = function()
 
     }
 
+    var return_depot = function () {
+        var depot = [];
+        $.ajax({
+            type: "get",
+            async: false,
+            global: false,
+            url: Routing.generate('depot_for_feed'),
+            dataType: 'json',
+            success: function (response) {
+                depot = response;
+            }
+        });
+        return depot;
+    }();
+
     function filterInit(){
         if (!$('#external_filter_container').length) {
             $('<div id="external_filter_container">' +
-                'Filter: <div id="order-status"></div>' +
+                'Filter: <div id="order-depot"></div>' +
+                '<div id="order-status"></div>' +
                 '<div id="order-payment-status"></div>' +
                 '<div id="order-delivery-status"></div>' +
                 '<div id="order-agent"></div>' +
@@ -375,6 +391,13 @@ var Order = function()
                     filter_container_id: "order-agent",
                     filter_reset_button_text: false,
                     filter_default_label: "Agent Id"
+                },
+                {
+                    column_number: 4,
+                    data: return_depot,
+                    filter_container_id: "order-depot",
+                    filter_reset_button_text: false,
+                    filter_default_label: "Select Depot"
                 },
                 {
                     column_number: 6,

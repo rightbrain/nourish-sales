@@ -79,4 +79,14 @@ class DepoRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+    public function getAllActiveDepotForFeed()
+    {
+        $query = $this->createQueryBuilder('d');
+        $query->where('d.deletedAt IS NULL');
+        $query->andWhere('d.depotType = :feed or d.depotType IS NULL');
+        $query->setParameter('feed',Depo::DEPOT_TYPE_FEED);
+        $query->orderBy('d.name', 'ASC');
+
+        return $query->getQuery()->getResult();
+    }
 }
