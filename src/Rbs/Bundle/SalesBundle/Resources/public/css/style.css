@@ -19,3 +19,11 @@
 div.dataTables_filter input.form-control {
     width: 10em;
 }
+.feed_order_table .table>tbody>tr>td,
+.feed_order_table .table>tbody>tr>th,
+.feed_order_table .table>tfoot>tr>td,
+.feed_order_table .table>tfoot>tr>th,
+.feed_order_table .table>thead>tr>td,
+.feed_order_table .table>thead>tr>th{
+    padding: 2px;
+}

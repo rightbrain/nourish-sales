@@ -369,21 +369,21 @@ var Order = function()
                     filter_default_label: "Agent Id"
                 },
                 {
-                    column_number: 4,
+                    column_number: 6,
                     data: ["PENDING", "PROCESSING", "COMPLETE", "CANCEL", "HOLD"],
                     filter_container_id: "order-status",
                     filter_reset_button_text: false,
                     filter_default_label: "Order State"
                 },
                 {
-                    column_number: 5,
+                    column_number: 7,
                     data: ["PENDING", "PARTIALLY_PAID", "PAID"],
                     filter_container_id: "order-payment-status",
                     filter_reset_button_text: false,
                     filter_default_label: "Payment State"
                 },
                 {
-                    column_number: 6,
+                    column_number: 8,
                     data: ["PENDING", "PARTIALLY_SHIPPED", "SHIPPED", "HOLD"],
                     filter_container_id: "order-delivery-status",
                     filter_reset_button_text: false,
