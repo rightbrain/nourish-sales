@@ -6,14 +6,14 @@
 
     <div class="col-md-12">
         <div class="portlet box blue">
-            <div class="portlet-title">
+            <div class="portlet-title hidden-print">
                 <div class="caption">
                     <i class="fa fa-list"></i>Daily Order Report
                 </div>
             </div>
             <div class="portlet-body">
 
-                <form method="get" novalidate="novalidate" class="form-inline" style="margin-bottom: 20px;">
+                <form method="get" novalidate="novalidate" class="form-inline hidden-print" style="margin-bottom: 20px;">
 
                     <div class="form-group hidden-print">
                         <span class="visible-print-inline">Depot:</span>
@@ -31,17 +31,17 @@
                         </div>
                     </div>
                     <div class="pull-right">
-                        <button type="submit" name="pdf_create" value="1" class="btn blue hidden-print">PDF</button>
+                        {#<button type="submit" name="pdf_create" value="1" class="btn blue hidden-print">PDF</button>#}
                         <button type="button" class="btn green hidden-print" onclick="print()">Print</button>
                     </div>
                     {{ form_end(formSearch) }}
 
                 <div class="row">
                     <div class="col-md-12">
-                        <table>
-                            <tr>
-                                <td></td>
-                                <td>{{ data?data['start_date']:'' }}</td>
+                        <table width="100%" style="margin-bottom: 20px; font-weight: bold">
+                            <tr style="font-size: large">
+                                <td width="80%">Date wise Oder Quantity & Value</td>
+                                <td width="20%" align="right">{{ data?data['start_date']:'' }}</td>
                             </tr>
                         </table>
                         <table class="table table-bordered">
