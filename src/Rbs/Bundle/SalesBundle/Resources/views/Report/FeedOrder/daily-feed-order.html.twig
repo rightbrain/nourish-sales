@@ -1,0 +1,89 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Stock {% endblock %}
+
+{% block body %}
+
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-list"></i>Daily Order Report
+                </div>
+            </div>
+            <div class="portlet-body">
+
+                <form method="get" novalidate="novalidate" class="form-inline" style="margin-bottom: 20px;">
+
+                    <div class="form-group hidden-print">
+                        <span class="visible-print-inline">Depot:</span>
+                        {{ form_widget(formSearch.depo) }}
+                    </div>
+                    <div class="form-group hidden-print">
+                            <div class="input-group input-daterange">
+                                {{ form_widget(formSearch.start_date) }}
+                            </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-1">
+                            <input type="submit" name="submit" value="Search" class="btn blue hidden-print">
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        <button type="submit" name="pdf_create" value="1" class="btn blue hidden-print">PDF</button>
+                        <button type="button" class="btn green hidden-print" onclick="print()">Print</button>
+                    </div>
+                    {{ form_end(formSearch) }}
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td>{{ data?data['start_date']:'' }}</td>
+                            </tr>
+                        </table>
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>SL No</th>
+                                <th>Feed Mill/Depot</th>
+                                <th>Total Qty(KG)</th>
+                                <th>Total Value</th>
+                            </tr>
+                            </thead>
+                            {% if orders %}
+                            <tbody>
+                                {% set sl = 1 %}
+                                {% set grandTotalQty = 0 %}
+                                {% set grandTotalAmount = 0 %}
+                                {% for order in orders %}
+
+                                    <tr>
+                                        <td>{{ sl }}</td>
+                                        <td>{{ order.depotName }}</td>
+                                        <td>{{ order.totalQuantity }}</td>
+                                        <td>{{ order.totalAmount }}</td>
+                                    </tr>
+                                    {% set sl = sl + 1 %}
+                                    {% set grandTotalQty = grandTotalQty + order.totalQuantity %}
+                                    {% set grandTotalAmount = grandTotalAmount + order.totalAmount %}
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                            <tr style="font-size: large">
+                                <td colspan="2" align="right">Total</td>
+                                <td>{{ grandTotalQty }}</td>
+                                <td>{{ grandTotalAmount }}</td>
+                            </tr>
+                            </tfoot>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+{% endblock %}

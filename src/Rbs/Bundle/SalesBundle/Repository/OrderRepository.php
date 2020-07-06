@@ -355,4 +355,56 @@ class OrderRepository extends EntityRepository
 
         return $arrayData;
     }
+
+    public function getDailyFeedOrder($data){
+
+        $results= array();
+        if(!empty($data['start_date'])) {
+            $qp = $this->createQueryBuilder('o');
+            $qp->join('o.depo', 'd');
+            $qp->join('o.orderItems', 'oi');
+            $qp->select('o.id');
+            $qp->addSelect('d.id as depotId');
+            $qp->addSelect('d.name as depotName');
+            $qp->addSelect('oi.totalAmount');
+            $qp->addSelect('SUM(oi.quantity) AS totalQuantity');
+            $qp->addSelect('SUM(oi.totalAmount) AS totalAmount');
+            $qp->where('o.orderType = :orderType');
+            $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+            if (!empty($data['depo'])) {
+                $this->handleSearchByDepot($data['depo'], $qp);
+            }
+            $this->handleSearchByDate($qp, $data['start_date']);
+            $qp->groupBy('o.depo');
+            $qp->orderBy('d.name', 'ASC');
+
+            foreach ($qp->getQuery()->getResult() as $result) {
+                $results[$result['depotId']] = $result;
+            }
+            return $results;
+        }else{
+            return array();
+        }
+
+
+    }
+
+    protected function handleSearchByDepot($depot, $query)
+    {
+        if (!empty($depot)) {
+            $query->andWhere('d.id = :depot');
+            $query->setParameter('depot', $depot);
+        }
+    }
+
+    protected function handleSearchByDate($query, $startDate)
+    {
+        if (!empty($startDate)) {
+            $startDate = date('Y-m-d', strtotime($startDate));
+            $query->andWhere('o.createdAt >= :startDate');
+            $query->andWhere('o.createdAt <= :endDate');
+            $query->setParameter('startDate', $startDate.' 00:00:00');
+            $query->setParameter('endDate', $startDate.' 23:59:59');
+        }
+    }
 }

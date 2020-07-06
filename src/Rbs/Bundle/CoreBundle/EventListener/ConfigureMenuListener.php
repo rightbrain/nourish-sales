@@ -138,6 +138,14 @@ class ConfigureMenuListener extends ContextAwareListener
                 $menu->removeChild($menu['Settings']);
             }
 
+            if ($this->authorizationChecker->isGranted('ROLE_FEED_ORDER_REPORT')) {
+                $menu['Report']->addChild('Daily Order Report', array('route' => 'report_daily_feed_order'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('upozilla_wise_item_report')) {
+                    $menu['Report']->getChild('Daily Order Report')->setCurrent(true);
+                }
+            }
+
             if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
                 $menu['Report']->addChild('Upazilla Wise Report', array('route' => 'upozilla_wise_item_report'))
                     ->setAttribute('icon', 'fa fa-th-list');
