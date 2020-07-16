@@ -14,7 +14,7 @@
         <div class="portlet box blue">
             <div class="portlet-title">
                 <div class="caption">
-                    <i class="fa fa-list hidden-print"></i>Daily Delivery Order
+                    <i class="fa fa-list hidden-print"></i>Feed mill/Depot sale
 
                 </div>
                 {% if data['start_date'] is defined %}
@@ -56,14 +56,17 @@
                                 <th>Item Code</th>
                                 <th>Item Name</th>
                                 <th>Total</th>
+                                <th>Value</th>
                             </tr>
                             </thead>
                             <tbody>
                             {% if deliveries %}
                                 {% set grandTotalReceived = 0 %}
+                                {% set grandTotalReceivedValue = 0 %}
                                 {% set depoName = '' %}
                             {% for catName, result in deliveries %}
                                 {% set totalReceived = 0 %}
+                                {% set totalReceivedValue = 0 %}
                                 {% set depoName = result[0].depoName %}
                                 {% set sl = 1 %}
                                 {% for delivery in result %}
@@ -75,9 +78,11 @@
                                         <td style="text-align: center">{{ delivery.itemCode }}</td>
                                         <td>{{ delivery.itemName }}</td>
                                         <td style="text-align: right">{{ delivery.totalDeliveredQuantity }}</td>
+                                        <td style="text-align: right">{{ delivery.totalValue }}</td>
                                     </tr>
                                     {% set sl = sl + 1 %}
                                     {% set totalReceived = totalReceived + delivery.totalDeliveredQuantity %}
+                                    {% set totalReceivedValue = totalReceivedValue + delivery.totalValue %}
                                 {% endfor %}
                                 <tr style="font-weight: bold">
                                     <td style="text-align: center" colspan="2">Total</td>
@@ -85,9 +90,10 @@
                                     <td></td>
                                     <td></td>
                                     <td style="text-align: right">{{ totalReceived }}</td>
+                                    <td style="text-align: right">{{ totalReceivedValue }}</td>
                                 </tr>
                                 {% set grandTotalReceived = grandTotalReceived + totalReceived %}
-
+                                {% set grandTotalReceivedValue = grandTotalReceivedValue + totalReceivedValue %}
                             {% endfor %}
                                 <tr style="font-weight: bold">
                                     <td>{{ depoName }}</td>
@@ -95,6 +101,7 @@
                                     <td></td>
                                     <td></td>
                                     <td style="text-align: right">{{ grandTotalReceived }}</td>
+                                    <td style="text-align: right">{{ grandTotalReceivedValue }}</td>
                                 </tr>
                                 {% else %}
                                 <tr><td colspan="8">No record found.</td></tr>

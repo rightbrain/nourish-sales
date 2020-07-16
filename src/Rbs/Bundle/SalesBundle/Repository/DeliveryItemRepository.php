@@ -90,10 +90,12 @@ class DeliveryItemRepository extends EntityRepository
             $query->select('i.id');
             $query->addSelect('i.name as itemName');
             $query->addSelect('i.sku as itemCode');
+            $query->addSelect('oi.price as unitPrice');
             $query->addSelect('depo.name as depoName');
             $query->addSelect('c.id as catId');
             $query->addSelect('c.name as catName');
             $query->addSelect('SUM(di.qty) AS totalDeliveredQuantity');
+            $query->addSelect('SUM(oi.totalAmount) AS totalValue');
             $query->where('d.shipped = 1');
             if (!empty($data['depo'])) {
                 $this->handleSearchByDepo($data['depo'], $query);
