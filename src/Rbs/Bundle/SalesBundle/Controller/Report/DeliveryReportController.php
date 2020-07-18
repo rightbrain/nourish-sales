@@ -25,7 +25,7 @@ class DeliveryReportController extends Controller
      * @Route("/report/delivery", name="report_delivery")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_SALES_REPORT")
+     * @JMS\Secure(roles="ROLE_SALES_REPORT, ROLE_FEED_ORDER_REPORT")
      */
     public function deliveryReportAction(Request $request)
     {
