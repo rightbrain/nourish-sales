@@ -184,7 +184,7 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
-            if ($this->authorizationChecker->isGranted('ROLE_SALES_REPORT') && $this->authorizationChecker->isGranted('ROLE_FEED_ORDER_MANAGE')) {
+            if ($this->authorizationChecker->isGranted('ROLE_FEED_ORDER_REPORT')) {
                 $menu['Report']->addChild('Delivery Report', array('route' => 'report_delivery'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('report_delivery')) {
