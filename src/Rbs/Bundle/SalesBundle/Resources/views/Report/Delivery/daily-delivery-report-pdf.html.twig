@@ -37,7 +37,8 @@
         {% set grandTotalReceived = 0 %}
         {% set grandTotalReceivedValue = 0 %}
         {% set depoName = '' %}
-        {% for catName, result in deliveries %}
+        {% for catName, results in deliveries %}
+        {% for catName, result in results %}
             {% set totalReceived = 0 %}
             {% set totalReceivedValue = 0 %}
             {% set depoName = result[0].depoName %}
@@ -67,6 +68,7 @@
             </tr>
             {% set grandTotalReceived = grandTotalReceived + totalReceived %}
             {% set grandTotalReceivedValue = grandTotalReceivedValue + totalReceivedValue %}
+        {% endfor %}
         {% endfor %}
         <tr style="font-weight: bold">
             <td>{{ depoName }}</td>

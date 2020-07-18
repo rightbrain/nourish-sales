@@ -80,7 +80,7 @@ class DeliveryItemRepository extends EntityRepository
     {
 
         $results= array();
-        if(!empty($data['depo'])) {
+        if(!empty($data['start_date'])&&!empty($data['end_date'])) {
             $query = $this->createQueryBuilder('di');
             $query->join('di.delivery', 'd');
             $query->join('d.depo', 'depo');
@@ -100,13 +100,15 @@ class DeliveryItemRepository extends EntityRepository
             if (!empty($data['depo'])) {
                 $this->handleSearchByDepo($data['depo'], $query);
             }
-            $this->handleSearchByDate($query, $data['start_date']);
+            $this->handleSearchByDate($query, $data['start_date'], $data['end_date']);
             $query->groupBy('i.id');
             $query->addGroupBy('d.depo');
-            $query->orderBy('c.id', 'ASC');
+            $query->orderBy('depo.name', 'ASC');
+            $query->addOrderBy('c.id', 'ASC');
+            $query->addOrderBy('i.name', 'ASC');
 
             foreach ($query->getQuery()->getResult() as $result) {
-                $results[$result['catName']][] = $result;
+                $results[$result['depoName']][$result['catName']][] = $result;
             }
             return $results;
         }else{
@@ -150,7 +152,7 @@ class DeliveryItemRepository extends EntityRepository
             if (!empty($data['depo'])) {
                 $this->handleSearchByDepo($data['depo'], $query);
             }
-            $this->handleSearchByDate($query, $data['start_date']);
+            $this->handleSearchByDate($query, $data['start_date'], $data['start_date']);
 //            $query->groupBy('i.id');
 //            $query->addGroupBy('d.depo');
 //            $query->orderBy('c.id', 'ASC');
@@ -192,14 +194,22 @@ class DeliveryItemRepository extends EntityRepository
             $query->setParameter('depo', $depo);
         }
     }
-    protected function handleSearchByDate($query, $startDate)
+    protected function handleSearchByMultipleDepot($depot, $query)
     {
-        if (!empty($startDate)) {
+        if (!empty($depot)) {
+            $query->andWhere('d.depo IN (:depot)');
+            $query->setParameter('depot', $depot);
+        }
+    }
+    protected function handleSearchByDate($query, $startDate, $endDate)
+    {
+        if (!empty($startDate)&&!empty($endDate)) {
             $startDate = date('Y-m-d', strtotime($startDate));
+            $endDate = date('Y-m-d', strtotime($endDate));
             $query->andWhere('d.createdAt >= :startDate');
             $query->andWhere('d.createdAt <= :endDate');
             $query->setParameter('startDate', $startDate.' 00:00:00');
-            $query->setParameter('endDate', $startDate.' 23:59:59');
+            $query->setParameter('endDate', $endDate.' 23:59:59');
         }
     }
 }

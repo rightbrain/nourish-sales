@@ -374,12 +374,55 @@ class OrderRepository extends EntityRepository
             if (!empty($data['depo'])) {
                 $this->handleSearchByDepot($data['depo'], $qp);
             }
-            $this->handleSearchByDate($qp, $data['start_date']);
+            $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
             $qp->groupBy('o.depo');
             $qp->orderBy('d.name', 'ASC');
 
             foreach ($qp->getQuery()->getResult() as $result) {
                 $results[$result['depotId']] = $result;
+            }
+            return $results;
+        }else{
+            return array();
+        }
+
+
+    }
+
+    public function getDailyFeedOrderItem($data){
+
+        $results= array();
+        if(!empty($data['start_date']) && !empty($data['end_date'])) {
+            $qp = $this->createQueryBuilder('o');
+            $qp->join('o.depo', 'd');
+            $qp->join('o.orderItems', 'oi');
+            $qp->join('oi.item', 'i');
+            $qp->join('i.category', 'c');
+            $qp->select('o.id');
+            $qp->addSelect('d.id as depotId');
+            $qp->addSelect('d.name as depotName');
+            $qp->addSelect('oi.totalAmount');
+            $qp->addSelect('oi.price as unitPrice');
+            $qp->addSelect('c.id as catId');
+            $qp->addSelect('i.sku as itemCode');
+            $qp->addSelect('i.name as itemName');
+            $qp->addSelect('c.id as catCode');
+            $qp->addSelect('c.name as catName');
+            $qp->addSelect('SUM(oi.quantity) AS totalQuantity');
+            $qp->addSelect('SUM(oi.totalAmount) AS totalAmount');
+            $qp->where('o.orderType = :orderType');
+            $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+            if (!empty($data['depo'])) {
+                $this->handleSearchByDepot($data['depo'], $qp);
+            }
+            $this->handleSearchByDate($qp, $data['start_date'], $data['end_date']);
+            $qp->groupBy('o.depo');
+            $qp->addGroupBy('i.id');
+            $qp->orderBy('d.name', 'ASC');
+            $qp->addOrderBy('i.name', 'ASC');
+
+            foreach ($qp->getQuery()->getResult() as $result) {
+                $results[$result['depotName']][$result['catName']][] = $result;
             }
             return $results;
         }else{
@@ -397,14 +440,15 @@ class OrderRepository extends EntityRepository
         }
     }
 
-    protected function handleSearchByDate($query, $startDate)
+    protected function handleSearchByDate($query, $startDate, $endDate)
     {
-        if (!empty($startDate)) {
+        if (!empty($startDate)&&!empty($endDate)) {
             $startDate = date('Y-m-d', strtotime($startDate));
+            $endDate = date('Y-m-d', strtotime($endDate));
             $query->andWhere('o.createdAt >= :startDate');
             $query->andWhere('o.createdAt <= :endDate');
             $query->setParameter('startDate', $startDate.' 00:00:00');
-            $query->setParameter('endDate', $startDate.' 23:59:59');
+            $query->setParameter('endDate', $endDate.' 23:59:59');
         }
     }
 }

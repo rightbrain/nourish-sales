@@ -8,7 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DeliveryReportType extends AbstractType
+class FeedOrderItemReportType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -63,6 +63,6 @@ class DeliveryReportType extends AbstractType
 
     public function getName()
     {
-        return 'delivery_report';
+        return 'feed_order_item_report';
     }
 }

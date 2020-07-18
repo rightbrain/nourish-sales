@@ -1,0 +1,114 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Stock {% endblock %}
+
+{% block body %}
+
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title hidden-print">
+                <div class="caption">
+                    <i class="fa fa-list"></i>Daily Order Report
+                </div>
+            </div>
+            <div class="portlet-body">
+
+                <form method="get" novalidate="novalidate" class="form-inline hidden-print" style="margin-bottom: 20px;">
+
+                    <div class="form-group hidden-print">
+                        <span class="visible-print-inline">Depot:</span>
+                        {{ form_widget(formSearch.depo) }}
+                    </div>
+                    <div class="form-group hidden-print">
+                        <div class="input-group input-daterange">
+                            {{ form_widget(formSearch.start_date) }}
+                        </div>
+                    </div>
+                    <div class="form-group hidden-print">
+                        <div class="input-group input-daterange">
+                            {{ form_widget(formSearch.end_date) }}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-1">
+                            <input type="submit" name="submit" value="Search" class="btn blue hidden-print">
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        {#<button type="submit" name="pdf_create" value="1" class="btn blue hidden-print">PDF</button>#}
+                        <button type="button" class="btn green hidden-print" onclick="print()">Print</button>
+                    </div>
+                    {{ form_end(formSearch) }}
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table width="100%" style="margin-bottom: 20px; font-weight: bold">
+                            <tr style="font-size: large">
+                                <td width="70%">Date wise Oder Quantity & Value</td>
+                                <td width="30%" align="right">{{ data?data['start_date']:'' }} To {{ data?data['end_date']:'' }}</td>
+                            </tr>
+                        </table>
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Unit Name</th>
+                                <th>Category Code</th>
+                                <th>Category Name</th>
+                                <th>Item Code</th>
+                                <th>Item Name</th>
+                                <th>Total Qty(KG)</th>
+                                <th>Value</th>
+                            </tr>
+                            </thead>
+                            {% if orders %}
+                            <tbody>
+                                {% set sl = 1 %}
+                                {% set grandTotalQty = 0 %}
+                                {% set grandTotalAmount = 0 %}
+                                    {% for depotName, results in orders %}
+
+                                        {% for catName, result in results %}
+                                            {% set totalQty = 0 %}
+                                            {% set totalAmount = 0 %}
+                                            {% for order in result %}
+
+                                                <tr>
+                                                    <td>{{ order.depotName }}</td>
+                                                    <td>{{ order.catCode }}</td>
+                                                    <td>{{ order.catName }}</td>
+                                                    <td>{{ order.itemCode }}</td>
+                                                    <td>{{ order.itemName }}</td>
+                                                    <td>{{ order.totalQuantity }}</td>
+                                                    <td>{{ order.totalAmount }}</td>
+                                                </tr>
+                                                {% set sl = sl + 1 %}
+                                                {% set totalQty = totalQty + order.totalQuantity %}
+                                                {% set totalAmount = totalAmount + order.totalAmount %}
+                                            {% endfor %}
+                                            <tr style="font-weight: bold">
+                                                <td style="text-align: center" colspan="3">{{ catName }}</td>
+                                                <td style="text-align: right" colspan="2">Total</td>
+                                                <td>{{ totalQty }}</td>
+                                                <td>{{ totalAmount }}</td>
+                                            </tr>
+                                            {% set grandTotalQty = grandTotalQty + totalQty %}
+                                            {% set grandTotalAmount = grandTotalAmount + totalAmount %}
+                                        {% endfor %}
+                                    {% endfor %}
+
+                                <tr style="font-size: large;font-weight: bold">
+                                    <td colspan="5" align="right">Total</td>
+                                    <td>{{ grandTotalQty }}</td>
+                                    <td>{{ grandTotalAmount }}</td>
+                                </tr>
+                            </tbody>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+{% endblock %}

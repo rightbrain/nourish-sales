@@ -34,6 +34,11 @@
                                 {{ form_widget(formSearch.start_date) }}
                             </div>
                     </div>
+                    <div class="form-group hidden-print">
+                        <div class="input-group input-daterange">
+                            {{ form_widget(formSearch.end_date) }}
+                        </div>
+                    </div>
                     <div class="form-group">
                         <div class="col-md-1">
                             <input type="submit" value="Search" class="btn blue hidden-print">
@@ -64,36 +69,38 @@
                                 {% set grandTotalReceived = 0 %}
                                 {% set grandTotalReceivedValue = 0 %}
                                 {% set depoName = '' %}
-                            {% for catName, result in deliveries %}
-                                {% set totalReceived = 0 %}
-                                {% set totalReceivedValue = 0 %}
-                                {% set depoName = result[0].depoName %}
-                                {% set sl = 1 %}
-                                {% for delivery in result %}
+                            {% for depotName, results in deliveries %}
+                                {% for catName, result in results %}
+                                    {% set totalReceived = 0 %}
+                                    {% set totalReceivedValue = 0 %}
+                                    {% set depoName = result[0].depoName %}
+                                    {% set sl = 1 %}
+                                    {% for delivery in result %}
 
-                                    <tr>
-                                        <td>{{ delivery.depoName }}</td>
-                                        <td style="text-align: center">{{ delivery.catId }}</td>
-                                        <td>{{ delivery.catName }}</td>
-                                        <td style="text-align: center">{{ delivery.itemCode }}</td>
-                                        <td>{{ delivery.itemName }}</td>
-                                        <td style="text-align: right">{{ delivery.totalDeliveredQuantity }}</td>
-                                        <td style="text-align: right">{{ delivery.totalValue }}</td>
+                                        <tr>
+                                            <td>{{ delivery.depoName }}</td>
+                                            <td style="text-align: center">{{ delivery.catId }}</td>
+                                            <td>{{ delivery.catName }}</td>
+                                            <td style="text-align: center">{{ delivery.itemCode }}</td>
+                                            <td>{{ delivery.itemName }}</td>
+                                            <td style="text-align: right">{{ delivery.totalDeliveredQuantity }}</td>
+                                            <td style="text-align: right">{{ delivery.totalValue }}</td>
+                                        </tr>
+                                        {% set sl = sl + 1 %}
+                                        {% set totalReceived = totalReceived + delivery.totalDeliveredQuantity %}
+                                        {% set totalReceivedValue = totalReceivedValue + delivery.totalValue %}
+                                    {% endfor %}
+                                    <tr style="font-weight: bold">
+                                        <td style="text-align: center" colspan="2">Total</td>
+                                        <td>{{ catName }}</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td style="text-align: right">{{ totalReceived }}</td>
+                                        <td style="text-align: right">{{ totalReceivedValue }}</td>
                                     </tr>
-                                    {% set sl = sl + 1 %}
-                                    {% set totalReceived = totalReceived + delivery.totalDeliveredQuantity %}
-                                    {% set totalReceivedValue = totalReceivedValue + delivery.totalValue %}
+                                    {% set grandTotalReceived = grandTotalReceived + totalReceived %}
+                                    {% set grandTotalReceivedValue = grandTotalReceivedValue + totalReceivedValue %}
                                 {% endfor %}
-                                <tr style="font-weight: bold">
-                                    <td style="text-align: center" colspan="2">Total</td>
-                                    <td>{{ catName }}</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td style="text-align: right">{{ totalReceived }}</td>
-                                    <td style="text-align: right">{{ totalReceivedValue }}</td>
-                                </tr>
-                                {% set grandTotalReceived = grandTotalReceived + totalReceived %}
-                                {% set grandTotalReceivedValue = grandTotalReceivedValue + totalReceivedValue %}
                             {% endfor %}
                                 <tr style="font-weight: bold">
                                     <td>{{ depoName }}</td>
