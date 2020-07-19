@@ -63,12 +63,12 @@ class OrderController extends BaseController
         /** @var QueryBuilder $qb */
         $function = function($qb)
         {
-            if($this->isGranted('ROLE_DEPO_USER')){
+            /*if($this->isGranted('ROLE_DEPO_USER')){
                 $qb->join('sales_orders.depo', 'd');
                 $qb->join('d.users', 'u');
                 $qb->andWhere('u.id = :user');
                 $qb->setParameter('user', $this->getUser()->getId());
-            }
+            }*/
             $qb->andWhere('sales_orders.orderType = :type');
             $qb->setParameter('type', Order::ORDER_TYPE_FEED);
         };

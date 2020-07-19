@@ -149,3 +149,13 @@ input.total_price{
 .feed_order_table .table>thead>tr>th{
     padding: 2px;
 }
+
+.width_100{
+    width: 100px;
+}
+.width_80{
+    width: 80px;
+}
+.width_85{
+    width: 85px;
+}
