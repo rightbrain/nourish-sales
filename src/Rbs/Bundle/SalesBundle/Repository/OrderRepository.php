@@ -85,15 +85,18 @@ class OrderRepository extends EntityRepository
     public function orderPayment(Order $order)
     {
         $agent = $order->getAgent();
-
-        /** @var Payment $payment */
-        foreach ($order->getPayments() as $payment) {
-            $payment->setAgent($agent);
-            $payment->setAmount(0);
-            $payment->setTransactionType(Payment::CR);
-            $this->_em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
-            $payment->addOrder($order);
+        if($order->getPayments()[0]){
+            /** @var Payment $payment */
+            foreach ($order->getPayments() as $payment) {
+                if($payment){
+                    $payment->setAgent($agent);
+                    $payment->setAmount(0);
+                    $payment->setTransactionType(Payment::CR);
+                    $this->_em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
+                    $payment->addOrder($order);
+                }
 //            $this->_em->persist($payment);
+            }
         }
 
     }

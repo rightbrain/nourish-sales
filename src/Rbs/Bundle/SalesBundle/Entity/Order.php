@@ -208,20 +208,24 @@ class Order
         $this->payments = new ArrayCollection();
     }
 
-
     /**
-     * @param Payment $payment
+     * @param \Rbs\Bundle\SalesBundle\Entity\Payment $payment
      */
-    public function addPayment(Payment $payment)
+    public function addPayment($payment)
     {
-        $payment->setAgent($this->getAgent());
-        $this->payments->add($payment);
+        if($payment){
+            if (!$this->payments->contains($payment)) {
+                $payment->setAgent($this->getAgent());
+                $this->payments->add($payment);
+            }
+        }
+        return $this;
     }
 
     /**
-     * @param Payment $payment
+     * @param \Rbs\Bundle\SalesBundle\Entity\Payment $payment
      */
-    public function removePayment(Payment $payment)
+    public function removePayment($payment)
     {
         $this->payments->removeElement($payment);
 //        $payment->removeOrder($this);

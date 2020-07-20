@@ -129,6 +129,7 @@ class OrderWithoutSmsForm extends AbstractType
                 'allow_delete' => true,
                 'by_reference' => false,
                 'prototype'    => true,
+                'required' => false,
                 'label_attr'   => array(
                     'class' => 'hidden',
                 ),
