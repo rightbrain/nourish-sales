@@ -501,4 +501,8 @@ class Payment
     {
         $this->paymentMode = $paymentMode;
     }
+
+    public function getDistrictByAgent(){
+        return $this->getAgent()->getUser()->getZilla();
+    }
 }

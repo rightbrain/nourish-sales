@@ -4,6 +4,7 @@ var Payment = function()
 
         if (!$('#external_filter_container').length) {
             $('<div id="external_filter_container">' +
+                '<div id="district-filter"></div>' +
                 '<div id="date-filter"><div class="input-group input-daterange">' +
                 '<input type="text" class="form-control input-small" value="">' +
                 '<span class="input-group-addon">to</span>' +
@@ -26,6 +27,30 @@ var Payment = function()
             format: 'dd-mm-yyyy'
         });
 
+        if (allowAgentSearch) {
+            $("#district-filter").select2({
+                placeholder: "District",
+                allowClear: true,
+                minimumInputLength: 1,
+                ajax: {
+                    url: Routing.generate('location_search'),
+                    dataType: 'json',
+                    quietMillis: 250,
+                    data: function (term, page) {
+                        return {
+                            q: term
+                        };
+                    },
+                    results: function (data) {
+                        return {results: data};
+                    },
+                    cache: true
+                }
+            }).on('change', function(){
+                //table.columns(1).search($(this).val()).draw();
+            }).prev().addClass('form-control input-medium').css('vertical-align', 'initial');
+
+        }
         if (allowAgentSearch) {
             $("#agent-filter").select2({
                 placeholder: "Agents",
@@ -66,6 +91,7 @@ var Payment = function()
             }
             if (allowAgentSearch) {
                 table.columns(1).search($("#agent-filter").val());
+                table.columns(3).search($("#district-filter").val());
             }
             table.draw();
         });

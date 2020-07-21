@@ -113,6 +113,12 @@ class LocationRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+    public function getRegionById($id)
+    {
+        $query = $this->find($id);
+
+        return $query->getName();
+    }
 
     public function getRegionsForChick()
     {
@@ -127,7 +133,20 @@ class LocationRepository extends EntityRepository
     public function getDistricts()
     {
         $query = $this->createQueryBuilder('l');
+        $query->select("l.id, l.name AS text");
         $query->where('l.level = 4');
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function getDistrictsByName($request)
+    {
+        $query = $this->createQueryBuilder('l');
+        $query->select("l.id, l.name AS text");
+        $query->where('l.level = 4');
+        if ($q = $request->query->get('q')) {
+            $query->andWhere("l.name LIKE '{$q}%'");
+        }
 
         return $query->getQuery()->getResult();
     }

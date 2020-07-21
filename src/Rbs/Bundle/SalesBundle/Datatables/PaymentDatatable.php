@@ -25,7 +25,10 @@ class PaymentDatatable extends BaseDatatable
          */
         $formatter = function($line){
             $payment = $this->em->getRepository('RbsSalesBundle:Payment')->find($line['id']);
+            $locationRepository = $this->em->getRepository('RbsCoreBundle:Location');
             $line['bankInfo'] = $this->formatBankInfo($line['bankAccount'], $line['transactionType'], $line['paymentMethod']);
+            $line['region'] = $locationRepository->getRegionById($payment->getDistrictByAgent()->getParentId())?$locationRepository->getRegionById($payment->getDistrictByAgent()->getParentId()):"";
+            $line['district'] = $payment->getDistrictByAgent()?$payment->getDistrictByAgent()->getName():"";
             $line['agentBankInfo'] = $payment->getAgentBankBranch()?$payment->getAgentBankBranch()->getBank().', '.$payment->getAgentBankBranch()->getBranch():"";
             $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
             $line['orderStatus'] = $this->orderStateCancel($payment->getOrders()[0]);
@@ -83,6 +86,8 @@ class PaymentDatatable extends BaseDatatable
 
         $this->columnBuilder
             ->add('fullName', 'virtual', array('visible' => true, 'title' => 'Agent Name'))
+            ->add('region', 'virtual', array('title' => 'Region'))
+            ->add('district', 'virtual', array('title' => 'District'))
             ->add('depositedAmount', 'virtual', array('title' => 'Deposited Amount'))
             ->add('totalAmount', 'virtual', array('title' => 'Actual Amount'))
             ->add('paymentMethod', 'column', array('visible' => false))

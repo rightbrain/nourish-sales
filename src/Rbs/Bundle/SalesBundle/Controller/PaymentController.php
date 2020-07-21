@@ -57,6 +57,7 @@ class PaymentController extends BaseController
 
         $dateFilter = $request->query->get('columns[0][search][value]', null, true);
         $agentFilter = $request->query->get('columns[1][search][value]', null, true);
+        $districtFilter = $request->query->get('columns[3][search][value]', null, true);
 
         // Reset Date Column search's value to Skip DataTable native search functionality for Date Column
         $columns = $request->query->get('columns');
@@ -65,8 +66,9 @@ class PaymentController extends BaseController
 
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
-        $function = function($qb) use ($dateFilter, $agentFilter, $user, $agentRepository)
+        $function = function($qb) use ($dateFilter, $agentFilter, $districtFilter, $user, $agentRepository)
         {
+
             if ($dateFilter) {
                 list($fromDate, $toDate) = explode('--', $dateFilter);
 
@@ -82,8 +84,18 @@ class PaymentController extends BaseController
             }
 
             if ($agentFilter) {
+
                 $agent = $agentRepository->findOneBy(array('user' => $agentFilter));
                 $qb->andWhere('sales_payments.agent = :agent')->setParameter('agent', $agent->getId());
+            }
+//            var_dump($districtFilter);
+            if($districtFilter){
+
+                $qb->join('sales_payments.agent', 'a');
+                $qb->join('a.user', 'u');
+                $qb->join('u.zilla', 'z');
+                $qb->andWhere('z.id = :district');
+                $qb->setParameter('district', $districtFilter);
             }
 
             if ($user->getUserType() == User::AGENT) {

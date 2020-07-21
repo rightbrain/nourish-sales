@@ -6,6 +6,7 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -100,6 +101,19 @@ class LocationController extends BaseController
             'locationsDistricts' => $locationsDistricts,
             'locationsUpozillas' => $locationsUpozillas
         );
+    }
+
+    /**
+     * @Route("/location/location-search", name="location_search", options={"expose"=true})
+     * @param Request $request
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     */
+    public function getAgents(Request $request)
+    {
+        $location= $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->getDistrictsByName($request);
+
+        return new JsonResponse($location);
     }
 
 }
