@@ -70,9 +70,45 @@ var Delivery = function()
         return oneValidValue;
     }
 
+    function orderItemRemainingHandleInit() {
+
+        var item_qty_sum = 0;
+        $('body .item-qty').each(function() {
+            var value = $(this).text();
+            if(!isNaN(value) && value.length != 0) {
+                item_qty_sum += parseFloat(value);
+            }
+        });
+
+        $('.totalItemQty').text(item_qty_sum);
+
+
+        var delivery_qty_sum = 0;
+        $('body .deliver-qty').each(function() {
+            var value = $(this).val();
+            if(!isNaN(value) && value.length != 0) {
+                delivery_qty_sum += parseFloat(value);
+            }
+        });
+
+        $('.totalDeliveryQty').text(delivery_qty_sum);
+
+
+        var sum = 0;
+        $('body .remain').each(function() {
+            var value = $(this).text();
+            if(!isNaN(value) && value.length != 0) {
+                sum += parseFloat(value);
+            }
+        });
+
+        $('.totalRemainingQty').text(sum);
+    }
+
     function orderItemRemainingHandle()
     {
-        $('.orderItems').find('.deliver-qty').blur(function(){
+        $('body').on('keyup','.deliver-qty', function () {
+        // $('.orderItems').find('.deliver-qty').blur(function(){
             var elm = $(this).parents('tr');
 
             var qty = parseInt(elm.find('.item-qty').text());
@@ -124,7 +160,7 @@ var Delivery = function()
 
             $('.totalRemainingQty').text(sum);
 
-        }).blur();
+        });
     }
 
     function orderProgressHandle()
@@ -168,9 +204,10 @@ var Delivery = function()
 
     function saveDelivery()
     {
+        orderItemRemainingHandle();
         $('#deliveryView').on('shown.bs.modal', function (){
             setTimeout(function(){
-                orderItemRemainingHandle();
+                orderItemRemainingHandleInit();
                 orderProgressHandle();
                 $('#process-actions span').tooltip();
                 App.integerMask($('#delivery-item-form').find('.orderItems .deliver-qty'));
@@ -205,6 +242,51 @@ var Delivery = function()
 
             return false;
         });
+
+        $('body').on('keyup','.deliver-qty-new', function () {
+            alert($(this).val());
+        });
+
+        $('body').on('click','#itemAdd', function () {
+            var element = $(this);
+            var orderId = element.closest('tr').find('.order_id').val();
+            var itemId = element.closest('tr').find('.item_id').val();
+            var itemQty = element.closest('tr').find('.itemQty').val();
+            if(orderId==''||itemId==''||itemQty==''){
+                alert('Please enter value.');
+                return false;
+            }
+
+            $.ajax({
+                type: "post",
+                url: Routing.generate('order_item_add_ajax'),
+                data: {
+                    'orderId':orderId,
+                    'itemId':itemId,
+                    'itemQty':itemQty
+                },
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    if(response.status==='success'){
+                        if(response.type==='new'){
+                            $(".delivery_order tbody").find(".order_"+response.orderId).eq(-1).after($('<tr class="order_'+response.orderId+'"><td>'+response.orderItemCount+'</td><td>'+response.orderId+'</td><td>'+response.itemName+'</td><td class="item-qty orderItemQty_'+response.orderItemId+'">'+response.itemQty+'</td><td class="deliver"><input name="qty['+response.orderId+']['+response.orderItemId+']" class="form-control input-xsmall deliver-qty" value="0" style="text-align: right;"></td><td class="remain">'+response.itemQty+'</td><td></td></tr>'));
+                        }
+                        if(response.type==='old'){
+                            $(".delivery_order tbody").find(".order_"+response.orderId).find('.orderItemQty_'+response.orderItemId).text(response.itemQty);
+                            $(".delivery_order tbody").find(".order_"+response.orderId).find('.orderItemQty_'+response.orderItemId).closest('tr').find('.remain').text(response.itemQty);
+                        }
+                        $(".delivery_order tbody").find(".totalAmount_"+response.orderId).text(response.totalAmount);
+                        toastr.success(response.message);
+                    }
+                    if(response.status==='error'){
+                        toastr.error(response.message);
+                    }
+                    orderItemRemainingHandleInit();
+
+                }
+            });
+        })
     }
 
     function init()

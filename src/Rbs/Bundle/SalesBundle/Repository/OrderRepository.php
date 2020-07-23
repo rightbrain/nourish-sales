@@ -55,6 +55,13 @@ class OrderRepository extends EntityRepository
         $this->_em->flush();
         return $this->_em;
     }
+    public function onlyUpdate(Order $order)
+    {
+        $this->calculateOrderAmount($order);
+        $this->_em->persist($order);
+        $this->_em->flush();
+        return $this->_em;
+    }
 
     public function updateWithoutSms(Order $order, $resetStatus = false)
     {

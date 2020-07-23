@@ -500,4 +500,19 @@ class VehicleController extends BaseController
         ));
     }
 
+    /**
+     * @Route("/vehicle/print/{id}", name="vehicle_view_print", options={"expose"=true})
+     * @param Vehicle $vehicle
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_USER")
+     */
+    public function viewPrint(Vehicle $vehicle)
+    {
+        $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($vehicle->getDeliveries());
+        return $this->render('RbsSalesBundle:Vehicle:view-print.html.twig', array(
+            'vehicle'      => $vehicle,
+            'partialItems'  => $partialItems,
+        ));
+    }
+
 }

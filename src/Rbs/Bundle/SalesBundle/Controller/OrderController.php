@@ -195,6 +195,7 @@ class OrderController extends BaseController
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $order->setLocation($order->getAgent()->getUser()->getUpozilla());
+                $order->setTotalApprovedAmount($order->getTotalAmount());
                 $orderIncentiveFlag->setOrder($order);
                 $this->orderRepository()->create($order);
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
@@ -275,11 +276,12 @@ class OrderController extends BaseController
 
                 $em = $this->getDoctrine()->getManager();
                 $order->setLocation($order->getAgent()->getUser()->getUpozilla());
+                $order->setTotalApprovedAmount($order->getTotalAmount());
                 $orderIncentiveFlag->setOrder($order);
                 $this->orderRepository()->createWithouSms($order);
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
                 $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('order')['depo']);
-                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
+//                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
 
                 $this->flashMessage('success', 'Order Created Successfully');
                 $msg = "Dear Customer, Your Order No: ".$order->getId()." / ".date('d-m-Y').'. ';
@@ -443,8 +445,9 @@ class OrderController extends BaseController
             }
 
             if ($form->isValid()) {
-
-                $stockRepo->updateStock($order, $depo, $prevOrderItems);
+                if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
+                    $stockRepo->updateStock($order, $depo, $prevOrderItems);
+                }
                 $em->getRepository('RbsSalesBundle:Order')->updateWithoutSms($order, true);
 
                 $this->flashMessage('success', 'Order Updated Successfully');

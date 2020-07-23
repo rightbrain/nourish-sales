@@ -172,10 +172,10 @@
                 Order Hold
             </a>
 
-            <a class="btn green delete-list-btn" href="{{ path('order_approve', {"id": order.id}) }}">
-                Order Approve
-            </a>
         {% endif %}
+        <a class="btn green delete-list-btn" href="{{ path('order_approve', {"id": order.id}) }}">
+            Order Approve
+        </a>
 
         <button title="Close" type="button" class="btn red" data-dismiss="modal">Close</button>
     </div>

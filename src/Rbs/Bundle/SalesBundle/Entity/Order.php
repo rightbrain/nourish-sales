@@ -136,6 +136,13 @@ class Order
     /**
      * @var float
      *
+     * @ORM\Column(name="total_approved_amount", type="float")
+     */
+    private $totalApprovedAmount = 0 ;
+
+    /**
+     * @var float
+     *
      * @ORM\Column(name="paid_amount", type="float")
      */
     private $paidAmount = 0 ;
@@ -354,6 +361,22 @@ class Order
     public function setTotalAmount($totalAmount)
     {
         $this->totalAmount = $totalAmount;
+    }
+
+    /**
+     * @return float
+     */
+    public function getTotalApprovedAmount()
+    {
+        return $this->totalApprovedAmount;
+    }
+
+    /**
+     * @param float $totalApprovedAmount
+     */
+    public function setTotalApprovedAmount($totalApprovedAmount)
+    {
+        $this->totalApprovedAmount = $totalApprovedAmount;
     }
 
     /**

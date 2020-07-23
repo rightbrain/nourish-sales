@@ -5,14 +5,17 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use JMS\SecurityExtraBundle\Annotation as JMS;
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Event\DeliveryEvent;
 use Rbs\Bundle\SalesBundle\Form\Type\DeliveryAddForm;
 use Rbs\Bundle\SalesBundle\Form\Type\DeliveryForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -94,11 +97,19 @@ class DeliveryController extends BaseController
      */
     public function view(Delivery $delivery)
     {
+        $items = $this->getFeedItems();
         $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($delivery);
         return $this->render('RbsSalesBundle:Delivery:view.html.twig', array(
             'delivery'      => $delivery,
             'partialItems'  => $partialItems,
+            'items'  => $items,
         ));
+    }
+
+    private function getFeedItems() {
+        $em = $this->getDoctrine()->getManager();
+
+        return $em->getRepository('RbsCoreBundle:Item')->getFeedItems();
     }
 
     /**
@@ -168,6 +179,110 @@ class DeliveryController extends BaseController
         $this->flashMessage('success', 'Delivery Completed Successfully');
 
         return $this->redirect($this->generateUrl('vehicle_info_load_list'));
+    }
+
+    /**
+     * @Route("/order/item/add", name="order_item_add_ajax", options={"expose"=true})
+     * @param Request $request
+     * @param Delivery $delivery
+     * @return array|\Symfony\Component\HttpFoundation\JsonResponse
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     */
+    public function orderItemAddAction(Request $request)
+    {
+        $returnData = array();
+        $orderId = $request->request->get('orderId');
+        $itemId = $request->request->get('itemId');
+        $itemQty = $request->request->get('itemQty');
+
+        $order = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($orderId);
+        $item = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->find($itemId);
+        $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+            $item, $order->getAgent()->getUser()->getZilla()
+        );
+        $exOrderItem = array();
+        /** @var OrderItem $orderItem */
+        foreach ($order->getOrderItems() as $orderItem){
+          $exOrderItem[]=$orderItem->getItem()->getId();
+        }
+
+
+
+        if (in_array($item->getId(), $exOrderItem)){
+          $orderItem = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->findOneBy(array('order'=>$order,'item'=>$item));
+
+          if($order->getTotalApprovedAmount() < (($order->getTotalAmount()-$orderItem->getTotalAmount()) + ($price*$itemQty) ) ){
+              return new JsonResponse(
+                  array('status'=> 'error','message'=>"Order Approved amount cross.",$order->getTotalApprovedAmount(),(($order->getTotalAmount()-$orderItem->getTotalAmount()) + ($price*$itemQty) ))
+              );
+          }
+
+          $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(
+                array(
+                    'item' => $orderItem->getItem(),
+                    'depo' => $order->getDepo(),
+                )
+            );
+            $stock->setOnHold($stock->getOnHold() - $orderItem->getQuantity());
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+
+//          $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
+            $returnData['type']='old';
+        }else{
+            $orderItem = new OrderItem();
+            if($order->getTotalApprovedAmount() < ($order->getTotalAmount() + ($price*$itemQty) ) ){
+                return new JsonResponse(
+                    array('status'=> 'error','message'=>"Order Approved amount cross.")
+                );
+            }
+            $returnData['type']='new';
+        }
+
+
+
+        $orderItem->setItem($item);
+        $orderItem->setQuantity($itemQty);
+        $orderItem->setPrice($price);
+        $orderItem->setTotalAmount($orderItem->calculateTotalAmount());
+        $orderItem->setOrder($order);
+
+        /*$this->getDoctrine()->getEntityManager()->persist($orderItem);
+        $this->getDoctrine()->getEntityManager()->flush();*/
+
+        $order->addOrderItem($orderItem);
+
+        $this->getDoctrine()->getRepository("RbsSalesBundle:OrderItem")->update($orderItem);
+
+        $this->getDoctrine()->getRepository("RbsSalesBundle:Order")->onlyUpdate($order);
+//        $order->setTotalAmount($order->getItemsTotalAmount());
+
+
+        $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(
+            array(
+                'item' => $orderItem->getItem(),
+                'depo' => $order->getDepo(),
+            )
+        );
+        $stock->setOnHold($stock->getOnHold() + $orderItem->getQuantity());
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+
+        $data=array(
+            'status'=> 'success',
+            'message'=>'Item has been added.',
+            'orderId'=>$orderItem->getOrder()->getId(),
+            'orderItemId'=>$orderItem->getId(),
+            'itemName'=>$orderItem->getItem()->getName(),
+            'itemQty'=>$orderItem->getQuantity(),
+            'totalAmount'=>$order->getTotalAmount(),
+            'orderItemCount'=>count($order->getOrderItems()),
+        );
+
+
+
+        $return= array_merge($returnData, $data);
+
+        return new JsonResponse($return);
+
     }
 
     /**

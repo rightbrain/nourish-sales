@@ -72,5 +72,14 @@ class ItemRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function getFeedItems() {
+        $query = $this->createQueryBuilder('i');
+        $query->join('i.itemType', 'it');
+        $query->where('it.itemType != :itemType');
+        $query->setParameter('itemType', ItemType::Chick);
+
+        return $query->getQuery()->getResult();
+    }
+
 
 }

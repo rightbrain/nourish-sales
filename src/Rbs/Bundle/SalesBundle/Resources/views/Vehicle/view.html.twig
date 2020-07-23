@@ -23,11 +23,12 @@
                                     <tr>
                                         <th>Vehicle Supply By : </th>
                                         <td>
-                                            {% if((vehicle.agent is not null)) %}
+                                            {#{% if((vehicle.agent is not null)) %}
                                                 {{ vehicle.agent.name}}
                                             {% else %}
                                                 {{ 'NOURISH' }}
-                                            {% endif %}
+                                            {% endif %}#}
+                                            NOURISH / AGENT
                                         </td>
                                     </tr>
                                     <tr>
@@ -158,7 +159,7 @@
                         <table class="table table-bordered">
 
                             <tr>
-                                <td style="height: 50px"></td>
+                                <td style="height: 40px"></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -189,7 +190,7 @@
     </div>
     <div class="modal-footer">
 
-        <button type="button" class="btn btn-primary" onclick="window.print();">Print</button>
+        <a href="{{ path('vehicle_view_print',{id:vehicle.id}) }}" class="btn btn-primary" target="_blank">Print</a>
         <button title="Close" type="button" class="btn red" data-dismiss="modal">Close</button>
     </div>
 </div>

@@ -151,6 +151,7 @@ class SmsParse
         $this->order->setAgent($this->agent);
         $this->order->setDepo($this->agent->getDepo()?$this->agent->getDepo():null);
         $this->order->setTotalAmount($this->order->getItemsTotalAmount());
+        $this->order->setTotalApprovedAmount($this->order->getItemsTotalAmount());
         $this->order->setOrderState(Order::ORDER_STATE_PENDING);
         $this->order->setPaymentState(Order::PAYMENT_STATE_PENDING);
         $this->order->setDeliveryState(Order::DELIVERY_STATE_PENDING);
