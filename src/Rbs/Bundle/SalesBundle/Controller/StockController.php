@@ -199,6 +199,46 @@ class StockController extends Controller
     }
 
     /**
+     * find stock item ajax
+     * @Route("find_stock_item_depo_for_amenment_ajax/{order}/{item}", name="find_stock_item_depo_for_amenment_ajax", options={"expose"=true})
+     * @param Request $request
+     * @return Response
+     */
+    public function findItemDepotStockAction(Order $order, Item $item)
+    {
+        if ($order) {
+            $depot = $order->getDepo();
+        }
+            $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+                $item, $depot->getLocation()
+            );
+
+            $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(
+                array(
+                    'item' => $item,
+                    'depo' => $depot,
+                )
+            );
+        $orderItem = null;
+        if ($order) { // edit mode and item already added
+            $orderItem = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->findOneBy(
+                array('order' => $order, 'item' => $item)
+            );
+        }
+        $qtyInThisOrder = $orderItem ? $orderItem->getQuantity() : 0;
+            $response = array(
+                'status'    => 'success',
+                'onHand'    => $stock->getOnHand() + $qtyInThisOrder,
+                'onHold'    => $stock->getOnHold(),
+                'available' => $stock->isAvailableOnDemand(),
+                'price'     => number_format($price, 2),
+                'itemUnit'  => $stock->getItem()->getItemUnit(),
+            );
+
+        return new JsonResponse($response);
+    }
+
+    /**
      * @param $stock
      */
     protected function checkAvailableOnDemand(Stock $stock)

@@ -8,6 +8,7 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderIncentiveFlag;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
+use Rbs\Bundle\SalesBundle\Form\Type\OrderApprovedAmountForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderEditWithoutSmsForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderWithoutSmsForm;
@@ -531,11 +532,12 @@ class OrderController extends BaseController
 
     /**
      * @Route("/order/approve/{id}", name="order_approve", options={"expose"=true})
+     * @param Request $request
      * @param Order $order
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
      * @JMS\Secure(roles="ROLE_ORDER_APPROVE")
      */
-    public function orderApproveAction(Order $order)
+    public function orderApproveAction(Request $request, Order $order)
     {
         if (!$this->isOrderValidState($order)) {
             return $this->redirectOnInvalidOrderState($order);
@@ -544,6 +546,8 @@ class OrderController extends BaseController
         if ($order->getOrderState() == Order::ORDER_STATE_PENDING) {
             $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $order->getDepo());
         }
+
+        $order->setTotalApprovedAmount($request->request->get('order_approved_amount')['totalApprovedAmount']);
 
         $order->setOrderState(Order::ORDER_STATE_PROCESSING);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
@@ -636,6 +640,7 @@ class OrderController extends BaseController
                 $invalidMessage = 'Invalid Item Price';
             }
         }
+        $form = $this->createForm(new OrderApprovedAmountForm(), $order);
 
         return $this->render('RbsSalesBundle:Order:summeryView.html.twig', array(
             'order' => $order,
@@ -644,6 +649,7 @@ class OrderController extends BaseController
             'availableCheck' => $availableCheck,
             'orderInfoValid' => $orderInfoValid,
             'invalidMessage' => $invalidMessage,
+            'form' => $form->createView(),
         ));
     }
 
@@ -706,10 +712,13 @@ class OrderController extends BaseController
         $agentDebitLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentDebitLaserTotal($data);
         $agentCreditLaserTotal = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getAgentCreditLaserTotal($data);
         $currentBalance = $agentDebitLaserTotal - ($agentCreditLaserTotal - $order->getTotalPaymentActualAmount());
+        $form = $this->createForm(new OrderApprovedAmountForm(), $order);
+
         return $this->render('RbsSalesBundle:Order:orderVerify.html.twig', array(
             'order' => $order,
             'auditLogs' => $auditLogs,
-            'outStandingBalance'=>$currentBalance
+            'outStandingBalance'=>$currentBalance,
+            'form' => $form->createView(),
         ));
     }
 
@@ -797,14 +806,16 @@ class OrderController extends BaseController
     /**
      * @Route("/order/{id}/verify", name="order_verify")
      * @param Order $order
+     * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      * @JMS\Secure(roles="ROLE_ORDER_VERIFY")
      */
-    public function orderVerifyAction(Order $order)
+    public function orderVerifyAction(Request $request, Order $order)
     {
         if ($order->getOrderState() == Order::ORDER_STATE_PROCESSING &&
             in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))
         ) {
+            $order->setTotalApprovedAmount($request->request->get('order_approved_amount')['totalApprovedAmount']);
             $order->setDeliveryState(Order::DELIVERY_STATE_READY);
             $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
             $this->dispatchApproveProcessEvent('order.verified', $order);

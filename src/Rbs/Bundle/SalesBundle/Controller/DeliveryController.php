@@ -98,11 +98,24 @@ class DeliveryController extends BaseController
     public function view(Delivery $delivery)
     {
         $items = $this->getFeedItems();
+        $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
         $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($delivery);
+        $isAvailable=array();
+        /** @var Order $order */
+        foreach ($delivery->getOrders() as $order){
+            /** @var OrderItem $item */
+            foreach ($order->getOrderItems() as $item) {
+                $stockItem = $stockRepo->findOneBy(
+                    array('item' => $item->getItem()->getId(), 'depo' => $order->getDepo()->getId())
+                );
+                $isAvailable[$order->getId()][$item->getId()] = $stockItem && $stockItem->isStockAvailableForDeliverySet($item->getQuantity());
+            }
+        }
         return $this->render('RbsSalesBundle:Delivery:view.html.twig', array(
             'delivery'      => $delivery,
             'partialItems'  => $partialItems,
             'items'  => $items,
+            'isAvailable'  => $isAvailable,
         ));
     }
 
@@ -205,15 +218,24 @@ class DeliveryController extends BaseController
         foreach ($order->getOrderItems() as $orderItem){
           $exOrderItem[]=$orderItem->getItem()->getId();
         }
-
-
+        $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
+        $stockItem = $stockRepo->findOneBy(
+            array('item' => $item, 'depo' => $order->getDepo())
+        );
 
         if (in_array($item->getId(), $exOrderItem)){
+
+            $item->isAvailable = $stockItem && $stockItem->isStockAvailableForDeliverySet($itemQty);
+            if($item->isAvailable==false){
+                return new JsonResponse(
+                    array('status'=> 'error','message'=>"Item stock not available")
+                );
+            }
           $orderItem = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->findOneBy(array('order'=>$order,'item'=>$item));
 
           if($order->getTotalApprovedAmount() < (($order->getTotalAmount()-$orderItem->getTotalAmount()) + ($price*$itemQty) ) ){
               return new JsonResponse(
-                  array('status'=> 'error','message'=>"Order Approved amount cross.",$order->getTotalApprovedAmount(),(($order->getTotalAmount()-$orderItem->getTotalAmount()) + ($price*$itemQty) ))
+                  array('status'=> 'error','message'=>"Order clearance amount cross.",$order->getTotalApprovedAmount(),(($order->getTotalAmount()-$orderItem->getTotalAmount()) + ($price*$itemQty) ))
               );
           }
 
@@ -229,10 +251,18 @@ class DeliveryController extends BaseController
 //          $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
             $returnData['type']='old';
         }else{
+
+            $item->isAvailable = $stockItem && $stockItem->isStockAvailable($itemQty);
+            if($item->isAvailable==false){
+                return new JsonResponse(
+                    array('status'=> 'error','message'=>"Item stock not available.")
+                );
+            }
+
             $orderItem = new OrderItem();
             if($order->getTotalApprovedAmount() < ($order->getTotalAmount() + ($price*$itemQty) ) ){
                 return new JsonResponse(
-                    array('status'=> 'error','message'=>"Order Approved amount cross.")
+                    array('status'=> 'error','message'=>"Order clearance amount cross.")
                 );
             }
             $returnData['type']='new';

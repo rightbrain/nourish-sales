@@ -60,24 +60,24 @@
                                         {% if item.quantity != 0 %}
                                             {% if order.deliveryState == 'PARTIALLY_SHIPPED' and partialItems[order.id][item.id] is defined %}
                                                 {% if (item.quantity > partialItems[order.id][item.id]['delivered']) %}
-                                                    <tr class="order_{{ order.id }}">
+                                                    <tr class="order_{{ order.id }}{{ isAvailable[order.id][item.id]==false?' red':'' }}">
                                                         <td>{{ index+1 }}</td>
                                                         <td>{{ order.id }}</td>
                                                         <td>{{ item.item.name }}</td>
                                                         <td class="item-qty orderItemQty_{{ item.id }}">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
                                                         <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
                                                         <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
-                                                        <td class="remain">{{ item.quantity }}</td>
+                                                        <td class="remain">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
                                                     </tr>
                                                 {% endif %}
                                             {% else %}
-                                                <tr class="order_{{ order.id }}">
+                                                <tr class="order_{{ order.id }}{{ isAvailable[order.id][item.id]==false?' red':'' }}">
                                                     <td>{{ index+1 }}</td>
                                                     <td>{{ order.id }}</td>
                                                     <td>{{ item.item.name }}</td>
                                                     <td class="item-qty orderItemQty_{{ item.id }}">{{ item.quantity }}</td>
                                                     <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
-                                                    <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
+                                                    <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0" {{ isAvailable[order.id][item.id]==false?'disabled="disabled"':'' }}></td>
                                                     <td class="remain">{{ item.quantity }}</td>
                                                 </tr>
                                             {% endif %}
@@ -98,8 +98,7 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
-                                    <td></td>
-                                    <td>
+                                    <td colspan="2">
                                         <select class="form-control order_id" name="order_id" id="order_id">
                                             {% if ordersId %}
                                                 {% for orderId in ordersId %}
@@ -110,6 +109,7 @@
                                     </td>
                                     <td>
                                         <select class="form-control item_id" name="item_id" id="item_id">
+                                            <option value="">Select Item</option>
                                             {% if items %}
                                                 {% for item in items %}
                                                     <option value="{{ item.id }}">{{ item.name }}</option>
@@ -120,11 +120,10 @@
                                     <td>
                                         <input type="text" id="itemQty" class="form-control itemQty" name="itemQty">
                                     </td>
+                                    <td class="stock-available"></td>
                                     <td>
-                                        <button type="button" id="itemAdd" class="btn btn-sm btn-success itemAdd">Add Item</button>
+                                        <button type="button" id="itemAdd" disabled class="btn btn-sm btn-success itemAdd">Add Item</button>
                                     </td>
-                                    <td></td>
-                                    <td></td>
                                 </tr>
                                 </tfoot>
                             </table>

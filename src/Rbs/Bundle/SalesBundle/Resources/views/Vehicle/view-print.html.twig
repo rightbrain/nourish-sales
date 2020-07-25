@@ -119,31 +119,34 @@
                                     {% set totalQuentity = 0 %}
                                     {% set totalDeliveredQuantity = 0 %}
                                     {% set totalPackWighth = 0 %}
-                                    {% for order in vehicle.deliveries.orders %}
+                                    {% set totalRemainingQty = 0 %}
+                                    {% for deliveryItem in vehicle.deliveries.deliveryItems %}
 
-                                        {% for index, item in order.orderItems %}
-                                            {% if item.quantity != 0 %}
-                                                {% set totalQuentity= totalQuentity + item.quantity %}
-                                                {% set partialQty=0 %}
-                                                {% if order.id in partialItems|keys %}
-                                                    {% set partialQty = partialItems[order.id][item.id]['delivered'] %}
+                                        {#{{ dump(item.id) }}#}
+
+                                        {% if deliveryItem.qty%}
+                                            {% set totalQuentity= totalQuentity + deliveryItem.orderItem.quantity %}
+                                            {% set partialQty=0 %}
+                                            {% if deliveryItem.order.id in partialItems|keys %}
+                                                {% if deliveryItem.orderItem.id in partialItems[deliveryItem.order.id]|keys %}
+                                                    {% set partialQty = partialItems[deliveryItem.order.id][deliveryItem.orderItem.id]['delivered'] %}
                                                 {% endif %}
-                                                {% set totalDeliveredQuantity= totalDeliveredQuantity + partialQty %}
-                                                {% set totalPackWighth= totalPackWighth + (partialQty/item.item.packetWeight) %}
-                                                <tr>
-                                                    <td>{{ index+1 }}</td>
-                                                    <td>{{ order.id }}</td>
-                                                    <td>{{ item.item.getItemCodeName }}</td>
-                                                    <td class="item-qty">{{ item.quantity }}</td>
-                                                    <td class="deliver">
-                                                        {{ partialQty }}
-                                                        {#<input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0">#}
-                                                    </td>
-                                                    <td>{{partialQty/item.item.packetWeight }}</td>
-                                                    <td class="remain no-print">{{ item.quantity - partialQty }}</td>
-                                                </tr>
                                             {% endif %}
-                                        {% endfor %}
+                                            {% set totalDeliveredQuantity= totalDeliveredQuantity + deliveryItem.qty %}
+                                            {% set totalPackWighth= totalPackWighth + (deliveryItem.qty/deliveryItem.orderItem.item.packetWeight) %}
+                                            {% set totalRemainingQty= totalRemainingQty + (deliveryItem.orderItem.quantity - partialQty) %}
+                                            <tr>
+                                                <td>{{ 1 }}</td>
+                                                <td>{{ deliveryItem.order.id }}</td>
+                                                <td>{{ deliveryItem.orderItem.item.getItemCodeName }}</td>
+                                                <td class="item-qty">{{ deliveryItem.orderItem.quantity }}</td>
+                                                <td class="deliver">
+                                                    {{ deliveryItem.qty }}
+                                                </td>
+                                                <td>{{deliveryItem.qty/deliveryItem.orderItem.item.packetWeight }}</td>
+                                                <td class="remain no-print">{{ deliveryItem.orderItem.quantity - partialQty }}</td>
+                                            </tr>
+                                        {% endif %}
                                     {% endfor %}
                                     <tbody>
                                     <tfoot>
@@ -154,7 +157,7 @@
                                         <td>{{ totalQuentity }}</td>
                                         <td>{{ totalDeliveredQuantity }}</td>
                                         <td>{{ totalPackWighth }}</td>
-                                        <td class="remain no-print">{{ totalQuentity - totalDeliveredQuantity }}</td>
+                                        <td class="remain no-print">{{ totalRemainingQty }}</td>
                                     </tr>
                                     </tfoot>
                                 </table>

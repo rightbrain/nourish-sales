@@ -77,6 +77,7 @@ class ItemRepository extends EntityRepository
         $query->join('i.itemType', 'it');
         $query->where('it.itemType != :itemType');
         $query->setParameter('itemType', ItemType::Chick);
+        $query->orderBy('i.name');
 
         return $query->getQuery()->getResult();
     }

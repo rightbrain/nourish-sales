@@ -3,6 +3,7 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
         <h4 class="modal-title">Order Summary</h4>
     </div>
+    <form id="orderApprovedAmount" action="{{ path('order_approve', {id: order.id }) }}" method="post" novalidate="novalidate">
 
     <div class="modal-body">
         <div class="row">
@@ -54,7 +55,9 @@
 
                                 <tr>
                                     <th>Payment Mode</th>
-                                    <td colspan="3">{{ order.paymentModeTitle | default('N/A') }}</td>
+                                    <td colspan="1">{{ order.paymentModeTitle | default('N/A') }}</td>
+                                    <th>Clearance Amount</th>
+                                    <td colspan="1">{{ form_widget(form.totalApprovedAmount) }}</td>
                                 </tr>
                                 <tr><th></th><td></td><th></th><td></td></tr>
                             </table>
@@ -173,12 +176,16 @@
             </a>
 
         {% endif %}
-        <a class="btn green delete-list-btn" href="{{ path('order_approve', {"id": order.id}) }}">
+        {#<a class="btn green delete-list-btn" href="{{ path('order_approve', {"id": order.id}) }}">
             Order Approve
-        </a>
+        </a>#}
+        <button type="submit" onclick="return confirm('Are you sure?')" class="btn green">
+            Order Approve
+        </button>
 
         <button title="Close" type="button" class="btn red" data-dismiss="modal">Close</button>
     </div>
+    {{ form_end(form) }}
 </div>
 
 {{ include('RbsSalesBundle:Order:_orderModalActionForm.html.twig') }}

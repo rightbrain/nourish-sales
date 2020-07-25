@@ -217,4 +217,13 @@ class Stock
 
         return ($this->getOnHand() - $this->getOnHold()) > 0 && $quantity <= ($this->getOnHand() - $this->getOnHold());
     }
+
+    public function isStockAvailableForDeliverySet($quantity = 0)
+    {
+        if ($this->item && $this->item->isDeleted()) {
+            return false;
+        }
+
+        return (($this->getOnHand()-$quantity) - ($this->getOnHold()-$quantity)) >= 0 ;
+    }
 }

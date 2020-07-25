@@ -68,7 +68,9 @@
                                         </tr>
                                         <tr>
                                             <th>Payment Mode</th>
-                                            <td colspan="3">{{ order.paymentModeTitle | default('N/A') }}</td>
+                                            <td colspan="1">{{ order.paymentModeTitle | default('N/A') }}</td>
+                                            <th>Clearance Amount</th>
+                                            <td colspan="1">{{ order.totalApprovedAmount }}</td>
                                         </tr>
                                     </table>
                                 </div>

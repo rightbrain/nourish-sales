@@ -278,12 +278,45 @@ var Delivery = function()
                         }
                         $(".delivery_order tbody").find(".totalAmount_"+response.orderId).text(response.totalAmount);
                         toastr.success(response.message);
+                        element.closest('tr').find('.itemQty').val('');
+                        element.closest('tr').find('.stock-available').text('');
                     }
                     if(response.status==='error'){
                         toastr.error(response.message);
                     }
                     orderItemRemainingHandleInit();
 
+                }
+            });
+        });
+
+        $('body').on('change','#item_id', function () {
+            var element = $(this);
+            var orderId = element.closest('tr').find('.order_id').val();
+            var itemId = element.val();
+            if(orderId==''||itemId==''){
+                element.closest('tr').find('.stock-available').text('');
+                return false;
+            }
+
+            $.ajax({
+                type: "post",
+                url: Routing.generate('find_stock_item_depo_for_amenment_ajax', {order:orderId,item:itemId}),
+                dataType: 'json',
+                success: function (response) {
+                    element.closest('tr').find('.stock-available').text('');
+                    element.closest('tr').find('.itemAdd').prop('disabled', true);
+                    if(response.status==='success'){
+                          var stockAvailableInfo = parseInt(response.onHand) - parseInt(response.onHold);
+                    element.closest('tr').find('.stock-available').text(stockAvailableInfo);
+                    if(stockAvailableInfo>0){
+                        element.closest('tr').find('.itemAdd').prop('disabled', false);
+                    }
+
+                    }
+                    if(response.status==='error'){
+                        toastr.error(response.message);
+                    }
                 }
             });
         })

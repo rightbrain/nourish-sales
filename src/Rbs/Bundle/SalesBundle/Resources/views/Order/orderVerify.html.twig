@@ -3,6 +3,8 @@
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
         <h4 class="modal-title">Order Summary</h4>
     </div>
+    <form id="orderApprovedAmount" action="{{ path('order_verify', {id: order.id }) }}" method="post" novalidate="novalidate">
+
     <div class="modal-body">
         <div class="row">
             <div class="col-md-12">
@@ -45,7 +47,9 @@
 
                             <tr>
                                 <th>Payment Mode</th>
-                                <td colspan="3">{{ order.paymentModeTitle | default('N/A') }}</td>
+                                <td colspan="1">{{ order.paymentModeTitle | default('N/A') }}</td>
+                                <th>Clearance Amount</th>
+                                <td colspan="1">{{ form_widget(form.totalApprovedAmount) }}</td>
                             </tr>
                         </table>
                         <div style="clear: both"></div>
@@ -147,9 +151,12 @@
         <a class="btn red order-cancel-modal-action">
             Order Cancel
         </a>
-        <a class="btn green" href="{{ path('order_verify', {"id": order.id}) }}">
+        <button type="submit" onclick="return confirm('Are you sure?')" class="btn green">
             Verify and Process for Delivery
-        </a>
+        </button>
+        {#<a class="btn green" href="{{ path('order_verify', {"id": order.id}) }}">
+            Verify and Process for Delivery
+        </a>#}
         <button title="Close" type="button" class="btn red" data-dismiss="modal">Close</button>
     </div>
 </div>
