@@ -10,6 +10,7 @@ use Rbs\Bundle\SalesBundle\Form\Search\Type\AgentSearchType;
 use Rbs\Bundle\SalesBundle\Form\Search\Type\TwoDateSearchType;
 use Rbs\Bundle\SalesBundle\Form\Type\PaymentEditForm;
 use Rbs\Bundle\SalesBundle\Form\Type\PaymentForm;
+use Rbs\Bundle\SalesBundle\Form\Type\PaymentFormForChick;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -119,11 +120,19 @@ class PaymentController extends BaseController
     public function createAction(Request $request)
     {
         $payment = new Payment();
-        $form = $this->createForm(new PaymentForm($this->getDoctrine()->getManager(), $this->get('request')), $payment, array(
-            'action' => $this->generateUrl('payment_create'),
-            'method' => 'POST',
-            'attr' => array('novalidate' => 'novalidate')
-        ));
+        if($this->isGranted('ROLE_USER_CHICK')){
+            $form = $this->createForm(new PaymentFormForChick($this->getDoctrine()->getManager(), $this->get('request')), $payment, array(
+                'action' => $this->generateUrl('payment_create'),
+                'method' => 'POST',
+                'attr' => array('novalidate' => 'novalidate')
+            ));
+        }else{
+            $form = $this->createForm(new PaymentForm($this->getDoctrine()->getManager(), $this->get('request')), $payment, array(
+                'action' => $this->generateUrl('payment_create'),
+                'method' => 'POST',
+                'attr' => array('novalidate' => 'novalidate')
+            ));
+        }
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);

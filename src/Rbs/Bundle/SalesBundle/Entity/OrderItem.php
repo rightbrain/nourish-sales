@@ -46,6 +46,13 @@ class OrderItem
      * @ORM\Column(name="quantity", type="integer")
      */
     private $quantity = 0;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="previous_quantity", type="integer")
+     */
+    private $previousQuantity = 0;
     /**
      * @var integer
      *
@@ -132,6 +139,22 @@ class OrderItem
     public function setQuantity($quantity)
     {
         $this->quantity = $quantity;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPreviousQuantity()
+    {
+        return $this->previousQuantity;
+    }
+
+    /**
+     * @param int $previousQuantity
+     */
+    public function setPreviousQuantity($previousQuantity)
+    {
+        $this->previousQuantity = $previousQuantity;
     }
 
     /**

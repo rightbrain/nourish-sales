@@ -199,6 +199,12 @@ class OrderController extends BaseController
                 $order->setTotalApprovedAmount($order->getTotalAmount());
                 $orderIncentiveFlag->setOrder($order);
                 $this->orderRepository()->create($order);
+
+                /** @var OrderItem $item */
+                foreach ($order->getOrderItems() as $item){
+                    $item->setPreviousQuantity($item->getQuantity());
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->update($item);
+                }
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
                 $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('order')['depo']);
                 $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
@@ -280,6 +286,14 @@ class OrderController extends BaseController
                 $order->setTotalApprovedAmount($order->getTotalAmount());
                 $orderIncentiveFlag->setOrder($order);
                 $this->orderRepository()->createWithouSms($order);
+
+                /** @var OrderItem $item */
+                foreach ($order->getOrderItems() as $item){
+                    $item->setPreviousQuantity($item->getQuantity());
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->update($item);
+                }
+
+
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
                 $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('order')['depo']);
 //                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
@@ -378,8 +392,15 @@ class OrderController extends BaseController
                 }
 
                 $stockRepo->updateStock($order, $depo, $prevOrderItems);
+
+                $order->setTotalApprovedAmount($order->getTotalAmount());
                 $em->getRepository('RbsSalesBundle:Order')->update($order, true);
 
+                /** @var OrderItem $item */
+                foreach ($order->getOrderItems() as $item){
+                    $item->setPreviousQuantity($item->getQuantity());
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->update($item);
+                }
                 $this->flashMessage('success', 'Order Updated Successfully');
 
                 return $this->redirect($this->generateUrl('orders_home'));
@@ -449,8 +470,14 @@ class OrderController extends BaseController
                 if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
                     $stockRepo->updateStock($order, $depo, $prevOrderItems);
                 }
+                $order->setTotalApprovedAmount($order->getTotalAmount());
                 $em->getRepository('RbsSalesBundle:Order')->updateWithoutSms($order, true);
 
+                /** @var OrderItem $item */
+                foreach ($order->getOrderItems() as $item){
+                    $item->setPreviousQuantity($item->getQuantity());
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->update($item);
+                }
                 $this->flashMessage('success', 'Order Updated Successfully');
 
                 return $this->redirect($this->generateUrl('orders_home'));

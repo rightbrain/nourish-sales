@@ -9,9 +9,11 @@ use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
+use Rbs\Bundle\SalesBundle\Entity\OrderItemAmendmentHistory;
 use Rbs\Bundle\SalesBundle\Event\DeliveryEvent;
 use Rbs\Bundle\SalesBundle\Form\Type\DeliveryAddForm;
 use Rbs\Bundle\SalesBundle\Form\Type\DeliveryForm;
+use Rbs\Bundle\SalesBundle\Repository\OrderItemAmendmentHistoryRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -285,6 +287,12 @@ class DeliveryController extends BaseController
 
         $this->getDoctrine()->getRepository("RbsSalesBundle:Order")->onlyUpdate($order);
 //        $order->setTotalAmount($order->getItemsTotalAmount());
+        $orderItemAmendmentHistory = new OrderItemAmendmentHistory();
+
+        $orderItemAmendmentHistory->setOrder($order);
+        $orderItemAmendmentHistory->setItem($item);
+        $orderItemAmendmentHistory->setQuantity($itemQty);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItemAmendmentHistory')->create($orderItemAmendmentHistory);
 
 
         $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(

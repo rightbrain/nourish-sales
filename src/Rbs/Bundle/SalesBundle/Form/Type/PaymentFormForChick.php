@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Rbs\Bundle\CoreBundle\Form\Transformer\BankAccountTransformer;
 
-class PaymentForm extends AbstractType
+class PaymentFormForChick extends AbstractType
 {
     /** @var Request */
     private $request;
@@ -42,7 +42,7 @@ class PaymentForm extends AbstractType
         $builder
             ->add('amount', null, array(
                 'attr' => array(
-                    'class' => 'input-small'
+                    'class' => 'input-small input-mask-amount'
                 )
             ))
             ->add('bankAccount', 'choice', array(
@@ -69,12 +69,12 @@ class PaymentForm extends AbstractType
                 'placeholder' => null
             ))
             ->add('fxCx', 'choice', array(
+                'choices'  => array(
+                    'CK' => 'CHICK'
+                ),
                 'empty_data' => null,
                 'required' => false,
-                'placeholder' => null,
-                'choices'  => array(
-                    'FD' => 'FEED',
-                ),
+                'placeholder' => null
             ))
             ->add('agent', 'entity', array(
                 'class' => 'RbsSalesBundle:Agent',
@@ -94,7 +94,7 @@ class PaymentForm extends AbstractType
                         ->andWhere('u.userType = :AGENT')
                         ->setParameter('AGENT', 'AGENT')
                         ->andWhere('c.agentType = :type')
-                        ->setParameter('type', Agent::AGENT_TYPE_FEED)
+                        ->setParameter('type', Agent::AGENT_TYPE_CHICK)
                         ->orderBy('p.fullName','ASC');
                 }
             ))

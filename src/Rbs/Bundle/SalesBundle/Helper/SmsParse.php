@@ -305,6 +305,7 @@ class SmsParse
                     $orderItem = new OrderItem();
                     $orderItem->setItem($item);
                     $orderItem->setQuantity((int)$qty);
+                    $orderItem->setPreviousQuantity((int)$qty);
 
                     $price = $this->em->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice($item, $this->agent->getUser()->getZilla());
                     $orderItem->setPrice($price);
