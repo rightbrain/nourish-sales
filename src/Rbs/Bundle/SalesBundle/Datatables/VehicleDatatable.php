@@ -24,6 +24,7 @@ class VehicleDatatable extends BaseDatatable
             }
             $vehicle = $this->em->getRepository('RbsSalesBundle:Vehicle')->find($line['id']);
             $line['isDeliveryFalse'] = $vehicle->isDeliveryFalse();
+            $line['isOut'] = $vehicle->isOut();
             if(!empty($line['agent'])){
                 $profile = $this->em->getRepository('RbsUserBundle:Profile')->findOneBy(array('user' => $line['agent']['user']['id']));
                 $line["fullName"] = $profile->getFullName();
@@ -67,6 +68,7 @@ class VehicleDatatable extends BaseDatatable
             ->add('status', 'column', array('title' => 'Status'))
             ->add('smsText', 'column', array('title' => 'SMS Text'))
             ->add('isDeliveryFalse', 'virtual', array('visible' => false))
+            ->add('isOut', 'virtual', array('visible' => false))
             ->add(null, 'action', array(
                 'width' => '',
                 'title' => 'Action',
@@ -79,16 +81,31 @@ class VehicleDatatable extends BaseDatatable
                             'id' => 'id'
                         ),
                         'label' => 'View',
-                        'icon' => 'glyphicon glyphicon-edit',
+                        'icon' => 'glyphicon glyphicon-eye-open',
                         'attributes' => array(
                             'rel' => 'tooltip',
-                            'title' => 'edit-action',
+                            'title' => 'View',
                             'class' => 'btn btn-primary btn-xs',
                             'role' => 'button',
                             'data-target' => "#vehicleView",
                             'data-toggle'=>"modal"
                         ),
                         'render_if' => array('isDeliveryFalse')
+//                        'role' => 'ROLE_USER',
+                    ),
+                    array(
+                        'route' => 'truck_info_edit',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Edit',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'edit-action',
+                            'class' => 'btn btn-success btn-xs',
+                        ),
+                        'render_if' => array('isOut')
 //                        'role' => 'ROLE_USER',
                     )
                 )

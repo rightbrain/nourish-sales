@@ -8,6 +8,7 @@ use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleDeliverySetForm;
+use Rbs\Bundle\SalesBundle\Form\Type\VehicleEditForm;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -292,6 +293,35 @@ class VehicleController extends BaseController
                 $this->checkUserForFieldSet($request, $vehicle);
                 $this->vehicleRepo()->create($vehicle);
                 $this->get('session')->getFlashBag()->add('success', 'Agent Vehicle Info Added Successfully');
+                return $this->checkUserTypeForRedirect();
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+            'user' => $this->getUser()
+        );
+    }
+
+    /**
+     * @Route("/vehicle/edit/{id}", name="truck_info_edit", options={"expose"=true})
+     * @Template("RbsSalesBundle:Vehicle:form.html.twig")
+     * @param Request $request
+     * @param Vehicle $vehicle
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_TRUCK_MANAGE")
+     */
+    public function updateAction(Request $request, Vehicle $vehicle)
+    {
+//        $vehicle = new Vehicle();
+        $form = $this->createForm(new VehicleEditForm($this->getUser()), $vehicle);
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $this->checkUserForFieldSet($request, $vehicle);
+                $this->vehicleRepo()->create($vehicle);
+                $this->get('session')->getFlashBag()->add('success', 'Vehicle Info has been Updated Successfully');
                 return $this->checkUserTypeForRedirect();
             }
         }
