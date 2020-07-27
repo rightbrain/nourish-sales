@@ -64,7 +64,7 @@
                                                         <td>{{ index+1 }}</td>
                                                         <td>{{ order.id }}</td>
                                                         <td>{{ item.item.name }}</td>
-                                                        <td class="item-qty orderItemQty_{{ item.id }}">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
+                                                        <td class="item-qty orderItemQty_{{ item.id }} itemId_{{ item.item.id }}">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
                                                         <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
                                                         <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
                                                         <td class="remain">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
@@ -75,7 +75,7 @@
                                                     <td>{{ index+1 }}</td>
                                                     <td>{{ order.id }}</td>
                                                     <td>{{ item.item.name }}</td>
-                                                    <td class="item-qty orderItemQty_{{ item.id }}">{{ item.quantity }}</td>
+                                                    <td class="item-qty orderItemQty_{{ item.id }} itemId_{{ item.item.id }}">{{ item.quantity }}</td>
                                                     <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
                                                     <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0" {{ isAvailable[order.id][item.id]==false?'disabled="disabled"':'' }}></td>
                                                     <td class="remain">{{ item.quantity }}</td>
@@ -85,7 +85,7 @@
                                     {% endfor %}
                                     <tr style="font-weight: bold">
                                         <td colspan="2">{{ order.id }}</td>
-                                        <td colspan="2">Order clearance amount : {{ order.totalApprovedAmount }}</td>
+                                        <td colspan="2">Order clearance amount : <span class="totalApprovedAmount_{{ order.id }}">{{ order.totalApprovedAmount }}</span></td>
                                         <td colspan="3">Order total amount : <span class="totalAmount_{{ order.id }}">{{ order.totalAmount }}</span></td>
                                     </tr>
                                 {% endfor %}
@@ -98,33 +98,51 @@
                                 </tbody>
                                 <tfoot>
                                 <tr>
-                                    <td colspan="2">
-                                        <select class="form-control order_id" name="order_id" id="order_id">
-                                            {% if ordersId %}
-                                                {% for orderId in ordersId %}
-                                                    <option value="{{ orderId }}">{{ orderId }}</option>
-                                                {% endfor %}
-                                            {% endif %}
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select class="form-control item_id" name="item_id" id="item_id">
-                                            <option value="">Select Item</option>
-                                            {% if items %}
-                                                {% for item in items %}
-                                                    <option value="{{ item.id }}">{{ item.name }}</option>
-                                                {% endfor %}
-                                            {% endif %}
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <input type="text" id="itemQty" class="form-control itemQty" name="itemQty">
-                                    </td>
-                                    <td class="stock-available"></td>
-                                    <td>
-                                        <button type="button" id="itemAdd" disabled class="btn btn-sm btn-success itemAdd">Add Item</button>
+                                    <td colspan="7">
+                                        <table class="table" style="margin-bottom: 0px">
+                                            <tr>
+                                                <td style="width: 120px">Order Id</td>
+                                                <td>Item Name</td>
+                                                <td>Remain Qty</td>
+                                                <td style="width: 100px">Qty (Kg)</td>
+                                                <td>Unit Price</td>
+                                                <td>Total amount</td>
+                                                <td>Action</td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="1">
+                                                    <select class="form-control order_id" name="order_id" id="order_id">
+                                                        {% if ordersId %}
+                                                            {% for orderId in ordersId %}
+                                                                <option value="{{ orderId }}">{{ orderId }}</option>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select class="form-control item_id" name="item_id" id="item_id">
+                                                        <option value="">Select Item</option>
+                                                        {% if items %}
+                                                            {% for item in items %}
+                                                                <option value="{{ item.id }}">{{ item.name }}</option>
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    </select>
+                                                </td>
+                                                <td class="stock-available"></td>
+                                                <td>
+                                                    <input type="text" id="itemQty" class="form-control itemQty" name="itemQty">
+                                                </td>
+                                                <td class="unit_price"></td>
+                                                <td class="totalAmount"></td>
+                                                <td>
+                                                    <button type="button" id="itemAdd" disabled class="btn btn-sm btn-success itemAdd">Add</button>
+                                                </td>
+                                            </tr>
+                                        </table>
                                     </td>
                                 </tr>
+
                                 </tfoot>
                             </table>
                         </div>

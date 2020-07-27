@@ -243,8 +243,38 @@ var Delivery = function()
             return false;
         });
 
-        $('body').on('keyup','.deliver-qty-new', function () {
-            alert($(this).val());
+        $('body').on('keyup','.itemQty', function () {
+            var element = $(this);
+            element.closest('tr').find('.totalAmount').text('');
+            var orderId = element.closest('tr').find('.order_id').val();
+            var itemId = element.closest('tr').find('.item_id').val();
+            var unit_price = element.closest('tr').find('.unit_price').text();
+            var exOrderItemsQty = $('tbody.orderItems').find('.order_'+orderId).find('.itemId_'+itemId).text();
+            if(exOrderItemsQty){
+                exOrderItemsAmount = parseInt(exOrderItemsQty)*parseInt(unit_price);
+            }else {
+                exOrderItemsAmount=0;
+            }
+            if($.isNumeric($(this).val()) && itemId!=='' && unit_price!==''){
+                var totalAmount = parseInt(element.val())*parseInt(unit_price);
+                element.closest('tr').find('.totalAmount').text(totalAmount);
+
+                var totalApprovedAmount = $('.totalApprovedAmount_'+orderId).text();
+                var orderTotalAmount = $('.totalAmount_'+orderId).text();
+
+                element.closest('tr').find('.itemAdd').prop('disabled', false);
+
+                if ((parseInt(totalApprovedAmount) + exOrderItemsAmount) < (totalAmount+parseInt(orderTotalAmount))) {
+                    element.closest('tr').find('.itemAdd').prop('disabled', true);
+                    element.val(0);
+                    element.closest('tr').find('.totalAmount').text('');
+                    alert('Clearance amount limit cross');
+                    return false;
+                }
+
+            }
+
+
         });
 
         $('body').on('click','#itemAdd', function () {
@@ -280,6 +310,8 @@ var Delivery = function()
                         toastr.success(response.message);
                         element.closest('tr').find('.itemQty').val('');
                         element.closest('tr').find('.stock-available').text('');
+                        element.closest('tr').find('.unit_price').text('');
+                        element.closest('tr').find('.totalAmount').text('');
                     }
                     if(response.status==='error'){
                         toastr.error(response.message);
@@ -296,6 +328,7 @@ var Delivery = function()
             var itemId = element.val();
             if(orderId==''||itemId==''){
                 element.closest('tr').find('.stock-available').text('');
+                element.closest('tr').find('.unit_price').text('');
                 return false;
             }
 
@@ -305,10 +338,13 @@ var Delivery = function()
                 dataType: 'json',
                 success: function (response) {
                     element.closest('tr').find('.stock-available').text('');
+                    element.closest('tr').find('.unit_price').text('');
+                    element.closest('tr').find('.itemQty').val('');
                     element.closest('tr').find('.itemAdd').prop('disabled', true);
                     if(response.status==='success'){
                           var stockAvailableInfo = parseInt(response.onHand) - parseInt(response.onHold);
                     element.closest('tr').find('.stock-available').text(stockAvailableInfo);
+                    element.closest('tr').find('.unit_price').text(response.price);
                     if(stockAvailableInfo>0){
                         element.closest('tr').find('.itemAdd').prop('disabled', false);
                     }
