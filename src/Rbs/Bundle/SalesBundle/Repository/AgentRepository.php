@@ -48,6 +48,20 @@ class AgentRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
+    public function getAgentByType($agentType){
+        $query = $this->createQueryBuilder('c')
+            ->join('c.user', 'u')
+            ->join('u.profile', 'p')
+            ->where('u.deletedAt IS NULL')
+            ->andWhere('u.enabled = 1')
+            ->andWhere('u.userType = :AGENT')
+            ->setParameter('AGENT', 'AGENT')
+            ->andWhere('c.agentType = :type')
+            ->setParameter('type', $agentType)
+            ->orderBy('p.fullName','ASC');
+        return $query->getQuery()->getResult();
+    }
+
     public function getAgentByPhone($phone)
     {
         $query = $this->createQueryBuilder('c');

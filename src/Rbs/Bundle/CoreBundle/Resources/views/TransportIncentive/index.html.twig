@@ -21,8 +21,22 @@
                 </div>
             </div>
             <div class="portlet-body">
-                {{ include('_elements/_back_to_list_button.html.twig', {url: path('transport_incentive_import'), label: 'Import Commission', 'icon': 'plus'}) }}
-                    <div class="dataTables_wrapper no-footer" style="overflow-y: scroll">
+                <div class="table-toolbar">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="pull-right">
+                                <a class="btn blue" href="{{ path('transport_incentive_import') }}">
+                                    <i class="fa fa-plus"></i> {{ 'Import Commission' }}
+                                </a>
+                                <a class="btn blue" href="{{ path('transport_incentive_create') }}">
+                                    <i class="fa fa-plus"></i> {{ 'Add Commission' }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dataTables_wrapper no-footer" style="overflow-y: scroll">
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
@@ -57,9 +71,9 @@
                                         </td>
                                         {% endif %}
                                         <td style="width: 150px;">{{ station }}</td>
-                                        {% for depo, trans in transport['data'] %}
-                                            {% for type, tran in trans %}
-                                                <td>{{ tran }}</td>
+                                        {% for depo in depos %}
+                                            {% for itemType in itemTypes %}
+                                                <td>{{ transport['data'][depo.name][itemType['itemType']] }}</td>
                                             {% endfor %}
                                         {% endfor %}
                                     </tr>

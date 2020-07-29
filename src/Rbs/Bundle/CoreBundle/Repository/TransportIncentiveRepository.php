@@ -58,7 +58,7 @@ class TransportIncentiveRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
-    public function getTransportIncentive($station, $dipo, $itemType)
+    public function getTransportIncentive($station, $depot, $itemType)
     {
         $query = $this->createQueryBuilder('ti');
         $query->join('ti.itemType', 'it');
@@ -70,7 +70,7 @@ class TransportIncentiveRepository extends EntityRepository
         $query->andWhere('ti.depo = :dipo');
         $query->andWhere('ti.itemType = :itemType');
         $query->andWhere('ti.status = :CURRENT');
-        $query->setParameters(array('station'=>$station, 'dipo'=>$dipo, 
+        $query->setParameters(array('station'=>$station, 'dipo'=>$depot,
             'itemType'=>$itemType, 'CURRENT'=>TransportIncentive::CURRENT));
 
         return $query->getQuery()->getResult();

@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Incentive;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -76,7 +77,11 @@ class IncentiveController extends BaseController
      */
     public function createAction()
     {
-        $agents = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getAll();
+        if($this->isGranted('ROLE_USER_CHICK')){
+            $agents = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getAgentByType(Agent::AGENT_TYPE_CHICK);
+        }else{
+            $agents = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getAgentByType(Agent::AGENT_TYPE_FEED);
+        }
 
         return $this->render('RbsSalesBundle:Incentive:new.html.twig', array(
             'agents' => $agents

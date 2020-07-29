@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\CoreBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\CoreBundle\Entity\TransportIncentive;
 use Rbs\Bundle\CoreBundle\Form\Type\TransportIncentiveForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -60,7 +61,7 @@ class TransportIncentiveController extends BaseController
      */
     public function transportCommissionHistoryAction(Request $request)
     {
-        $district = $this->getLocationByName($request->query->all()['district']);
+        $district = $this->getDoctrine()->getRepository("RbsCoreBundle:Location")->findOneBy(array('name'=>$request->query->all()['district'],'level'=>4));
         $transportCommissionHistories = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->findBy(
             array('district' => $district->getId(), 'status' => TransportIncentive::ARCHIVED), array('createdAt' => 'DESC'), 10
         );
@@ -178,7 +179,7 @@ class TransportIncentiveController extends BaseController
             set_time_limit(0);
             ini_set('memory_limit', '1014M');
             $file = $upload->getFile();
-            $fileName = md5(uniqid()).'.csv';
+            $fileName = md5(uniqid()).'_trans_commission.csv';
             $file->move(
                 $this->getParameter('brochures_directory'),
                 $fileName
@@ -186,14 +187,37 @@ class TransportIncentiveController extends BaseController
             $upload->setFile($fileName);
 
             $file = $this->get('request')->getSchemeAndHttpHost().'/uploads/sales/csv-import/'.$fileName;
-            if (($handle = fopen($file, "r")) !== FALSE) {
-                fgetcsv($handle);
-                while (($data = fgetcsv($handle, 3000, ",")) !== FALSE) {
-                    $num = count($data);
-                    for ($c=0; $c < $num; $c++) {
-                        $col[$c] = $data[$c];
+            $data = $this->getCSVFileData($file);
+            $i = 0;
+            $j = 1;
+
+                foreach ($data as $col){
+                    if ($i == 0) {$i++; continue;}
+
+                    $zilla = $col[0];
+                    $upazilla = $col[1];
+                    $depot = $col[2];
+                    $itemType = $col[3];
+                    $amount = $col[4];
+
+                    if($zilla==''||$upazilla==''||$itemType==''||$depot==''||$amount==''){
+                        continue;
                     }
-                    $transportIncentiveOlds = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentiveForStatusChange($this->getLocationByName($col[0]), $this->getLocationByName($col[1]), $this->getDepoByName($col), $this->getItemTypeByName($col));
+
+                    $zillaObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findOneBy(array('name'=>$zilla,'level'=>4));
+
+                    $upazillaObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->findOneBy(array('name'=>$upazilla,'level'=>5,'parentId'=>$zillaObj?$zillaObj->getId():''));
+
+                    $depotObj = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->findOneBy(array('name'=>$depot));
+
+                    $itemTypeObj = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemType')->findOneBy(array('itemType'=>$itemType));
+
+                    if($zillaObj==''||$upazillaObj==''||$depotObj==''||$itemTypeObj==''){
+                        continue;
+                    }
+
+                    $transportIncentiveOlds = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentiveForStatusChange($zillaObj, $upazillaObj, $depotObj, $itemTypeObj);
+                    /** @var TransportIncentive $transportIncentiveOld*/
                     foreach ($transportIncentiveOlds as $transportIncentiveOld){
                         $transportIncentiveOld->setStatus(TransportIncentive::ARCHIVED);
                         $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->update($transportIncentiveOld);
@@ -201,25 +225,20 @@ class TransportIncentiveController extends BaseController
                     $transportIncentive = new TransportIncentive();
                     $transportIncentive->setStatus(TransportIncentive::CURRENT);
 
-                    $district = $this->getLocationByName($col[0]);
-                    if (!$district) continue;
-                    $transportIncentive->setDistrict($district);
 
-                    $station = $this->getLocationByName($col[1]);
-                    if (!$station) continue;
-                    $transportIncentive->setStation($station);
+                    $transportIncentive->setDistrict($zillaObj);
 
-                    $depo = $this->getDepoByName($col);
-                    if (!$depo) continue;
-                    $transportIncentive->setDepo($depo);
+                    $transportIncentive->setStation($upazillaObj);
 
-                    $transportIncentive->setItemType($this->getItemTypeByName($col));
-                    $transportIncentive->setAmount((float)$col[4]);
+                    $transportIncentive->setDepo($depotObj);
+
+                    $transportIncentive->setItemType($itemTypeObj);
+                    $transportIncentive->setAmount((float)$amount);
                     $em->persist($transportIncentive);
                     $em->flush();
+
+                    $i++;
                 }
-                fclose($handle);
-            }
 
             $this->flashMessage('success', 'Transport Incentive Imported Successfully');
             return $this->redirect($this->generateUrl('transport_incentive_list'));
@@ -228,6 +247,16 @@ class TransportIncentiveController extends BaseController
         return array(
             'form' => $form->createView()
         );
+    }
+
+    private function getCSVFileData($webPath) {
+        $fileData = array();
+        $file = fopen($webPath,"r");
+        while(! feof($file)) {
+            $fileData[] = fgetcsv($file, 3000);
+        }
+        fclose($file);
+        return $fileData;
     }
 
     /**
