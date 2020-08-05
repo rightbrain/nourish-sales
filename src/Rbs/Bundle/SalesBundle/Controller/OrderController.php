@@ -531,12 +531,25 @@ class OrderController extends BaseController
         $deliveredItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItems($order);
         $auditLogs = $this->getDoctrine()->getRepository('RbsCoreBundle:AuditLog')->getByTypeOrObjectId(array(
             'order.approved', 'order.verified', 'order.hold', 'order.canceled', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
+        $transportIncentive=array();
+        $totalTransportIncentive=0;
+        /** @var OrderItem $orderItem */
+        foreach ($order->getOrderItems() as $orderItem){
+            $amount = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentive($order->getAgent()->getUser()->getUpozilla()->getId(), $order->getDepo()->getId(), $orderItem->getItem()->getItemType()->getId());
+            if ($amount){
+                $totalTransportIncentive = $totalTransportIncentive+($orderItem->getQuantity() * $amount[0]['amount']);
+                $transportIncentive[$orderItem->getId()] = $orderItem->getQuantity() * $amount[0]['amount'];
+            }
+        }
+
 
         return $this->render('RbsSalesBundle:Order:details.html.twig', array(
             'order' => $order,
             'deliveryItems' => $deliveryItems,
             'deliveredItems' => $deliveredItems,
             'auditLogs' => $auditLogs,
+            'transportIncentive' => $transportIncentive,
+            'totalTransportIncentive' => $totalTransportIncentive,
         ));
     }
 
