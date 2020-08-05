@@ -346,7 +346,7 @@ class VehicleController extends BaseController
         $this->get('session')->getFlashBag()->add('success', 'Vehicle In Successfully');
 
 //        return $this->redirect($this->generateUrl('truck_info_in_out_list'));
-        return $this->redirect($this->generateUrl('deliveries_home'));
+        return $this->redirect($this->generateUrl('vehicle_info_set_list'));
     }
 
     /**
@@ -525,6 +525,22 @@ class VehicleController extends BaseController
     {
         $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($vehicle->getDeliveries());
         return $this->render('RbsSalesBundle:Vehicle:view.html.twig', array(
+            'vehicle'      => $vehicle,
+            'partialItems'  => $partialItems,
+        ));
+    }
+
+
+    /**
+     * @Route("/vehicle/delivery/update/{id}", name="vehicle_delivery_edit", options={"expose"=true})
+     * @param Vehicle $vehicle
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_USER")
+     */
+    public function edit(Vehicle $vehicle)
+    {
+        $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($vehicle->getDeliveries());
+        return $this->render('RbsSalesBundle:Vehicle:edit.html.twig', array(
             'vehicle'      => $vehicle,
             'partialItems'  => $partialItems,
         ));

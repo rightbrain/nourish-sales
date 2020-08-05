@@ -171,6 +171,14 @@ class Payment
     private $agentBankBranch;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="ref_delivery_id", type="integer", nullable=true)
+     */
+    private $refDeliveryId;
+
+
+    /**
      * Get id
      *
      * @return integer
@@ -505,4 +513,21 @@ class Payment
     public function getDistrictByAgent(){
         return $this->getAgent()->getUser()->getZilla();
     }
+
+    /**
+     * @return int
+     */
+    public function getRefDeliveryId()
+    {
+        return $this->refDeliveryId;
+    }
+
+    /**
+     * @param int $refDeliveryId
+     */
+    public function setRefDeliveryId($refDeliveryId)
+    {
+        $this->refDeliveryId = $refDeliveryId;
+    }
+
 }

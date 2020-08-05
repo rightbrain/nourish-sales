@@ -68,6 +68,30 @@ class StockRepository extends EntityRepository
         }
     }
 
+    public function updateStockToOnHold($data)
+    {
+        foreach ($data as $deliveryId => $deliveryItems) {
+            foreach ($deliveryItems as $deliveryItemId => $qty) {
+                /** @var DeliveryItem $deliveryItem */
+                $deliveryItem = $this->_em->getRepository('RbsSalesBundle:DeliveryItem')->find($deliveryItemId);
+                $depo = $deliveryItem->getOrder()->getDepo();
+
+                /** @var Stock $stock */
+                $stock = $this->findOneBy(
+                    array(
+                        'item' => $deliveryItem->getOrderItem()->getItem()->getId(),
+                        'depo' => $depo->getId(),
+                    )
+                );
+                $stock->setOnHold($stock->getOnHold() + $deliveryItem->getQty()-$qty);
+                $stock->setOnHand($stock->getOnHand() + $deliveryItem->getQty()-$qty);
+                $this->_em->persist($stock);
+
+            }
+        }
+        $this->_em->flush();
+    }
+
     public function removeStock(Delivery $delivery)
     {
         /** @var DeliveryItem $deliveryItem */

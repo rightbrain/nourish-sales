@@ -323,6 +323,29 @@ class DeliveryController extends BaseController
 
     }
 
+
+    /**
+     * @Route("/delivery-update/{id}", name="delivery_update", options={"expose"=true})
+     * @param Request $request
+     * @param Delivery $delivery
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     */
+    public function deliveryUpdateAction(Request $request, Delivery $delivery)
+    {
+//        var_dump($request->request->get('deliveryItemQty'));die;
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->updateStockToOnHold($request->request->get('deliveryItemQty'));
+        $data = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->deliveryUpdate($request->request->get('deliveryItemQty'));
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->updateDeliveredProductValue($delivery);
+
+        $this->dispatch('delivery.updated', new DeliveryEvent($delivery));
+
+        $this->flashMessage('success', 'Delivery Updated Successfully');
+
+        return $this->redirect($this->generateUrl('truck_info_in_out_list'));
+    }
+
     /**
      * @Route("/delivery/vehicle/add", name="delivery_add", options={"expose"=true})
      * @Template("RbsSalesBundle:Delivery:delivery-add.html.twig")

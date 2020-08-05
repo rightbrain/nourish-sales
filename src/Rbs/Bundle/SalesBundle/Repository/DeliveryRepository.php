@@ -113,6 +113,26 @@ class DeliveryRepository extends EntityRepository
         return $output;
     }
 
+    public function deliveryUpdate( $data)
+    {
+        $output = array('orders' => array());
+        foreach ($data as $deliveryId => $deliveryItems) {
+            foreach ($deliveryItems as $deliveryItemId => $qty) {
+                $deliveryItem = $this->_em->getRepository('RbsSalesBundle:DeliveryItem')->find($deliveryItemId);
+
+                $deliveryItem->setQty($qty);
+
+                $this->_em->persist($deliveryItem);
+
+                $output['orders'][$deliveryItem->getOrder()->getId()] = $deliveryItem->getOrder();
+            }
+        }
+
+        $this->_em->flush();
+
+        return $output;
+    }
+
     public function saveForChick($delivery, $data)
     {
         $delivery->setShipped(true);

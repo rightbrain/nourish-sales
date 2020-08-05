@@ -1,0 +1,176 @@
+<div class="main-content">
+    <div class="modal-header portlet-title blue">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+        <h3 class="modal-title uppercase text-center">Delivery Challan</h3>
+    </div>
+
+    <form action="{{ path('delivery_update', {id: vehicle.deliveries.id }) }}" method="post">
+    <div class="modal-body">
+        <div class="row">
+            <table width="100%" class="table-full-width">
+                <tr>
+                    <td class="col-md-6" style="vertical-align: top; width: 60%">
+                        <div class="portlet">
+                            <div class="portlet-title partial-delivered-items">
+                                <div class="caption"> Agent Info </div>
+                            </div>
+                            <div class="portlet-body">
+                                <table class="table">
+                                    <tbody>
+                                    <tr>
+                                        <th>Challan Number : </th>
+                                        <td>{{ vehicle.deliveries.id }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Vehicle Supply By : </th>
+                                        <td>
+                                            {#{% if((vehicle.agent is not null)) %}
+                                                {{ vehicle.agent.name}}
+                                            {% else %}
+                                                {{ 'NOURISH' }}
+                                            {% endif %}#}
+                                            NOURISH / AGENT
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Vehicle In : </th>
+                                        <td>
+                                            {{ vehicle.vehicleIn | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Vehicle Out : </th>
+                                        <td>
+                                            {{ vehicle.vehicleOut | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Delivery From : </th>
+                                        <td>
+                                            {{ vehicle.depo.name  }}
+                                        </td>
+                                    </tr>
+                                    </tbody></table>
+                                <table class="table">
+                                    <tr>
+                                        <th class="col-md-2">Order No</th>
+                                        <th class="col-md-3">Payment Mode</th>
+                                        <th class="col-md-7">Delivery To</th>
+                                    </tr>
+                                    {% for index, order in vehicle.deliveries.orders %}
+
+                                        <tr>
+                                            <td> {{ order.id }}</td>
+                                            <td> {{ order.paymentMode }}</td>
+                                            <td>{{ order.agent.user.profile.fullName }}{{ ', ' }} {{ order.agent.user.profile.cellphone }} </br> {{ order.agent.user.profile.address }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </table>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="col-md-6" style="vertical-align: top; width: 40%">
+                        <div class="portlet">
+                            <div class="portlet-title partial-delivered-items">
+                                <div class="caption"> Vehicles Info </div>
+                            </div>
+                            <div class="portlet-body partial-delivered-items">
+                                <table class="table">
+                                    <tr>
+                                        <th>Vehicle Number</th>
+                                        <td>{{ vehicle.truckNumber }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Driver Name</th>
+                                        <td>{{ vehicle.driverName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Mobile Number</th>
+                                        <td>{{ vehicle.driverPhone }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <div class="col-md-12">
+                <div class="portlet">
+                    <div class="portlet-title">
+                        <div class="caption"> Delivery Items </div>
+                    </div>
+                    <div class="portlet-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>SL</th>
+                                <th>Order Id</th>
+                                <th>Item</th>
+                                <th>Quantity</th>
+                                <th>Delivered</th>
+                                <th>Packet Weight</th>
+                                <th class="no-print">Remain</th>
+                            </tr>
+                            </thead>
+                            <tbody class="orderItems">
+                                {% set totalQuentity = 0 %}
+                                {% set totalDeliveredQuantity = 0 %}
+                                {% set totalPackWighth = 0 %}
+                                {% set totalRemainingQty = 0 %}
+                                {% set i=1 %}
+                                {% for deliveryItem in vehicle.deliveries.deliveryItems %}
+
+                                    {% if deliveryItem.qty%}
+                                        {% set totalQuentity= totalQuentity + deliveryItem.orderItem.quantity %}
+                                        {% set partialQty=0 %}
+                                        {% if deliveryItem.order.id in partialItems|keys %}
+                                            {% if deliveryItem.orderItem.id in partialItems[deliveryItem.order.id]|keys %}
+                                                {% set partialQty = partialItems[deliveryItem.order.id][deliveryItem.orderItem.id]['delivered'] %}
+                                            {% endif %}
+                                        {% endif %}
+                                        {% set totalDeliveredQuantity= totalDeliveredQuantity + deliveryItem.qty %}
+                                        {% set totalPackWighth= totalPackWighth + (deliveryItem.qty/deliveryItem.orderItem.item.packetWeight) %}
+                                        {% set totalRemainingQty= totalRemainingQty + (deliveryItem.orderItem.quantity - partialQty) %}
+                                            <tr>
+                                                <td>{{ i }}</td>
+                                                <td>{{ deliveryItem.order.id }}</td>
+                                                <td>{{ deliveryItem.orderItem.item.getItemCodeName }}</td>
+                                                <td class="item-qty">{{ deliveryItem.orderItem.quantity }}</td>
+                                                <td class="deliver">
+                                                    <input type="number" name="deliveryItemQty[{{ deliveryItem.delivery.id }}][{{ deliveryItem.id }}]" max="{{ (deliveryItem.orderItem.quantity - partialQty) + deliveryItem.qty }}" min="0" value="{{ deliveryItem.qty }}">
+                                                </td>
+                                                <td>{{deliveryItem.qty/deliveryItem.orderItem.item.packetWeight }}</td>
+                                                <td class="remain no-print">{{ deliveryItem.orderItem.quantity - partialQty }}</td>
+                                            </tr>
+                                    {% endif %}
+                                    {% set i = i+1 %}
+                                {% endfor %}
+                            <tbody>
+                            <tfoot>
+                                <tr class="bold">
+                                    <td></td>
+                                    <td></td>
+                                    <td class="bold">Total</td>
+                                    <td>{{ totalQuentity }}</td>
+                                    <td>{{ totalDeliveredQuantity }}</td>
+                                    <td>{{ totalPackWighth }}</td>
+                                    <td class="remain no-print">{{ totalRemainingQty }}</td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <br>
+
+
+                    </div>
+                    {#<input type="hidden" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">#}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Update</button>
+        <button title="Close" type="button" class="btn red" data-dismiss="modal">Close</button>
+    </div>
+    </form>
+</div>

@@ -311,7 +311,7 @@ class PaymentRepository extends EntityRepository
     public function createDeliveredProductValue(Delivery $delivery)
     {
         $this->addPaymentByDeliveryItemExtractedSummary(
-            $this->extractDeliveryItemSummary($delivery)
+            $this->extractDeliveryItemSummary($delivery), $delivery
         );
     }
 
@@ -346,13 +346,14 @@ class PaymentRepository extends EntityRepository
                 'price' => $itemPrice,
                 'amount' => $amount,
                 'unit' => $item->getItemUnit(),
+                'deliveryId' => $deliveryItem->getDelivery()->getId(),
             ];
         }
 
         return $data;
     }
 
-    private function addPaymentByDeliveryItemExtractedSummary($data)
+    private function addPaymentByDeliveryItemExtractedSummary($data, Delivery $delivery)
     {
         foreach ($data as $orderId => $deliveryItemSummaries) {
             $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
@@ -368,6 +369,7 @@ class PaymentRepository extends EntityRepository
 //            $payment->setDepositDate(date("Y-m-d"));
             $payment->setTransactionType(Payment::DR);
             $payment->setVerified(true);
+            $payment->setRefDeliveryId($delivery->getId());
             $payment->addOrder($order);
 
             $this->_em->persist($payment);
@@ -381,23 +383,25 @@ class PaymentRepository extends EntityRepository
             $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
             $total = array_sum(array_column($data[$orderId], 'amount'));
             $quantity = array_sum(array_column($data[$orderId], 'qty'));
+            $deliveryId = array_sum(array_column($data[$orderId], 'deliveryId'));
             $payments = $order->getPayments();
             /** @var Payment $payment */
             foreach ($payments as $payment){
-                $payment->setAgent($order->getAgent());
-                $payment->setAmount($total);
-                $payment->setQuantity($quantity);
-                $payment->setDepositedAmount($total);
-                $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
-                $payment->setRemark(json_encode($deliveryItemSummaries));
+                if($payment->getRefDeliveryId()==$deliveryId){
+                    $payment->setAgent($order->getAgent());
+                    $payment->setAmount($total);
+                    $payment->setQuantity($quantity);
+                    $payment->setDepositedAmount($total);
+                    $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+                    $payment->setRemark(json_encode($deliveryItemSummaries));
 //            $payment->setDepositDate(date("Y-m-d"));
-                $payment->setTransactionType(Payment::DR);
-                $payment->setVerified(true);
-                $payment->addOrder($order);
-
-                $this->_em->persist($payment);
+                    $payment->setTransactionType(Payment::DR);
+                    $payment->setVerified(true);
+                    $payment->addOrder($order);
+                    $this->_em->persist($payment);
+                    $this->_em->flush();
+                }
             }
-            $this->_em->flush();
         }
     }
 
