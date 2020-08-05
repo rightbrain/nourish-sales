@@ -49,6 +49,12 @@ class DeliveryItem
      * @ORM\Column(name="qty", type="integer")
      */
     private $qty;
+    /**
+     * @var float
+     *
+     * @ORM\Column(name="transport_incentive_amount", type="float", nullable=true)
+     */
+    private $transportIncentiveAmount;
 
     public function getId()
     {
@@ -134,5 +140,23 @@ class DeliveryItem
 
         return $this;
     }
+
+    /**
+     * @return float
+     */
+    public function getTransportIncentiveAmount()
+    {
+        return $this->transportIncentiveAmount;
+    }
+
+    /**
+     * @param float $transportIncentiveAmount
+     */
+    public function setTransportIncentiveAmount($transportIncentiveAmount)
+    {
+        $this->transportIncentiveAmount = $transportIncentiveAmount;
+    }
+
+
 
 }

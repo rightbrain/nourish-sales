@@ -70,12 +70,20 @@ class DeliveryRepository extends EntityRepository
             foreach ($deliveryItems as $itemId => $qty) {
                 $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
                 $item = $this->_em->getRepository('RbsSalesBundle:OrderItem')->find($itemId);
+                $amount = $this->_em->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentive($order->getAgent()->getUser()->getUpozilla()->getId(), $order->getDepo()->getId(), $item->getItem()->getItemType()->getId());
+
+                if($amount){
+                    $amount = $amount[0]['amount'];
+                }else{
+                    $amount = 0;
+                }
 
                 $deliveryItem = new DeliveryItem();
                 $deliveryItem->setOrder($order);
                 $deliveryItem->setDelivery($delivery);
                 $deliveryItem->setOrderItem($item);
                 $deliveryItem->setQty($qty);
+                $deliveryItem->setTransportIncentiveAmount($qty*$amount);
 
                 $this->_em->persist($deliveryItem);
 
@@ -119,8 +127,15 @@ class DeliveryRepository extends EntityRepository
         foreach ($data as $deliveryId => $deliveryItems) {
             foreach ($deliveryItems as $deliveryItemId => $qty) {
                 $deliveryItem = $this->_em->getRepository('RbsSalesBundle:DeliveryItem')->find($deliveryItemId);
+                $amount = $this->_em->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentive($deliveryItem->getOrder()->getAgent()->getUser()->getUpozilla()->getId(), $deliveryItem->getOrder()->getDepo()->getId(), $deliveryItem->getOrderItem()->getItem()->getItemType()->getId());
 
+                if($amount){
+                    $amount = $amount[0]['amount'];
+                }else{
+                    $amount = 0;
+                }
                 $deliveryItem->setQty($qty);
+                $deliveryItem->setTransportIncentiveAmount($qty*$amount);
 
                 $this->_em->persist($deliveryItem);
 

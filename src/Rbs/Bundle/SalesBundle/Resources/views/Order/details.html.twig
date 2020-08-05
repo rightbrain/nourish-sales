@@ -48,7 +48,12 @@
                                             <th>SMS ref.</th>
                                             <td>{{ order.refSMS.msg | default('N/A') | raw }}</td>
                                         </tr>
-
+                                        <tr>
+                                            <th>Order Amount</th>
+                                            <td>{{ order.totalAmount }}</td>
+                                            <th>Paid Amount</th>
+                                            <td>{{ order.paidAmount }}</td>
+                                        </tr>
                                         <tr>
                                             <th>Location</th>
                                             <td>{{ order.location.name | default('') }}</td>
@@ -62,22 +67,10 @@
                                             <td>{{ order.remark }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Order Amount</th>
-                                            <td>{{ order.totalAmount }}</td>
-                                            <th>Paid Amount</th>
-                                            <td>{{ order.paidAmount }}</td>
-                                        </tr>
-                                        <tr>
                                             <th>Payment Mode</th>
                                             <td colspan="1">{{ order.paymentModeTitle | default('N/A') }}</td>
                                             <th>Clearance Amount</th>
                                             <td colspan="1">{{ order.totalApprovedAmount }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Transport Commission</th>
-                                            <td>{{ totalTransportIncentive }}</td>
-                                            <th>Net Amount</th>
-                                            <td>{{ order.totalAmount-totalTransportIncentive }}</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -162,11 +155,9 @@
                                             <th>Price</th>
                                             <th>Total Amount</th>
                                             <th>Paid Amount</th>
-                                            <th>Transport Commission</th>
                                         </tr>
                                         </thead>
                                         <tbody class="orderItems">
-                                        {% set totalTransportIncentive=0 %}
                                         {% for index, orderItem in order.orderItems %}
                                             {% if orderItem.quantity != 0 %}
                                             <tr>
@@ -177,9 +168,7 @@
                                                 <td>{{ orderItem.price | default('') }}</td>
                                                 <td>{{ orderItem.totalAmount | default('') }}</td>
                                                 <td>{{ orderItem.paidAmount | default('') }}</td>
-                                                <td>{{ transportIncentive[orderItem.id] | default(0) }}</td>
                                             </tr>
-                                                {% set totalTransportIncentive=totalTransportIncentive+transportIncentive[orderItem.id]| default(0)  %}
                                             {% endif %}
                                         {% endfor %}
                                         <tbody>
@@ -190,7 +179,6 @@
                                                 <td></td>
                                                 <td>{{ order.totalAmount }}</td>
                                                 <td>{{ order.paidAmount }}</td>
-                                                <td>{{ totalTransportIncentive }}</td>
                                             </tr>
                                     </table>
                                 </div>
@@ -253,22 +241,27 @@
                                                 <th>Sl</th>
                                                 <th>Delivery ID</th>
                                                 <th>Item Name</th>
-                                                <th>Quantity</th>
+                                                <th>Quantity (Kg)</th>
+                                                <th>Transport Incentive (Tk.)</th>
                                             </tr>
                                             </thead>
                                             <tbody>
+                                            {% set totalTransportIncentiveAmount = 0  %}
                                             {% for index, deliveryItem in deliveryItems %}
                                                 <tr>
                                                     <td>{{ index + 1 }}.</td>
                                                     <td>{{ deliveryItem.delivery.id }}</td>
                                                     <td>{{ deliveryItem.orderItem.item.getItemCodeName }}</td>
                                                     <td>{{ deliveryItem.qty }}</td>
+                                                    <td>{{ deliveryItem.transportIncentiveAmount }}</td>
                                                 </tr>
+                                                {% set totalTransportIncentiveAmount = totalTransportIncentiveAmount + deliveryItem.transportIncentiveAmount  %}
                                             {% endfor %}
                                             </tbody>
                                             <tr>
                                                 <td class="text-right" colspan="3"><strong>Total</strong></td>
                                                 <td class="bold">{{ order.totalDeliveryItemsQuantity() }}</td>
+                                                <td class="bold">{{ totalTransportIncentiveAmount }}</td>
                                             </tr>
                                         </table>
 
