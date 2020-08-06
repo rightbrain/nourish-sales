@@ -200,14 +200,16 @@
                                                 <th>Payment Method</th>
                                                 <th>Bank Name</th>
                                                 <th>Branch Name</th>
-                                                <th>Amount</th>
+                                                <th>Deposit Amount</th>
+                                                <th>Actual Amount</th>
                                                 <th>Remark</th>
                                             </tr>
                                             </thead>
                                             <tbody>
                                             {% set index = 1 %}
                                             {% for payment in order.payments %}
-                                                {% if payment.paymentMethod == 'BANK' and payment.verified and payment.transactionType == 'CR' %}
+                                                {#{% if payment.paymentMethod == 'BANK' and payment.verified and payment.transactionType == 'CR' %}#}
+                                                {% if payment.transactionType == 'CR' %}
                                                 <tr>
                                                     <td>{{ index }}.</td>
                                                     <td>{{ payment.depositDate | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
@@ -215,6 +217,7 @@
                                                     <td>{{ payment.paymentMethod | default('') }}</td>
                                                     <td>{{ payment.agentBankBranch.bank | default('') }}</td>
                                                     <td>{{ payment.agentBankBranch.branch | default('') }}</td>
+                                                    <td>{{ payment.depositedAmount | default('') }}</td>
                                                     <td>{{ payment.amount | default('') }}</td>
                                                     <td>{{ payment.remark| default('') }}</td>
                                                 </tr>

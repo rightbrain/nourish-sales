@@ -741,7 +741,9 @@ class Order
         $data = 0;
         /** @var Payment $payment */
         foreach ($this->getPayments() as $payment) {
-            $data+= $payment->getDepositedAmount();
+            if($payment->getTransactionType()==Payment::CR){
+                $data+= $payment->getDepositedAmount();
+            }
         }
         return $data;
     }
@@ -751,7 +753,9 @@ class Order
         $data = 0;
         /** @var Payment $payment */
         foreach ($this->getPayments() as $payment) {
-            $data+= $payment->getAmount();
+            if($payment->getTransactionType()==Payment::CR && $payment->isVerified()) {
+                $data += $payment->getAmount();
+            }
         }
         return $data;
     }

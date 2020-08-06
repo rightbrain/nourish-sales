@@ -440,8 +440,9 @@ class PaymentRepository extends EntityRepository
         $qb->join('p.agent', 'agent');
         $qb->join('agent.user', 'user');
         $qb->join('user.profile', 'profile');
+        $qb->leftJoin('p.agentBankBranch', 'abb');
 
-        $qb->select('p.createdAt, profile.fullName, agent.agentID, p.agentBank, p.agentBranch, p.amount');
+        $qb->select('p.createdAt, profile.fullName, agent.agentID, p.agentBank, p.agentBranch, p.amount, abb.bank, abb.branch');
 
         $qb->where('p.verified = :verified')->setParameter('verified', true);
         $qb->andWhere('p.transactionType = :transactionType')->setParameter('transactionType', Payment::CR);
