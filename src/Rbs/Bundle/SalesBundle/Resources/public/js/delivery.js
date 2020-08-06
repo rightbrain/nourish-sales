@@ -305,6 +305,7 @@ var Delivery = function()
                         if(response.type==='old'){
                             $(".delivery_order tbody").find(".order_"+response.orderId).find('.orderItemQty_'+response.orderItemId).text(response.itemQty);
                             $(".delivery_order tbody").find(".order_"+response.orderId).find('.orderItemQty_'+response.orderItemId).closest('tr').find('.remain').text(response.itemQty);
+                            $(".delivery_order tbody").find(".order_"+response.orderId).find('.orderItemQty_'+response.orderItemId).closest('tr').find('.deliver-qty').val(0);
                         }
                         $(".delivery_order tbody").find(".totalAmount_"+response.orderId).text(response.totalAmount);
                         toastr.success(response.message);
