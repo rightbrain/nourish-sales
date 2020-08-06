@@ -59,7 +59,8 @@ class PaymentWithoutSmsForm extends AbstractType
                 'format' => 'yyyy-MM-dd',
                 'html5'=> false,
                 'attr' => array(
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'autocomplete'=>'off'
                 )
             ))
             ->add('paymentMethod', 'choice', array(

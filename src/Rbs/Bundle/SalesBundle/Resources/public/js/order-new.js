@@ -456,8 +456,15 @@ var Order = function()
         form.submit(function(){
             var isFormValid = true,
                 orderItem = $('#orderItems'),
+                payments = $('#payments'),
                 qtyError = false,
-                priceError = false;
+                priceError = false,
+                agentBankError = false,
+                depositDateError = false,
+                amountError = false,
+                paymentForError = false,
+                paymentMethodError = false,
+                bankError = false;
 
 
             if ($('#order_agent').val() == '') {
@@ -471,7 +478,7 @@ var Order = function()
             }
 
             if (isFormValid && $('#order_depo').val() == '') {
-                toastr.error("Please select a depo");
+                toastr.error("Please select a depot");
                 isFormValid = false;
             }
 
@@ -494,6 +501,7 @@ var Order = function()
 
                 item.removeClass('has-error');
                 qty.removeClass('has-error');
+                price.removeClass('has-error');
                 if (item.find('select').val() == '') {
                     item.addClass('has-error');
                     isFormValid = false;
@@ -523,6 +531,78 @@ var Order = function()
 
             if (priceError) {
                 toastr.error("Invalid Price");
+            }
+
+            payments.find('tr').each(function(index, e){
+                var elm = $(e);
+                var agentBank = elm.find('td:eq(0)');
+                var amount = elm.find('td:eq(1)');
+                var depositDate = elm.find('td:eq(2)');
+                var paymentFor = elm.find('td:eq(3)');
+                var paymentMethod = elm.find('td:eq(4)');
+                var bank = elm.find('td:eq(5)');
+                var remarks = elm.find('td:eq(6)');
+
+                agentBank.removeClass('has-error');
+                amount.removeClass('has-error');
+                bank.removeClass('has-error');
+                depositDate.removeClass('has-error');
+
+                if ((amount.find('input').val() == '' && agentBank.find('select').val() != '')||
+                    (amount.find('input').val() == '' && bank.find('select').val() != '')||
+                    (amount.find('input').val() == '' && depositDate.find('input').val() != '')||
+                    (amount.find('input').val() == '' && paymentFor.find('select').val() != '')||
+                    (amount.find('input').val() == '' && paymentMethod.find('select').val() != '')||
+                    (amount.find('input').val() == '' && remarks.find('textarea').val() != '')) {
+                    amount.addClass('has-error');
+                    isFormValid = false;
+                    amountError = true;
+                }
+                if (amount.find('input').val() != '' && agentBank.find('select').val() == '') {
+                    agentBank.addClass('has-error');
+                    isFormValid = false;
+                    agentBankError = true;
+                }
+                if (amount.find('input').val() != '' && depositDate.find('input').val() == '') {
+                    depositDate.addClass('has-error');
+                    isFormValid = false;
+                    depositDateError = true;
+                }
+                if (amount.find('input').val() != '' && bank.find('select').val() == '') {
+                    bank.addClass('has-error');
+                    isFormValid = false;
+                    bankError = true;
+                }
+                if (amount.find('input').val() != '' && paymentFor.find('select').val() == '') {
+                    paymentFor.addClass('has-error');
+                    isFormValid = false;
+                    paymentForError = true;
+                }
+                if (amount.find('input').val() != '' && paymentMethod.find('select').val() == '') {
+                    paymentMethod.addClass('has-error');
+                    isFormValid = false;
+                    paymentMethodError = true;
+                }
+
+            });
+
+            if (amountError) {
+                toastr.error("Please enter deposit amount.");
+            }
+            if (agentBankError) {
+                toastr.error("Please select agent bank.");
+            }
+            if (depositDateError) {
+                toastr.error("Please enter deposit date.");
+            }
+            if (bankError) {
+                toastr.error("Please select bank.");
+            }
+            if (paymentForError) {
+                toastr.error("Please select payment for.");
+            }
+            if (paymentMethodError) {
+                toastr.error("Please select payment Method.");
             }
 
             return isFormValid;
