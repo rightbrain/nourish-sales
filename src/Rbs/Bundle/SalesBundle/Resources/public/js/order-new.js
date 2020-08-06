@@ -547,6 +547,8 @@ var Order = function()
                 amount.removeClass('has-error');
                 bank.removeClass('has-error');
                 depositDate.removeClass('has-error');
+                paymentFor.removeClass('has-error');
+                paymentMethod.removeClass('has-error');
 
                 if ((amount.find('input').val() == '' && agentBank.find('select').val() != '')||
                     (amount.find('input').val() == '' && bank.find('select').val() != '')||
