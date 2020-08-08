@@ -133,7 +133,7 @@ class LocationRepository extends EntityRepository
     public function getDistricts()
     {
         $query = $this->createQueryBuilder('l');
-        $query->select("l.id, l.name AS text");
+        $query->select("l.id, l.name AS text, l.parentId");
         $query->where('l.level = 4');
 
         return $query->getQuery()->getResult();
