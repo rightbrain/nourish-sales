@@ -296,7 +296,7 @@ class OrderController extends BaseController
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
                 $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('order')['depo']);
-//                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
+                $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
 
                 $this->flashMessage('success', 'Order Created Successfully');
                 $msg = "Dear Customer, Your Order No: ".$order->getId()." / ".date('d-m-Y').'. ';

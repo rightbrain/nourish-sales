@@ -37,7 +37,8 @@ class OrderRepository extends EntityRepository
     {
         $this->calculateOrderAmount($order);
         $this->orderPayment($order);
-        $this->setAllPendingStatus($order);
+//        $this->setAllPendingStatus($order);
+        $this->setStatus($order);
         $order->setOrderVia('ONLINE');
 //        $this->setSms($order)
         $this->_em->persist($order);
