@@ -277,21 +277,19 @@ class AgentController extends BaseController
         $qb->select("u.id, CONCAT(c.agentCodeForDatatable, ' - ', p.fullName) AS text");
         $qb->setMaxResults(100);
 //        $qb->where('c.agentID IS NOT NULL');
-        if ($this->isGranted('ROLE_FEED_ORDER_MANAGE')||$this->isGranted('ROLE_USER_FEED')) {
+        if ($this->isGranted('ROLE_FEED_ORDER_MANAGE') or $this->isGranted('ROLE_USER_FEED')) {
             if ($q = $request->query->get('q')) {
                 $qb->andWhere('c.agentType =:agentType');
                 $qb->setParameter('agentType', Agent::AGENT_TYPE_FEED);
                 $qb->andWhere("c.agentID LIKE '%{$q}%' OR p.fullName LIKE '%{$q}%'");
             }
-        }
-        if ($this->isGranted('ROLE_CHICK_ORDER_MANAGE')||$this->isGranted('ROLE_USER_CHICK')) {
+        }elseif ($this->isGranted('ROLE_CHICK_ORDER_MANAGE') or $this->isGranted('ROLE_USER_CHICK')) {
             if ($q = $request->query->get('q')) {
                 $qb->andWhere('c.agentType =:agentType');
                 $qb->setParameter('agentType', Agent::AGENT_TYPE_CHICK);
                 $qb->andWhere("c.chickAgentID LIKE '%{$q}%' OR p.fullName LIKE '%{$q}%'");
             }
-        }
-        if ($this->isGranted('ROLE_CHICK_ORDER_MANAGE') && $this->isGranted('ROLE_FEED_ORDER_MANAGE')) {
+        }elseif ($this->isGranted('ROLE_CHICK_ORDER_MANAGE') && $this->isGranted('ROLE_FEED_ORDER_MANAGE')) {
             if ($q = $request->query->get('q')) {
                 $qb->andWhere("c.agentID LIKE '%{$q}%' OR c.chickAgentID LIKE '%{$q}%' OR p.fullName LIKE '%{$q}%'");
             }
