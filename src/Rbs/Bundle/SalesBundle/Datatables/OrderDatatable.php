@@ -127,6 +127,7 @@ class OrderDatatable extends BaseDatatable
     public function generateActionList(Order $order)
     {
         $canEdit = $this->authorizationChecker->isGranted('ROLE_ORDER_EDIT');
+        $depotUser = $this->authorizationChecker->isGranted('ROLE_DEPO_USER');
         $canView = $this->authorizationChecker->isGranted('ROLE_ORDER_VIEW');
         $canCancel = $this->authorizationChecker->isGranted('ROLE_ORDER_CANCEL');
         $canApproveOrder = $this->authorizationChecker->isGranted('ROLE_ORDER_APPROVE');
@@ -149,7 +150,14 @@ class OrderDatatable extends BaseDatatable
                 if($order->getOrderVia()=='ONLINE'){
                     $route= 'order_update_online';
                 }
-                $html .= $this->generateMenuLink('Edit', $route, array('id' => $order->getId()));
+                if($depotUser and $order->getDeliveryState()!=Order::DELIVERY_STATE_READY){
+
+                    $html .= $this->generateMenuLink('Edit', $route, array('id' => $order->getId()));
+                }
+                if(!$depotUser){
+
+                    $html .= $this->generateMenuLink('Edit', $route, array('id' => $order->getId()));
+                }
             }
         }
 
