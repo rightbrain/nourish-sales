@@ -130,6 +130,7 @@ var Delivery = function()
                 remain.text(qty);
                 $(this).val(0);
                 toastr.error('Invalid value OR delivered quantity is greater then Order quantity');
+                $('body').find('#delivery-item-form').find('#save-delivery').prop('disabled', true);
             } else {
                 remain.text(qty - deliveryQtq);
             }
