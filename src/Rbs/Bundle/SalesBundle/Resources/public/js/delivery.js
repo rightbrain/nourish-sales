@@ -344,10 +344,12 @@ var Delivery = function()
                 dataType: 'json',
                 success: function (response) {
                     element.closest('tr').find('.amendment_item_unit_price').val('');
+                    element.closest('tr').find('.amendment_item_unit_price_show').find('strong').text('');
                     element.closest('tr').find('.itemAdd').prop('disabled', true);
                     if(response.status==='success'){
                         var stockAvailableInfo = parseInt(response.onHand) - parseInt(response.onHold);
                         element.closest('tr').find('.amendment_item_unit_price').val(response.price);
+                        element.closest('tr').find('.amendment_item_unit_price_show').find('strong').text(response.price);
                         if(stockAvailableInfo>0){
                             element.closest('tr').find('.itemAdd').prop('disabled', false);
                         }
@@ -455,16 +457,19 @@ var Delivery = function()
 
 
                         $("#delivery_order_amendment").load(window.location + " #delivery_order_amendment");
-                        // $("#delivery_order").load(window.location + " #delivery_order");
+                        $("#delivery_order").load(window.location + " #delivery_order");
+                        // window.location.href= Routing.generate('delivery_view', {id:$('#delivery-id').val()});
 
-                        App.integerMask($('body').find('#delivery_order_amendment').find('.itemQty'));
-                        App.integerMask($('body').find('#delivery_order_amendment').find('.amendmentItemQty'));
-                        App.integerMask($('body').find('#delivery-item-form').find('.orderItems .deliver-qty'));
                     }
                     if(response.status==='error'){
                         toastr.error(response.message);
                     }
-                    orderItemRemainingHandleInit();
+                    setTimeout(function(){
+                        orderItemRemainingHandleInit();
+                        App.integerMask($('body').find('#delivery_order_amendment').find('.itemQty'));
+                        App.integerMask($('body').find('#delivery_order_amendment').find('.amendmentItemQty'));
+                        App.integerMask($('body').find('#delivery-item-form').find('.orderItems .deliver-qty'));
+                    }, 500);
 
                 }
             });
