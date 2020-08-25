@@ -63,6 +63,7 @@ var Delivery = function()
 
             if (parseInt(deliveryQtq) > 0) {
                 oneValidValue = true;
+                $('body').find('#delivery-item-form').find('#save-delivery').prop('disabled', false);
             }
 
         });
@@ -109,6 +110,11 @@ var Delivery = function()
     {
         $('body').on('keyup','.deliver-qty', function () {
         // $('.orderItems').find('.deliver-qty').blur(function(){
+            if (formValidateInit()) {
+                $('body').find('#delivery-item-form').find('#save-delivery').prop('disabled', false);
+            }else {
+                $('body').find('#delivery-item-form').find('#save-delivery').prop('disabled', true);
+            }
             var elm = $(this).parents('tr');
 
             var qty = parseInt(elm.find('.item-qty').text());
@@ -216,6 +222,7 @@ var Delivery = function()
 
         $(window).load( function (){
             setTimeout(function(){
+                $('body').find('#delivery-item-form').find('#save-delivery').prop('disabled', true);
                 orderItemRemainingHandleInit();
                 orderProgressHandle();
                 $('#process-actions span').tooltip();
