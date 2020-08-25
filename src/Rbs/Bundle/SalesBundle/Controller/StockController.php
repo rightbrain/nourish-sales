@@ -226,6 +226,7 @@ class StockController extends Controller
             );
         }
         $qtyInThisOrder = $orderItem ? $orderItem->getQuantity() : 0;
+        $price = $orderItem ? $orderItem->getPrice() : $price;
             $response = array(
                 'status'    => 'success',
                 'onHand'    => $stock->getOnHand() + $qtyInThisOrder,

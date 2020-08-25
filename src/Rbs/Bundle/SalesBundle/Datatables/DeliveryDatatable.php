@@ -63,9 +63,9 @@ class DeliveryDatatable extends BaseDatatable
                             'rel' => 'tooltip',
                             'title' => 'edit-action',
                             'class' => 'btn btn-primary btn-xs',
-                            'role' => 'button',
-                            'data-target' => "#deliveryView",
-                            'data-toggle'=>"modal"
+//                            'role' => 'button',
+//                            'data-target' => "#deliveryView",
+//                            'data-toggle'=>"modal"
                         ),
                         'role' => 'ROLE_USER',
                     )

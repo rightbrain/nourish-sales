@@ -1,204 +1,280 @@
-{% if delivery.deliveryAdd == false %}
-<div class="action-content-cancel">
-    <form id="delivery-item-form" action="{{ path('delivery_save', {id: delivery.id }) }}" method="post" novalidate="novalidate">
-    <div class="modal-header portlet-title blue">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
-        <h4 class="modal-title">Delivery ID <span class="badge badge-primary">
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Orders {% endblock %}
+
+{% block body %}
+
+    <div class="modal fade bs-modal-lg" id="pendingItems" role="document" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <img src="{{ asset('assets/global/img/loading-spinner-grey.gif') }}" alt="" class="loading">
+                    <span> &nbsp;&nbsp;Loading... </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12" id="deliveryView">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-list"></i>Orders for Delivery
+                </div>
+            </div>
+            <div class="portlet-body">
+                {% if delivery.deliveryAdd == false %}
+                    <div class="action-content-cancel">
+                        <form id="delivery-item-form" action="{{ path('delivery_save', {id: delivery.id }) }}" method="post" novalidate="novalidate">
+                            <div class="modal-header portlet-title blue">
+                                <h4 class="modal-title">Delivery ID <span class="badge badge-primary">
                 {{ delivery.id }}
             </span></h4>
-        <h4 class="modal-title">Order No <span class="badge badge-primary">
+                                <h4 class="modal-title">Order No <span class="badge badge-primary">
             {% for index, order in delivery.orders %}
                 {{ (delivery.orders|length) > (index+1) ? (order.id)~',' : (order.id)  }}
             {% endfor %}
             </span></h4>
-    </div>
-    <div class="modal-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="portlet">
-                        <div class="portlet-title partial-delivered-items">
-                            <div class="caption"> Agent Info </div>
-                        </div>
-                        <div class="portlet-body">
-                            <table class="table">
-                                {% for index, order in delivery.orders %}
-                                <tr>
-                                    <td>Agent Name : {{ order.agent.user.profile.fullName }}</td>
-                                    <td>Order Number : {{ order.id }}</td>
-                                    <td>Delivery To : {{ order.agent.user.profile.address }}</td>
-                                </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-                    </div>
-                    <div class="portlet">
-                        <div class="portlet-title">
-                            <div class="caption"> Order Items </div>
-                        </div>
-                        <div class="portlet-body">
-                            <table class="table delivery_order">
-                                <thead>
-                                <tr>
-                                    <th>SL</th>
-                                    <th>Order Id</th>
-                                    <th>Item</th>
-                                    <th>Quantity</th>
-                                    <th>Delivered</th>
-                                    <th>Remain</th>
-                                </tr>
-                                </thead>
-                                <tbody class="orderItems">
-                                {% set totalItemQty=0 %}
-                                {% set totalDeliveryQty=0 %}
-                                {% set totalRemainingQty=0 %}
-                                {% set ordersId=[] %}
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="portlet">
+                                            <div class="portlet-title partial-delivered-items">
+                                                <div class="caption"> Agent Info </div>
+                                            </div>
+                                            <div class="portlet-body">
+                                                <table class="table">
+                                                    {% for index, order in delivery.orders %}
+                                                        <tr>
+                                                            <td>Agent Name : {{ order.agent.user.profile.fullName }}</td>
+                                                            <td>Order Number : {{ order.id }}</td>
+                                                            <td>Delivery To : {{ order.agent.user.profile.address }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </table>
+                                            </div>
+                                        </div>
 
-                                {% for order in delivery.orders %}
+                                        <div class="portlet">
+                                            <div class="portlet-title">
+                                                <div class="caption"> Order Items </div>
+                                            </div>
+                                            <div class="portlet-body">
 
-                                    {% set ordersId = ordersId|merge([order.id]) %}
-                                    {% for index, item in order.orderItems %}
-                                        {% if item.quantity != 0 %}
-                                            {% if order.deliveryState == 'PARTIALLY_SHIPPED' and partialItems[order.id][item.id] is defined %}
-                                                {% if (item.quantity > partialItems[order.id][item.id]['delivered']) %}
-                                                    <tr class="order_{{ order.id }}{{ isAvailable[order.id][item.id]==false?' red':'' }}">
-                                                        <td>{{ index+1 }}</td>
-                                                        <td>{{ order.id }}</td>
-                                                        <td>{{ item.item.name }}</td>
-                                                        <td class="item-qty orderItemQty_{{ item.id }} itemId_{{ item.item.id }}">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
-                                                        <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
-                                                        <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
-                                                        <td class="remain">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
+                                                <table id="delivery_order" class="table delivery_order">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>SL</th>
+                                                        <th>Order Id</th>
+                                                        <th>Item</th>
+                                                        <th>Quantity</th>
+                                                        <th>Delivered</th>
+                                                        <th>Remain</th>
                                                     </tr>
-                                                {% endif %}
-                                            {% else %}
-                                                <tr class="order_{{ order.id }}{{ isAvailable[order.id][item.id]==false?' red':'' }}">
-                                                    <td>{{ index+1 }}</td>
-                                                    <td>{{ order.id }}</td>
-                                                    <td>{{ item.item.name }}</td>
-                                                    <td class="item-qty orderItemQty_{{ item.id }} itemId_{{ item.item.id }}">{{ item.quantity }}</td>
-                                                    <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
-                                                    <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0" {{ isAvailable[order.id][item.id]==false?'disabled="disabled"':'' }}></td>
-                                                    <td class="remain">{{ item.quantity }}</td>
-                                                </tr>
-                                            {% endif %}
-                                        {% endif %}
-                                    {% endfor %}
-                                    <tr style="font-weight: bold">
-                                        <td colspan="2">{{ order.id }}</td>
-                                        <td colspan="2">Order clearance amount : <span class="totalApprovedAmount_{{ order.id }}">{{ order.totalApprovedAmount }}</span></td>
-                                        <td colspan="3">Order total amount : <span class="totalAmount_{{ order.id }}">{{ order.totalAmount }}</span></td>
-                                    </tr>
-                                {% endfor %}
-                                <tr>
-                                    <th colspan="3" style="text-align: right">Total</th>
-                                    <th class="totalItemQty"></th>
-                                    <th class="totalDeliveryQty"></th>
-                                    <th class="totalRemainingQty"></th>
-                                </tr>
-                                </tbody>
-                                <tfoot>
-                                <tr>
-                                    <td colspan="7">
-                                        <h3 style="margin: 0">Order amendment info</h3>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="7">
-                                        <table class="table" style="margin-bottom: 0px">
-                                            <tr>
-                                                <td style="width: 120px">Order Id</td>
-                                                <td>Item Name</td>
-                                                <td>Remain Qty</td>
-                                                <td style="width: 100px">Qty (Kg)</td>
-                                                <td>Unit Price</td>
-                                                <td>Total amount</td>
-                                                <td>Action</td>
-                                            </tr>
-                                            <tr>
-                                                <td colspan="1">
-                                                    <select class="form-control order_id" name="order_id" id="order_id">
-                                                        {% if ordersId %}
-                                                            {% for orderId in ordersId %}
-                                                                <option value="{{ orderId }}">{{ orderId }}</option>
-                                                            {% endfor %}
-                                                        {% endif %}
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select class="form-control item_id" name="item_id" id="item_id">
-                                                        <option value="">Select Item</option>
-                                                        {% if items %}
-                                                            {% for item in items %}
-                                                                <option value="{{ item.id }}">{{ item.name }}</option>
-                                                            {% endfor %}
-                                                        {% endif %}
-                                                    </select>
-                                                </td>
-                                                <td class="stock-available"></td>
-                                                <td>
-                                                    <input type="text" id="itemQty" class="form-control itemQty" name="itemQty">
-                                                </td>
-                                                <td class="unit_price"></td>
-                                                <td class="totalAmount"></td>
-                                                <td>
-                                                    <button type="button" id="itemAdd" disabled class="btn btn-sm btn-success itemAdd">Add</button>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                </tr>
+                                                    </thead>
+                                                    <tbody class="orderItems">
+                                                    {% set totalItemQty=0 %}
+                                                    {% set totalDeliveryQty=0 %}
+                                                    {% set totalRemainingQty=0 %}
 
-                                </tfoot>
-                            </table>
-                        </div>
-                        <input type="hidden" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">
+                                                    {% for order in delivery.orders %}
+
+                                                        {% for index, item in order.orderItems %}
+                                                            {% if item.quantity != 0 %}
+                                                                {% if order.deliveryState == 'PARTIALLY_SHIPPED' and partialItems[order.id][item.id] is defined %}
+                                                                    {% if (item.quantity > partialItems[order.id][item.id]['delivered']) %}
+                                                                        <tr class="order_{{ order.id }}{{ isAvailable[order.id][item.id]==false?' red':'' }}">
+                                                                            <td>{{ index+1 }}</td>
+                                                                            <td>{{ order.id }}</td>
+                                                                            <td>{{ item.item.name }}</td>
+                                                                            <td class="item-qty orderItemQty_{{ item.id }} itemId_{{ item.item.id }}">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
+                                                                            <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
+                                                                            <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
+                                                                            <td class="remain">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
+                                                                        </tr>
+                                                                    {% endif %}
+                                                                {% else %}
+                                                                    <tr class="order_{{ order.id }}{{ isAvailable[order.id][item.id]==false?' red':'' }}">
+                                                                        <td>{{ index+1 }}</td>
+                                                                        <td>{{ order.id }}</td>
+                                                                        <td>{{ item.item.name }}</td>
+                                                                        <td class="item-qty orderItemQty_{{ item.id }} itemId_{{ item.item.id }}">{{ item.quantity }}</td>
+                                                                        <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
+                                                                        <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0" {{ isAvailable[order.id][item.id]==false?'disabled="disabled"':'' }}></td>
+                                                                        <td class="remain">{{ item.quantity }}</td>
+                                                                    </tr>
+                                                                {% endif %}
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                        <tr style="font-weight: bold">
+                                                            <td colspan="2">{{ order.id }}</td>
+                                                            <td colspan="2">Order clearance amount : <span class="totalApprovedAmount_{{ order.id }}">{{ order.totalApprovedAmount }}</span></td>
+                                                            <td colspan="3">Order total amount : <span class="totalAmount_{{ order.id }}">{{ order.totalAmount }}</span></td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                    <tr>
+                                                        <th colspan="3" style="text-align: right">Total</th>
+                                                        <th class="totalItemQty"></th>
+                                                        <th class="totalDeliveryQty"></th>
+                                                        <th class="totalRemainingQty"></th>
+                                                    </tr>
+                                                    </tbody>
+
+                                                </table>
+                                            </div>
+                                            <input type="hidden" class="delivery-id" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">
+                                        </div>
+
+                                        <div class="portlet">
+                                            <div class="portlet-title">
+                                                <div class="caption">Order amendment info </div>
+                                            </div>
+                                            <div id="order_amendment_section" class="portlet-body">
+                                                {% set ordersId=[] %}
+
+                                                {% for order in delivery.orders %}
+
+                                                    {% set ordersId = ordersId|merge([order.id]) %}
+                                                {% endfor %}
+
+                                                <table id="delivery_order_amendment" class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <td style="width: 130px">Order Id</td>
+                                                        <td style="width: 200px">Amendment Item</td>
+                                                        <td style="width: 100px">Amendment Qty</td>
+                                                        <td style="width: 200px">Item Name</td>
+                                                        <td>Remain Qty</td>
+                                                        <td style="width: 100px">Qty (Kg)</td>
+                                                        <td>Unit Price</td>
+                                                        <td>Total amount</td>
+                                                        <td>Action</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="1">
+                                                            <select class="form-control order_id" name="order_id" id="order_id">
+                                                                <option value="">Select Order</option>
+                                                                {% if ordersId %}
+                                                                    {% for orderId in ordersId %}
+                                                                        <option value="{{ orderId }}">{{ orderId }}</option>
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select class="form-control amendment_item_id" name="amendment_item_id" id="amendment_item_id">
+                                                                <option value="">Select Item</option>
+                                                            </select>
+                                                            <input type="hidden" class="amendment_item_unit_price input-mask-number" id="amendment_item_unit_price" value="">
+                                                        </td>
+                                                        <td>
+                                                            <input type="text" id="amendmentItemQty" class="form-control input-mask-number amendmentItemQty" name="amendmentItemQty">
+                                                        </td>
+                                                        <td>
+                                                            <select class="form-control item_id" name="item_id" id="item_id">
+                                                                <option value="">Select Item</option>
+                                                                {% if items %}
+                                                                    {% for item in items %}
+                                                                        <option value="{{ item.id }}">{{ item.itemCodeName }}</option>
+                                                                    {% endfor %}
+                                                                {% endif %}
+                                                            </select>
+                                                        </td>
+                                                        <td class="stock-available"></td>
+                                                        <td>
+                                                            <input type="text" id="itemQty" class="form-control input-mask-number itemQty" name="itemQty">
+                                                        </td>
+                                                        <td class="unit_price"></td>
+                                                        <td class="totalAmount"></td>
+                                                        <td>
+                                                            <button type="button" id="itemAdd" disabled class="btn btn-sm btn-success itemAdd">Add</button>
+                                                        </td>
+                                                    </tr>
+
+                                                    </thead>
+                                                </table>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="portlet">
+                                            <div class="portlet-title partial-delivered-items">
+                                                <div class="caption"> Vehicles Info </div>
+                                            </div>
+                                            <div class="portlet-body partial-delivered-items">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Sl</th>
+                                                        <th>Vehicle</th>
+                                                        <th>Driver Name</th>
+                                                        <th>Vehicle Number</th>
+                                                        <th>Mobile Number</th>
+                                                        <th>Vehicle In</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% set vehicleCount = 0 %}
+                                                    {% for index, vehicle in delivery.vehicles %}
+                                                        {% if vehicle.shipped == 0 and vehicle.vehicleIn != null %}
+                                                            <tr>
+                                                                <td>{{ index + 1 }}</td>
+                                                                <td>{{ vehicle.id }}</td>
+                                                                <td>{{ vehicle.driverName }}</td>
+                                                                <td>{{ vehicle.truckNumber }}</td>
+                                                                <td>{{ vehicle.driverPhone }}</td>
+                                                                <td>{{ vehicle.vehicleIn | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
+                                                            </tr>
+                                                            {% set vehicleCount = vehicleCount+1 %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                {% if vehicleCount > 0 %}
+                                    <button type="submit" class="btn blue green" id="save-delivery"> Delivery Set </button>
+                                {% endif %}
+                                <a class="btn default" data-dismiss="modal"> Close </a>
+                            </div>
+                        </form>
                     </div>
 
-                    <div class="portlet">
-                        <div class="portlet-title partial-delivered-items">
-                            <div class="caption"> Vehicles Info </div>
-                        </div>
-                        <div class="portlet-body partial-delivered-items">
-                            <table class="table">
-                                <thead>
-                                <tr>
-                                    <th>Sl</th>
-                                    <th>Vehicle</th>
-                                    <th>Driver Name</th>
-                                    <th>Vehicle Number</th>
-                                    <th>Mobile Number</th>
-                                    <th>Vehicle In</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {% set vehicleCount = 0 %}
-                                {% for index, vehicle in delivery.vehicles %}
-                                    {% if vehicle.shipped == 0 and vehicle.vehicleIn != null %}
-                                    <tr>
-                                        <td>{{ index + 1 }}</td>
-                                        <td>{{ vehicle.id }}</td>
-                                        <td>{{ vehicle.driverName }}</td>
-                                        <td>{{ vehicle.truckNumber }}</td>
-                                        <td>{{ vehicle.driverPhone }}</td>
-                                        <td>{{ vehicle.vehicleIn | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
-                                    </tr>
-                                    {% set vehicleCount = vehicleCount+1 %}
-                                    {% endif %}
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                {% endif %}
             </div>
+        </div>
     </div>
-    <div class="modal-footer">
-        {% if vehicleCount > 0 %}
-            <button type="submit" class="btn blue green" id="save-delivery"> Delivery Set </button>
-        {% endif %}
-        <a class="btn default" data-dismiss="modal"> Close </a>
-    </div>
-    </form>
-</div>
+    <div style="clear: both"></div>
+{% endblock %}
 
-{% endif %}
+{% block stylesheets %}
+    {{ parent() }}
+    {% stylesheets
+        'assets/global/plugins/bootstrap-toastr/toastr.min.css'
+        "bundles/rbssales/css/style.css"
+        filter='cssrewrite' output='css/compiled/datatable.css' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {% javascripts
+        'assets/global/plugins/moment.min.js'
+        'assets/global/plugins/bootstrap-toastr/toastr.min.js'
+        'bundles/rbssales/js/delivery.js' %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+{% endblock %}
+
+{% block documentReady %}
+    {{ parent() }}
+    Delivery.init();
+{% endblock %}
+

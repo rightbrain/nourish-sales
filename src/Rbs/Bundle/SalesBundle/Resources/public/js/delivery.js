@@ -205,12 +205,23 @@ var Delivery = function()
     function saveDelivery()
     {
         orderItemRemainingHandle();
-        $('#deliveryView').on('shown.bs.modal', function (){
+        /*$('#deliveryView').on('shown.bs.modal', function (){
             setTimeout(function(){
                 orderItemRemainingHandleInit();
                 orderProgressHandle();
                 $('#process-actions span').tooltip();
                 App.integerMask($('#delivery-item-form').find('.orderItems .deliver-qty'));
+            }, 500);
+        });*/
+
+        $(window).load( function (){
+            setTimeout(function(){
+                orderItemRemainingHandleInit();
+                orderProgressHandle();
+                $('#process-actions span').tooltip();
+                App.integerMask($('#delivery-item-form').find('.orderItems .deliver-qty'));
+                App.integerMask($('#delivery_order_amendment').find('.itemQty'));
+                App.integerMask($('#delivery_order_amendment').find('.amendmentItemQty'));
             }, 500);
         });
 
@@ -249,22 +260,26 @@ var Delivery = function()
             var orderId = element.closest('tr').find('.order_id').val();
             var itemId = element.closest('tr').find('.item_id').val();
             var unit_price = element.closest('tr').find('.unit_price').text();
-            var exOrderItemsQty = $('tbody.orderItems').find('.order_'+orderId).find('.itemId_'+itemId).text();
-            if(exOrderItemsQty){
-                exOrderItemsAmount = parseInt(exOrderItemsQty)*parseInt(unit_price);
+            var amendmentItemQty = element.closest('tr').find('.amendmentItemQty').val();
+            var amendment_item_unit_price = element.closest('tr').find('.amendment_item_unit_price').val();
+            // var exOrderItemsQty = $('tbody.orderItems').find('.order_'+orderId).find('.itemId_'+itemId).text();
+            if(amendment_item_unit_price){
+                exOrderItemsAmount = parseInt(amendmentItemQty)*parseFloat(amendment_item_unit_price);
             }else {
                 exOrderItemsAmount=0;
             }
+            // console.log(exOrderItemsAmount);
             if($.isNumeric($(this).val()) && itemId!=='' && unit_price!==''){
-                var totalAmount = parseInt(element.val())*parseInt(unit_price);
-                element.closest('tr').find('.totalAmount').text(totalAmount);
+                var totalAmount = parseInt(element.val())*parseFloat(unit_price);
 
-                var totalApprovedAmount = $('.totalApprovedAmount_'+orderId).text();
-                var orderTotalAmount = $('.totalAmount_'+orderId).text();
+                element.closest('tr').find('.totalAmount').text(parseFloat(totalAmount).toFixed(2));
+
+                // var totalApprovedAmount = $('.totalApprovedAmount_'+orderId).text();
+                // var orderTotalAmount = $('.totalAmount_'+orderId).text();
 
                 element.closest('tr').find('.itemAdd').prop('disabled', false);
 
-                if ((parseInt(totalApprovedAmount) + exOrderItemsAmount) < (totalAmount+parseInt(orderTotalAmount))) {
+                if (exOrderItemsAmount < totalAmount ) {
                     element.closest('tr').find('.itemAdd').prop('disabled', true);
                     element.val(0);
                     element.closest('tr').find('.totalAmount').text('');
@@ -277,12 +292,126 @@ var Delivery = function()
 
         });
 
+
+        $('body').on('change','#order_id', function () {
+            var element = $(this),
+            orderId = element.val();
+            if(orderId==''){
+                return false;
+            }
+
+            $.ajax({
+                type: "post",
+                url: Routing.generate('order_item_remaining', {order:orderId}),
+                dataType: 'json',
+                success: function (response) {
+                    var htmlOption='<option value="">Select Item</option>';
+                    $.each( response, function( key, value ) {
+                        htmlOption += '<option value="'+key+'">'+value+'</option>'
+                    });
+
+                    $('#amendment_item_id').html(htmlOption);
+                }
+            });
+        }).change();
+
+        $('#amendment_item_id').on('change', function () {
+            var element = $(this);
+            var orderId = element.closest('tr').find('.order_id').val();
+            var amendment_item_id = element.val();
+            var itemId = element.closest('tr').find('#item_id').val();
+            if (amendment_item_id=='' || orderId==''){
+                return false;
+            }
+            if (itemId===amendment_item_id){
+                element.closest('tr').find('.stock-available').text('');
+                element.closest('tr').find('.unit_price').text('');
+                element.closest('tr').find('.itemAdd').prop('disabled', true);
+                toastr.error('Please select different item.');
+                return false;
+            }
+
+            $.ajax({
+                type: "post",
+                url: Routing.generate('find_stock_item_depo_for_amenment_ajax', {order:orderId,item:amendment_item_id}),
+                dataType: 'json',
+                success: function (response) {
+                    element.closest('tr').find('.amendment_item_unit_price').val('');
+                    element.closest('tr').find('.itemAdd').prop('disabled', true);
+                    if(response.status==='success'){
+                        var stockAvailableInfo = parseInt(response.onHand) - parseInt(response.onHold);
+                        element.closest('tr').find('.amendment_item_unit_price').val(response.price);
+                        if(stockAvailableInfo>0){
+                            element.closest('tr').find('.itemAdd').prop('disabled', false);
+                        }
+
+                    }
+                    if(response.status==='error'){
+                        toastr.error(response.message);
+                    }
+                }
+            });
+
+
+        }).change();
+
+        $('body').on('change','#item_id', function () {
+            var element = $(this);
+            var orderId = element.closest('tr').find('.order_id').val();
+            var amendment_item_id = element.closest('tr').find('.amendment_item_id').val();
+
+            var itemId = element.val();
+            if(orderId==''||itemId==''){
+                element.closest('tr').find('.stock-available').text('');
+                element.closest('tr').find('.unit_price').text('');
+                return false;
+            }
+
+            if (itemId===amendment_item_id){
+                element.closest('tr').find('.stock-available').text('');
+                element.closest('tr').find('.unit_price').text('');
+                element.closest('tr').find('.itemAdd').prop('disabled', true);
+                toastr.error('Please select different item.');
+                return false;
+            }
+
+            $.ajax({
+                type: "post",
+                url: Routing.generate('find_stock_item_depo_for_amenment_ajax', {order:orderId,item:itemId}),
+                dataType: 'json',
+                success: function (response) {
+                    element.closest('tr').find('.stock-available').text('');
+                    element.closest('tr').find('.unit_price').text('');
+                    element.closest('tr').find('.itemQty').val('');
+                    element.closest('tr').find('.itemAdd').prop('disabled', true);
+                    element.closest('tr').find('.itemQty').prop('disabled', true);
+                    if(response.status==='success'){
+                          var stockAvailableInfo = parseInt(response.onHand) - parseInt(response.onHold);
+                    element.closest('tr').find('.stock-available').text(stockAvailableInfo);
+                    element.closest('tr').find('.unit_price').text(response.price);
+                    if(stockAvailableInfo>0){
+                        element.closest('tr').find('.itemAdd').prop('disabled', false);
+                        element.closest('tr').find('.itemQty').prop('disabled', false);
+                    }
+
+                    }
+                    if(response.status==='error'){
+                        toastr.error(response.message);
+                    }
+                }
+            });
+        });
+
         $('body').on('click','#itemAdd', function () {
             var element = $(this);
             var orderId = element.closest('tr').find('.order_id').val();
+            var amendmentItemId = element.closest('tr').find('.amendment_item_id').val();
             var itemId = element.closest('tr').find('.item_id').val();
             var itemQty = element.closest('tr').find('.itemQty').val();
-            if(orderId==''||itemId==''||itemQty==''){
+            var amendmentItemQty = element.closest('tr').find('.amendmentItemQty').val();
+            var deliveryId = $('.delivery-id').val();
+
+            if(orderId==''||itemId==''||itemQty==''||amendmentItemId==''){
                 alert('Please enter value.');
                 return false;
             }
@@ -293,7 +422,10 @@ var Delivery = function()
                 data: {
                     'orderId':orderId,
                     'itemId':itemId,
-                    'itemQty':itemQty
+                    'amendmentItemId':amendmentItemId,
+                    'itemQty':itemQty,
+                    'amendmentItemQty':amendmentItemQty,
+                    'deliveryId':deliveryId
                 },
                 dataType: 'json',
                 success: function (response) {
@@ -313,6 +445,14 @@ var Delivery = function()
                         element.closest('tr').find('.stock-available').text('');
                         element.closest('tr').find('.unit_price').text('');
                         element.closest('tr').find('.totalAmount').text('');
+
+
+                        $("#delivery_order_amendment").load(window.location + " #delivery_order_amendment");
+                        $("#delivery_order").load(window.location + " #delivery_order");
+
+                        App.integerMask($('#delivery_order_amendment').find('.itemQty'));
+                        App.integerMask($('#delivery_order_amendment').find('.amendmentItemQty'));
+                        App.integerMask($('#delivery-item-form').find('.orderItems .deliver-qty'));
                     }
                     if(response.status==='error'){
                         toastr.error(response.message);
@@ -322,41 +462,6 @@ var Delivery = function()
                 }
             });
         });
-
-        $('body').on('change','#item_id', function () {
-            var element = $(this);
-            var orderId = element.closest('tr').find('.order_id').val();
-            var itemId = element.val();
-            if(orderId==''||itemId==''){
-                element.closest('tr').find('.stock-available').text('');
-                element.closest('tr').find('.unit_price').text('');
-                return false;
-            }
-
-            $.ajax({
-                type: "post",
-                url: Routing.generate('find_stock_item_depo_for_amenment_ajax', {order:orderId,item:itemId}),
-                dataType: 'json',
-                success: function (response) {
-                    element.closest('tr').find('.stock-available').text('');
-                    element.closest('tr').find('.unit_price').text('');
-                    element.closest('tr').find('.itemQty').val('');
-                    element.closest('tr').find('.itemAdd').prop('disabled', true);
-                    if(response.status==='success'){
-                          var stockAvailableInfo = parseInt(response.onHand) - parseInt(response.onHold);
-                    element.closest('tr').find('.stock-available').text(stockAvailableInfo);
-                    element.closest('tr').find('.unit_price').text(response.price);
-                    if(stockAvailableInfo>0){
-                        element.closest('tr').find('.itemAdd').prop('disabled', false);
-                    }
-
-                    }
-                    if(response.status==='error'){
-                        toastr.error(response.message);
-                    }
-                }
-            });
-        })
     }
 
     function init()

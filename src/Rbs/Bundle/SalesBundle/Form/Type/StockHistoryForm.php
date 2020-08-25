@@ -32,6 +32,9 @@ class StockHistoryForm extends AbstractType
                 }
             ))
             ->add('quantity', 'text', array(
+                'attr' => array(
+                    'class' => 'stock_quantity',
+                ),
                 'constraints' => array(
                     new NotBlank(array('message'=>'Name should not be blank'))
                 )

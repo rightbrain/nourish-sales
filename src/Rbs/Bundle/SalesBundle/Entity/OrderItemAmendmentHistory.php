@@ -14,6 +14,10 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
  */
 class OrderItemAmendmentHistory
 {
+    use ORMBehaviors\Timestampable\Timestampable,
+//        ORMBehaviors\SoftDeletable\SoftDeletable,
+        ORMBehaviors\Blameable\Blameable;
+
     /**
      * @var integer
      *
@@ -41,11 +45,35 @@ class OrderItemAmendmentHistory
     private $item;
 
     /**
+     * @var Item
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Item")
+     * @ORM\JoinColumn(name="amendment_item_id", nullable=true)
+     */
+    private $amendmentItem;
+
+    /**
+     * @var Delivery
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Delivery")
+     * @ORM\JoinColumn(name="delivery_id", nullable=true)
+     */
+    private $delivery;
+
+    /**
      * @var integer
      *
      * @ORM\Column(name="quantity", type="integer")
      */
     private $quantity = 0;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="amendment_quantity", type="integer")
+     */
+    private $amendmentQuantity = 0;
+
     /**
      * Get id
      *
@@ -108,5 +136,55 @@ class OrderItemAmendmentHistory
     {
         $this->order = $order;
     }
+
+    /**
+     * @return Delivery
+     */
+    public function getDelivery()
+    {
+        return $this->delivery;
+    }
+
+    /**
+     * @param Delivery $delivery
+     */
+    public function setDelivery($delivery)
+    {
+        $this->delivery = $delivery;
+    }
+
+    /**
+     * @return Item
+     */
+    public function getAmendmentItem()
+    {
+        return $this->amendmentItem;
+    }
+
+    /**
+     * @param Item $amendmentItem
+     */
+    public function setAmendmentItem($amendmentItem)
+    {
+        $this->amendmentItem = $amendmentItem;
+    }
+
+    /**
+     * @return int
+     */
+    public function getAmendmentQuantity()
+    {
+        return $this->amendmentQuantity;
+    }
+
+    /**
+     * @param int $amendmentQuantity
+     */
+    public function setAmendmentQuantity($amendmentQuantity)
+    {
+        $this->amendmentQuantity = $amendmentQuantity;
+    }
+
+
 
 }

@@ -87,9 +87,9 @@ class StockRepository extends EntityRepository
                 $stock->setOnHand($stock->getOnHand() + $deliveryItem->getQty()-$qty);
                 $this->_em->persist($stock);
 
+                $this->_em->flush();
             }
         }
-        $this->_em->flush();
     }
 
     public function removeStock(Delivery $delivery)
