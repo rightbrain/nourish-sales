@@ -80,7 +80,7 @@ var Delivery = function()
             }
         });
 
-        $('.totalItemQty').text(item_qty_sum);
+        $('body').find('.totalItemQty').text(item_qty_sum);
 
 
         var delivery_qty_sum = 0;
@@ -102,7 +102,7 @@ var Delivery = function()
             }
         });
 
-        $('.totalRemainingQty').text(sum);
+        $('body').find('.totalRemainingQty').text(sum);
     }
 
     function orderItemRemainingHandle()
@@ -315,7 +315,7 @@ var Delivery = function()
             });
         }).change();
 
-        $('#amendment_item_id').on('change', function () {
+        $('body').on('change', '#amendment_item_id', function () {
             var element = $(this);
             var orderId = element.closest('tr').find('.order_id').val();
             var amendment_item_id = element.val();
@@ -448,11 +448,11 @@ var Delivery = function()
 
 
                         $("#delivery_order_amendment").load(window.location + " #delivery_order_amendment");
-                        $("#delivery_order").load(window.location + " #delivery_order");
+                        // $("#delivery_order").load(window.location + " #delivery_order");
 
-                        App.integerMask($('#delivery_order_amendment').find('.itemQty'));
-                        App.integerMask($('#delivery_order_amendment').find('.amendmentItemQty'));
-                        App.integerMask($('#delivery-item-form').find('.orderItems .deliver-qty'));
+                        App.integerMask($('body').find('#delivery_order_amendment').find('.itemQty'));
+                        App.integerMask($('body').find('#delivery_order_amendment').find('.amendmentItemQty'));
+                        App.integerMask($('body').find('#delivery-item-form').find('.orderItems .deliver-qty'));
                     }
                     if(response.status==='error'){
                         toastr.error(response.message);
