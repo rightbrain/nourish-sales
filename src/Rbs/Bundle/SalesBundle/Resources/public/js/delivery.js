@@ -211,7 +211,6 @@ var Delivery = function()
 
     function saveDelivery()
     {
-        orderItemRemainingHandle();
         /*$('#deliveryView').on('shown.bs.modal', function (){
             setTimeout(function(){
                 orderItemRemainingHandleInit();
@@ -223,6 +222,7 @@ var Delivery = function()
 
         $(window).load( function (){
             setTimeout(function(){
+                orderItemRemainingHandle();
                 $('body').find('#delivery-item-form').find('#save-delivery').prop('disabled', true);
                 orderItemRemainingHandleInit();
                 orderProgressHandle();
