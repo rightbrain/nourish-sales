@@ -33,6 +33,7 @@ class OrderDatatable extends BaseDatatable
             $line["deliveryState"] = $order->getOrderState() == Order::ORDER_STATE_CANCEL ? '' : '<span class="label label-sm label-'.$this->getStatusColor($order->getDeliveryState()).'"> '.$order->getDeliveryState().' </span>';
             $line["totalQuantity"] = $order->getOrderItemsTotalQuantity();
             $line["totalAmount"] = number_format($order->getTotalAmount(), 0);
+            $line["totalApprovedAmount"] = number_format($order->getTotalApprovedAmount(), 0);
 //            $line["paymentAmount"] = $order->getPaymentState() != Order::PAYMENT_STATE_PENDING ? number_format($order->getTotalPaymentDepositedAmount(), 0): number_format(0, 2);
             $line["paymentAmount"] = $order->getPayments()? number_format($order->getTotalPaymentDepositedAmount(), 0): number_format(0, 2);
             $line["actualAmount"] = $order->getPaymentState() != Order::PAYMENT_STATE_PENDING ? number_format($order->getTotalPaymentActualAmount(), 0): number_format(0, 2);
@@ -97,6 +98,7 @@ class OrderDatatable extends BaseDatatable
             ->add('deliveryState', 'column', array('title' => 'Delivery State', 'render' => 'Order.OrderStateFormat'))
             ->add('totalQuantity', 'virtual', array('title' => 'Total Qty(KG)', 'render' => 'Order.OrderPaymentFormat'))
             ->add('totalAmount', 'column', array('title' => 'Trade Value', 'render' => 'Order.OrderPaymentFormat'))
+            ->add('totalApprovedAmount', 'virtual', array('title' => 'Clearance Amount', 'render' => 'Order.OrderPaymentFormat'))
             ->add('paymentAmount', 'virtual', array('title' => 'Payment Amount', 'render' => 'Order.OrderPaymentFormat'))
             ->add('actualAmount', 'virtual', array('title' => 'Actual Amount', 'render' => 'Order.OrderPaymentFormat'))
             ->add('paymentMode', 'virtual', array('title' => 'Payment Mode', 'render' => 'Order.OrderPaymentFormat'))

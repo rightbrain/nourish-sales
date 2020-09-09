@@ -26,6 +26,7 @@ class OrderRepository extends EntityRepository
     public function create(Order $order)
     {
         $this->calculateOrderAmount($order);
+        $order->setTotalApprovedAmount($order->getTotalAmount());
         $this->setStatus($order);
         $this->setSms($order);
 
@@ -33,10 +34,11 @@ class OrderRepository extends EntityRepository
         $this->_em->flush();
     }
 
-    public function createWithouSms(Order $order)
+    public function createWithoutSms(Order $order)
     {
         $this->calculateOrderAmount($order);
         $this->orderPayment($order);
+        $order->setTotalApprovedAmount($order->getTotalAmount());
 //        $this->setAllPendingStatus($order);
         $this->setStatus($order);
         $order->setOrderVia('ONLINE');

@@ -196,7 +196,7 @@ class OrderController extends BaseController
             if ($form->isValid()) {
                 $em = $this->getDoctrine()->getManager();
                 $order->setLocation($order->getAgent()->getUser()->getUpozilla());
-                $order->setTotalApprovedAmount($order->getTotalAmount());
+
                 $orderIncentiveFlag->setOrder($order);
                 $this->orderRepository()->create($order);
 
@@ -283,9 +283,9 @@ class OrderController extends BaseController
 
                 $em = $this->getDoctrine()->getManager();
                 $order->setLocation($order->getAgent()->getUser()->getUpozilla());
-                $order->setTotalApprovedAmount($order->getTotalAmount());
+//                $order->setTotalApprovedAmount($order->getTotalAmount());
                 $orderIncentiveFlag->setOrder($order);
-                $this->orderRepository()->createWithouSms($order);
+                $this->orderRepository()->createWithoutSms($order);
 
                 /** @var OrderItem $item */
                 foreach ($order->getOrderItems() as $item){
