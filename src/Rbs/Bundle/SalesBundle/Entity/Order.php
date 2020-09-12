@@ -773,6 +773,23 @@ class Order
         return $total;
     }
 
+    /** @return float */
+    public function getTotalDeliveryItemsAmount()
+    {
+        $total = 0;
+        /** @var Delivery $item */
+        foreach($this->getDeliveries() as $item) {
+            /** @var DeliveryItem $deliveryItem */
+            foreach ($item->getDeliveryItems() as $deliveryItem){
+
+                $total += $deliveryItem->getOrderItem()->getPrice() * $deliveryItem->getQty();
+            }
+
+        }
+
+        return $total;
+    }
+
     public function getPaymentModeTitle(){
         $mode = $this->getPaymentMode();
         switch ($mode){

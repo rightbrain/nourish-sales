@@ -229,7 +229,7 @@ var Delivery = function()
                 $('#process-actions span').tooltip();
                 App.integerMask($('#delivery-item-form').find('.orderItems .deliver-qty'));
                 App.integerMask($('#delivery_order_amendment').find('.itemQty'));
-                App.integerMask($('#delivery_order_amendment').find('.amendmentItemQty'));
+                // App.integerMask($('#delivery_order_amendment').find('.amendmentItemQty'));
             }, 500);
         });
 
@@ -264,13 +264,29 @@ var Delivery = function()
 
         $('body').on('keyup','.itemQty', function () {
             var element = $(this);
+
+            var maxQty = element.attr('max');
+            var amendment_item_id = element.closest('tr').find('.amendment_item_id').val();
+            if (amendment_item_id!=''){
+                if(parseInt(element.val())>parseInt(maxQty)){
+                    element.val(maxQty);
+                    element.closest('tr').find('.amendmentItemQty').val('');
+                    toastr.error('Max quantity cross.');
+                    return false
+                }
+            }
+
             element.closest('tr').find('.totalAmount').text('');
             var orderId = element.closest('tr').find('.order_id').val();
+
             var itemId = element.closest('tr').find('.item_id').val();
             var unit_price = element.closest('tr').find('.unit_price').text();
             var amendmentItemQty = element.closest('tr').find('.amendmentItemQty').val();
             var amendment_item_unit_price = element.closest('tr').find('.amendment_item_unit_price').val();
             // var exOrderItemsQty = $('tbody.orderItems').find('.order_'+orderId).find('.itemId_'+itemId).text();
+
+
+
             if(amendment_item_unit_price){
                 exOrderItemsAmount = parseInt(amendmentItemQty)*parseFloat(amendment_item_unit_price);
             }else {
@@ -281,19 +297,30 @@ var Delivery = function()
                 var totalAmount = parseInt(element.val())*parseFloat(unit_price);
 
                 element.closest('tr').find('.totalAmount').text(parseFloat(totalAmount).toFixed(2));
+                if (amendment_item_id!='') {
+                    var amendmentCalculateQty = parseFloat(totalAmount / amendment_item_unit_price).toFixed(2);
+                    // console.log(amendmentCalculateQty)
+                    if (amendmentCalculateQty != Math.floor(amendmentCalculateQty)) {
+
+                        amendmentCalculateQty = parseInt(amendmentCalculateQty) + 1;
+
+                        // console.log(amendmentCalculateQty);
+                    }
+                    element.closest('tr').find('.amendmentItemQty').val(amendmentCalculateQty);
+                }
 
                 // var totalApprovedAmount = $('.totalApprovedAmount_'+orderId).text();
                 // var orderTotalAmount = $('.totalAmount_'+orderId).text();
 
                 element.closest('tr').find('.itemAdd').prop('disabled', false);
 
-                if (exOrderItemsAmount < totalAmount ) {
+                /*if (exOrderItemsAmount < totalAmount ) {
                     element.closest('tr').find('.itemAdd').prop('disabled', true);
                     element.val(0);
                     element.closest('tr').find('.totalAmount').text('');
                     alert('Clearance amount limit cross');
                     return false;
-                }
+                }*/
 
             }
 
@@ -323,10 +350,98 @@ var Delivery = function()
             });
         }).change();
 
-        $('body').on('change', '#amendment_item_id', function () {
+        /*$('body').on('change', '#amendment_item_id', function () {
             var element = $(this);
+
+            amendmentItem(element);
+
+
+        }).change();*/
+
+        $('body').on('change','#item_id, #amendment_item_id', function () {
+            var parentElement = $('#deliveryView');
+            var element = $(this);
+
+            amendmentItem(element);
+
+            amendedItem(parentElement, element);
+        });
+
+        $('body').on('click','#itemAdd', function () {
+            var element = $(this);
+            var parentElement = $('#deliveryView');
             var orderId = element.closest('tr').find('.order_id').val();
-            var amendment_item_id = element.val();
+            var totalApprovedAmount = parentElement.find('.totalApprovedAmount_'+orderId).text();
+            var amendmentItemId = element.closest('tr').find('.amendment_item_id').val();
+            var itemId = element.closest('tr').find('.item_id').val();
+            var itemQty = element.closest('tr').find('.itemQty').val();
+            var amendmentItemQty = element.closest('tr').find('.amendmentItemQty').val();
+            var amendment_item_unit_price = element.closest('tr').find('.amendment_item_unit_price').val();
+            var unit_price = element.closest('tr').find('.unit_price').text();
+            var deliveryId = $('.delivery-id').val();
+
+            if(orderId==''||itemId==''||itemQty==''||unit_price==''){
+                alert('Please enter value.');
+                return false;
+            }
+
+            $.ajax({
+                type: "post",
+                url: Routing.generate('order_item_add_ajax'),
+                data: {
+                    'orderId':orderId,
+                    'amendmentItemId':amendmentItemId,
+                    'amendmentItemQty':amendmentItemQty,
+                    'amendmentItemUnitPrice':amendment_item_unit_price,
+                    'itemId':itemId,
+                    'itemQty':itemQty,
+                    'unitPrice':unit_price,
+                    'totalApprovedAmount':parseInt(totalApprovedAmount),
+                    'deliveryId':deliveryId
+                },
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    if(response.status==='success'){
+                        if(response.type==='new'){
+                            $(".delivery_order tbody").find(".order_"+response.orderId).eq(-1).after($('<tr class="order_'+response.orderId+'"><td>'+response.orderItemCount+'</td><td>'+response.orderId+'</td><td>'+response.itemName+'</td><td class="item-qty orderItemQty_'+response.orderItemId+'">'+response.itemQty+'</td><td class="deliver"><input name="qty['+response.orderId+']['+response.orderItemId+']" class="form-control input-xsmall deliver-qty" value="0" style="text-align: right;"></td><td class="remain">'+response.itemQty+'</td><td></td></tr>'));
+                        }
+                        if(response.type==='old'){
+                            $(".delivery_order tbody").find(".order_"+response.orderId).find('.orderItemQty_'+response.orderItemId).text(response.itemQty);
+                            $(".delivery_order tbody").find(".order_"+response.orderId).find('.orderItemQty_'+response.orderItemId).closest('tr').find('.remain').text(response.itemQty);
+                            $(".delivery_order tbody").find(".order_"+response.orderId).find('.orderItemQty_'+response.orderItemId).closest('tr').find('.deliver-qty').val(0);
+                        }
+                        $(".delivery_order tbody").find(".totalAmount_"+response.orderId).text(response.totalAmount);
+                        toastr.success(response.message);
+                        element.closest('tr').find('.itemQty').val('');
+                        element.closest('tr').find('.stock-available').text('');
+                        element.closest('tr').find('.unit_price').text('');
+                        element.closest('tr').find('.totalAmount').text('');
+
+
+                        // $("#delivery_order_amendment").load(window.location + " #delivery_order_amendment");
+                        // $("#delivery_order").load(window.location + " #delivery_order");
+                        window.location.href= Routing.generate('delivery_view', {id:$('#delivery-id').val()});
+
+                    }
+                    if(response.status==='error'){
+                        toastr.error(response.message);
+                    }
+                    setTimeout(function(){
+                        orderItemRemainingHandleInit();
+                        App.integerMask($('body').find('#delivery_order_amendment').find('.itemQty'));
+                        // App.integerMask($('body').find('#delivery_order_amendment').find('.amendmentItemQty'));
+                        App.integerMask($('body').find('#delivery-item-form').find('.orderItems .deliver-qty'));
+                    }, 500);
+
+                }
+            });
+        });
+
+        function amendmentItem(element) {
+            var amendment_item_id = element.closest('tr').find('#amendment_item_id').val();
+            var orderId = element.closest('tr').find('.order_id').val();
+            // var amendment_item_id = element.val();
             var itemId = element.closest('tr').find('#item_id').val();
             if (amendment_item_id=='' || orderId==''){
                 return false;
@@ -344,6 +459,7 @@ var Delivery = function()
                 url: Routing.generate('find_stock_item_depo_for_amenment_ajax', {order:orderId,item:amendment_item_id}),
                 dataType: 'json',
                 success: function (response) {
+                    element.closest('tr').find('.itemId').val('');
                     element.closest('tr').find('.amendment_item_unit_price').val('');
                     element.closest('tr').find('.amendment_item_unit_price_show').find('strong').text('');
                     element.closest('tr').find('.itemAdd').prop('disabled', true);
@@ -361,16 +477,28 @@ var Delivery = function()
                     }
                 }
             });
+        }
 
+        function amendedItem(parentElement, element) {
 
-        }).change();
-
-        $('body').on('change','#item_id', function () {
-            var element = $(this);
             var orderId = element.closest('tr').find('.order_id').val();
+            var itemId = element.closest('tr').find('#item_id').val();
             var amendment_item_id = element.closest('tr').find('.amendment_item_id').val();
+            var amendment_item_unit_price = element.closest('tr').find('.amendment_item_unit_price').val();
 
-            var itemId = element.val();
+
+            var amendmentItemQty = parentElement.find('.itemId_'+amendment_item_id).text();
+// console.log(amendmentItemQty)
+            //
+            var totalApprovedAmount = parseInt(amendmentItemQty*amendment_item_unit_price);
+
+            if(amendment_item_id==''){
+                var totalClearanceAmount = parentElement.find('.totalApprovedAmount_'+orderId).text();
+                var orderTotalAmount = parentElement.find('.totalAmount_'+orderId).text();
+                totalApprovedAmount = parseFloat(totalClearanceAmount)-parseFloat(orderTotalAmount);
+            }
+
+            // var itemId = element.val();
             if(orderId==''||itemId==''){
                 element.closest('tr').find('.stock-available').text('');
                 element.closest('tr').find('.unit_price').text('');
@@ -396,13 +524,17 @@ var Delivery = function()
                     element.closest('tr').find('.itemAdd').prop('disabled', true);
                     element.closest('tr').find('.itemQty').prop('disabled', true);
                     if(response.status==='success'){
-                          var stockAvailableInfo = parseInt(response.onHand) - parseInt(response.onHold);
-                    element.closest('tr').find('.stock-available').text(stockAvailableInfo);
-                    element.closest('tr').find('.unit_price').text(response.price);
-                    if(stockAvailableInfo>0){
-                        element.closest('tr').find('.itemAdd').prop('disabled', false);
-                        element.closest('tr').find('.itemQty').prop('disabled', false);
-                    }
+                        var itemQty = parseInt(totalApprovedAmount/response.price);
+                        var stockAvailableInfo = parseInt(response.onHand) - parseInt(response.onHold);
+                        element.closest('tr').find('.stock-available').text(stockAvailableInfo);
+                        element.closest('tr').find('.itemQty').val(itemQty);
+                        element.closest('tr').find('.itemQty').attr('data-max-qty',itemQty);
+                        element.closest('tr').find('.itemQty').attr('max',itemQty);
+                        element.closest('tr').find('.unit_price').text(response.price);
+                        if(stockAvailableInfo>0){
+                            element.closest('tr').find('.itemAdd').prop('disabled', false);
+                            element.closest('tr').find('.itemQty').prop('disabled', false);
+                        }
 
                     }
                     if(response.status==='error'){
@@ -410,71 +542,7 @@ var Delivery = function()
                     }
                 }
             });
-        });
-
-        $('body').on('click','#itemAdd', function () {
-            var element = $(this);
-            var orderId = element.closest('tr').find('.order_id').val();
-            var amendmentItemId = element.closest('tr').find('.amendment_item_id').val();
-            var itemId = element.closest('tr').find('.item_id').val();
-            var itemQty = element.closest('tr').find('.itemQty').val();
-            var amendmentItemQty = element.closest('tr').find('.amendmentItemQty').val();
-            var deliveryId = $('.delivery-id').val();
-
-            if(orderId==''||itemId==''||itemQty==''||amendmentItemId==''){
-                alert('Please enter value.');
-                return false;
-            }
-
-            $.ajax({
-                type: "post",
-                url: Routing.generate('order_item_add_ajax'),
-                data: {
-                    'orderId':orderId,
-                    'itemId':itemId,
-                    'amendmentItemId':amendmentItemId,
-                    'itemQty':itemQty,
-                    'amendmentItemQty':amendmentItemQty,
-                    'deliveryId':deliveryId
-                },
-                dataType: 'json',
-                success: function (response) {
-                    console.log(response);
-                    if(response.status==='success'){
-                        if(response.type==='new'){
-                            $(".delivery_order tbody").find(".order_"+response.orderId).eq(-1).after($('<tr class="order_'+response.orderId+'"><td>'+response.orderItemCount+'</td><td>'+response.orderId+'</td><td>'+response.itemName+'</td><td class="item-qty orderItemQty_'+response.orderItemId+'">'+response.itemQty+'</td><td class="deliver"><input name="qty['+response.orderId+']['+response.orderItemId+']" class="form-control input-xsmall deliver-qty" value="0" style="text-align: right;"></td><td class="remain">'+response.itemQty+'</td><td></td></tr>'));
-                        }
-                        if(response.type==='old'){
-                            $(".delivery_order tbody").find(".order_"+response.orderId).find('.orderItemQty_'+response.orderItemId).text(response.itemQty);
-                            $(".delivery_order tbody").find(".order_"+response.orderId).find('.orderItemQty_'+response.orderItemId).closest('tr').find('.remain').text(response.itemQty);
-                            $(".delivery_order tbody").find(".order_"+response.orderId).find('.orderItemQty_'+response.orderItemId).closest('tr').find('.deliver-qty').val(0);
-                        }
-                        $(".delivery_order tbody").find(".totalAmount_"+response.orderId).text(response.totalAmount);
-                        toastr.success(response.message);
-                        element.closest('tr').find('.itemQty').val('');
-                        element.closest('tr').find('.stock-available').text('');
-                        element.closest('tr').find('.unit_price').text('');
-                        element.closest('tr').find('.totalAmount').text('');
-
-
-                        $("#delivery_order_amendment").load(window.location + " #delivery_order_amendment");
-                        $("#delivery_order").load(window.location + " #delivery_order");
-                        // window.location.href= Routing.generate('delivery_view', {id:$('#delivery-id').val()});
-
-                    }
-                    if(response.status==='error'){
-                        toastr.error(response.message);
-                    }
-                    setTimeout(function(){
-                        orderItemRemainingHandleInit();
-                        App.integerMask($('body').find('#delivery_order_amendment').find('.itemQty'));
-                        App.integerMask($('body').find('#delivery_order_amendment').find('.amendmentItemQty'));
-                        App.integerMask($('body').find('#delivery-item-form').find('.orderItems .deliver-qty'));
-                    }, 500);
-
-                }
-            });
-        });
+        }
     }
 
     function init()

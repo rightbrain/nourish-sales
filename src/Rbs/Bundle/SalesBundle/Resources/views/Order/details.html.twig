@@ -309,7 +309,7 @@
 
                     <div class="modal-footer">
                         {% if order.orderState != 'COMPLETE' and order.orderState != 'CANCEL' %}
-                            <a class="btn blue delete-list-btn red" href="{{ path('order_cancel', {"id": order.id}) }}">
+                            <a data-title="Do you want to cancel?" class="btn blue delete-list-btn red" href="{{ path('order_cancel', {"id": order.id}) }}">
                                 Order Cancel
                             </a>
                         {% endif %}

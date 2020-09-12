@@ -150,8 +150,8 @@
                                                         <td style="width: 100px">Amendment Qty</td>
                                                         <td style="width: 200px">Item Name</td>
                                                         <td>Remain Qty</td>
-                                                        <td style="width: 100px">Qty (Kg)</td>
                                                         <td>Unit Price</td>
+                                                        <td style="width: 100px">Qty (Kg)</td>
                                                         <td>Total amount</td>
                                                         <td>Action</td>
                                                     </tr>
@@ -174,7 +174,7 @@
                                                             <input type="hidden" class="amendment_item_unit_price input-mask-number" id="amendment_item_unit_price" value="">
                                                         </td>
                                                         <td>
-                                                            <input type="text" id="amendmentItemQty" class="form-control input-mask-number amendmentItemQty" name="amendmentItemQty">
+                                                            <input type="text" id="amendmentItemQty" class="form-control amendmentItemQty" name="amendmentItemQty">
                                                         </td>
                                                         <td>
                                                             <select class="form-control item_id" name="item_id" id="item_id">
@@ -187,10 +187,10 @@
                                                             </select>
                                                         </td>
                                                         <td class="stock-available"></td>
-                                                        <td>
-                                                            <input type="text" id="itemQty" class="form-control input-mask-number itemQty" name="itemQty">
-                                                        </td>
                                                         <td class="unit_price"></td>
+                                                        <td>
+                                                            <input type="text" id="itemQty" data-max-qty="" max="" class="form-control input-mask-number itemQty" name="itemQty">
+                                                        </td>
                                                         <td class="totalAmount"></td>
                                                         <td>
                                                             <button type="button" id="itemAdd" disabled class="btn btn-sm btn-success itemAdd">Add</button>

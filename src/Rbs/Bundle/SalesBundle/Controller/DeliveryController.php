@@ -207,15 +207,17 @@ class DeliveryController extends BaseController
     {
         $returnData = array();
         $orderId = $request->request->get('orderId');
-//        $orderId = 23893;
-        $itemId = $request->request->get('itemId');
-//        $itemId = 49;
-        $amendmentItemId = $request->request->get('amendmentItemId');
-//        $amendmentItemId = 6;
-        $itemQty = $request->request->get('itemQty');
 
+        $amendmentItemId = $request->request->get('amendmentItemId');
         $amendmentItemQty = $request->request->get('amendmentItemQty');
-//        $itemQty = 200;
+        $amendmentItemUnitPrice = $request->request->get('amendmentItemUnitPrice');
+
+        $itemId = $request->request->get('itemId');
+        $itemQty = $request->request->get('itemQty');
+        $unitPrice = $request->request->get('unitPrice');
+
+//        $totalApprovedAmount = $request->request->get('totalApprovedAmount');
+
         $deliveryId = $request->request->get('deliveryId');
 //        $deliveryId = 22807;
 
@@ -227,10 +229,105 @@ class DeliveryController extends BaseController
         }
 
 
+
         $order = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($orderId);
         $item = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->find($itemId);
         $amendmentItem = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->find($amendmentItemId);
         $delivery = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->find($deliveryId);
+
+        if($amendmentItemId==''){
+
+
+            if(($order->getTotalApprovedAmount()-$order->getTotalAmount())>=($itemQty*$unitPrice)){
+                $existOrderItem = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->findOneBy(array('order'=>$order,'item'=>$item));
+                if ($existOrderItem){
+                    $orderItem = $existOrderItem;
+                    $orderItem->setQuantity( $orderItem->getQuantity() + $itemQty);
+                    $returnData['type']='old';
+                }else{
+                    $orderItem = new OrderItem();
+                    $orderItem->setQuantity($itemQty);
+                    $returnData['type']='new';
+                }
+
+                /*if(($amendmentOrderItem->getPrice()* $amendmentItemQty) < ($price*$itemQty)){
+                    return new JsonResponse(
+                        array('status'=> 'error','message'=>"Order clearance amount cross.")
+                    );
+                }*/
+
+
+                $orderItem->setItem($item);
+
+                $orderItem->setPrice($unitPrice);
+                $orderItem->setTotalAmount($orderItem->calculateTotalAmount());
+                $orderItem->setOrder($order);
+
+                /*$this->getDoctrine()->getEntityManager()->persist($orderItem);
+                $this->getDoctrine()->getEntityManager()->flush();*/
+
+                $order->addOrderItem($orderItem);
+
+                $this->getDoctrine()->getRepository("RbsSalesBundle:OrderItem")->update($orderItem);
+
+                $this->getDoctrine()->getRepository("RbsSalesBundle:Order")->onlyUpdate($order);
+
+                $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(
+                    array(
+                        'item' => $orderItem->getItem(),
+                        'depo' => $order->getDepo(),
+                    )
+                );
+                $stock->setOnHold($stock->getOnHold() + $orderItem->getQuantity());
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+
+                $orderItemAmendmentHistory = new OrderItemAmendmentHistory();
+                $exHistoryQty = $itemQty;
+                $exHistoryAmendmentQty = $amendmentItemQty;
+                /*if ($amendedHistory){
+                    $orderItemAmendmentHistory = $amendedHistory;
+                    $exHistoryQty = $amendedHistory->getQuantity()+$itemQty;
+                    $exHistoryAmendmentQty = $amendedHistory->getAmendmentQuantity()+$amendmentItemQty;
+                }*/
+
+                $orderItemAmendmentHistory->setOrder($order);
+                $orderItemAmendmentHistory->setItem($item);
+                $orderItemAmendmentHistory->setDelivery($delivery);
+                $orderItemAmendmentHistory->setQuantity($exHistoryQty);
+//                $orderItemAmendmentHistory->setAmendmentQuantity(0);
+//                $orderItemAmendmentHistory->setAmendmentItem($amendmentItem);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItemAmendmentHistory')->update($orderItemAmendmentHistory);
+
+
+                $data=array(
+                    'status'=> 'success',
+                    'message'=>'Item has been added.',
+                    'orderId'=>$orderItem->getOrder()->getId(),
+                    'orderItemId'=>$orderItem->getId(),
+                    'itemName'=>$orderItem->getItem()->getName(),
+                    'itemQty'=>$orderItem->getQuantity(),
+                    'totalAmount'=>$order->getTotalAmount(),
+                    'orderItemCount'=>count($order->getOrderItems()),
+                );
+
+                $return= array_merge($returnData, $data);
+
+                return new JsonResponse($return);
+            }else{
+                return new JsonResponse(
+                    array('status'=> 'error','message'=>"Order clearance amount cross.")
+                );
+            }
+
+        }
+
+
+        if($itemQty*$unitPrice>$amendmentItemQty*$amendmentItemUnitPrice){
+            return new JsonResponse(
+                array('status'=> 'error','message'=>"Order clearance amount cross.")
+            );
+        }
+
 
         $amendmentOrderItem = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->findOneBy(array('order'=>$order, 'item'=>$amendmentItem));
 
@@ -255,30 +352,9 @@ class DeliveryController extends BaseController
             );
         }
 
-        $orderItemAmendmentHistory = new OrderItemAmendmentHistory();
-        $exHistoryQty = $itemQty;
-        $exHistoryAmendmentQty = $amendmentItemQty;
-        if ($amendedHistory){
-            $orderItemAmendmentHistory = $amendedHistory;
-            $exHistoryQty = $amendedHistory->getQuantity()+$itemQty;
-            $exHistoryAmendmentQty = $amendedHistory->getAmendmentQuantity()+$amendmentItemQty;
-        }
-
-        $orderItemAmendmentHistory->setOrder($order);
-        $orderItemAmendmentHistory->setItem($item);
-        $orderItemAmendmentHistory->setDelivery($delivery);
-        $orderItemAmendmentHistory->setQuantity($exHistoryQty);
-        $orderItemAmendmentHistory->setAmendmentQuantity($exHistoryAmendmentQty);
-        $orderItemAmendmentHistory->setAmendmentItem($amendmentItem);
-        $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItemAmendmentHistory')->update($orderItemAmendmentHistory);
-
-
-
-
-
-        $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+        /*$price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
             $item, $order->getAgent()->getUser()->getZilla()
-        );
+        );*/
         $exOrderItem = array();
         /** @var OrderItem $orderItem */
         foreach ($order->getOrderItems() as $orderItem){
@@ -299,13 +375,13 @@ class DeliveryController extends BaseController
             }
           $orderItem = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->findOneBy(array('order'=>$order,'item'=>$item));
 
-            $orderItem->setQuantity( $orderItem->getQuantity() + $itemQty);
 
-          if(($amendmentOrderItem->getPrice()* $amendmentItemQty) < ($price*$itemQty)){
+
+          /*if(($amendmentOrderItem->getPrice()* $amendmentItemQty) < ($price*$itemQty)){
               return new JsonResponse(
                   array('status'=> 'error','message'=>"Order clearance amount cross.",$order->getTotalApprovedAmount(),(($order->getTotalAmount()-$orderItem->getTotalAmount()) + ($price*$itemQty) ))
               );
-          }
+          }*/
 
           $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(
                 array(
@@ -315,6 +391,8 @@ class DeliveryController extends BaseController
             );
             $stock->setOnHold($stock->getOnHold() - $orderItem->getQuantity());
             $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+
+            $orderItem->setQuantity( $orderItem->getQuantity() + $itemQty);
 
 //          $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
             $returnData['type']='old';
@@ -331,11 +409,11 @@ class DeliveryController extends BaseController
 
             $orderItem->setQuantity($itemQty);
 
-            if(($amendmentOrderItem->getPrice()* $amendmentItemQty) < ($price*$itemQty)){
+            /*if(($amendmentOrderItem->getPrice()* $amendmentItemQty) < ($price*$itemQty)){
                 return new JsonResponse(
                     array('status'=> 'error','message'=>"Order clearance amount cross.")
                 );
-            }
+            }*/
             $returnData['type']='new';
         }
 
@@ -352,7 +430,7 @@ class DeliveryController extends BaseController
 
         $orderItem->setItem($item);
 
-        $orderItem->setPrice($price);
+        $orderItem->setPrice($unitPrice);
         $orderItem->setTotalAmount($orderItem->calculateTotalAmount());
         $orderItem->setOrder($order);
 
@@ -375,6 +453,26 @@ class DeliveryController extends BaseController
         );
         $stock->setOnHold($stock->getOnHold() + $orderItem->getQuantity());
         $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+
+
+        $orderItemAmendmentHistory = new OrderItemAmendmentHistory();
+        $exHistoryQty = $itemQty;
+        $exHistoryAmendmentQty = $amendmentItemQty;
+        if ($amendedHistory){
+            $orderItemAmendmentHistory = $amendedHistory;
+            $exHistoryQty = $amendedHistory->getQuantity()+$itemQty;
+            $exHistoryAmendmentQty = $amendedHistory->getAmendmentQuantity()+$amendmentItemQty;
+        }
+
+        $orderItemAmendmentHistory->setOrder($order);
+        $orderItemAmendmentHistory->setItem($item);
+        $orderItemAmendmentHistory->setDelivery($delivery);
+        $orderItemAmendmentHistory->setQuantity($exHistoryQty);
+        $orderItemAmendmentHistory->setAmendmentQuantity($exHistoryAmendmentQty);
+        $orderItemAmendmentHistory->setAmendmentItem($amendmentItem);
+        $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItemAmendmentHistory')->update($orderItemAmendmentHistory);
+
+
 
         $data=array(
             'status'=> 'success',
