@@ -267,14 +267,7 @@ var Delivery = function()
 
             var maxQty = element.attr('max');
             var amendment_item_id = element.closest('tr').find('.amendment_item_id').val();
-            if (amendment_item_id!=''){
-                if(parseInt(element.val())>parseInt(maxQty)){
-                    element.val(maxQty);
-                    element.closest('tr').find('.amendmentItemQty').val('');
-                    toastr.error('Max quantity cross.');
-                    return false
-                }
-            }
+            var amendment_item_unit_price = element.closest('tr').find('.amendment_item_unit_price').val();
 
             element.closest('tr').find('.totalAmount').text('');
             var orderId = element.closest('tr').find('.order_id').val();
@@ -282,15 +275,37 @@ var Delivery = function()
             var itemId = element.closest('tr').find('.item_id').val();
             var unit_price = element.closest('tr').find('.unit_price').text();
             var amendmentItemQty = element.closest('tr').find('.amendmentItemQty').val();
-            var amendment_item_unit_price = element.closest('tr').find('.amendment_item_unit_price').val();
-            // var exOrderItemsQty = $('tbody.orderItems').find('.order_'+orderId).find('.itemId_'+itemId).text();
 
+            // var exOrderItemsQty = $('tbody.orderItems').find('.order_'+orderId).find('.itemId_'+itemId).text();
+            if (amendment_item_id!=''){
+                if(parseInt(element.val())>parseInt(maxQty)){
+                    element.val(maxQty);
+
+                    var amendmentCalculateQty = parseFloat((parseInt(element.val())*parseFloat(unit_price)) / amendment_item_unit_price).toFixed(2);
+                    // console.log(amendmentCalculateQty)
+                    if (amendmentCalculateQty != Math.floor(amendmentCalculateQty)) {
+
+                        amendmentCalculateQty = parseInt(amendmentCalculateQty) + 1;
+
+                        // console.log(amendmentCalculateQty);
+                    }
+                    element.closest('tr').find('.amendmentItemQty').val(parseFloat(amendmentCalculateQty));
+
+                    // element.closest('tr').find('.amendmentItemQty').val('');
+                    toastr.error('Max quantity cross.');
+                    return false
+                }
+            }
 
 
             if(amendment_item_unit_price){
                 exOrderItemsAmount = parseInt(amendmentItemQty)*parseFloat(amendment_item_unit_price);
             }else {
                 exOrderItemsAmount=0;
+            }
+            if ($(this).val()=='' || $(this).val()<=0) {
+                element.closest('tr').find('.itemAdd').prop('disabled', true);
+                element.closest('tr').find('.amendmentItemQty').val('');
             }
             // console.log(exOrderItemsAmount);
             if($.isNumeric($(this).val()) && itemId!=='' && unit_price!==''){
@@ -487,6 +502,7 @@ var Delivery = function()
             var amendment_item_unit_price = element.closest('tr').find('.amendment_item_unit_price').val();
 
 
+
             var amendmentItemQty = parentElement.find('.itemId_'+amendment_item_id).text();
 // console.log(amendmentItemQty)
             //
@@ -531,6 +547,9 @@ var Delivery = function()
                         element.closest('tr').find('.itemQty').attr('data-max-qty',itemQty);
                         element.closest('tr').find('.itemQty').attr('max',itemQty);
                         element.closest('tr').find('.unit_price').text(response.price);
+                        if(amendment_item_id=!'') {
+                            element.closest('tr').find('.amendmentItemQty').val(amendmentItemQty);
+                        }
                         if(stockAvailableInfo>0){
                             element.closest('tr').find('.itemAdd').prop('disabled', false);
                             element.closest('tr').find('.itemQty').prop('disabled', false);
