@@ -289,7 +289,6 @@ class OrderController extends BaseController
                 $order->setLocation($order->getAgent()->getUser()->getUpozilla());
 
                 $order->setCreatedAt(new \DateTime($orderDate));
-//                $order->setTotalApprovedAmount($order->getTotalAmount());
 
                 $order->setPaidAmount($order->getTotalPaymentDepositedAmount());
                 $orderIncentiveFlag->setOrder($order);
@@ -401,7 +400,6 @@ class OrderController extends BaseController
 
                 $stockRepo->updateStock($order, $depo, $prevOrderItems);
 
-                $order->setTotalApprovedAmount($order->getTotalAmount());
                 $em->getRepository('RbsSalesBundle:Order')->update($order, true);
 
                 /** @var OrderItem $item */
@@ -479,7 +477,7 @@ class OrderController extends BaseController
                 if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
                     $stockRepo->updateStock($order, $depo, $prevOrderItems);
                 }
-                $order->setTotalApprovedAmount($order->getTotalAmount());
+
                 $em->getRepository('RbsSalesBundle:Order')->updateWithoutSms($order, true);
 
                 /** @var OrderItem $item */
