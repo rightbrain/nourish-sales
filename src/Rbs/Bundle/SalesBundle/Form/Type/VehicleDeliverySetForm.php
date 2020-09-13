@@ -9,6 +9,7 @@ use Rbs\Bundle\SalesBundle\Repository\DeliveryRepository;
 use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
 use Rbs\Bundle\SalesBundle\Repository\VehicleRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Count;
@@ -60,6 +61,16 @@ class VehicleDeliverySetForm extends AbstractType
                         ->orderBy('o.id', 'desc');
                 }
             ))
+            ->add($builder->create('created_at', 'text', array(
+                'label' => 'Delivery Date',
+                'attr' => array(
+                    'class' => '',
+                    'autocomplete' => 'off',
+                    'placeholder' => 'date-month-Year'
+                ),
+                'empty_data' => new \DateTime(),
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
+
             ->add('submit', 'submit', array(
                 'attr'     => array('class' => 'btn green')
             ))

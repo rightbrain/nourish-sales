@@ -9,6 +9,7 @@ use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\SmsRepository;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -99,6 +100,17 @@ class OrderWithoutSmsForm extends AbstractType
 
         $builder
             ->add('remark')
+
+            ->add($builder->create('created_at', 'text', array(
+                'label' => 'Order Date',
+//                'data' => new \DateTime(),
+                'attr' => array(
+                    'class' => '',
+                    'autocomplete' => 'off',
+                    'placeholder' => 'date-month-Year'
+                ),
+                'empty_data' => new \DateTime(),
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
 
             ->add('paymentMode', 'choice', array(
                 'empty_value' => 'Select Payment Mode',

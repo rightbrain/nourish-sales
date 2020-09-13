@@ -2,7 +2,7 @@
 
 <div class="col-md-6">
     <div class="form-group">
-        <label class="col-md-2 control-label">Agent *</label>
+        <label class="col-md-4 control-label">Agent *</label>
         <div class="col-md-6" style="margin-top: 10px;">
             {#{{ form_widget(form.agent, {'attr' : agentAttr}) }}
             {{ form_errors(form.agent) }}#}
@@ -12,7 +12,7 @@
         </div>
     </div>
     <div class="form-group">
-        <label class="col-md-2 control-label">Payment Mode *</label>
+        <label class="col-md-4 control-label">Payment Mode *</label>
         <div class="col-md-6" style="margin-top: 10px;">
             {{ form_widget(form.paymentMode) }}
             {{ form_errors(form.paymentMode) }}

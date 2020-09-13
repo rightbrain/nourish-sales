@@ -255,6 +255,7 @@ class OrderController extends BaseController
         $agentId = $this->getUser()->getAgent()?$this->getUser()->getAgent()->getId():null;
         $order = new Order();
         $orderIncentiveFlag = new OrderIncentiveFlag();
+        $allRequest = $request->request->get('order');
 
         $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager(), $agentId ), $order);
 
@@ -281,9 +282,16 @@ class OrderController extends BaseController
 
             if ($form->isValid()) {
 
+                $currentTime = date('H:i:s',strtotime('now'));
+                $requestDate = isset($allRequest['created_at'])?date('Y-m-d',strtotime($allRequest['created_at'])):date('Y-m-d',strtotime('now'));
+                $orderDate = $requestDate.' '.$currentTime;
                 $em = $this->getDoctrine()->getManager();
                 $order->setLocation($order->getAgent()->getUser()->getUpozilla());
+
+                $order->setCreatedAt(new \DateTime($orderDate));
 //                $order->setTotalApprovedAmount($order->getTotalAmount());
+
+                $order->setPaidAmount($order->getTotalPaymentDepositedAmount());
                 $orderIncentiveFlag->setOrder($order);
                 $this->orderRepository()->createWithoutSms($order);
 
@@ -437,6 +445,7 @@ class OrderController extends BaseController
 
         $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager(), $agentId), $order);
         //$form->remove('agent');
+        $form->remove('created_at');
         $em = $this->getDoctrine()->getManager();
 
         $depoAttr = Order::ORDER_STATE_COMPLETE == $order->getOrderState() ? array('disabled'=>'disabled') : array();
@@ -527,10 +536,14 @@ class OrderController extends BaseController
         $deliveryItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->findBy(array(
             'order' => $order->getId(),
         ));
-
-        $deliveredItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItems($order);
+        $deliveredItems= array();
+        $deliveredOrderItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItems($order);
         $auditLogs = $this->getDoctrine()->getRepository('RbsCoreBundle:AuditLog')->getByTypeOrObjectId(array(
-            'order.approved', 'order.verified', 'order.hold', 'order.canceled', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
+            'order.approved', 'order.verified', 'order.hold', 'order.canceled', 'order.closed', 'payment.approved', 'payment.over.credit.approved'), $order->getId());
+
+        foreach ($deliveredOrderItems as $deliveredOrderItem) {
+            $deliveredItems[$deliveredOrderItem['oiId']]= $deliveredOrderItem;
+        }
 
         return $this->render('RbsSalesBundle:Order:details.html.twig', array(
             'order' => $order,
@@ -764,7 +777,7 @@ class OrderController extends BaseController
 
         if (!$agent->isVIP() && $isOverCredit) {
             $order->setPaymentState(Order::PAYMENT_STATE_CREDIT_APPROVAL);
-        } else if ($order->getTotalAmount() === $order->getPaidAmount()) {
+        } else if ($order->getTotalAmount() <= $order->getPaidAmount()) {
             $order->setPaymentState(Order::PAYMENT_STATE_PAID);
             $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
         } else {
@@ -802,7 +815,7 @@ class OrderController extends BaseController
         /** TODO: Refactor adjustment method. Multiple Update Query Executed */
         $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
 
-        if ($order->getTotalAmount() === $order->getPaidAmount()) {
+        if ($order->getTotalAmount() <= $order->getPaidAmount()) {
             $order->setPaymentState(Order::PAYMENT_STATE_PAID);
         } else {
             $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
@@ -903,4 +916,60 @@ class OrderController extends BaseController
         return new JsonResponse($arrayReturn);
 
     }
+
+
+    /**
+     * @Route("/order/partial/shipped/close/{id}", name="order_partial_shipped_close")
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL")
+     */
+    public function orderPartialShippedCloseAction(Order $order)
+    {
+        if($order->getDeliveryState() == Order::DELIVERY_STATE_PARTIALLY_SHIPPED){
+
+            $deliveredItem= array();
+            $deliveredOrderItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItems($order);
+
+            foreach ($deliveredOrderItems as $deliveredOrderItem) {
+                $deliveredItem[$deliveredOrderItem['oiId']] = $deliveredOrderItem;
+            }
+
+
+            /** @var OrderItem $orderItem */
+            foreach ($order->getOrderItems() as $orderItem){
+                $deliveredQty = isset($deliveredItem[$orderItem->getId()]['totalDeliveredQuantity'])?(int)$deliveredItem[$orderItem->getId()]['totalDeliveredQuantity']:0;
+                $remainingQty = $orderItem->getQuantity()-$deliveredQty ;
+
+                $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(
+                    array(
+                        'item' => $orderItem->getItem(),
+                        'depo' => $order->getDepo(),
+                    )
+                );
+                $stock->setOnHold($stock->getOnHold() - $remainingQty);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
+            }
+
+            $deliveryItemRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem');
+
+            if ((int)$deliveryItemRepo->getTotalDeliveryItemByOrder($order)) {
+
+                $order->setDeliveryState(Order::DELIVERY_STATE_SHIPPED);
+            }
+            $order->setOrderState(Order::ORDER_STATE_COMPLETE);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updatePartialShippedStatus($order);
+
+
+
+            $this->dispatchApproveProcessEvent('order.closed', $order);
+            $this->flashMessage('success', 'Order Closed Successfully');
+//            return $this->redirect($this->generateUrl('orders_home'));
+        }else{
+            $this->flashMessage('error', 'This are not permitted');
+        }
+
+        return $this->redirect($this->generateUrl('orders_home'));
+    }
+
 }

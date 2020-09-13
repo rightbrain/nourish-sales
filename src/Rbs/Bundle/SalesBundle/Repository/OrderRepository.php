@@ -39,6 +39,7 @@ class OrderRepository extends EntityRepository
         $this->calculateOrderAmount($order);
         $this->orderPayment($order);
         $order->setTotalApprovedAmount($order->getTotalAmount());
+        $order->setPaidAmount($order->getTotalPaymentDepositedAmount());
 //        $this->setAllPendingStatus($order);
         $this->setStatus($order);
         $order->setOrderVia('ONLINE');
@@ -61,6 +62,12 @@ class OrderRepository extends EntityRepository
     public function onlyUpdate(Order $order)
     {
         $this->calculateOrderAmount($order);
+        $this->_em->persist($order);
+        $this->_em->flush();
+        return $this->_em;
+    }
+    public function updatePartialShippedStatus(Order $order)
+    {
         $this->_em->persist($order);
         $this->_em->flush();
         return $this->_em;

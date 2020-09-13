@@ -84,6 +84,7 @@ class DeliveryItemRepository extends EntityRepository
         $query->join('oi.item', 'i');
         $query->select('i.id');
         $query->addSelect('i.name');
+        $query->addSelect('oi.id as oiId');
         $query->addSelect('SUM(di.qty) AS totalDeliveredQuantity');
         $query->where('di.order = :order');
         $query->setParameter('order', $order->getId());

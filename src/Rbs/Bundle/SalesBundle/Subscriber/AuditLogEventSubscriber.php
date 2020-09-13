@@ -25,6 +25,7 @@ class AuditLogEventSubscriber implements EasyAuditEventSubscriberInterface
             "delivery.vehicle_out",
             "delivery.start_loading",
             "delivery.finish_loading",
+            "order.closed"
         );
     }
 }

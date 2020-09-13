@@ -45,4 +45,10 @@
 
 {% block documentReady %}
     {{ parent() }}
+    $('#vehicle_delivery_form_created_at').datepicker({
+    format: "dd-mm-yyyy",
+    todayHighlight:true,
+    startDate: new Date(),
+    autoclose: true
+    }).datepicker('setDate', new Date());
 {% endblock documentReady %}

@@ -158,17 +158,19 @@
                                         </tr>
                                         </thead>
                                         <tbody class="orderItems">
+                                        {% set i=1 %}
                                         {% for index, orderItem in order.orderItems %}
                                             {% if orderItem.quantity != 0 %}
                                             <tr>
-                                                <td>{{ index + 1 }}.</td>
+                                                <td>{{ i  }}.</td>
                                                 <td>{{ orderItem.item.getItemCodeName | default('') }}</td>
                                                 <td>{{ orderItem.quantity | default('') }}</td>
-                                                <td>{{ deliveredItems[index]['totalDeliveredQuantity'] | default('') }}</td>
+                                                <td>{{ deliveredItems[orderItem.id]['totalDeliveredQuantity'] | default('') }}</td>
                                                 <td>{{ orderItem.price | default('') }}</td>
                                                 <td>{{ orderItem.totalAmount | default('') }}</td>
                                                 <td>{{ orderItem.paidAmount | default('') }}</td>
                                             </tr>
+                                                {% set i=i+1 %}
                                             {% endif %}
                                         {% endfor %}
                                         <tbody>

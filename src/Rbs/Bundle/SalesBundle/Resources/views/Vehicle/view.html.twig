@@ -21,6 +21,12 @@
                                         <td>{{ vehicle.deliveries.id }}</td>
                                     </tr>
                                     <tr>
+                                        <th>Challan Date : </th>
+                                        <td>
+                                            {{ vehicle.deliveries.createdAt | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>Vehicle Supply By : </th>
                                         <td>
                                             {#{% if((vehicle.agent is not null)) %}

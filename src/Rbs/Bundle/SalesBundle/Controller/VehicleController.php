@@ -376,7 +376,7 @@ class VehicleController extends BaseController
     public function deliverySetAction(Request $request, Vehicle $vehicle)
     {
         $form = $this->createForm(new VehicleDeliverySetForm($this->getUser(), $vehicle->getId()));
-        
+        $allRequest = $request->request->get('vehicle_delivery_form');
         if ('POST' === $request->getMethod()) {
             if(!isset($request->request->get('vehicle_delivery_form')['orders'])){
                 $this->get('session')->getFlashBag()->add('error', 'Please select at least Order');
@@ -390,6 +390,11 @@ class VehicleController extends BaseController
                 $delivery->setDepo($order->getDepo());
                 $orderText .= $orderId .', ';
             }
+            $currentTime = date('H:i:s',strtotime('now'));
+            $requestDate = isset($allRequest['created_at'])?date('Y-m-d',strtotime($allRequest['created_at'])):date('Y-m-d',strtotime('now'));
+            $deliveryDate = $requestDate.' '.$currentTime;
+            $delivery->setCreatedAt(new \DateTime($deliveryDate));
+
             $delivery->setShipped(false);
             $delivery->setTransportGiven(Delivery::NOURISH);
             $this->em()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
