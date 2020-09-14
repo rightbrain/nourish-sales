@@ -360,6 +360,7 @@ class DeliveryController extends BaseController
         foreach ($order->getOrderItems() as $orderItem){
           $exOrderItem[]=$orderItem->getItem()->getId();
         }
+
         $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
         $stockItem = $stockRepo->findOneBy(
             array('item' => $item, 'depo' => $order->getDepo())
@@ -421,6 +422,16 @@ class DeliveryController extends BaseController
             $amendmentOrderItem->setQuantity($amendmentOrderItem->getQuantity()-$amendmentItemQty);
             $amendmentOrderItem->calculateTotalAmount(true);
             $this->getDoctrine()->getRepository("RbsSalesBundle:OrderItem")->update($amendmentOrderItem);
+
+            $amendmentItemStock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(
+                array(
+                    'item' => $amendmentOrderItem->getItem(),
+                    'depo' => $order->getDepo(),
+                )
+            );
+            $amendmentItemStock->setOnHold($amendmentItemStock->getOnHold()-$amendmentItemQty);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($amendmentItemStock);
+
         }else{
             return new JsonResponse(
                 array('status'=> 'error','message'=>"Remaining quantity cross")

@@ -78,7 +78,13 @@ class OrderRepository extends EntityRepository
 
         $this->calculateOrderAmount($order);
         $this->orderPayment($order);
-
+        $order->setPaidAmount($order->getTotalPaymentDepositedAmount());
+        /*if ($order->getTotalAmount() <= $order->getPaidAmount()) {
+            $order->setPaymentState(Order::PAYMENT_STATE_PAID);
+        } else {
+            $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
+        }*/
+        $this->_em->persist($order);
         $this->_em->flush();
         return $this->_em;
     }
@@ -107,9 +113,13 @@ class OrderRepository extends EntityRepository
             foreach ($order->getPayments() as $payment) {
                 if($payment){
                     $payment->setAgent($agent);
-                    $payment->setAmount(0);
+                    if($payment->isVerified()==true){
+                        $payment->setAmount($payment->getDepositedAmount());
+                    }else{
+                        $payment->setAmount(0);
+                    }
                     $payment->setTransactionType(Payment::CR);
-                    $this->_em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
+//                    $this->_em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
                     $payment->addOrder($order);
                 }
 //            $this->_em->persist($payment);

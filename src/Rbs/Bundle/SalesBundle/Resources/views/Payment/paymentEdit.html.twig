@@ -25,6 +25,7 @@
 
                                 {{ form_row(form.agentBankBranch) }}
                                 {{ form_row(form.bankAccount) }}
+                                {{ form_row(form.deposit_date) }}
                                 <div class="form-actions">
                                     <div class="col-md-offset-2 col-md-10">
                                         <input type="reset" class="btn btn-danger" value="Reset" name="reset" />
@@ -69,4 +70,12 @@
 
 <script>
     document.getElementById("amount").required = true;
+
+    jQuery(document).ready(function() {
+        $('.date-picker').datepicker({
+            format: "dd-mm-yyyy",
+            todayHighlight:true,
+            autoclose: true
+        });
+    });
 </script>

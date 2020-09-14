@@ -10,6 +10,7 @@ use Rbs\Bundle\SalesBundle\Repository\AgentBankRepository;
 use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
 use Rbs\Bundle\SalesBundle\Repository\OrderRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToStringTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -63,6 +64,17 @@ class PaymentEditForm extends AbstractType
                         ->setParameter('agent',$this->payment->getAgent());
                     }
             ))
+            ->add($builder->create('deposit_date', 'text', array(
+                'label' => 'Deposit Date',
+//                'data' => new \DateTime(),
+                'attr' => array(
+                    'class' => 'date-picker',
+                    'autocomplete' => 'off',
+                    'placeholder' => 'date-month-Year'
+                ),
+                'empty_data' => new \DateTime(),
+            ))->addViewTransformer(new DateTimeToStringTransformer(null, null, 'd-m-Y')))
+
 
         ;
 
