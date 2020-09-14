@@ -69,6 +69,7 @@
                                                         <th>Order Id</th>
                                                         <th>Item</th>
                                                         <th>Quantity</th>
+                                                        <th>Amount</th>
                                                         <th>Delivered</th>
                                                         <th>Remain</th>
                                                     </tr>
@@ -87,10 +88,12 @@
                                                                     {% if (item.quantity > partialItems[order.id][item.id]['delivered']) %}
                                                                         <tr class="order_{{ order.id }}{{ isAvailable[order.id][item.id]==false?' red':'' }}">
                                                                             <td>{{ index }}</td>
-                                                                            <td>{{ order.id }}</td>
+                                                                            <td class="order_id">{{ order.id }}</td>
                                                                             <td>{{ item.item.name }}</td>
                                                                             <td class="item-qty orderItemQty_{{ item.id }} itemId_{{ item.item.id }}">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
                                                                             <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
+                                                                            <td class="orderItemPrice" hidden="hidden">{{ item.price }}</td>
+                                                                            <td class="deliveryItemAmount deliveryItemAmount_{{ order.id }}"></td>
                                                                             <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
                                                                             <td class="remain">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
                                                                         </tr>
@@ -99,10 +102,12 @@
                                                                 {% else %}
                                                                     <tr class="order_{{ order.id }}{{ isAvailable[order.id][item.id]==false?' red':'' }}">
                                                                         <td>{{ index }}</td>
-                                                                        <td>{{ order.id }}</td>
+                                                                        <td class="order_id">{{ order.id }}</td>
                                                                         <td>{{ item.item.name }}</td>
                                                                         <td class="item-qty orderItemQty_{{ item.id }} itemId_{{ item.item.id }}">{{ item.quantity }}</td>
                                                                         <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
+                                                                        <td class="orderItemPrice" hidden="hidden">{{ item.price }}</td>
+                                                                        <td class="deliveryItemAmount deliveryItemAmount_{{ order.id }}"></td>
                                                                         <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0" {{ isAvailable[order.id][item.id]==false?'disabled="disabled"':'' }}></td>
                                                                         <td class="remain">{{ item.quantity }}</td>
                                                                     </tr>
@@ -113,13 +118,15 @@
                                                         {% endfor %}
                                                         <tr style="font-weight: bold">
                                                             <td colspan="2">{{ order.id }}</td>
-                                                            <td colspan="2">Order clearance amount : <span class="totalApprovedAmount_{{ order.id }}">{{ order.totalApprovedAmount }}</span></td>
-                                                            <td colspan="3">Order total amount : <span class="totalAmount_{{ order.id }}">{{ order.totalAmount }}</span></td>
+                                                            <td colspan="2">Clearance amount : <span class="totalApprovedAmount_{{ order.id }}">{{ order.totalApprovedAmount }}</span></td>
+                                                            <td colspan="1"><span class="totalDeliveryAmount_{{ order.id }}"></span></td>
+                                                            <td colspan="2">Actual amount : <span class="totalAmount_{{ order.id }}">{{ order.totalAmount }}</span></td>
                                                         </tr>
                                                     {% endfor %}
                                                     <tr>
                                                         <th colspan="3" style="text-align: right">Total</th>
                                                         <th class="totalItemQty"></th>
+                                                        <th class="totalDeliveryAmount"></th>
                                                         <th class="totalDeliveryQty"></th>
                                                         <th class="totalRemainingQty"></th>
                                                     </tr>

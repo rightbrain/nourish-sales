@@ -87,6 +87,11 @@ var Delivery = function()
         var delivery_qty_sum = 0;
         $('body .deliver-qty').each(function() {
             var value = $(this).val();
+            var unitPrice = $(this).closest('tr').find('.orderItemPrice').text();
+
+            var amount = parseFloat(unitPrice)*value;
+            $(this).closest('tr').find('.deliveryItemAmount').text(parseFloat(amount).toFixed(2));
+
             if(!isNaN(value) && value.length != 0) {
                 delivery_qty_sum += parseFloat(value);
             }
@@ -108,7 +113,11 @@ var Delivery = function()
 
     function orderItemRemainingHandle()
     {
-        $('body').on('keyup','.deliver-qty', function () {
+        $('body').on('keypress keyup blur','.deliver-qty', function () {
+
+            var orderId = $(this).closest('tr').find('.order_id').text();
+            var totalApprovedAmount = $('.totalApprovedAmount_'+orderId).text();
+
         // $('.orderItems').find('.deliver-qty').blur(function(){
             if (formValidateInit()) {
                 $('body').find('#delivery-item-form').find('#save-delivery').prop('disabled', false);
@@ -149,6 +158,10 @@ var Delivery = function()
             var delivery_qty_sum = 0;
             $('body .deliver-qty').each(function() {
                 var value = $(this).val();
+                var unitPrice = $(this).closest('tr').find('.orderItemPrice').text();
+                console.log(unitPrice);
+                var amount = parseFloat(unitPrice)*value;
+                $(this).closest('tr').find('.deliveryItemAmount').text(parseFloat(amount).toFixed(2));
                 if(!isNaN(value) && value.length != 0) {
                     delivery_qty_sum += parseFloat(value);
                 }
@@ -156,6 +169,26 @@ var Delivery = function()
 
             $('.totalDeliveryQty').text(delivery_qty_sum);
 
+            var delivery_amount_sum = 0;
+            $('body .deliveryItemAmount_'+orderId).each(function() {
+                var value = $(this).text();
+                // var unitPrice = $(this).closest('tr').find('.orderItemPrice').text();
+                // console.log(unitPrice);
+                // var amount = parseFloat(unitPrice)*value;
+                // $(this).closest('tr').find('.deliveryItemAmount').text(amount);
+                if(!isNaN(value) && value.length != 0) {
+                    delivery_amount_sum += parseFloat(value);
+                }
+            });
+
+            $('.totalDeliveryAmount_'+orderId).text(parseFloat(delivery_amount_sum).toFixed(2));
+
+            if (delivery_amount_sum > totalApprovedAmount) { // Invalid value
+                remain.text(qty);
+                $(this).val(0);
+                toastr.error('Delivery quantity amount is greater then clearance amount');
+                $('body').find('#delivery-item-form').find('#save-delivery').prop('disabled', true);
+            }
 
             var sum = 0;
             $('body .remain').each(function() {
