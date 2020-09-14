@@ -47,9 +47,16 @@
 
                             <tr>
                                 <th>Payment Mode</th>
-                                <td colspan="1">{{ order.paymentModeTitle | default('N/A') }}</td>
+                                <td colspan="3">{{ order.paymentModeTitle | default('N/A') }}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align: center;">{{ form_widget(form.clearanceStatus) }}</td>
                                 <th>Clearance Amount</th>
                                 <td colspan="1">{{ form_widget(form.totalApprovedAmount) }}</td>
+                            </tr>
+                            <tr>
+                                <th>Clearance Remarks</th>
+                                <td colspan="3">{{ form_widget(form.clearanceRemark) }}</td>
                             </tr>
                         </table>
                         <div style="clear: both"></div>

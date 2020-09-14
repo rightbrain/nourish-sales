@@ -16,6 +16,12 @@ class OrderApprovedAmountForm extends AbstractType
     {
         $builder
             ->add('totalApprovedAmount')
+            ->add('clearanceStatus', 'checkbox', array(
+                'label'    => 'Clearance Apply',
+                'label_attr'=> array('class'=>'text_bold'),
+                'required' => false,
+            ))
+            ->add('clearanceRemark')
         ;
     }
 

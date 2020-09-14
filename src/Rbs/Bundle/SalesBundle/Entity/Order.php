@@ -193,6 +193,20 @@ class Order
      * @ORM\Column(name="payment_mode", type="string", length=255, columnDefinition="ENUM('FP', 'PP', 'HO', 'OP', 'DP')", nullable=true)
      */
     private $paymentMode;
+
+    /**
+     * @var boolean
+     *
+     * @ORM\Column(name="clearance_status", type="boolean", nullable=true)
+     */
+    private $clearanceStatus = false;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="clearance_remark", type="text", nullable=true)
+     */
+    private $clearanceRemark;
     
     /**
      * Get id
@@ -707,6 +721,38 @@ class Order
     public function setPaymentMode($paymentMode)
     {
         $this->paymentMode = $paymentMode;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isClearanceStatus()
+    {
+        return $this->clearanceStatus;
+    }
+
+    /**
+     * @param bool $clearanceStatus
+     */
+    public function setClearanceStatus($clearanceStatus)
+    {
+        $this->clearanceStatus = $clearanceStatus;
+    }
+
+    /**
+     * @return string
+     */
+    public function getClearanceRemark()
+    {
+        return $this->clearanceRemark;
+    }
+
+    /**
+     * @param string $clearanceRemark
+     */
+    public function setClearanceRemark($clearanceRemark)
+    {
+        $this->clearanceRemark = $clearanceRemark;
     }
 
     /**

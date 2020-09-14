@@ -853,7 +853,10 @@ class OrderController extends BaseController
         if ($order->getOrderState() == Order::ORDER_STATE_PROCESSING &&
             in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PAID, Order::PAYMENT_STATE_PARTIALLY_PAID))
         ) {
-            $order->setTotalApprovedAmount($request->request->get('order_approved_amount')['totalApprovedAmount']);
+            $allRequest = $request->request->get('order_approved_amount');
+            $order->setTotalApprovedAmount($allRequest['totalApprovedAmount']);
+            $order->setClearanceStatus(isset($allRequest['clearanceStatus'])?$allRequest['clearanceStatus']:null);
+            $order->setClearanceRemark(isset($allRequest['clearanceRemark'])?$allRequest['clearanceRemark']:null);
             $order->setDeliveryState(Order::DELIVERY_STATE_READY);
             $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
             $this->dispatchApproveProcessEvent('order.verified', $order);
