@@ -162,6 +162,12 @@ input.total_price{
 .input-mask-number{
     text-align: left!important;
 }
-.red{
-    color: red;
+
+#order_datatable tbody tr.clearance_apply td:nth-child(1),
+#order_datatable tbody tr.clearance_apply td:nth-child(2),
+#order_datatable tbody tr.clearance_apply td:nth-child(3),
+#order_datatable tbody tr.clearance_apply td:nth-child(4),
+#order_datatable tbody tr.clearance_apply td:nth-child(5)
+{
+    color: green;
 }

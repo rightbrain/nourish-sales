@@ -78,7 +78,11 @@ class OrderRepository extends EntityRepository
 
         $this->calculateOrderAmount($order);
         $this->orderPayment($order);
-        $order->setPaidAmount($order->getTotalPaymentDepositedAmount());
+        if($order->getPaidAmount()!=$order->getTotalPaymentDepositedAmount()){
+            $order->setPaidAmount($order->getTotalPaymentDepositedAmount());
+            $order->setPaymentState(Order::PAYMENT_STATE_PENDING);
+        }
+
         /*if ($order->getTotalAmount() <= $order->getPaidAmount()) {
             $order->setPaymentState(Order::PAYMENT_STATE_PAID);
         } else {

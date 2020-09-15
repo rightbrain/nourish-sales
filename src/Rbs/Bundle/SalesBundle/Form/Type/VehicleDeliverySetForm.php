@@ -55,9 +55,15 @@ class VehicleDeliverySetForm extends AbstractType
                         ->join('o.depo', 'd')
                         ->join('d.users', 'u')
                         ->where('o.deliveryState = :PARTIALLY_SHIPPED OR o.deliveryState = :READY')
+                        ->andWhere('o.paymentState != :PENDING')
                         ->andWhere('u.id = :user')
-                        ->setParameters(array('PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED, 'READY'=>Order::DELIVERY_STATE_READY,
-                            'user' => $this->user->getId()))
+                        ->setParameters(array(
+                            'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED,
+                            'READY'=>Order::DELIVERY_STATE_READY,
+                            'PENDING'=>Order::PAYMENT_STATE_PENDING,
+                            'user' => $this->user->getId()
+                            )
+                        )
                         ->orderBy('o.id', 'desc');
                 }
             ))
