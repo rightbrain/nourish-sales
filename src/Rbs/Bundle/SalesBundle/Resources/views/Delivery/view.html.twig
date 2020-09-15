@@ -60,7 +60,7 @@
                                             <div class="portlet-title">
                                                 <div class="caption"> Order Items </div>
                                             </div>
-                                            <div class="portlet-body">
+                                            <div class="portlet-body delivery_order_section">
 
                                                 <table id="delivery_order" class="table delivery_order">
                                                     <thead>
@@ -69,7 +69,7 @@
                                                         <th>Order Id</th>
                                                         <th>Item</th>
                                                         <th>Quantity</th>
-                                                        <th>Amount</th>
+                                                        <th hidden="hidden">Amount</th>
                                                         <th>Delivered</th>
                                                         <th>Remain</th>
                                                     </tr>
@@ -93,7 +93,7 @@
                                                                             <td class="item-qty orderItemQty_{{ item.id }} itemId_{{ item.item.id }}">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
                                                                             <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
                                                                             <td class="orderItemPrice" hidden="hidden">{{ item.price }}</td>
-                                                                            <td class="deliveryItemAmount deliveryItemAmount_{{ order.id }}"></td>
+                                                                            <td class="deliveryItemAmount deliveryItemAmount_{{ order.id }}" hidden="hidden"></td>
                                                                             <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0"></td>
                                                                             <td class="remain">{{ item.quantity - partialItems[order.id][item.id]['delivered'] }}</td>
                                                                         </tr>
@@ -107,7 +107,7 @@
                                                                         <td class="item-qty orderItemQty_{{ item.id }} itemId_{{ item.item.id }}">{{ item.quantity }}</td>
                                                                         <td class="orderItemId" hidden="hidden">{{ item.id }}</td>
                                                                         <td class="orderItemPrice" hidden="hidden">{{ item.price }}</td>
-                                                                        <td class="deliveryItemAmount deliveryItemAmount_{{ order.id }}"></td>
+                                                                        <td class="deliveryItemAmount deliveryItemAmount_{{ order.id }}" hidden="hidden"></td>
                                                                         <td class="deliver"><input name="qty[{{ order.id }}][{{ item.id }}]" class="form-control input-xsmall deliver-qty" value="0" {{ isAvailable[order.id][item.id]==false?'disabled="disabled"':'' }}></td>
                                                                         <td class="remain">{{ item.quantity }}</td>
                                                                     </tr>
@@ -118,8 +118,9 @@
                                                         {% endfor %}
                                                         <tr style="font-weight: bold">
                                                             <td colspan="2">{{ order.id }}</td>
-                                                            <td colspan="2">Clearance amount : <span class="totalApprovedAmount_{{ order.id }}">{{ order.totalApprovedAmount }}</span></td>
-                                                            <td colspan="1"><span class="totalDeliveryAmount_{{ order.id }}"></span></td>
+                                                            <td colspan="1">Clearance amount : <span class="">{{ order.totalApprovedAmount }}</span></td>
+                                                            <td colspan="1">Clearance Due amount : <span class="totalApprovedAmount_{{ order.id }}">{{ order.totalApprovedAmount-order.totalDeliveryItemsAmount }}</span></td>
+                                                            <td colspan="1"  hidden="hidden"><span class="totalDeliveryAmount_{{ order.id }}"></span></td>
                                                             <td colspan="2">Actual amount : <span class="totalAmount_{{ order.id }}">{{ order.totalAmount }}</span></td>
                                                         </tr>
                                                     {% endfor %}
@@ -229,6 +230,7 @@
                                                     <tbody>
                                                     {% set vehicleCount = 0 %}
                                                     {% for index, vehicle in delivery.vehicles %}
+                                                        {{ vehicle.id }}
                                                         {% if vehicle.shipped == 0 and vehicle.vehicleIn != null %}
                                                             <tr>
                                                                 <td>{{ index + 1 }}</td>

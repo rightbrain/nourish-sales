@@ -465,12 +465,15 @@ var Delivery = function()
                         element.closest('tr').find('.stock-available').text('');
                         element.closest('tr').find('.unit_price').text('');
                         element.closest('tr').find('.totalAmount').text('');
-
+                        element.closest('tr').find('.item_id').val('');
+                        element.closest('tr').find('.amendmentItemQty').val('');
+                        element.closest('tr').find('.amendment_item_id').val('');
+                        element.closest('tr').find('.amendment_item_unit_price').val('');
 
                         // $("#delivery_order_amendment").load(window.location + " #delivery_order_amendment");
                         // $("#delivery_order").load(window.location + " #delivery_order");
-                        window.location.href= Routing.generate('delivery_view', {id:$('#delivery-id').val()});
-
+                        // window.location.href= Routing.generate('delivery_view', {id:$('#delivery-id').val()});
+                        $(".delivery_order_section").load("/delivery/refresh/"+deliveryId);
                     }
                     if(response.status==='error'){
                         toastr.error(response.message);
@@ -545,6 +548,9 @@ var Delivery = function()
                 var totalClearanceAmount = parentElement.find('.totalApprovedAmount_'+orderId).text();
                 var orderTotalAmount = parentElement.find('.totalAmount_'+orderId).text();
                 totalApprovedAmount = parseFloat(totalClearanceAmount)-parseFloat(orderTotalAmount);
+            }
+            if(amendment_item_id=!'') {
+                element.closest('tr').find('.amendmentItemQty').val(amendmentItemQty);
             }
 
             // var itemId = element.val();

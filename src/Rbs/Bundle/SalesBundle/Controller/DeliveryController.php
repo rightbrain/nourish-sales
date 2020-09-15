@@ -121,6 +121,36 @@ class DeliveryController extends BaseController
         ));
     }
 
+    /**
+     * @Route("/delivery/refresh/{id}", name="delivery_view_refresh", options={"expose"=true})
+     * @param Delivery $delivery
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     */
+    public function viewRefresh(Delivery $delivery)
+    {
+        $items = $this->getFeedItems();
+        $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
+        $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($delivery);
+        $isAvailable=array();
+        /** @var Order $order */
+        foreach ($delivery->getOrders() as $order){
+            /** @var OrderItem $item */
+            foreach ($order->getOrderItems() as $item) {
+                $stockItem = $stockRepo->findOneBy(
+                    array('item' => $item->getItem()->getId(), 'depo' => $order->getDepo()->getId())
+                );
+                $isAvailable[$order->getId()][$item->getId()] = $stockItem && $stockItem->isStockAvailableForDeliverySet($item->getQuantity());
+            }
+        }
+        return $this->render('RbsSalesBundle:Delivery:view-refresh.html.twig', array(
+            'delivery'      => $delivery,
+            'partialItems'  => $partialItems,
+            'items'  => $items,
+            'isAvailable'  => $isAvailable,
+        ));
+    }
+
     private function getFeedItems() {
         $em = $this->getDoctrine()->getManager();
 
