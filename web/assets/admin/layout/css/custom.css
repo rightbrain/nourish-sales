@@ -162,3 +162,6 @@ input.total_price{
 .input-mask-number{
     text-align: left!important;
 }
+.red{
+    color: red;
+}
