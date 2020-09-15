@@ -295,7 +295,7 @@ var Delivery = function()
             return false;
         });
 
-        $('body').on('keyup','.itemQty', function () {
+        $('body').on('keypress keyup blur','.itemQty', function () {
             var element = $(this);
 
             var maxQty = element.attr('max');
@@ -418,6 +418,7 @@ var Delivery = function()
         $('body').on('click','#itemAdd', function () {
             var element = $(this);
             var parentElement = $('#deliveryView');
+                element.prop('disabled', true);
             var orderId = element.closest('tr').find('.order_id').val();
             var totalApprovedAmount = parentElement.find('.totalApprovedAmount_'+orderId).text();
             var amendmentItemId = element.closest('tr').find('.amendment_item_id').val();

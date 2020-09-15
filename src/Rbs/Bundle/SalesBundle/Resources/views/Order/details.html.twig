@@ -154,6 +154,51 @@
                                         <tr>
                                             <th>Sl</th>
                                             <th>Item</th>
+                                            <th>Previous Quantity</th>
+                                            <th>Quantity</th>
+                                            <th>Delivered Qty</th>
+                                            <th>Price</th>
+                                            <th>Total Amount</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="orderItems">
+                                        {% set i=1 %}
+                                        {% for index, orderItem in order.orderItems %}
+                                            {% if orderItem.previousQuantity > 0 %}
+                                            <tr>
+                                                <td>{{ i  }}.</td>
+                                                <td>{{ orderItem.item.getItemCodeName | default('') }}</td>
+                                                <td>{{ orderItem.previousQuantity | default('') }}</td>
+                                                <td>{{ orderItem.quantity | default('') }}</td>
+                                                <td>{{ deliveredItems[orderItem.id]['totalDeliveredQuantity'] | default('') }}</td>
+                                                <td>{{ orderItem.price | default('') }}</td>
+                                                <td>{{ orderItem.totalAmount | default('') }}</td>
+                                            </tr>
+                                                {% set i=i+1 %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        <tbody>
+                                            <tr class="bold">
+                                                <td colspan="2" class="text-right bold"><strong>Total</strong></td>
+                                                <td>{{ order.getOrderItemsTotalQuantity() }}</td>
+                                                <td>{{ order.getTotalDeliveryItemsQuantity() }}</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td>{{ order.totalAmount }}</td>
+                                            </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="portlet">
+                                <div class="portlet-title">
+                                    <div class="caption">Amended Order Items </div>
+                                </div>
+                                <div class="portlet-body">
+                                    <table class="table">
+                                        <thead>
+                                        <tr>
+                                            <th>Sl</th>
+                                            <th>Item</th>
                                             <th>Quantity</th>
                                             <th>Delivered Qty</th>
                                             <th>Price</th>
@@ -164,7 +209,7 @@
                                         <tbody class="orderItems">
                                         {% set i=1 %}
                                         {% for index, orderItem in order.orderItems %}
-                                            {% if orderItem.quantity != 0 %}
+                                            {% if orderItem.quantity != 0 and orderItem.previousQuantity == 0 %}
                                             <tr>
                                                 <td>{{ i  }}.</td>
                                                 <td>{{ orderItem.item.getItemCodeName | default('') }}</td>
