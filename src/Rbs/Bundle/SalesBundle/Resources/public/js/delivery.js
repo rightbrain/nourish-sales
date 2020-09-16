@@ -322,7 +322,7 @@ var Delivery = function()
 
                         // console.log(amendmentCalculateQty);
                     }
-                    element.closest('tr').find('.amendmentItemQty').val(parseFloat(amendmentCalculateQty));
+                    element.closest('tr').find('.amendmentItemQty').val(parseFloat(amendmentCalculateQty).toFixed(0));
 
                     // element.closest('tr').find('.amendmentItemQty').val('');
                     toastr.error('Max quantity cross.');
