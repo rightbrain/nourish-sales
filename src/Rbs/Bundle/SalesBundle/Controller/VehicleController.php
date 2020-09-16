@@ -293,7 +293,9 @@ class VehicleController extends BaseController
                 $this->checkUserForFieldSet($request, $vehicle);
                 $this->vehicleRepo()->create($vehicle);
                 $this->get('session')->getFlashBag()->add('success', 'Agent Vehicle Info Added Successfully');
-                return $this->checkUserTypeForRedirect();
+                return $this->getUser()->getUserType() == User::AGENT ?
+                    $this->redirect($this->generateUrl('truck_info_my_list')) :
+                    $this->redirect($this->generateUrl('truck_info_in_out_list'));
             }
         }
 
