@@ -163,8 +163,14 @@
                                         </thead>
                                         <tbody class="orderItems">
                                         {% set i=1 %}
+                                        {% set totalQty=0 %}
+                                        {% set totalDeliveryQty=0 %}
+                                        {% set totalAmount=0 %}
                                         {% for index, orderItem in order.orderItems %}
                                             {% if orderItem.previousQuantity > 0 %}
+                                                {% set totalQty=totalQty+orderItem.quantity | default(0) %}
+                                                {% set totalDeliveryQty= totalDeliveryQty+deliveredItems[orderItem.id]['totalDeliveredQuantity'] | default('') %}
+                                                {% set totalAmount= totalAmount+orderItem.totalAmount | default('') %}
                                             <tr>
                                                 <td>{{ i  }}.</td>
                                                 <td>{{ orderItem.item.getItemCodeName | default('') }}</td>
@@ -179,12 +185,11 @@
                                         {% endfor %}
                                         <tbody>
                                             <tr class="bold">
-                                                <td colspan="2" class="text-right bold"><strong>Total</strong></td>
-                                                <td>{{ order.getOrderItemsTotalQuantity() }}</td>
-                                                <td>{{ order.getTotalDeliveryItemsQuantity() }}</td>
+                                                <td colspan="3" class="text-right bold"><strong>Total</strong></td>
+                                                <td>{{ totalQty }}</td>
+                                                <td>{{ totalDeliveryQty }}</td>
                                                 <td></td>
-                                                <td></td>
-                                                <td>{{ order.totalAmount }}</td>
+                                                <td>{{ totalAmount }}</td>
                                             </tr>
                                     </table>
                                 </div>
@@ -203,21 +208,27 @@
                                             <th>Delivered Qty</th>
                                             <th>Price</th>
                                             <th>Total Amount</th>
-                                            <th>Paid Amount</th>
+                                            {#<th>Paid Amount</th>#}
                                         </tr>
                                         </thead>
                                         <tbody class="orderItems">
                                         {% set i=1 %}
+                                        {% set amendmentTotalQty=0 %}
+                                        {% set amendmentTotalDeliveryQty=0 %}
+                                        {% set amendmentTotalAmount=0 %}
                                         {% for index, orderItem in order.orderItems %}
                                             {% if orderItem.quantity != 0 and orderItem.previousQuantity == 0 %}
-                                            <tr>
+                                                {% set amendmentTotalQty=amendmentTotalQty+orderItem.quantity | default(0) %}
+                                                {% set amendmentTotalDeliveryQty= amendmentTotalDeliveryQty+deliveredItems[orderItem.id]['totalDeliveredQuantity'] | default('') %}
+                                                {% set amendmentTotalAmount= amendmentTotalAmount+orderItem.totalAmount | default('') %}
+                                                <tr>
                                                 <td>{{ i  }}.</td>
                                                 <td>{{ orderItem.item.getItemCodeName | default('') }}</td>
                                                 <td>{{ orderItem.quantity | default('') }}</td>
                                                 <td>{{ deliveredItems[orderItem.id]['totalDeliveredQuantity'] | default('') }}</td>
                                                 <td>{{ orderItem.price | default('') }}</td>
                                                 <td>{{ orderItem.totalAmount | default('') }}</td>
-                                                <td>{{ orderItem.paidAmount | default('') }}</td>
+                                                {#<td>{{ orderItem.paidAmount | default('') }}</td>#}
                                             </tr>
                                                 {% set i=i+1 %}
                                             {% endif %}
@@ -225,11 +236,11 @@
                                         <tbody>
                                             <tr class="bold">
                                                 <td colspan="2" class="text-right bold"><strong>Total</strong></td>
-                                                <td>{{ order.getOrderItemsTotalQuantity() }}</td>
-                                                <td>{{ order.getTotalDeliveryItemsQuantity() }}</td>
+                                                <td>{{ amendmentTotalQty }}</td>
+                                                <td>{{ amendmentTotalDeliveryQty }}</td>
                                                 <td></td>
-                                                <td>{{ order.totalAmount }}</td>
-                                                <td>{{ order.paidAmount }}</td>
+                                                <td>{{ amendmentTotalAmount }}</td>
+                                                {#<td>{{ order.paidAmount }}</td>#}
                                             </tr>
                                     </table>
                                 </div>
