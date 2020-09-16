@@ -548,7 +548,8 @@ var Delivery = function()
             if(amendment_item_id==''){
                 var totalClearanceAmount = parentElement.find('.totalApprovedAmount_'+orderId).text();
                 var orderTotalAmount = parentElement.find('.totalAmount_'+orderId).text();
-                totalApprovedAmount = parseFloat(totalClearanceAmount)-parseFloat(orderTotalAmount);
+                var remainingApprovedAmount = parseFloat(totalClearanceAmount)-parseFloat(orderTotalAmount);
+                totalApprovedAmount= remainingApprovedAmount>0?remainingApprovedAmount:0;
             }
             if(amendment_item_id=!'') {
                 element.closest('tr').find('.amendmentItemQty').val(amendmentItemQty);
