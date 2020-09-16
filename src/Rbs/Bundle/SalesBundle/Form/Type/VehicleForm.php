@@ -33,8 +33,6 @@ class VehicleForm extends AbstractType
                     'class' => 'Rbs\Bundle\CoreBundle\Entity\Depo',
                     'property' => 'name',
                     'required' => true,
-                    'empty_value' => 'Select Depo',
-                    'empty_data' => null,
                     'constraints' => array(
                         new NotBlank(array(
                             'message'=>'Depo should not be blank'
@@ -43,8 +41,11 @@ class VehicleForm extends AbstractType
                     'query_builder' => function (DepoRepository $repository)
                     {
                         return $repository->createQueryBuilder('d')
+                            ->innerJoin('d.users','users')
                             ->andWhere('d.deletedAt IS NULL')
-                            ;
+                            ->andWhere('users = :userId')
+                            ->setParameter('userId', $this->user->getId());
+
                     }
                 ));
         }else{

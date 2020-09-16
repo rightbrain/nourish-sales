@@ -11,7 +11,6 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleDeliverySetChickForm;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleDeliverySetForm;
-use Rbs\Bundle\SalesBundle\Form\Type\VehicleForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;

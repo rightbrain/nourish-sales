@@ -180,10 +180,19 @@ class ConfigureMenuListener extends ContextAwareListener
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_DELIVERY_MANAGE'))) {
                 $sp3 = true;
-                $menu['Sales']->addChild('Vehicle In/Out', array('route' => 'truck_info_in_out_list'))
+                $menu['Sales']->addChild('Turck In/Out', array('route' => 'truck_info_in_out_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('truck_info_in_out_list')) {
-                    $menu['Sales']->getChild('Vehicle In/Out')->setCurrent(true);
+                    $menu['Sales']->getChild('Turck In/Out')->setCurrent(true);
+                }
+            }
+
+            if ($this->authorizationChecker->isGranted(array('ROLE_DELIVERY_MANAGE'))) {
+                $sp3 = true;
+                $menu['Sales']->addChild('Nourish Delivery', array('route' => 'vehicle_info_set_list'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('vehicle_info_set_list') or $this->isMatch('delivery_set') ) {
+                    $menu['Sales']->getChild('Nourish Delivery')->setCurrent(true);
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_CHICK_DELIVERY_MANAGE'))) {
@@ -218,28 +227,12 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Sales']->getChild('Vehicle Load')->setCurrent(true);
                 }
             }
-            if ($this->authorizationChecker->isGranted(array('ROLE_DELIVERY_MANAGE'))) {
-                $sp3 = true;
-                $menu['Sales']->addChild('Nourish Delivery', array('route' => 'vehicle_info_set_list'))
-                    ->setAttribute('icon', 'fa fa-th-list');
-                if ($this->isMatch('vehicle_info_set_list') or $this->isMatch('delivery_set') ) {
-                    $menu['Sales']->getChild('Nourish Delivery')->setCurrent(true);
-                }
-            }
             if ($this->authorizationChecker->isGranted(array('ROLE_CHICK_DELIVERY_MANAGE'))) {
                 $sp3 = true;
                 $menu['Sales']->addChild('Nourish Delivery', array('route' => 'chick_vehicle_info_set_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('chick_vehicle_info_set_list') or $this->isMatch('chick_delivery_set') ) {
                     $menu['Sales']->getChild('Nourish Delivery')->setCurrent(true);
-                }
-            }
-            if ($this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN','ROLE_DELIVERY_MANAGE','ROLE_DEPO_MENU_ACCESS'))) {
-                $sp3 = true;
-                $menu['Sales']->addChild('Stocks', array('route' => 'stocks_home'))
-                    ->setAttribute('icon', 'fa fa-th-list');
-                if ($this->isMatch('stock')) {
-                    $menu['Sales']->getChild('Stocks')->setCurrent(true);
                 }
             }
             if ($this->authorizationChecker->isGranted(array('ROLE_TRUCK_MANAGE')) || $this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN'))) {
@@ -256,6 +249,15 @@ class ConfigureMenuListener extends ContextAwareListener
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('chick_truck_info_list')) {
                     $menu['Sales']->getChild('Chick Delivered List')->setCurrent(true);
+                }
+            }
+
+            if ($this->authorizationChecker->isGranted(array('ROLE_SUPER_ADMIN','ROLE_DELIVERY_MANAGE','ROLE_DEPO_MENU_ACCESS'))) {
+                $sp3 = true;
+                $menu['Sales']->addChild('Stocks', array('route' => 'stocks_home'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('stock')) {
+                    $menu['Sales']->getChild('Stocks')->setCurrent(true);
                 }
             }
             if ($sp3) {
