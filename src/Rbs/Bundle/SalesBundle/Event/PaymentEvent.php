@@ -4,8 +4,9 @@ namespace Rbs\Bundle\SalesBundle\Event;
 use Rbs\Bundle\CoreBundle\Event\BaseEvent;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
+use Symfony\Component\HttpFoundation\Request;
 
-class OrderApproveEvent extends BaseEvent
+class PaymentEvent extends BaseEvent
 {
     /**
      * @var Payment
@@ -21,11 +22,16 @@ class OrderApproveEvent extends BaseEvent
      * @var String
      */
     protected $eventName;
+    /**
+     * @var Request
+     */
+    protected $request;
 
-    public function __construct(Payment $payment, Agent $agent)
+    public function __construct(Payment $payment, Request $request)
     {
         $this->payment = $payment;
-        $this->agent = $agent;
+//        $this->agent = $agent;
+        $this->request = $request;
     }
 
     /**
@@ -63,26 +69,26 @@ class OrderApproveEvent extends BaseEvent
     protected function getDescriptionString()
     {
         if ($this->payment->getAmount() > 0) {
-            $descriptionTemplate = "Payment %s has been deposit by #%s to %s"; // amount, agent ID, Bank and Branch Name
+            $descriptionTemplate = "Payment %s has been deposit "; // amount, agent ID, Bank and Branch Name
             $orderIds = $this->getOrderIds();
 
             if ($orderIds) {
                 $descriptionTemplate .= "for Order %s"; // Order IDS separated by comma
             }
 
-            $bankInfo = $this->payment->getBankName() . ", " . $this->payment->getBranchName();
+//            $bankInfo = $this->payment->getBankName() . ", " . $this->payment->getBranchName();
             $description = sprintf($descriptionTemplate,
                 number_format($this->payment->getAmount(), 2),
-                $this->agent->getId(),
-                $bankInfo,
+//                $this->agent->getId(),
+//                $bankInfo,
                 $orderIds
             );
         } else {
-            $descriptionTemplate = "Payment %s has subtract from #%s for %s"; // amount, agent ID, remarks
+            $descriptionTemplate = "Payment %s has subtract from  for %s"; // amount, agent ID, remarks
 
             $description = sprintf($descriptionTemplate,
                 number_format($this->payment->getAmount(), 2),
-                $this->agent->getId(),
+//                $this->agent->getId(),
                 $this->payment->getRemark()
             );
         }

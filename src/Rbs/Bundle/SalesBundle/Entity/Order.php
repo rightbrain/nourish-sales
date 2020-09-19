@@ -63,8 +63,8 @@ class Order
     protected $orderIncentiveFlag;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Payment", mappedBy="orders", cascade={"persist"})
-     * @ORM\OrderBy({"createdAt" = "DESC"})
+     * @ORM\ManyToMany(targetEntity="Payment", mappedBy="orders", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OrderBy({"createdAt" = "ASC"})
      **/
     protected $payments;
 
@@ -249,7 +249,7 @@ class Order
     public function removePayment($payment)
     {
         $this->payments->removeElement($payment);
-//        $payment->removeOrder($this);
+        $payment->removeOrder($this);
 
     }
 

@@ -64,7 +64,7 @@ class PaymentWithoutSmsForm extends AbstractType
                 )
             ))
             ->add('paymentMethod', 'choice', array(
-                'empty_value' => 'Select Payment Method',
+                'empty_value' => false,
                 'choices'  => array(
                     'BANK' => 'BANK',
                     'CHEQUE' => 'CHEQUE',
@@ -73,10 +73,9 @@ class PaymentWithoutSmsForm extends AbstractType
                 'required' => false,
             ))
             ->add('fxCx', 'choice', array(
-                'empty_value' => 'Select Payment For',
+                'empty_value' => false,
                 'choices'  => array(
                     'FD' => 'FEED',
-                    'CK' => 'CHICK'
                 ),
                 'required' => false,
             ))

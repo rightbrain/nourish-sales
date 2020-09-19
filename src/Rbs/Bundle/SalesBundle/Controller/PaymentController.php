@@ -143,7 +143,7 @@ class PaymentController extends BaseController
                 $em = $this->getDoctrine()->getManager();
                 $em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
                 $em->getRepository('RbsSalesBundle:Payment')->create($payment);
-
+                $this->dispatchPaymentProcessEvent('payment.add', $payment);
                 $this->flashMessage('success', 'Payment Added Successfully');
                 return $this->redirect($this->generateUrl('payments_home'));
             }
@@ -381,6 +381,7 @@ class PaymentController extends BaseController
                 if (is_numeric($request->request->get('amount'))) {
                     $payment->setAmount($request->request->get('amount'));
                     $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->update($payment);
+                    $this->dispatchPaymentProcessEvent('payment.update', $payment);
                     $this->get('session')->getFlashBag()->add(
                         'success', 'Payment Updated Successfully');
 

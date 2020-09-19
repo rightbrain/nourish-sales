@@ -4,7 +4,9 @@ namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Rbs\Bundle\CoreBundle\Controller\BaseController as CoreBaseController;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Event\OrderApproveEvent;
+use Rbs\Bundle\SalesBundle\Event\PaymentEvent;
 
 /**
  * Base Controller.
@@ -55,5 +57,9 @@ class BaseController extends CoreBaseController
     protected function dispatchApproveProcessEvent($tag, Order $order)
     {
         $this->dispatch($tag, new OrderApproveEvent($order, $this->get('request')));
+    }
+    protected function dispatchPaymentProcessEvent($tag, Payment $payment)
+    {
+        $this->dispatch($tag, new PaymentEvent($payment, $this->get('request')));
     }
 }

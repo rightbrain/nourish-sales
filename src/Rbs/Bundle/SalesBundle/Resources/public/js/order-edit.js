@@ -5,10 +5,12 @@ var Order = function()
 
     function bindItemChangeEvent(collectionHolder) {
         collectionHolder.find('tr').each(function(index, elm){
+            // alert(index);
             $(elm).find('select').change(function(){
                 findStockItem($(this).val(), index);
 
                 $("#order_orderItems_" + index + "_remove").click(function () {
+                    // alert(index)
                     deleteOrderItemHandler(collectionHolder, index);
                 });
 
@@ -18,10 +20,12 @@ var Order = function()
 
     function bindPaymentChangeEvent(collectionHolderPayment) {
         collectionHolderPayment.find('tr').each(function(index, elm1){
-            //alert(index)
-            $(elm1).find('select').change(function(){
+            // alert(index)
+
+            // $(elm1).find('select').change(function(){
                 // findStockItem($(this).val(), index);
                 $("#order_payments_"+index+"_remove").click(function () {
+                    // alert(index)
                     deleteOrderPaymentHandler(collectionHolderPayment, index);
                 });
 
@@ -32,7 +36,7 @@ var Order = function()
                     autoclose: true
                 });
 
-            }).trigger('change');
+            // }).trigger('change');
 
 
         });
@@ -40,6 +44,7 @@ var Order = function()
 
     function deleteOrderItemHandler(collectionHolder, index)
     {
+
         if (collectionHolder.find('tr').length == 1) {
             bootbox.alert("Minimum One Item Require.");
             return false;
@@ -250,6 +255,7 @@ var Order = function()
         var agentElm = $('#order_agent');
         var depoElm = $('#order_depo');
         $collectionHolderItem = $('tbody.tags');
+
         $collectionHolderItem.data('index', $collectionHolderItem.find(':input').length);
         bindItemChangeEvent($collectionHolderItem);
         $addTagLink.on('click', function(e) {
@@ -308,7 +314,8 @@ var Order = function()
         var $addPaymentLink = $('#add_payment_item');
         var agentElmPayment = $('#order_agent');
         var $collectionHolder = $('tbody.payments');
-        $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+        $collectionHolder.data('index', $collectionHolder.find('tr').length);
         bindPaymentChangeEvent($collectionHolder);
         $addPaymentLink.on('click', function(e) {
             e.preventDefault();
