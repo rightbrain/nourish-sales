@@ -82,6 +82,8 @@
                                                     {% for order in delivery.orders %}
                                                         {% set index=1 %}
 
+                                                        {% set  partialDeliveryItemsTotalAmount= partialItemsAmount[order.id] is defined? partialItemsAmount[order.id]['deliveredAmount']:0 %}
+
                                                         {% for item in order.orderItems %}
                                                             {% if item.quantity != 0 %}
                                                                 {% if order.deliveryState == 'PARTIALLY_SHIPPED' and partialItems[order.id][item.id] is defined %}
@@ -119,9 +121,9 @@
                                                         <tr style="font-weight: bold">
                                                             <td colspan="2">{{ order.id }}</td>
                                                             <td colspan="1">Clearance amount : <span class="">{{ order.totalApprovedAmount }}</span></td>
-                                                            <td colspan="1">Clearance Due amount : <span class="totalApprovedAmount_{{ order.id }}">{{ order.totalApprovedAmount-order.totalDeliveryItemsAmount }}</span></td>
+                                                            <td colspan="1">Clearance Due amount : <span class="totalApprovedAmount_{{ order.id }}">{{ order.totalApprovedAmount-partialDeliveryItemsTotalAmount }}</span></td>
                                                             <td colspan="1"  hidden="hidden"><span class="totalDeliveryAmount_{{ order.id }}"></span></td>
-                                                            <td colspan="2">Actual amount : <span class="totalAmount_{{ order.id }}">{{ order.totalAmount-order.totalDeliveryItemsAmount }}</span></td>
+                                                            <td colspan="2">Actual amount : <span class="totalAmount_{{ order.id }}">{{ order.totalAmount-partialDeliveryItemsTotalAmount }}</span></td>
                                                         </tr>
                                                     {% endfor %}
                                                     <tr>

@@ -36,6 +36,25 @@ class DeliveryItemRepository extends EntityRepository
         }
         return $data;
     }
+    public function getPartialDeliveredItemsAmount(Delivery $delivery)
+    {
+        $orders = $delivery->getOrders();
+        $data = array();
+        foreach ($orders as $order) {
+            $query = $this->createQueryBuilder('deliveryItem');
+            $query->join('deliveryItem.orderItem', 'orderItem');
+            $query->join('orderItem.item', 'item');
+            $query->select('SUM(deliveryItem.qty*orderItem.price) AS deliveredAmount');
+            $query->groupBy('deliveryItem.order');
+            $query->where("deliveryItem.order = :order")->setParameter('order', $order);
+            $result = $query->getQuery()->getResult();
+            foreach ($result as $row) {
+                $row['orderId'] = $order->getId();
+                $data[$row['orderId']] = $row;
+            }
+        }
+        return $data;
+    }
     public function getPartialDeliveredItemsByOrder(Order $order)
     {
         $data = array();

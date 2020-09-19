@@ -102,6 +102,9 @@ class DeliveryController extends BaseController
         $items = $this->getFeedItems();
         $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
         $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($delivery);
+
+        $partialItemsAmount = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItemsAmount($delivery);
+
         $isAvailable=array();
         /** @var Order $order */
         foreach ($delivery->getOrders() as $order){
@@ -116,6 +119,7 @@ class DeliveryController extends BaseController
         return $this->render('RbsSalesBundle:Delivery:view.html.twig', array(
             'delivery'      => $delivery,
             'partialItems'  => $partialItems,
+            'partialItemsAmount'  => $partialItemsAmount,
             'items'  => $items,
             'isAvailable'  => $isAvailable,
         ));
@@ -132,6 +136,8 @@ class DeliveryController extends BaseController
         $items = $this->getFeedItems();
         $stockRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock');
         $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($delivery);
+        $partialItemsAmount = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItemsAmount($delivery);
+
         $isAvailable=array();
         /** @var Order $order */
         foreach ($delivery->getOrders() as $order){
@@ -146,6 +152,7 @@ class DeliveryController extends BaseController
         return $this->render('RbsSalesBundle:Delivery:view-refresh.html.twig', array(
             'delivery'      => $delivery,
             'partialItems'  => $partialItems,
+            'partialItemsAmount'  => $partialItemsAmount,
             'items'  => $items,
             'isAvailable'  => $isAvailable,
         ));
