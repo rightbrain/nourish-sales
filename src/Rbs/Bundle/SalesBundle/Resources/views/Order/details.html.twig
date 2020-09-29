@@ -274,7 +274,7 @@
                                                 {% if payment.transactionType == 'CR' %}
                                                 <tr>
                                                     <td>{{ index }}.</td>
-                                                    <td>{{ payment.depositDate | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
+                                                    <td>{{ payment.depositDate | date("d-m-Y", "Asia/Dhaka") }}</td>
                                                     <td>{{ payment.id | default('') }}</td>
                                                     <td>{{ payment.paymentMethod | default('') }}</td>
                                                     <td>{{ payment.agentBankBranch.bank | default('') }}</td>

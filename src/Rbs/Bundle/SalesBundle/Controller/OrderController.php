@@ -434,7 +434,7 @@ class OrderController extends BaseController
     public function updateWithoutSmsAction(Request $request, Order $order)
     {
         $agentId= ($order->getAgent())? $order->getAgent()->getId(): null;
-
+        $allRequest = $request->request->get('order');
         if (in_array($order->getOrderState(), array(ORDER::ORDER_STATE_CANCEL, ORDER::ORDER_STATE_COMPLETE))
             || in_array($order->getDeliveryState(), array(ORDER::DELIVERY_STATE_PARTIALLY_SHIPPED))) {
             $this->flashMessage('error', 'Invalid Operation');
@@ -443,7 +443,7 @@ class OrderController extends BaseController
 
         $form = $this->createForm(new OrderWithoutSmsForm($this->getDoctrine()->getManager(), $agentId), $order);
         //$form->remove('agent');
-        $form->remove('created_at');
+//        $form->remove('created_at');
         $em = $this->getDoctrine()->getManager();
 
         $depoAttr = Order::ORDER_STATE_COMPLETE == $order->getOrderState() ? array('disabled'=>'disabled') : array();
@@ -477,6 +477,14 @@ class OrderController extends BaseController
                 if ($order->getOrderState() != Order::ORDER_STATE_PENDING) {
                     $stockRepo->updateStock($order, $depo, $prevOrderItems);
                 }
+
+                $currentTime = date('H:i:s',strtotime('now'));
+                $requestDate = isset($allRequest['created_at'])?date('Y-m-d',strtotime($allRequest['created_at'])):date('Y-m-d',strtotime('now'));
+                $orderDate = $requestDate.' '.$currentTime;
+                $em = $this->getDoctrine()->getManager();
+                $order->setLocation($order->getAgent()->getUser()->getUpozilla());
+
+                $order->setCreatedAt(new \DateTime($orderDate));
 
                 $em->getRepository('RbsSalesBundle:Order')->updateWithoutSms($order, true);
 

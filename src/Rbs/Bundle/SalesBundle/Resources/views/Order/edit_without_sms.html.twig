@@ -45,4 +45,11 @@
     {{ parent() }}
     Order.init();
     Order.autoFocusQuantityField();
+
+    $('#order_created_at').datepicker({
+    format: "dd-mm-yyyy",
+    todayHighlight:true,
+    startDate: new Date(),
+    autoclose: true
+    });
 {% endblock documentReady %}
