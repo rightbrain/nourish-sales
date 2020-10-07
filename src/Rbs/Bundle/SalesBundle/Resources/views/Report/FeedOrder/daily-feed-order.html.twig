@@ -49,6 +49,9 @@
                             <tr>
                                 <th>SL No</th>
                                 <th>Feed Mill/Depot</th>
+                                {% for category in itemCategories %}
+                                <th>{{ category.name }}</th>
+                                {% endfor %}
                                 <th>Total Qty(KG)</th>
                                 <th>Total Value</th>
                             </tr>
@@ -58,26 +61,43 @@
                                 {% set sl = 1 %}
                                 {% set grandTotalQty = 0 %}
                                 {% set grandTotalAmount = 0 %}
-                                {% for order in orders %}
-
+                                {% set depotAndCategoryTotal = [] %}
+                                {% for depot in depots %}
                                     <tr>
                                         <td>{{ sl }}</td>
-                                        <td>{{ order.depotName }}</td>
-                                        <td>{{ order.totalQuantity }}</td>
-                                        <td>{{ order.totalAmount }}</td>
+                                        <td>{{ depot.name }}</td>
+                                        {% set catTotalQty = 0 %}
+                                        {% set catTotalAmount = 0 %}
+                                        {% for category in itemCategories %}
+                                            {% set catQty = orders[depot.id][category.id].totalQuantity|default(0) %}
+                                            {% set catAmount = orders[depot.id][category.id].totalAmount|default(0) %}
+                                            {% set catTotalQty = catTotalQty + catQty %}
+                                            {% set catTotalAmount = catTotalAmount + catAmount %}
+                                            {% set depotAndCategoryTotal=depotAndCategoryTotal|merge([{(category.id):catQty}]) %}
+                                            <td>{{ orders[depot.id][category.id].totalQuantity|default(0)  }}</td>
+                                        {% endfor %}
+                                        <td>{{ catTotalQty }}</td>
+                                        <td>{{ catTotalAmount }}</td>
+                                        {% set grandTotalQty = grandTotalQty+catTotalQty %}
+                                        {% set grandTotalAmount = grandTotalAmount + catTotalAmount %}
                                     </tr>
                                     {% set sl = sl + 1 %}
-                                    {% set grandTotalQty = grandTotalQty + order.totalQuantity %}
-                                    {% set grandTotalAmount = grandTotalAmount + order.totalAmount %}
                                 {% endfor %}
+                                <tr style="font-size: large">
+                                    <td colspan="2" align="right">Total</td>
+                                    {% for category in itemCategories %}
+                                        <td>
+                                            {% set itemTotal = 0 %}
+                                            {% for totalItems in depotAndCategoryTotal %}
+                                                {% set itemTotal= itemTotal+ totalItems[category.id]|default(0) %}
+                                            {% endfor %}
+                                            {{ itemTotal }}
+                                        </td>
+                                    {% endfor %}
+                                    <td>{{ grandTotalQty }}</td>
+                                    <td>{{ grandTotalAmount }}</td>
+                                </tr>
                             </tbody>
-                            <tfoot>
-                            <tr style="font-size: large">
-                                <td colspan="2" align="right">Total</td>
-                                <td>{{ grandTotalQty }}</td>
-                                <td>{{ grandTotalAmount }}</td>
-                            </tr>
-                            </tfoot>
                             {% endif %}
                         </table>
                     </div>

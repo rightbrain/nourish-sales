@@ -43,11 +43,15 @@ class OrderReportController extends Controller
                 $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getDailyFeedOrder($data);
              }
         }
+        $depots = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->getAllActiveDepotForFeed();
+        $itemCategories = $this->getDoctrine()->getRepository('RbsCoreBundle:Category')->getAllActiveCategory();
 
             return $this->render('RbsSalesBundle:Report/FeedOrder:daily-feed-order.html.twig', array(
                 'formSearch' => $formSearch->createView(),
                 'data' => $data,
                 'orders' => $dailyOrders,
+                'depots' => $depots,
+                'itemCategories' => $itemCategories,
             ));
 
     }

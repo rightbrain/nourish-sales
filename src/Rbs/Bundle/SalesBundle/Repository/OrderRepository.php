@@ -397,8 +397,12 @@ class OrderRepository extends EntityRepository
             $qp = $this->createQueryBuilder('o');
             $qp->join('o.depo', 'd');
             $qp->join('o.orderItems', 'oi');
+            $qp->join('oi.item', 'i');
+            $qp->join('i.category', 'c');
             $qp->select('o.id');
             $qp->addSelect('d.id as depotId');
+            $qp->addSelect('c.id as catId');
+            $qp->addSelect('c.name as catName');
             $qp->addSelect('d.name as depotName');
             $qp->addSelect('oi.totalAmount');
             $qp->addSelect('SUM(oi.quantity) AS totalQuantity');
@@ -410,10 +414,11 @@ class OrderRepository extends EntityRepository
             }
             $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
             $qp->groupBy('o.depo');
+            $qp->addGroupBy('c.id');
             $qp->orderBy('d.name', 'ASC');
 
             foreach ($qp->getQuery()->getResult() as $result) {
-                $results[$result['depotId']] = $result;
+                $results[$result['depotId']][$result['catId']] = $result;
             }
             return $results;
         }else{
