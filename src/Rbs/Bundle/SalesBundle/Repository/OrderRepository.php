@@ -471,6 +471,32 @@ class OrderRepository extends EntityRepository
 
     }
 
+    public function getPaymentAmountWithOrder($data){
+        $results= array();
+        if(!empty($data['start_date'])) {
+            $qp = $this->createQueryBuilder('o');
+            $qp->join('o.depo', 'd');
+            $qp->join('o.payments','p');
+            $qp->select('o.id');
+            $qp->addSelect('d.id as depotId');
+            $qp->addSelect('SUM(p.amount) AS totalAmount');
+            $qp->andWhere('p.transactionType = :CR');
+            $qp->setParameter('CR', Payment::CR);
+            $qp->andWhere('o.orderType = :orderType');
+            $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+            if (!empty($data['depo'])) {
+                $this->handleSearchByDepot($data['depo'], $qp);
+            }
+            $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
+            $qp->groupBy('o.depo');
+
+            foreach ($qp->getQuery()->getResult() as $result) {
+                $results[$result['depotId']] = $result;
+            }
+        }
+        return $results;
+    }
+
     protected function handleSearchByDepot($depot, $query)
     {
         if (!empty($depot)) {

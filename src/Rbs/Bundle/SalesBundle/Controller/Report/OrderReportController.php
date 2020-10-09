@@ -36,20 +36,23 @@ class OrderReportController extends Controller
         $submit = $request->query->get('submit');
         $formSearch = $this->createForm($form, $data);
         $dailyOrders=array();
+        $paymentAmountViaOrders=array();
         if ('GET' === $request->getMethod() && $submit) {
             $formSearch->handleRequest($request);
             $formSearch->submit($data);
             if ($formSearch->isValid()) {
                 $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getDailyFeedOrder($data);
+                $paymentAmountViaOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getPaymentAmountWithOrder($data);
              }
         }
-        $depots = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->getAllActiveDepotForFeed();
+        $depots = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->getActiveDepotForFeed($data);
         $itemCategories = $this->getDoctrine()->getRepository('RbsCoreBundle:Category')->getAllActiveCategory();
 
             return $this->render('RbsSalesBundle:Report/FeedOrder:daily-feed-order.html.twig', array(
                 'formSearch' => $formSearch->createView(),
                 'data' => $data,
                 'orders' => $dailyOrders,
+                'paymentAmountViaOrders' => $paymentAmountViaOrders,
                 'depots' => $depots,
                 'itemCategories' => $itemCategories,
             ));
