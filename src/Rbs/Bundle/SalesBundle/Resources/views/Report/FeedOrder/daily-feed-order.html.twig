@@ -50,7 +50,9 @@
                                 <th>SL No</th>
                                 <th>Feed Mill/Depot</th>
                                 {% for category in itemCategories %}
+                                    {% if(category.id !=15) %}
                                 <th>{{ category.name }}</th>
+                                    {% endif %}
                                 {% endfor %}
                                 <th>Total Qty(KG)</th>
                                 <th>Total Value</th>
@@ -71,12 +73,14 @@
                                         {% set catTotalQty = 0 %}
                                         {% set catTotalAmount = 0 %}
                                         {% for category in itemCategories %}
+                                            {% if(category.id !=15) %}
                                             {% set catQty = orders[depot.id][category.id].totalQuantity|default(0) %}
                                             {% set catAmount = orders[depot.id][category.id].totalAmount|default(0) %}
                                             {% set catTotalQty = catTotalQty + catQty %}
                                             {% set catTotalAmount = catTotalAmount + catAmount %}
                                             {% set depotAndCategoryTotal=depotAndCategoryTotal|merge([{(category.id):catQty}]) %}
                                             <td>{{ orders[depot.id][category.id].totalQuantity|default(0)  }}</td>
+                                            {% endif %}
                                         {% endfor %}
                                         <td>{{ catTotalQty }}</td>
                                         <td>{{ catTotalAmount }}</td>
@@ -90,6 +94,7 @@
                                 <tr style="font-size: large">
                                     <td colspan="2" align="right">Total</td>
                                     {% for category in itemCategories %}
+                                        {% if(category.id !=15) %}
                                         <td>
                                             {% set itemTotal = 0 %}
                                             {% for totalItems in depotAndCategoryTotal %}
@@ -97,6 +102,7 @@
                                             {% endfor %}
                                             {{ itemTotal }}
                                         </td>
+                                        {% endif %}
                                     {% endfor %}
                                     <td>{{ grandTotalQty }}</td>
                                     <td>{{ grandTotalAmount }}</td>
