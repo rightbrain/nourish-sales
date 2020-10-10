@@ -28,7 +28,7 @@ class ItemReportController extends Controller
      * @Route("/upozilla_wise", name="upozilla_wise_item_report")
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE, ROLE_SALES_REPORT, ROLE_FEED_ORDER_REPORT")
      */
    public function upozillaWiseItemReportAction(Request $request){
 
@@ -54,7 +54,7 @@ class ItemReportController extends Controller
      * @Route("/item_yearly_report", name="item_yearly_report")
      * @Method("GET")
      * @Template()
-     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE, ROLE_SALES_REPORT, ROLE_FEED_ORDER_REPORT")
      */
    public function itemYearlyReportAction(Request $request){
 
@@ -91,7 +91,7 @@ class ItemReportController extends Controller
      * @Route("/upozilla_wise_excel", name="upozilla_wise_item_report_excel", options={"expose"=true})
      * @param Request $request
      * @return Response
-     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE, ROLE_SALES_REPORT, ROLE_FEED_ORDER_REPORT")
      */
    public function upozillaWiseItemReportExcelAction(Request $request){
 
@@ -120,7 +120,7 @@ class ItemReportController extends Controller
      * @Route("/yearly_item_excel", name="yearly_item_report_excel", options={"expose"=true})
      * @param Request $request
      * @return Response
-     * @JMS\Secure(roles="ROLE_ITEM_MANAGE")
+     * @JMS\Secure(roles="ROLE_ITEM_MANAGE, ROLE_SALES_REPORT, ROLE_FEED_ORDER_REPORT")
      */
    public function yearlyItemReportExcelAction(Request $request){
 

@@ -153,14 +153,14 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
-            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN', 'ROLE_SALES_REPORT', 'ROLE_FEED_ORDER_REPORT'))) {
                 $menu['Report']->addChild('Upazilla Wise Report', array('route' => 'upozilla_wise_item_report'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('upozilla_wise_item_report')) {
                     $menu['Report']->getChild('Upazilla Wise Report')->setCurrent(true);
                 }
             }
-            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN', 'ROLE_SALES_REPORT', 'ROLE_FEED_ORDER_REPORT'))) {
                 $menu['Report']->addChild('Item Yearly Report', array('route' => 'item_yearly_report'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('item_yearly_report')) {
