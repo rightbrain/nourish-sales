@@ -72,7 +72,12 @@
                 <td>{{ form_widget(orderItem.quantity, { 'attr': {'class': 'quantity input-mask-number'}}) }}</td>
                 <td class="item-unit text-center"></td>
                 <td class="stock-available text-center"></td>
-                <td class="item-price">{{ form_widget(orderItem.price, { 'attr': {'class': 'price'}}) }}</td>
+                {% if priceModifyAccess.status==1 %}
+                    <td class="item-price">{{ form_widget(orderItem.price, { 'attr': {'class': 'price'}}) }}</td>
+                {% else %}
+                    <td class="item-price">{{ form_widget(orderItem.price, { 'attr': {'class': 'price','readonly':'true'}}) }}</td>
+                {% endif %}
+
                 <td>{{ form_widget(orderItem.totalAmount, { 'attr': {'class': 'total_price'}} ) }}</td>
                 <td>{{ form_widget(orderItem.remove) }}</td>
             </tr>

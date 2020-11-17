@@ -1,0 +1,59 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Location {% endblock %}
+
+{% block body %}
+
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title">
+                <div class="caption">
+                    <i class="fa fa-globe"></i>Settings List
+                </div>
+            </div>
+            <div class="portlet-body">
+
+
+                <div class="dataTables_wrapper no-footer">
+
+                    <table class="table table-bordered table-striped coreSittingTable">
+                        <thead>
+                        <tr>
+                            <th style="width: 100px;">Name</th>
+                            <th style="width: 100px;">Status</th>
+                            <th style="width: 100px;">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% include '@RbsCore/CoreSetting/table-body.html.twig' %}
+                        </tbody>
+                    </table>
+
+                    <div style="clear: both"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+{% endblock %}
+
+{% block documentReady %}
+    {{ parent() }}
+    {#<script>#}
+
+        $(document).on('click',".setting_status_change", function (event) {
+
+            var status = $(this).attr('data-value');
+            var url = $(this).attr('data-action');
+
+            $.post(url,{ status: status }, function( data ) {
+                if(data.status===200){
+                toastr.success('Status updated successfully.');
+                var refreshUrl = Routing.generate('setting_list_refresh');
+                $(".coreSittingTable tbody").load(refreshUrl);
+                }
+            });
+        });
+
+        {#</script>#}
+{% endblock documentReady %}

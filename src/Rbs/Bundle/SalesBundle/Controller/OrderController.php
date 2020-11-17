@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\CoreSettings;
 use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderIncentiveFlag;
@@ -237,9 +238,11 @@ class OrderController extends BaseController
             a:
             return $this->redirect($this->generateUrl('order_create'));
         }
+        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('slug'=>'item-price-modify-access'));
 
         return array(
             'form' => $form->createView(),
+            'priceModifyAccess' => $priceModifyAccess,
         );
     }
 
@@ -252,6 +255,8 @@ class OrderController extends BaseController
      */
     public function createOrderWithoutSmsAction(Request $request)
     {
+        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('slug'=>'item-price-modify-access'));
+
         $agentId = $this->getUser()->getAgent()?$this->getUser()->getAgent()->getId():null;
         $order = new Order();
         $orderIncentiveFlag = new OrderIncentiveFlag();
@@ -338,7 +343,7 @@ class OrderController extends BaseController
         return array(
             'form' => $form->createView(),
             'depoAttr' => $depoAttr,
-//            'agentAttr' => $agentAttr,
+            'priceModifyAccess' => $priceModifyAccess,
         );
     }
 
@@ -414,11 +419,13 @@ class OrderController extends BaseController
             a:
             return $this->redirect($this->generateUrl('order_update', array('id' => $order->getId())));
         }
+        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('slug'=>'item-price-modify-access'));
 
         return array(
             'form' => $form->createView(),
             'order' => $order,
             'depoAttr' => $depoAttr,
+            'priceModifyAccess' => $priceModifyAccess,
         );
     }
 
@@ -500,12 +507,14 @@ class OrderController extends BaseController
             a:
             return $this->redirect($this->generateUrl('order_update_online', array('id' => $order->getId())));
         }
+        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('slug'=>'item-price-modify-access'));
 
         return array(
             'form' => $form->createView(),
             'order' => $order,
             'depoAttr' => $depoAttr,
             'agentAttr' => $agentAttr,
+            'priceModifyAccess' => $priceModifyAccess,
         );
     }
 

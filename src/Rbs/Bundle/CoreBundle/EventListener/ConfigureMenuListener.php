@@ -119,6 +119,13 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Settings']->getChild('Agent Bank Info Sent')->setCurrent(true);
                 }
             }
+            if ($this->authorizationChecker->isGranted('ROLE_CORE_SETTING')) {
+                $menu['Settings']->addChild('Core Settings', array('route' => 'core_setting'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('core_setting') || $this->isMatch('core_setting')) {
+                    $menu['Settings']->getChild('Core Settings')->setCurrent(true);
+                }
+            }
 
             /* Report Menu*/
             $menu->addChild('Report', array())

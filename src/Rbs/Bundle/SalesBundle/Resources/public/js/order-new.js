@@ -237,7 +237,12 @@ var Order = function()
         if (itemQty) {
             row.find('.quantity').val(itemQty);
         }
+        var qty = row.find('.quantity').val();
+        row.find('.total_price').val((price * qty).toFixed(2));
         row.find('.item-unit').text(itemUnit);
+
+        totalAmountCalculate();
+        totalQuantityCalculate();
     }
 
     function isItemExits(collectionHolder, item, index)
@@ -273,7 +278,7 @@ var Order = function()
                 $addTagLink.trigger('click');
             }
         });
-
+/*
         agentElm.change(function () {
 
             $collectionHolder.find('tr').remove();
@@ -305,9 +310,9 @@ var Order = function()
                 });
                 $('.hide_button').show();
             }
-        }).change();
+        }).change();*/
 
-        $('.order-item-list tbody').on("click keyup", ".quantity", (totalPriceCalculation));
+        $('.order-item-list tbody').on("click keyup", ".quantity, .price", (totalPriceCalculation));
         recalculateItemPriceOnEdit();
     }
 

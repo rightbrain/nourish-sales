@@ -3,7 +3,11 @@
         <td>{{ form_widget(form.quantity, { 'attr': {'class': 'quantity input-mask-number'}}) }}</td>
         <td class="item-unit text-center"></td>
         <td class="stock-available text-center"></td>
-        <td class="item-price">{{ form_widget(form.price, { 'attr': {'class': 'price'}}) }}</td>
+    {% if priceModifyAccess.status==1 %}
+            <td class="item-price">{{ form_widget(form.price, { 'attr': {'class': 'price'}}) }}</td>
+    {% else %}
+            <td class="item-price">{{ form_widget(form.price, { 'attr': {'class': 'price','readonly':'true'}}) }}</td>
+    {% endif %}
         <td>{{ form_widget(form.totalAmount, { 'attr': {'class': 'total_price'}} ) }}</td>
         <td>{{ form_widget(form.remove) }}</td>
     </tr>

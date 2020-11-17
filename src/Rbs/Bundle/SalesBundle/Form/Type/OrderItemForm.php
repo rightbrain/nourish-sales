@@ -64,7 +64,7 @@ class OrderItemForm extends AbstractType
             ))
             ->add('quantity', 'text', array(
                 'attr' => array(
-                    'class' => 'quantity'
+                    'class' => 'quantity','autocomplete'=>'off'
                 ),
                 'empty_data' => 0,
             ))
@@ -72,7 +72,7 @@ class OrderItemForm extends AbstractType
                 'read_only' => true
             ))
             ->add('price', 'text', array(
-                'read_only' => true
+//                'read_only' => true
             ))
             ->add('remove', 'button')
         ;
