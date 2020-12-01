@@ -108,7 +108,7 @@ class OrderReportController extends Controller
             'paymentAmountViaOrders' => $paymentAmountViaOrders,
             'depots' => $depots,
         ));
-        $file="dailyOrderReport".time().".xlsx";
+        $file="dailyOrderReport_".time().".xlsx";
         $test="$html";
         header("Content-type: application/vnd.ms-excel");
         header("Content-Disposition: attachment; filename=$file");
