@@ -146,10 +146,17 @@ class ConfigureMenuListener extends ContextAwareListener
             }
 
             if ($this->authorizationChecker->isGranted('ROLE_FEED_ORDER_REPORT')) {
-                $menu['Report']->addChild('Daily Order Report', array('route' => 'report_daily_feed_order'))
+                $menu['Report']->addChild('Daily Order Report', array('route' => 'report_feed_order'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('report_feed_order')) {
+                    $menu['Report']->getChild('Daily Order Report')->setCurrent(true);
+                }
+            }
+            if ($this->authorizationChecker->isGranted('ROLE_FEED_ORDER_REPORT')) {
+                $menu['Report']->addChild('Depot Wise Order Report', array('route' => 'report_daily_feed_order'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('report_daily_feed_order')) {
-                    $menu['Report']->getChild('Daily Order Report')->setCurrent(true);
+                    $menu['Report']->getChild('Depot Wise Order Report')->setCurrent(true);
                 }
             }
             if ($this->authorizationChecker->isGranted('ROLE_FEED_ORDER_REPORT')) {

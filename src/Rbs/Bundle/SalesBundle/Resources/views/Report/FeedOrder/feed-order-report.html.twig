@@ -1,0 +1,103 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Stock {% endblock %}
+
+{% block body %}
+
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title hidden-print">
+                <div class="caption">
+                    <i class="fa fa-list"></i>Order Report
+                </div>
+            </div>
+            <div class="portlet-body">
+
+                <form method="get" novalidate="novalidate" class="form-inline hidden-print" style="margin-bottom: 20px;">
+
+                    <div class="form-group hidden-print">
+                        <span class="visible-print-inline">Depot:</span>
+                        {{ form_widget(formSearch.depo) }}
+                    </div>
+                    <div class="form-group hidden-print">
+                            <div class="input-group input-daterange">
+                                {{ form_widget(formSearch.start_date) }}
+                            </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-1">
+                            <input type="submit" name="submit" value="Search" class="btn blue hidden-print">
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        {#<button type="submit" name="pdf_create" value="1" class="btn blue hidden-print">PDF</button>#}
+                        <button type="button" class="btn green hidden-print" onclick="print()">Print</button>
+                    </div>
+                    {{ form_end(formSearch) }}
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <table width="100%" style="margin-bottom: 20px; font-weight: bold">
+                            <tr style="font-size: large">
+                                <td width="80%">Date wise Oder Quantity & Value</td>
+                                <td width="20%" align="right">{{ data?data['start_date']:'' }}</td>
+                            </tr>
+                        </table>
+                        <table class="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th>Order Id</th>
+                                <th>Agent ID</th>
+                                <th>Agent Name</th>
+                                <th>Agent District</th>
+                                <th>Feed Mill/Depot</th>
+                                <th width="110px">Date</th>
+                                <th>Delivery Status</th>
+                                <th>Total Quantity</th>
+                                <th>Trade Value</th>
+                                <th>Payment</th>
+                                <th>Remarks</th>
+                            </tr>
+                            </thead>
+                            {% if orders %}
+                            <tbody>
+                                {% set sl = 1 %}
+                                {% set grandTotalQty = 0 %}
+                                {% set grandTotalAmount = 0 %}
+                                {% set grandTotalPaymentAmount = 0 %}
+                                {% set depotAndCategoryTotal = [] %}
+                                {% for depot in depots %}
+                                    <tr>
+                                        <td colspan="12">{{ depot.name }}</td>
+                                    </tr>
+                                    {% if orders[depot.id] is defined %}
+                                        {% for order in orders[depot.id] %}
+                                    <tr>
+                                        <td>{{ order.id }}</td>
+                                        <td>{{ order.agentId|default('') }}</td>
+                                        <td>{{ order.fullName|default('') }}</td>
+                                        <td>{{ order.zillaName|default('') }}</td>
+                                        <td>{{ depot.name }}</td>
+                                        <td>{{ order.createdAt|date('d-m-Y') }}</td>
+                                        <td>{{ order.deliveryState}}</td>
+                                        <td>{{ order.totalQuantity|number_format(2,'.',',')}}</td>
+                                        <td>{{ order.totalAmount|number_format(2,'.',',')}}</td>
+                                        <td>{{ paymentAmountViaOrders[order.id].totalAmount|default('')|number_format(2,'.',',') }}</td>
+                                        <td>{{ order.remarks|default('') }}</td>
+                                    </tr>
+                                        {% endfor %}
+                                    {% endif %}
+                                    {% set sl = sl + 1 %}
+                                {% endfor %}
+
+                            </tbody>
+                            {% endif %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+{% endblock %}

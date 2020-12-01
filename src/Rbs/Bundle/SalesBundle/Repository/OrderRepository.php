@@ -428,6 +428,53 @@ class OrderRepository extends EntityRepository
 
     }
 
+    public function getFeedOrderReport($data){
+
+        $results= array();
+        if(!empty($data['start_date'])) {
+            $qp = $this->createQueryBuilder('o');
+            $qp->join('o.depo', 'd');
+            $qp->join('o.agent', 'a');
+            $qp->join('a.user', 'u');
+            $qp->join('u.profile', 'p');
+            $qp->join('u.zilla', 'z');
+            $qp->join('o.orderItems', 'oi');
+            $qp->select('o.id');
+            $qp->addSelect('o.createdAt as createdAt');
+            $qp->addSelect('o.deliveryState as deliveryState');
+            $qp->addSelect('o.remark as remarks');
+            $qp->addSelect('d.id as depotId');
+            $qp->addSelect('d.name as depotName');
+            $qp->addSelect('a.agentCodeForDatatable AS agentId');
+            $qp->addSelect('p.fullName AS fullName');
+            $qp->addSelect('z.name AS zillaName');
+            $qp->addSelect('oi.totalAmount');
+            $qp->addSelect('SUM(oi.quantity) AS totalQuantity');
+            $qp->addSelect('SUM(oi.totalAmount) AS totalAmount');
+            $qp->where('o.orderType = :orderType');
+            $qp->andWhere('o.orderState != :orderState');
+            $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+            $qp->setParameter('orderState', Order::ORDER_STATE_CANCEL);
+            if (!empty($data['depo'])) {
+                $this->handleSearchByDepot($data['depo'], $qp);
+            }
+            $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
+            $qp->groupBy('o.id');
+//            $qp->addGroupBy('c.id');
+            $qp->orderBy('d.name', 'ASC');
+            $qp->addOrderBy('o.id', 'ASC');
+
+            foreach ($qp->getQuery()->getResult() as $result) {
+                $results[$result['depotId']][] = $result;
+            }
+            return $results;
+        }else{
+            return array();
+        }
+
+
+    }
+
     public function getDailyFeedOrderItem($data){
 
         $results= array();
@@ -492,6 +539,32 @@ class OrderRepository extends EntityRepository
 
             foreach ($qp->getQuery()->getResult() as $result) {
                 $results[$result['depotId']] = $result;
+            }
+        }
+        return $results;
+    }
+
+    public function getPaymentAmountWithOrderForReport($data){
+        $results= array();
+        if(!empty($data['start_date'])) {
+            $qp = $this->createQueryBuilder('o');
+            $qp->join('o.depo', 'd');
+            $qp->join('o.payments','p');
+            $qp->select('o.id');
+            $qp->addSelect('d.id as depotId');
+            $qp->addSelect('SUM(p.amount) AS totalAmount');
+            $qp->andWhere('p.transactionType = :CR');
+            $qp->setParameter('CR', Payment::CR);
+            $qp->andWhere('o.orderType = :orderType');
+            $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+            if (!empty($data['depo'])) {
+                $this->handleSearchByDepot($data['depo'], $qp);
+            }
+            $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
+            $qp->groupBy('o.id');
+
+            foreach ($qp->getQuery()->getResult() as $result) {
+                $results[$result['id']] = $result;
             }
         }
         return $results;

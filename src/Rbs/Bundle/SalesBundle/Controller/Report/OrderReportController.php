@@ -60,6 +60,41 @@ class OrderReportController extends Controller
     }
 
     /**
+     * @Route("/report/feed/order", name="report_feed_order")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_FEED_ORDER_REPORT")
+     */
+    public function getFeedOrderReport(Request $request){
+
+        $form = new FeedOrderReportType();
+        $data = $request->query->get($form->getName());
+        $pdf_create = $request->query->get('pdf_create');
+        $submit = $request->query->get('submit');
+        $formSearch = $this->createForm($form, $data);
+        $dailyOrders=array();
+        $paymentAmountViaOrders=array();
+        if ('GET' === $request->getMethod() && $submit) {
+            $formSearch->handleRequest($request);
+            $formSearch->submit($data);
+            if ($formSearch->isValid()) {
+                $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getFeedOrderReport($data);
+                $paymentAmountViaOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getPaymentAmountWithOrderForReport($data);
+             }
+        }
+        $depots = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->getActiveDepotForFeed($data);
+
+            return $this->render('RbsSalesBundle:Report/FeedOrder:feed-order-report.html.twig', array(
+                'formSearch' => $formSearch->createView(),
+                'data' => $data,
+                'orders' => $dailyOrders,
+                'paymentAmountViaOrders' => $paymentAmountViaOrders,
+                'depots' => $depots,
+            ));
+
+    }
+
+    /**
      * @Route("/report/daily/feed/order/item", name="report_daily_feed_order_item")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
