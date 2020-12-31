@@ -51,6 +51,11 @@ class OrderRepository extends EntityRepository
     public function update(Order $order, $resetStatus = false)
     {
         $this->calculateOrderAmount($order);
+
+        if($order->getOrderState()==Order::ORDER_STATE_PROCESSING && $order->getPaymentState()==Order::PAYMENT_STATE_PENDING && $order->getDeliveryState()==Order::DELIVERY_STATE_PENDING){
+            $order->setTotalApprovedAmount($order->getItemsTotalAmount());
+        }
+
         $this->setSms($order);
         if ($resetStatus) {
             $this->setStatus($order);
@@ -59,6 +64,7 @@ class OrderRepository extends EntityRepository
         $this->_em->flush();
         return $this->_em;
     }
+
     public function onlyUpdate(Order $order)
     {
         $this->calculateOrderAmount($order);
@@ -78,6 +84,9 @@ class OrderRepository extends EntityRepository
 
         $this->calculateOrderAmount($order);
         $this->orderPayment($order);
+        if($order->getOrderState()==Order::ORDER_STATE_PROCESSING && $order->getPaymentState()==Order::PAYMENT_STATE_PENDING && $order->getDeliveryState()==Order::DELIVERY_STATE_PENDING){
+            $order->setTotalApprovedAmount($order->getItemsTotalAmount());
+        }
         if($order->getPaidAmount()!=$order->getTotalPaymentDepositedAmount()){
             $order->setPaidAmount($order->getTotalPaymentDepositedAmount());
             $order->setPaymentState(Order::PAYMENT_STATE_PENDING);
