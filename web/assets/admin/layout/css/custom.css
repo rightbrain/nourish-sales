@@ -171,3 +171,8 @@ input.total_price{
 {
     color: green;
 }
+
+#depo .ms-container .ms-optgroup-label{
+    text-align: center;
+    font-weight: bold;
+}

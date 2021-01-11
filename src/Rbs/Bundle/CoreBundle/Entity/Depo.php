@@ -68,6 +68,13 @@ class Depo
     private $users;
 
     /**
+     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Location")
+     * @ORM\JoinTable(name="core_join_depots_areas")
+     * @Assert\NotBlank()
+     **/
+    private $areas;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="used_in_transport", type="boolean", nullable=true)
@@ -85,6 +92,7 @@ class Depo
     {
         $this->bundles = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->areas = new ArrayCollection();
     }
     
     /**
@@ -170,6 +178,35 @@ class Depo
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * @param Location $area
+     * @return $this
+     */
+    public function addArea(Location $area)
+    {
+        if (!$this->getAreas()->contains($area)) {
+            $this->areas->add($area);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Location $area
+     */
+    public function removeArea(Location $area)
+    {
+        $this->areas->removeElement($area);
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAreas()
+    {
+        return $this->areas;
     }
 
     /**

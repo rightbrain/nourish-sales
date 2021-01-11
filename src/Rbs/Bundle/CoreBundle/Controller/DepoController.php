@@ -73,6 +73,13 @@ class DepoController extends BaseController
         $form->handleRequest($request);
 
         if ($form->isValid()) {
+            /*$data = $request->request->get('depo');
+
+            foreach ($data['areas'] as $areaId){
+                $area = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->find($areaId);
+                $entity->addArea($area);
+            }*/
+
             $em->getRepository('RbsCoreBundle:Depo')->create($entity);
             $this->dispatch('core.depo.created', new DepoEvent($entity));
             $this->flashMessage('success', 'Depo Created Successfully');
@@ -92,7 +99,7 @@ class DepoController extends BaseController
      */
     private function createCreateForm(Depo $entity)
     {
-        $form = $this->createForm(new DepoForm(), $entity, array(
+        $form = $this->createForm(new DepoForm($this->getDoctrine()->getManager()), $entity, array(
             'action' => $this->generateUrl('depo_create'),
             'method' => 'POST',
         ));
@@ -180,7 +187,7 @@ class DepoController extends BaseController
      */
     private function createEditForm(Depo $entity)
     {
-        $form = $this->createForm(new DepoForm(), $entity, array(
+        $form = $this->createForm(new DepoForm($this->getDoctrine()->getManager()), $entity, array(
             'action' => $this->generateUrl('depo_update', array('id' => $entity->getId())),
             'method' => 'PUT',
         ));

@@ -371,6 +371,18 @@ class ChickOrderController extends BaseController
         $chickItems = $this->getChickItems();
         $depots = $this->getDepots();
 
+
+        $sql ="INSERT INTO sales_orders_chick_temp
+    (`agent_id`, `depo_id`,`order_type`, `location`)
+SELECT  e.id ,{$depoid},'chick',`location_id`
+FROM core_agent AS e
+WHERE e.enable = 1";
+
+
+
+
+
+
         if ($request->query->get('order_date')){
             /** @var Location $district */
             foreach ($locationsDistricts as $district){

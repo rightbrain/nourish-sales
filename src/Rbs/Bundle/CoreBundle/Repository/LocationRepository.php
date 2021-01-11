@@ -2,6 +2,7 @@
 namespace Rbs\Bundle\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\CoreBundle\Entity\Location;
 
 class LocationRepository extends EntityRepository
 {
@@ -73,6 +74,23 @@ class LocationRepository extends EntityRepository
         $query->setParameter('parentId', $parentId);
 
         return $query->getQuery()->getResult();
+    }
+
+    public function getDistrictOptionByRegion()
+    {
+        $regions = $this->getRegionsForChick();
+        $arrayOption=array();
+        foreach ($regions as $region){
+            $districts = $this->getDistrictByRegion($region['id']);
+            /** @var  Location $district */
+            foreach ($districts as $district){
+                $arrayOption[$region['name']][$district->getId()]=$district->getName();
+            }
+        }
+
+//        var_dump($arrayOption);die;
+
+        return $arrayOption;
     }
 
     public function getUpozillaByDistrict($parentId)
