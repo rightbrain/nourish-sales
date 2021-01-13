@@ -129,4 +129,31 @@ class AgentRepository extends EntityRepository
         return $output;
     }
 
+    public function getChickAgentsListByDepotAreas($areas)
+    {
+        $query = $this->createQueryBuilder('a');
+        $query->select('a.id, a.agentID, a.chickAgentID, p.fullName, z.id as zId');
+        $query->join('a.user', 'u');
+        $query->join('u.profile', 'p');
+        $query->join('u.zilla', 'z');
+        $query->where('u.userType = :AGENT');
+        $query->andWhere('u.enabled = 1');
+        $query->andWhere('u.deletedAt IS NULL');
+        $query->andWhere('a.chickAgentID IS NOT NULL');
+        $query->setParameter('AGENT', User::AGENT);
+        $query->andWhere('z.id IN (:zId)');
+        $query->setParameter('zId', $areas);
+        $query->orderBy('p.fullName','ASC');
+
+        $result = $query->getQuery()->getResult();
+
+        $output = array();
+
+        foreach ($result as $agent) {
+            $output[$agent['zId']][] = $agent;
+        }
+
+        return $output;
+    }
+
 }

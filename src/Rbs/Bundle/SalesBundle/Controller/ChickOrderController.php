@@ -361,66 +361,64 @@ class ChickOrderController extends BaseController
         ini_set('memory_limit','1024M');
         $em = $this->getDoctrine()->getManager();
         $date = $request->query->get('order_date') ? date('Y-m-d H:i:s', strtotime($request->query->get('order_date'))) : date('Y-m-d H:i:s', time());
+        $areaRegionIds = array();
+        $areaIds = array();
+        foreach($depo->getAreas() as $area) {
+            $areaRegionIds[] = $area->getParentId();
+            $areaIds[] = $area->getId();
+        }
+        $locationsRegions = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->getRegionsForChickByDepotAreas($areaRegionIds);
 
-        $locationsRegions = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->getRegionsForChick();
-        $locationsDistricts = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->getDistrictsForChick();
-        $agentLists = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getChickAgentsListByDistrict();
+        $agentLists = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getChickAgentsListByDepotAreas($areaIds);
 
         $dailyStocks = $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStock')->getDailyStock($date);
 
         $chickItems = $this->getChickItems();
         $depots = $this->getDepots();
 
+        $depotId = $depo->getId();
+        $areas = $depo->getAreas();
+        $areaId='';
 
-        $sql ="INSERT INTO sales_orders_chick_temp
-    (`agent_id`, `depo_id`,`order_type`, `location`)
-SELECT  e.id ,{$depoid},'chick',`location_id`
-FROM core_agent AS e
-WHERE e.enable = 1";
-
-
-
-
-
+        foreach ($areas as $key=>$area){
+            $areaId .= $area->getId();
+            if (count($areas)!=$key+1) $areaId .= ",";
+        }
 
         if ($request->query->get('order_date')){
-            /** @var Location $district */
-            foreach ($locationsDistricts as $district){
-                if (array_key_exists($district['id'],$agentLists)){
-                    /** @var Agent $agent */
-                    foreach ($agentLists[$district['id']] as $agent){
-                        $agentObj = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->find($agent['id']);
-                       if(!$this->getChickOrdersByDateAgentDepotItem($date,$agentObj,$depo)){
-                           $order = new OrderChickTemp();
-                           $order->setAgent($agentObj);
-                           $order->setDepo($depo);
-                           $order->setOrderType(Order::ORDER_TYPE_CHICK);
-                           $order->setLocation($agentObj->getUser()->getUpozilla()?$agentObj->getUser()->getUpozilla():null);
-                           $order->setCreatedAt(new \DateTime($date));
+               if(!$this->getChickTempOrdersByDateAgentDepot($date,$depo)){
+                   $sql ="INSERT INTO sales_orders_chick_temp
+    (`agent_id`, `depo_id`,`order_type`, `location_id`, `created_at`)
+SELECT a.id ,{$depotId},'CHICK',u.upozilla_id as upId, now() FROM sales_agents AS a 
+INNER JOIN user_users u ON a.user_id = u.id 
+INNER JOIN core_locations l ON u.zilla_id = l.id 
+WHERE a.agent_type = 'CHICK' AND u.deleted_at IS NULL AND l.id IN ({$areaId})";
 
-                           $em->persist($order);
+                   $qb = $em->getConnection()->prepare($sql);
+                   $qb->execute();
 
+                  $addedTempOrders = $this->getChickTempOrdersByDateAgentDepot($date,$depo);
 
-                           $this->insertOrderItem($order, $chickItems);
-                       }
-                    }
-                    $em->flush();
-                }
-            }
+                  foreach ($addedTempOrders as $order){
 
+                      $orderObj = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderChickTemp')->find($order['id']);
+
+                      $this->insertOrderItem($orderObj, $chickItems);
+                  }
+               }
             $addedData = $this->getTempChickOrdersByDateDepot($date, $depo);
+
         }
 
         return $this->render('RbsSalesBundle:ChickOrder:add-check-order.html.twig', array(
                 'date'            => $request->query->get('order_date'),
-                'orderDate'            => $date,
-                'agentsList'         => $agentLists,
-                'chickItems'         => $chickItems,
-                'depot'         => $depo,
-                'ordersTemp'         => $addedData,
-                'dailyStocks'         => $dailyStocks,
-                'locationsRegions' => $locationsRegions,
-                'locationsDistricts' => $locationsDistricts,
+                'orderDate'       => $date,
+                'agentsList'      => $agentLists,
+                'chickItems'      => $chickItems,
+                'depot'           => $depo,
+                'ordersTemp'      => $addedData,
+                'dailyStocks'     => $dailyStocks,
+                'locationsRegions'=> $locationsRegions,
             )
         );
     }
@@ -531,18 +529,14 @@ WHERE e.enable = 1";
 
     }
 
-    private function getChickOrdersByDateAgentDepotItem($date, $agent, $depot) {
+    private function getChickTempOrdersByDateAgentDepot($date, $depot) {
+        $date= date('Y-m-d', strtotime($date));
         $repo = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderChickTemp');
         $qb = $repo->createQueryBuilder('o');
-
         $qb->select('o.id');
-        $qb->join('o.orderItems', 'oi');
 
         $qb->where($qb->expr()->between('o.createdAt', ':start', ':end'));
         $qb->setParameters(array('start' => $date . ' 00:00:00', 'end' => $date . ' 23:59:59'));
-
-        $qb->andWhere('o.agent = :agent');
-        $qb->setParameter('agent', $agent);
 
         $qb->andWhere('o.depo = :depo');
         $qb->setParameter('depo', $depot);
@@ -553,6 +547,7 @@ WHERE e.enable = 1";
     }
 
     private function getTempChickOrdersByDateDepot($date, $depot) {
+        $date= date('Y-m-d', strtotime($date));
         $repo = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItemChickTemp');
         $qb = $repo->createQueryBuilder('oi');
         $qb->select('o.id as oId, oi.id as oiId, oi.quantity as quantity, a.id as aId, i.id as iId, d.id as dId');
@@ -562,7 +557,7 @@ WHERE e.enable = 1";
         $qb->join('o.depo','d');
 
         $qb->where($qb->expr()->between('o.createdAt', ':start', ':end'));
-        $qb->setParameters(array('start' => $date , 'end' => $date ));
+        $qb->setParameters(array('start' => $date . ' 00:00:00', 'end' => $date . ' 23:59:59'));
 
         $qb->andWhere('o.depo = :depot');
         $qb->setParameter('depot', $depot);

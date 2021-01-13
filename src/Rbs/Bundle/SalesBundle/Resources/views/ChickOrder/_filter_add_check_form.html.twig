@@ -20,25 +20,37 @@
                         <tr>
                             <td style="width: 5%" rowspan="2">Agent Code</td>
                             <td style="width: 15%" rowspan="2">Name</td>
-                            {% for item in chickItems %}
-                                <td>
-                                    {{ item.sku }}
-                                </td>
-                            {% endfor %}
+                            <td style="padding: 0px" colspan="{{ chickItems|length }}">
+                                <table style="margin-bottom: 0;table-layout: fixed;" class="table table-bordered">
+                                    <tr>
+                                        {% for item in chickItems %}
+                                            <td>
+                                                {{ item.sku }}
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                         <tr>
-                            {% for item in chickItems %}
-                                <td style="width: 9%">
-                                    <input style="display: none" class="form-control item_stock" type="text" data-id="{{ dailyStocks[depot.id][item.id]['id'] }}" data-item="{{ dailyStocks[depot.id][item.id]['iId'] }}" value="{{ dailyStocks[depot.id][item.id]['onHand'] }}">
-                                    <input type="hidden" data-daily-stock-id="{{ dailyStocks[depot.id][item.id]['id'] }}" class="item_{{ dailyStocks[depot.id][item.id]['iId'] }}">
-                                    {#<span class="stock_item item_{{ dailyStocks[depot.id][item.id]['iId'] }}_quantity">{{ dailyStocks[depot.id][item.id]['onHand'] - dailyStocks[depot.id][item.id]['onHold'] }}</span>#}
-                                    <span class="stock_item item_{{ dailyStocks[depot.id][item.id]['iId'] }}_quantity">{{ dailyStocks[depot.id][item.id]['remainingQty'] }}</span>
-                                </td>
-                            {% endfor %}
+                            <td style="padding: 0px" colspan="{{ chickItems|length }}">
+                                <table style="margin-bottom: 0;table-layout: fixed;" class="table table-bordered">
+                                    <tr>
+                                        {% for item in chickItems %}
+                                            <td style="width: 9%; padding: 8px 2px">
+                                                <input style="display: none; padding: 2px" class="form-control item_stock" type="text" data-id="{{ dailyStocks[depot.id][item.id]['id'] }}" data-item="{{ dailyStocks[depot.id][item.id]['iId'] }}" value="{{ dailyStocks[depot.id][item.id]['onHand'] }}">
+                                                <input type="hidden" data-daily-stock-id="{{ dailyStocks[depot.id][item.id]['id'] }}" class="item_{{ dailyStocks[depot.id][item.id]['iId'] }}">
+                                                {#<span class="stock_item item_{{ dailyStocks[depot.id][item.id]['iId'] }}_quantity">{{ dailyStocks[depot.id][item.id]['onHand'] - dailyStocks[depot.id][item.id]['onHold'] }}</span>#}
+                                                <span class="stock_item item_{{ dailyStocks[depot.id][item.id]['iId'] }}_quantity">{{ dailyStocks[depot.id][item.id]['remainingQty'] }}</span>
+                                            </td>
+                                        {% endfor %}
+                                    </tr>
+                                </table>
+                            </td>
                         </tr>
                         </thead>
                     </table>
-                    <div class="panel-group" id="accordion" style="overflow-y: scroll;height: 430px; margin-right: -15px">
+                    <div class="panel-group" id="accordion" style="overflow-y: scroll;height: 430px; margin-right: -18px">
                     {% for region in locationsRegions %}
 
                         <div class="panel panel-default">
@@ -54,16 +66,22 @@
                                     <table id="table_{{ region.id }}" class="table table-bordered table-striped chick-order-region-summary">
                                         <thead>
                                         <tr>
-                                            <td width="20%" colspan="2">Total</td>
-                                            {% for item in chickItems %}
-                                                <td data-region-item="{{ region.id }}_{{ item.id }}" data-region-item-id="{{ item.id }}" class="region region_item_total_{{ region.id }}_{{ item.id }}" style="width: 9%">
-                                                </td>
-                                            {% endfor %}
+                                            <td colspan="2">Total</td>
+                                            <td style="padding: 0px" colspan="{{ chickItems|length }}">
+                                                <table style="margin-bottom: 0;table-layout: fixed;" class="table table-bordered">
+                                                    <tr>
+                                                        {% for item in chickItems %}
+                                                            <td data-region-item="{{ region.id }}_{{ item.id }}" data-region-item-id="{{ item.id }}" class="region region_item_total_{{ region.id }}_{{ item.id }}" style="padding: 8px 2px!important;">
+                                                            </td>
+                                                        {% endfor %}
+                                                    </tr>
+                                                </table>
+                                            </td>
                                         </tr>
                                         </thead>
                                         <tbody>
 
-                                        {% for district in locationsDistricts %}
+                                        {% for district in depot.areas %}
                                             {% if district.parentId == region.id %}
                                                 <tr>
                                                     <td colspan="20" class="col-md-1 bold" style="width: 100px;">{{ district.name }}</td>
@@ -77,13 +95,26 @@
                                                                 {{ agent['chickAgentID'] }}
                                                             </td>
                                                             <td style="width: 15%">{{ agent['fullName'] }}</td>
-                                                            {% for item in chickItems %}
-                                                                <td style="width: 9%">
+                                                            <td style="padding: 0px" colspan="{{ chickItems|length }}">
+                                                                <table style="margin-bottom: 0;table-layout: fixed;" class="table table-bordered">
+                                                                    <tr>
+                                                                        {% for item in chickItems %}
+                                                                            <td style="width: 9%">
+                                                                                <input style="border-color: #fff;" type="text" data-region-id="{{ region.id }}"
+                                                                                       data-item-id="{{ ordersTemp[agent['id']][item.id]['iId'] }}"
+                                                                                       data-order-id="{{ ordersTemp[agent['id']][item.id]['oId'] }}"
+                                                                                       data-order-item-id="{{ ordersTemp[agent['id']][item.id]['oiId'] }}"
+                                                                                       class="form-control item_quantity temp_item_qty_{{ item.id }}"
+                                                                                       name="item_quantity[]"
+                                                                                       data-item-value="{{ ordersTemp[agent['id']][item.id]['quantity'] }}"
+                                                                                       value="{{ ordersTemp[agent['id']][item.id]['quantity'] }}">
+                                                                                {#{{ item.id }}#}
+                                                                            </td>
+                                                                        {% endfor %}
+                                                                    </tr>
+                                                                </table>
+                                                            </td>
 
-                                                                    <input type="text" data-region-id="{{ region.id }}" data-item-id="{{ ordersTemp[agent['id']][item.id]['iId'] }}" data-order-id="{{ ordersTemp[agent['id']][item.id]['oId'] }}"  data-order-item-id="{{ ordersTemp[agent['id']][item.id]['oiId'] }}" class="form-control item_quantity temp_item_qty_{{ item.id }}" name="item_quantity[]" data-item-value="{{ ordersTemp[agent['id']][item.id]['quantity'] }}" value="{{ ordersTemp[agent['id']][item.id]['quantity'] }}">
-                                                                    {#{{ item.id }}#}
-                                                                </td>
-                                                            {% endfor %}
                                                         </tr>
                                                     {% endfor %}
                                                 {% endif %}
