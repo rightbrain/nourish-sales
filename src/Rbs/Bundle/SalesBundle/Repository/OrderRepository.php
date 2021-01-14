@@ -102,6 +102,15 @@ class OrderRepository extends EntityRepository
         return $this->_em;
     }
 
+    public function createChick(Order $order)
+    {
+        $this->calculateOrderAmount($order);
+        $order->setTotalApprovedAmount($order->getItemsTotalAmount());
+        $this->setChickStatus($order);
+        $this->_em->persist($order);
+        $this->_em->flush();
+    }
+
     public function delete($data)
     {
         $this->_em->remove($data);
@@ -149,6 +158,15 @@ class OrderRepository extends EntityRepository
         $order->setOrderState('PROCESSING');
         $order->setPaymentState('PENDING');
         $order->setDeliveryState('PENDING');
+    }
+    /**
+     * @param Order $order
+     */
+    protected function setChickStatus(Order $order)
+    {
+        $order->setOrderState('PROCESSING');
+        $order->setPaymentState('PENDING');
+        $order->setDeliveryState('READY');
     }
 
     /**

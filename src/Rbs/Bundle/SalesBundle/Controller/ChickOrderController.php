@@ -16,7 +16,9 @@ use Rbs\Bundle\SalesBundle\Entity\OrderIncentiveFlag;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\OrderItemChickTemp;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
+use Rbs\Bundle\SalesBundle\Form\Type\ChickOrderForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
+use Rbs\Bundle\SalesBundle\Form\Type\OrderWithoutSmsForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -85,6 +87,75 @@ class ChickOrderController extends BaseController
         return $query->getResponse();
     }
 
+    /**
+     * @Route("/chick/order/create", name="chick_order_create_new", options={"expose"=true})
+     * @Template("RbsSalesBundle:ChickOrder:new-order-create.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_AGENT, ROLE_CHICK_ORDER_MANAGE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE")
+     */
+    public function createChickOrderAction(Request $request)
+    {
+        $order = new Order();
+        $orderIncentiveFlag = new OrderIncentiveFlag();
+        $allRequest = $request->request->get('order');
+        $form = $this->createForm(new ChickOrderForm(), $order);
+        if ('POST' === $request->getMethod()) {
+
+            $form->handleRequest($request);
+
+            /** @var OrderItem $item */
+            foreach ($order->getOrderItems() as $item){
+                if ($item->getQuantity() < 1) {
+                    $this->flashMessage('error', 'Invalid Item Quantity');
+                    goto a;
+                }
+
+                $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+                    $item->getItem(), $order->getDepo()->getLocation()
+                );
+                if ($price < 1) {
+                    $this->flashMessage('error', 'Invalid Item Price');
+                    goto a;
+                }
+            }
+
+            if ($form->isValid()) {
+                $currentTime = date('H:i:s',strtotime('now'));
+                $requestDate = isset($allRequest['created_at'])?date('Y-m-d',strtotime($allRequest['created_at'])):date('Y-m-d',strtotime('now'));
+                $orderDate = $requestDate.' '.$currentTime;
+
+                $em = $this->getDoctrine()->getManager();
+                $order->setLocation($order->getAgent()->getUser()->getUpozilla());
+                $order->setOrderType(Order::ORDER_TYPE_CHICK);
+                $order->setCreatedAt(new \DateTime($orderDate));
+                $orderIncentiveFlag->setOrder($order);
+                $this->orderRepository()->createChick($order);
+
+                /** @var OrderItem $item */
+                foreach ($order->getOrderItems() as $item){
+                    $item->setPreviousQuantity($item->getQuantity());
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->update($item);
+                }
+                $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
+
+//                $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('order')['depo']);
+                $em->getRepository('RbsSalesBundle:DailyDepotStock')->addStockToOnHold($requestDate, $order, $order->getDepo());
+
+                $this->flashMessage('success', 'Order Created Successfully');
+
+                return $this->redirect($this->generateUrl('chick_orders_home'));
+            }
+            a:
+            return $this->redirect($this->generateUrl('chick_order_create_new'));
+        }
+        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('slug'=>'item-price-modify-access'));
+
+        return array(
+            'form' => $form->createView(),
+            'priceModifyAccess' => $priceModifyAccess,
+        );
+    }
 
     /**
      * @Route("/chick/order/details/{id}", name="chick_order_details", options={"expose"=true})

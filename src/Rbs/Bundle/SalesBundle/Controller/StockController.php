@@ -7,6 +7,7 @@ use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\CoreBundle\Entity\Item;
 use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
+use Rbs\Bundle\SalesBundle\Entity\DailyDepotStock;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\Stock;
 use Rbs\Bundle\SalesBundle\Entity\StockHistory;
@@ -145,6 +146,7 @@ class StockController extends Controller
         /** Getting Item Price */
         $price = 0;
         $orderItem = null;
+        $date = $request->query->get('order_date') ? date('Y-m-d', strtotime($request->query->get('order_date'))) : date('Y-m-d',strtotime('now'));
         $order = $em->getRepository('RbsSalesBundle:Order')->find($request->query->get('order', 0));
         if ($order) { // edit mode and item already added
             $orderItem = $em->getRepository('RbsSalesBundle:OrderItem')->findOneBy(
@@ -161,20 +163,20 @@ class StockController extends Controller
         }
 
         if ($item->getItemType() == ItemType::Chick) {
-            $chickenSetForAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:ChickenSetForAgent')->findOneBy(
-                array(
-                    'item'  => $item,
-                    'agent' => $agent,
-                )
-            );
+            $dailyDepotStock = $this->getDoctrine()->
+            getRepository('RbsSalesBundle:DailyDepotStock')->
+            getDailyStockByDateItemDepot($date, $item, $depo);
 
-            // If edit mode, add current qty
+            $dailyDepotStockObj = $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStock')->find($dailyDepotStock['id']);
+            $receivedQty = $dailyDepotStockObj?$dailyDepotStockObj->getTotalReceivedQuantity():0;
+            $transferQty = $dailyDepotStockObj?$dailyDepotStockObj->getTotalTransferredQuantity():0;
+            // If edit mode, add current qty itemUnit
             $response = array(
-                'onHand'    => $chickenSetForAgent ? $chickenSetForAgent->getQuantity() : 0,
-                'onHold'    => 0,
+                'onHand'    => $dailyDepotStock ? $dailyDepotStock['onHand']+$receivedQty : 0,
+                'onHold'    => $dailyDepotStock ? $dailyDepotStock['onHold']+$transferQty : 0,
                 'available' => 0,
                 'price'     => number_format($price, 2),
-                'itemUnit'  => $chickenSetForAgent ? $chickenSetForAgent->getItem()->getItemUnit() : 'Pc',
+                'itemUnit'  => $dailyDepotStock ? $dailyDepotStock['itemUnit'] : 'Pc',
             );
         } else {
             $stock = $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->findOneBy(

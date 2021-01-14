@@ -8,6 +8,7 @@ use Rbs\Bundle\CoreBundle\Entity\Item;
 use Rbs\Bundle\CoreBundle\Entity\ItemType;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\ChickenSetForAgent;
+use Rbs\Bundle\SalesBundle\Entity\DailyDepotStock;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\DeliveryItem;
 use Rbs\Bundle\SalesBundle\Entity\Order;
@@ -114,7 +115,7 @@ class DailyDepotStockRepository extends EntityRepository
     public function getDailyStockByDateItemDepot($date, $item, $depot){
 
         $qb = $this->createQueryBuilder('dds');
-        $qb->select('dds.id, d.id as dId, i.id as iId');
+        $qb->select('dds.id, dds.onHand, dds.onHold, d.id as dId, i.id as iId, i.itemUnit as itemUnit');
         $qb->join('dds.depo', 'd');
         $qb->join('dds.item', 'i');
         $qb->where($qb->expr()->between('dds.createdAt', ':start', ':end'));
@@ -126,9 +127,27 @@ class DailyDepotStockRepository extends EntityRepository
         $qb->andWhere('i.id = :item');
         $qb->setParameter('item', $item);
 
-        $results = $qb->getQuery()->getResult();
+        $results = $qb->getQuery()->getSingleResult();
 
         return $results;
+    }
+
+
+    public function addStockToOnHold($date, Order $order, Depo $depo = null)
+    {
+        if (!$depo) $depo = $order->getDepo();
+
+        /** @var OrderItem $orderItem */
+        foreach ($order->getOrderItems() as $orderItem) {
+            /** @var DailyDepotStock $stock */
+            $stock = $this->getDailyStockByDateItemDepot($date, $orderItem->getItem(), $depo);
+            if($stock){
+                $dailyDepotStock = $this->find($stock['id']);
+                $dailyDepotStock->setOnHold($dailyDepotStock->getOnHold() + $orderItem->getQuantity());
+                $this->_em->persist($dailyDepotStock);
+                $this->_em->flush();
+            }
+        }
     }
 
 }
