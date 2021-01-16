@@ -250,9 +250,13 @@ class VehicleForChickController extends BaseController
 
     private function setOrderText($orders){
         $returnText = '';
+        $key = 0;
         /** @var Order $order */
         foreach ($orders as $order){
-            $returnText .= $order->getId().', ';
+            $returnText .= $order->getId();
+            if (count($orders)!=$key+1) $returnText .= ", ";
+
+            $key++;
         }
         return $returnText;
     }

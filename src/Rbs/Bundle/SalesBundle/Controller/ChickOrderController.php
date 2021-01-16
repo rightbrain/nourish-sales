@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\CoreSettings;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\CoreBundle\Entity\Item;
 use Rbs\Bundle\CoreBundle\Entity\ItemType;
@@ -10,12 +11,15 @@ use Rbs\Bundle\CoreBundle\Entity\Location;
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\DailyDepotStock;
+use Rbs\Bundle\SalesBundle\Entity\Delivery;
+use Rbs\Bundle\SalesBundle\Entity\DeliveryItem;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderChickTemp;
 use Rbs\Bundle\SalesBundle\Entity\OrderIncentiveFlag;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\OrderItemChickTemp;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
+use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 use Rbs\Bundle\SalesBundle\Form\Type\ChickOrderForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderWithoutSmsForm;
@@ -99,6 +103,7 @@ class ChickOrderController extends BaseController
         $order = new Order();
         $orderIncentiveFlag = new OrderIncentiveFlag();
         $allRequest = $request->request->get('order');
+        $deliveryId = $request->request->get('delivery_search');
         $form = $this->createForm(new ChickOrderForm(), $order);
         if ('POST' === $request->getMethod()) {
 
@@ -118,9 +123,14 @@ class ChickOrderController extends BaseController
                     $this->flashMessage('error', 'Invalid Item Price');
                     goto a;
                 }
+
             }
 
             if ($form->isValid()) {
+                if($deliveryId){
+                    $delivery = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->find($deliveryId);
+                }
+
                 $currentTime = date('H:i:s',strtotime('now'));
                 $requestDate = isset($allRequest['created_at'])?date('Y-m-d',strtotime($allRequest['created_at'])):date('Y-m-d',strtotime('now'));
                 $orderDate = $requestDate.' '.$currentTime;
@@ -134,12 +144,47 @@ class ChickOrderController extends BaseController
 
                 /** @var OrderItem $item */
                 foreach ($order->getOrderItems() as $item){
+                    $mrpPrice = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentMrpPrice(
+                        $item->getItem(), $order->getDepo()->getLocation()
+                    );
+                    $item->setMrpPrice($mrpPrice);
                     $item->setPreviousQuantity($item->getQuantity());
+                    $item->setBonusQuantity((int) $item->getQuantity()/$item->getItem()->getPacketWeight());
+
                     $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->update($item);
+
+                    if($delivery){
+                        $deliveryItem = new DeliveryItem();
+                        $deliveryItem->setOrder($order);
+                        $deliveryItem->setOrderItem($item);
+                        $deliveryItem->setDelivery($delivery);
+                        $deliveryItem->setQty($item->getQuantity());
+                        $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->create($deliveryItem);
+
+                    }
                 }
+                if($delivery){
+//                    $vehicle = $delivery->getVehicles()[0];
+                    $delivery->addOrder($order);
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->update($delivery);
+
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->createDeliveredProductValueForSingleChickOrder($delivery, $order);
+
+                    $order->setOrderState('COMPLETE');
+                    $order->setPaymentState('PENDING');
+                    $order->setDeliveryState('SHIPPED');
+
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->onlyUpdate($order);
+
+                    /** @var Vehicle $vehicle */
+                    foreach ($delivery->getVehicles() as $vehicle){
+                        $vehicle->setOrderText($this->setOrderText($delivery->getOrders()));
+                        $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicle);
+                    }
+                }
+
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
 
-//                $depo = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($request->request->get('order')['depo']);
                 $em->getRepository('RbsSalesBundle:DailyDepotStock')->addStockToOnHold($requestDate, $order, $order->getDepo());
 
                 $this->flashMessage('success', 'Order Created Successfully');
@@ -149,14 +194,26 @@ class ChickOrderController extends BaseController
             a:
             return $this->redirect($this->generateUrl('chick_order_create_new'));
         }
-        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('slug'=>'item-price-modify-access'));
+        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('settingType'=>CoreSettings::SETTING_TYPE_CHICK,'slug'=>'item-price-modify-access-chick'));
+//        $deliveries = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->findBy();
 
         return array(
             'form' => $form->createView(),
             'priceModifyAccess' => $priceModifyAccess,
         );
     }
+    private function setOrderText($orders){
+        $returnText = '';
+        $key = 0;
+        /** @var Order $order */
+        foreach ($orders as $order){
+            $returnText .= $order->getId();
+            if (count($orders)!=$key+1) $returnText .= ", ";
 
+            $key++;
+        }
+        return $returnText;
+    }
     /**
      * @Route("/chick/order/details/{id}", name="chick_order_details", options={"expose"=true})
      * @param Order $order
@@ -259,6 +316,7 @@ class ChickOrderController extends BaseController
                     $orderItem->setMrpPrice($itemMrpPrice[$orderId][$orderItemId]);
                     $orderItem->setPrice($price[$orderId][$orderItemId]);
                     $orderItem->setQuantity((int) $orderItemValue);
+                    $orderItem->setPreviousQuantity((int) $orderItemValue);
                     $orderItem->setBonusQuantity((int) $orderItemValue/$orderItem->getItem()->getPacketWeight());
 
                     $order->calculateOrderAmount();
@@ -794,6 +852,7 @@ WHERE a.agent_type = 'CHICK' AND u.deleted_at IS NULL AND l.id IN ({$areaId})";
                     if($orderChickItemTemp->getQuantity()>0){
                         $orderItem = new OrderItem();
                         $orderItem->setQuantity($orderChickItemTemp->getQuantity());
+                        $orderItem->setPreviousQuantity($orderChickItemTemp->getQuantity());
                         $orderItem->setPrice($orderChickItemTemp->getPrice());
                         $orderItem->setMrpPrice($orderChickItemTemp->getMrpPrice());
                         $orderItem->setTotalAmount($orderChickItemTemp->getTotalAmount());

@@ -54,7 +54,7 @@
             </thead>
             <tbody id="orderItems" class="tags" data-prototype="
         {% filter escape %}
-        {{ include('RbsSalesBundle:Order:order_item_content.html.twig', { 'form': form.orderItems.vars.prototype }) }}
+        {{ include('RbsSalesBundle:ChickOrder:order_item_content.html.twig', { 'form': form.orderItems.vars.prototype }) }}
         {% endfilter %}">
             {% for orderItem in form.orderItems %}
 
@@ -71,6 +71,18 @@
             </tr>
             </tfoot>
         </table>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <label class="col-md-4 control-label">Delivery ID</label>
+                <div class="col-md-8" style="margin-top: 10px;">
+                    <input type="hidden" id="delivery_search" name="delivery_search" placeholder="Select Delivery ID" class="form-control">
+                    {#<div id="delivery_search"></div>#}
+                </div>
+            </div>
+
+        </div>
     </div>
 {{ form_row(form.submit,{ 'attr': {'style': 'float:right;'}}) }}
 {{ form_end(form) }}

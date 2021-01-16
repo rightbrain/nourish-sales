@@ -18,6 +18,9 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  */
 class CoreSettings
 {
+    const SETTING_TYPE_FEED = 'FEED';
+    const SETTING_TYPE_CHICK = 'CHICK';
+
     use ORMBehaviors\Timestampable\Timestampable,
         ORMBehaviors\SoftDeletable\SoftDeletable,
         ORMBehaviors\Blameable\Blameable;
@@ -54,6 +57,12 @@ class CoreSettings
      */
     private $status = 1;
 
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="setting_type", type="string", length=255, columnDefinition="ENUM('FEED', 'CHICK')")
+     */
+    private $settingType=self::SETTING_TYPE_FEED;
     /**
      * Get id
      *

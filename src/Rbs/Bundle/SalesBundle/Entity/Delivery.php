@@ -250,7 +250,8 @@ class Delivery
     public function getOrderNumbers(){
         $orders = ' ';
         foreach ($this->getOrders() as $key => $order){
-            $orders .= $order->getId() . ', ';
+            $orders .= $order->getId();
+            if (count($this->getOrders())!=$key+1) $orders .= ", ";
         }
         return $orders;
     }

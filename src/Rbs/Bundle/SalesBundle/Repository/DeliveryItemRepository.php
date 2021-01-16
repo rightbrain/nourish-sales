@@ -16,6 +16,11 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
  */
 class DeliveryItemRepository extends EntityRepository
 {
+    public function create($data)
+    {
+        $this->_em->persist($data);
+        $this->_em->flush();
+    }
     public function getPartialDeliveredItems(Delivery $delivery)
     {
         $orders = $delivery->getOrders();

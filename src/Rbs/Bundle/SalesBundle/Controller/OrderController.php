@@ -238,7 +238,7 @@ class OrderController extends BaseController
             a:
             return $this->redirect($this->generateUrl('order_create'));
         }
-        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('slug'=>'item-price-modify-access'));
+        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('settingType'=>CoreSettings::SETTING_TYPE_FEED,'slug'=>'item-price-modify-access'));
 
         return array(
             'form' => $form->createView(),
@@ -255,7 +255,7 @@ class OrderController extends BaseController
      */
     public function createOrderWithoutSmsAction(Request $request)
     {
-        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('slug'=>'item-price-modify-access'));
+        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('settingType'=>CoreSettings::SETTING_TYPE_FEED,'slug'=>'item-price-modify-access'));
 
         $agentId = $this->getUser()->getAgent()?$this->getUser()->getAgent()->getId():null;
         $order = new Order();
@@ -419,7 +419,7 @@ class OrderController extends BaseController
             a:
             return $this->redirect($this->generateUrl('order_update', array('id' => $order->getId())));
         }
-        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('slug'=>'item-price-modify-access'));
+        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('settingType'=>CoreSettings::SETTING_TYPE_FEED,'slug'=>'item-price-modify-access'));
 
         return array(
             'form' => $form->createView(),
@@ -507,7 +507,7 @@ class OrderController extends BaseController
             a:
             return $this->redirect($this->generateUrl('order_update_online', array('id' => $order->getId())));
         }
-        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('slug'=>'item-price-modify-access'));
+        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('settingType'=>CoreSettings::SETTING_TYPE_FEED,'slug'=>'item-price-modify-access'));
 
         return array(
             'form' => $form->createView(),

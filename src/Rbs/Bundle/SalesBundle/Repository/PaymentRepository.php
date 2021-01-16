@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\DeliveryItem;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\UserBundle\Entity\User;
 
@@ -315,6 +316,11 @@ class PaymentRepository extends EntityRepository
         );
     }
 
+    public function createDeliveredProductValueForSingleChickOrder(Delivery $delivery, Order $order)
+    {
+        $this->addPaymentByDeliveryItemSingleOrder($this->extractOrderItemSummary($delivery, $order), $delivery, $order);
+    }
+
     public function updateDeliveredProductValue(Delivery $delivery)
     {
         $this->updatePaymentByDeliveryItemExtractedSummary(
@@ -359,6 +365,63 @@ class PaymentRepository extends EntityRepository
             $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
             $total = array_sum(array_column($data[$orderId], 'amount'));
             $quantity = array_sum(array_column($data[$orderId], 'qty'));
+            $payment = new Payment();
+            $payment->setAgent($order->getAgent());
+            $payment->setAmount($total);
+            $payment->setQuantity($quantity);
+            $payment->setDepositedAmount($total);
+            $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+            $payment->setRemark(json_encode($deliveryItemSummaries));
+//            $payment->setDepositDate(date("Y-m-d"));
+            $payment->setTransactionType(Payment::DR);
+            $payment->setVerified(true);
+            $payment->setRefDeliveryId($delivery->getId());
+            $payment->addOrder($order);
+
+            $this->_em->persist($payment);
+            $this->_em->flush();
+        }
+    }
+
+
+
+    private function extractOrderItemSummary(Delivery $delivery, Order $order)
+    {
+        $data = [];
+
+        /** @var OrderItem $orderItem */
+        foreach ($order->getOrderItems() as $orderItem) {
+//            $order = $orderItem->getOrder();
+            $itemPrice = $orderItem->getPrice();
+            $itemDamageQty = $orderItem->getDamageQuantity();
+            $itemQty = $orderItem->getQuantity();
+            $itemQty = $itemQty - $itemDamageQty;
+            $amount = $itemPrice * $itemQty;
+
+            if (!array_key_exists($order->getId(), $data)) {
+                $data[$order->getId()] = [];
+            }
+
+            $item = $orderItem->getItem();
+            $data[$order->getId()][$item->getId()] = [
+                'name' => $item->getName(),
+                'qty' => $itemQty,
+                'price' => $itemPrice,
+                'amount' => $amount,
+                'unit' => $item->getItemUnit(),
+                'deliveryId' => $delivery->getId(),
+            ];
+        }
+
+        return $data;
+    }
+
+    private function addPaymentByDeliveryItemSingleOrder($data, Delivery $delivery, Order $order)
+    {
+        foreach ($data as $deliveryItemSummaries) {
+//            $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
+            $total = array_sum(array_column($data[$order->getId()], 'amount'));
+            $quantity = array_sum(array_column($data[$order->getId()], 'qty'));
             $payment = new Payment();
             $payment->setAgent($order->getAgent());
             $payment->setAmount($total);

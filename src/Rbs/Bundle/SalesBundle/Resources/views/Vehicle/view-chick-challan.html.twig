@@ -26,7 +26,7 @@
                         <p style="padding: 5px 0;margin: 0">Tel: 7913023-27, Fax: 7913022, Web: www.nourish.com.bd</p>
                     </td>
                     <td class="col-md-6" style="vertical-align: middle; width: 40%">
-                        <h4><strong>Challan: {{ order.id }}</strong></h4>
+                        <h4><strong>Challan: {{ order.id }} / {{ order.deliveries[0].id }}</strong></h4>
                         <p><strong>Date: {{ order.createdAt|date('d-m-Y') }}</strong></p>
                     </td>
                 </tr>

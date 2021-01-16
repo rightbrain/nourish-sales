@@ -21,6 +21,7 @@ use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints\IsTrue;
@@ -363,5 +364,22 @@ class DeliveryForChickController extends BaseController
         return $this->getDoctrine()->getManager();
     }
 
+    /**
+     * @Route("/order/delivery-search", name="delivery_search", options={"expose"=true})
+     * @param Request $request
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_CHICK_ORDER_MANAGE, ROLE_CHICK_DELIVERY_MANAGE")
+     */
+    public function getDeliveriesById(Request $request)
+    {
+        $qb = $this->deliveryRepository()->createQueryBuilder('d');
+        $qb->select("d.id AS id, CONCAT(d.id,' ') AS text");
+        $qb->setMaxResults(10);
+        $qb->where('d.deletedAt IS NULL');
+        if ($q = $request->query->get('q')) {
+            $qb->andWhere("d.id LIKE '{$q}%'");
+        }
 
+        return new JsonResponse($qb->getQuery()->getResult());
+    }
 }

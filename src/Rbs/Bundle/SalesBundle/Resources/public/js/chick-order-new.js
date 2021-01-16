@@ -315,6 +315,29 @@ var Order = function()
 
         $('.order-item-list tbody').on("click keyup", ".quantity, .price", (totalPriceCalculation));
         recalculateItemPriceOnEdit();
+
+        $("#delivery_search").select2({
+            placeholder: "Delivery ID",
+            allowClear: true,
+            minimumInputLength: 1,
+            ajax: {
+                url: Routing.generate('delivery_search'),
+                dataType: 'json',
+                // quietMillis: 250,
+                data: function (term, page) {
+                    return {
+                        q: term
+                    };
+                },
+                results: function (data) {
+                    return {results: data};
+                },
+                cache: true
+            }
+        }).on('change', function(){
+        }).prev().addClass('form-control input-medium').css('vertical-align', 'initial');
+
+
     }
 
     function newOrderPayment()
