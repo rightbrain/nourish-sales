@@ -4,6 +4,8 @@ namespace Rbs\Bundle\SalesBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Rbs\Bundle\CoreBundle\Entity\Location;
+use Rbs\Bundle\SalesBundle\Entity\DailyDepotStock;
+use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\Incentive;
 use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
@@ -337,6 +339,71 @@ class OrderRepository extends EntityRepository
         $this->_em->flush();
 
         $this->update($order);
+    }
+
+
+    public function cancelChickOrder(Order $order)
+    {
+
+        $orderCreatedDate = $order->getCreatedAt()->format('Y-m-d');
+
+        if($order->getPayments()){
+        /** @var Payment $payment */
+        foreach ($order->getPayments() as $payment) {
+            if ($payment->getTransactionType() == Payment::CR) {
+                $this->_em->remove($payment);
+            } else if ($payment->getTransactionType() == Payment::DR) {
+                $this->_em->remove($payment);
+            }
+        }
+//            $this->_em->flush();
+        }
+
+//        var_dump($order->getDepo()->getId());die;
+
+        foreach ($order->getOrderItems() as $item){
+
+            $dailyDepotStockArray = $this->_em->getRepository('RbsSalesBundle:DailyDepotStock')->getDailyStockByDateItemDepot($orderCreatedDate, $item->getItem(), $order->getDepo() );
+//            var_dump($dailyDepotStock);die;
+
+            if($dailyDepotStockArray){
+                $dailyDepotStock = $this->_em->getRepository('RbsSalesBundle:DailyDepotStock')->find($dailyDepotStockArray['id']);
+                $dailyDepotStock->setOnHold($dailyDepotStock->getOnHold()-$item->getQuantity());
+                $this->_em->getRepository('RbsSalesBundle:DailyDepotStock')->update($dailyDepotStock);
+            }
+
+            $order->removeOrderItem($item);
+
+            if($order->getDeliveries()){
+                /** @var Delivery $delivery */
+                foreach ($order->getDeliveries() as $delivery){
+
+                    $deliveryItem = $this->_em->getRepository('RbsSalesBundle:DeliveryItem')->findOneBy(
+                        array('delivery'=>$delivery,'order'=>$order,'orderItem'=>$item)
+                    );
+                    $this->_em->remove($deliveryItem);
+                }
+            }
+
+        }
+
+       if($order->getDeliveries()){
+           /** @var Delivery $delivery */
+           foreach ($order->getDeliveries() as $delivery){
+               $delivery->removeOrder($order);
+               $this->_em->persist($order);
+               $this->_em->persist($delivery);
+           }
+       }
+        if($order->getOrderIncentiveFlag()){
+
+            $flag = $order->getOrderIncentiveFlag();
+
+            $this->_em->remove($flag);
+        }
+        $this->_em->remove($order);
+        $this->_em->flush();
+
     }
 
     public function getOrdersForSalesIncentive($durationType)

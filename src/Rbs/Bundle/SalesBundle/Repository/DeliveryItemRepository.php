@@ -21,6 +21,14 @@ class DeliveryItemRepository extends EntityRepository
         $this->_em->persist($data);
         $this->_em->flush();
     }
+
+    public function update($data)
+    {
+        $this->_em->persist($data);
+        $this->_em->flush();
+        return $this->_em;
+    }
+
     public function getPartialDeliveredItems(Delivery $delivery)
     {
         $orders = $delivery->getOrders();

@@ -133,17 +133,20 @@ class DailyDepotStockRepository extends EntityRepository
     }
 
 
-    public function addStockToOnHold($date, Order $order, Depo $depo = null)
+    public function addStockToOnHold($date, Order $order, Depo $depo, $prevOrderItems)
     {
         if (!$depo) $depo = $order->getDepo();
 
         /** @var OrderItem $orderItem */
-        foreach ($order->getOrderItems() as $orderItem) {
+        foreach ($order->getOrderItems() as $key=>$orderItem) {
+
+            $preQty = isset($prevOrderItems[$key])?$prevOrderItems[$key]:0;
+
             /** @var DailyDepotStock $stock */
             $stock = $this->getDailyStockByDateItemDepot($date, $orderItem->getItem(), $depo);
             if($stock){
                 $dailyDepotStock = $this->find($stock['id']);
-                $dailyDepotStock->setOnHold($dailyDepotStock->getOnHold() + $orderItem->getQuantity());
+                $dailyDepotStock->setOnHold($dailyDepotStock->getOnHold() + $orderItem->getQuantity()-$preQty);
                 $this->_em->persist($dailyDepotStock);
                 $this->_em->flush();
             }

@@ -121,9 +121,9 @@ class ChickOrderDatatable extends BaseDatatable
 
     public function generateActionList(Order $order)
     {
-        $canEdit = $this->authorizationChecker->isGranted('ROLE_ORDER_EDIT');
+        $canEdit = $this->authorizationChecker->isGranted('ROLE_CHICK_ORDER_MANAGE');
         $canView = $this->authorizationChecker->isGranted('ROLE_CHICK_ORDER_MANAGE');
-        $canCancel = $this->authorizationChecker->isGranted('ROLE_ORDER_CANCEL');
+        $canCancel = $this->authorizationChecker->isGranted('ROLE_CHICK_ORDER_MANAGE');
         $canApproveOrder = $this->authorizationChecker->isGranted('ROLE_ORDER_APPROVE');
         $canApprovePayment = $this->authorizationChecker->isGranted('ROLE_PAYMENT_APPROVE');
         $canApproveOverCredit = $this->authorizationChecker->isGranted('ROLE_PAYMENT_OVER_CREDIT_APPROVE');
@@ -138,39 +138,21 @@ class ChickOrderDatatable extends BaseDatatable
                     ';
 
 //        if($order->getDeliveryState() != Order::DELIVERY_STATE_READY and $order->getDeliveryState() != Order::DELIVERY_STATE_PARTIALLY_SHIPPED and $order->getDeliveryState() != Order::ORDER_STATE_CANCEL) {
-        /*if($order->getDeliveryState() != Order::DELIVERY_STATE_PARTIALLY_SHIPPED and $order->getDeliveryState() != Order::ORDER_STATE_CANCEL) {
-            if ($canEdit && !in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
-                $route = 'order_update';
-                if($order->getOrderVia()=='ONLINE'){
-                    $route= 'order_update_online';
-                }
-                $html .= $this->generateMenuLink('Edit', $route, array('id' => $order->getId()));
+        if ($canEdit && !in_array($order->getOrderState(), array(Order::ORDER_STATE_CANCEL))) {
+            $route = 'chick_order_edit';
+            if($order->getOrderVia()=='ONLINE'){
+                $route= 'chick_order_edit';
             }
-        }*/
+            $html .= $this->generateMenuLink('Edit', $route, array('id' => $order->getId()));
+        }
 
         if ($canView) {
             $html .= $this->generateMenuLink('View', 'chick_order_details', array('id' => $order->getId()));
         }
 
-        /*if($order->getDeliveryState() != Order::DELIVERY_STATE_READY and $order->getDeliveryState() != Order::DELIVERY_STATE_PARTIALLY_SHIPPED and $order->getDeliveryState() != Order::ORDER_STATE_CANCEL) {
-            if ($canCancel && !in_array($order->getOrderState(), array(Order::ORDER_STATE_COMPLETE, Order::ORDER_STATE_CANCEL))) {
-                $html .= $this->generateMenuLink('Cancel', 'order_cancel', array('id' => $order->getId()));
-            }
-        }*/
-
-        if($order->getDepo()!=null){
-
-            /*if ($canApproveOrder && in_array($order->getOrderState(), array(Order::ORDER_STATE_PENDING))) {
-                $html .= '<li><a href="'.$this->router->generate('order_summery_view', array('id'=>$order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Approve Order</a></li>';
-            }
-
-            if ($canApprovePayment && in_array($order->getOrderState(), array(Order::ORDER_STATE_PROCESSING)) && in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_PENDING))) {
-                $html .= '<li><a href="'.$this->router->generate('review_payment', array('id'=>$order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Approve Payment</a></li>';
-            }
-
-            if ($canApproveOverCredit && in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_CREDIT_APPROVAL))) {
-                $html .= '<li><a href="'.$this->router->generate('review_payment', array('id'=> $order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Approve Credit</a></li>';
-            }*/
+        if ($canCancel && !in_array($order->getOrderState(), array(Order::ORDER_STATE_CANCEL))) {
+//            $html .= $this->generateMenuLink('Cancel', 'chick_order_cancel', array('id' => $order->getId()));
+            $html .= '<li><a href="'.$this->router->generate('chick_order_cancel', array('id'=>$order->getId())).'" rel="tooltip" title="Order Cancel" class="confirmation-btn" data-title="Do you want to cancel?"><i class="glyphicon"></i> Cancel</a></li>';
         }
 
         if ($canOrderVerify && $order->getOrderState() == Order::ORDER_STATE_PROCESSING

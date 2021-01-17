@@ -20,6 +20,7 @@ use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\OrderItemChickTemp;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Entity\Vehicle;
+use Rbs\Bundle\SalesBundle\Form\Type\ChickOrderEditForm;
 use Rbs\Bundle\SalesBundle\Form\Type\ChickOrderForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderWithoutSmsForm;
@@ -96,7 +97,7 @@ class ChickOrderController extends BaseController
      * @Template("RbsSalesBundle:ChickOrder:new-order-create.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_AGENT, ROLE_CHICK_ORDER_MANAGE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE")
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_CHICK_ORDER_MANAGE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE")
      */
     public function createChickOrderAction(Request $request)
     {
@@ -127,6 +128,8 @@ class ChickOrderController extends BaseController
             }
 
             if ($form->isValid()) {
+                $delivery = null;
+
                 if($deliveryId){
                     $delivery = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->find($deliveryId);
                 }
@@ -185,7 +188,7 @@ class ChickOrderController extends BaseController
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
 
-                $em->getRepository('RbsSalesBundle:DailyDepotStock')->addStockToOnHold($requestDate, $order, $order->getDepo());
+                $em->getRepository('RbsSalesBundle:DailyDepotStock')->addStockToOnHold($requestDate, $order, $order->getDepo(), array());
 
                 $this->flashMessage('success', 'Order Created Successfully');
 
@@ -214,6 +217,121 @@ class ChickOrderController extends BaseController
         }
         return $returnText;
     }
+
+
+    /**
+     * @Route("/chick/order/edit/{id}", name="chick_order_edit", options={"expose"=true})
+     * @Template("RbsSalesBundle:ChickOrder:edit-chick-order.html.twig")
+     * @param Request $request
+     * @param Order $order
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_CHICK_ORDER_MANAGE")
+     */
+
+    public function chickOrderEditAction(Request $request, Order $order)
+    {
+        $agentId= ($order->getAgent())? $order->getAgent()->getId(): null;
+        $allRequest = $request->request->get('order');
+        if (in_array($order->getOrderState(), array(ORDER::ORDER_STATE_CANCEL))) {
+            $this->flashMessage('error', 'Invalid Operation');
+            return $this->redirectToRoute('orders_home');
+        }
+
+        $form = $this->createForm(new ChickOrderEditForm($this->getDoctrine()->getManager(), $agentId), $order);
+        //$form->remove('agent');
+//        $form->remove('created_at');
+        $em = $this->getDoctrine()->getManager();
+
+        $depoAttr = Order::ORDER_STATE_COMPLETE == $order->getOrderState() ? array('style'=>'pointer-events: none; opacity: 0.6;') : array();
+        $agentAttr =  array(''=>'');
+        if ('POST' === $request->getMethod()) {
+
+            $stockRepo = $em->getRepository('RbsSalesBundle:Stock');
+            $prevDepo = clone $order->getDepo();
+
+//            $prevOrderItems = $stockRepo->extractOrderItemQuantity($order);
+            $form->handleRequest($request);
+
+            $depo = $order->getDepo() ? $order->getDepo() : $prevDepo;
+
+            /** @var OrderItem $item */
+            foreach ($order->getOrderItems() as $item){
+                if ($item->getQuantity() < 1) {
+                    $this->flashMessage('error', 'Invalid Item Quantity');
+                    goto a;
+                }
+
+                /*$price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+                    $item->getItem(), $depo->getLocation()
+                );*/
+                if ($item->getPrice() < 1) {
+                    $this->flashMessage('error', 'Invalid Item Price');
+                    goto a;
+                }
+            }
+
+            if ($form->isValid()) {
+                $prevOrderItems = $request->request->get('added_qty');
+                $currentTime = date('H:i:s',strtotime('now'));
+                $requestDate = isset($allRequest['created_at'])?date('Y-m-d',strtotime($allRequest['created_at'])):date('Y-m-d',strtotime('now'));
+                $orderDate = $requestDate.' '.$currentTime;
+                $em = $this->getDoctrine()->getManager();
+                $order->setLocation($order->getAgent()->getUser()->getUpozilla());
+//                $order->setDepo($depo);
+                $order->setCreatedAt(new \DateTime($orderDate));
+
+                $em->getRepository('RbsSalesBundle:Order')->onlyUpdate($order);
+
+                /** @var OrderItem $item */
+                foreach ($order->getOrderItems() as $item){
+                    $mrpPrice = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentMrpPrice(
+                        $item->getItem(), $depo->getLocation()
+                    );
+                    $item->setMrpPrice($mrpPrice);
+                    $item->setPreviousQuantity($item->getQuantity());
+                    $item->setBonusQuantity((int) $item->getQuantity()/$item->getItem()->getPacketWeight());
+
+                    $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->update($item);
+
+                    if($order->getDeliveries()){
+                        foreach ($order->getDeliveries() as $delivery){
+
+                            $deliveryItem = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->findOneBy(
+                                array('delivery'=>$delivery, 'order'=>$order, 'orderItem'=>$item)
+                            );
+                            $deliveryItem->setQty($item->getQuantity());
+                            $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->update($deliveryItem);
+
+                            $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->updateDeliveredProductValueForSingleChickOrder($delivery, $order);
+
+                        }
+                    }
+
+
+                }
+
+                $em->getRepository('RbsSalesBundle:DailyDepotStock')->addStockToOnHold($requestDate, $order, $depo, $prevOrderItems);
+
+                $this->flashMessage('success', 'Order Updated Successfully');
+
+                return $this->redirect($this->generateUrl('chick_orders_home'));
+            }
+            a:
+            return $this->redirect($this->generateUrl('chick_order_edit', array('id' => $order->getId())));
+        }
+        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('settingType'=>CoreSettings::SETTING_TYPE_CHICK,'slug'=>'item-price-modify-access-chick'));
+        $deliveries = $order->getDeliveries();
+        return array(
+            'form' => $form->createView(),
+            'order' => $order,
+            'depoAttr' => $depoAttr,
+            'agentAttr' => $agentAttr,
+            'priceModifyAccess' => $priceModifyAccess,
+            'deliveries' => $deliveries,
+        );
+    }
+
+
     /**
      * @Route("/chick/order/details/{id}", name="chick_order_details", options={"expose"=true})
      * @param Order $order
@@ -906,6 +1024,22 @@ WHERE a.agent_type = 'CHICK' AND u.deleted_at IS NULL AND l.id IN ({$areaId})";
             );
 
         return new JsonResponse($response);
+    }
+
+
+    /**
+     * @Route("/chick/order/cancel/{id}", name="chick_order_cancel", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CHICK_ORDER_MANAGE")
+     */
+    public function orderCancelAction(Order $order)
+    {
+
+        $this->orderRepository()->cancelChickOrder($order);
+        $this->dispatchApproveProcessEvent('order.canceled', $order);
+        $this->flashMessage('success', 'Order Cancelled Successfully');
+        return $this->redirect($this->generateUrl('chick_orders_home'));
     }
 
     /**

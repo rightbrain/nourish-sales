@@ -321,6 +321,11 @@ class PaymentRepository extends EntityRepository
         $this->addPaymentByDeliveryItemSingleOrder($this->extractOrderItemSummary($delivery, $order), $delivery, $order);
     }
 
+    public function updateDeliveredProductValueForSingleChickOrder(Delivery $delivery, Order $order)
+    {
+        $this->updatePaymentByDeliveryItemSingleOrder($this->extractOrderItemSummary($delivery, $order), $delivery, $order);
+    }
+
     public function updateDeliveredProductValue(Delivery $delivery)
     {
         $this->updatePaymentByDeliveryItemExtractedSummary(
@@ -387,7 +392,7 @@ class PaymentRepository extends EntityRepository
 
     private function extractOrderItemSummary(Delivery $delivery, Order $order)
     {
-        $data = [];
+        $data = array();
 
         /** @var OrderItem $orderItem */
         foreach ($order->getOrderItems() as $orderItem) {
@@ -399,18 +404,18 @@ class PaymentRepository extends EntityRepository
             $amount = $itemPrice * $itemQty;
 
             if (!array_key_exists($order->getId(), $data)) {
-                $data[$order->getId()] = [];
+                $data[$order->getId()] = array();
             }
 
             $item = $orderItem->getItem();
-            $data[$order->getId()][$item->getId()] = [
+            $data[$order->getId()][$item->getId()] = array(
                 'name' => $item->getName(),
                 'qty' => $itemQty,
                 'price' => $itemPrice,
                 'amount' => $amount,
                 'unit' => $item->getItemUnit(),
                 'deliveryId' => $delivery->getId(),
-            ];
+            );
         }
 
         return $data;
@@ -437,6 +442,33 @@ class PaymentRepository extends EntityRepository
 
             $this->_em->persist($payment);
             $this->_em->flush();
+        }
+    }
+
+    private function updatePaymentByDeliveryItemSingleOrder($data, Delivery $delivery, Order $order)
+    {
+        foreach ($data as $deliveryItemSummaries) {
+//            $order = $this->_em->getRepository('RbsSalesBundle:Order')->find($orderId);
+            $total = array_sum(array_column($data[$order->getId()], 'amount'));
+            $quantity = array_sum(array_column($data[$order->getId()], 'qty'));
+            $payments = $order->getPayments();
+            /** @var Payment $payment */
+            foreach ($payments as $payment){
+                if($payment->getRefDeliveryId()==$delivery->getId() && $payment->getTransactionType()==Payment::DR){
+                    $payment->setAgent($order->getAgent());
+                    $payment->setAmount($total);
+                    $payment->setQuantity($quantity);
+                    $payment->setDepositedAmount($total);
+                    $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+                    $payment->setRemark(json_encode($deliveryItemSummaries));
+//            $payment->setDepositDate(date("Y-m-d"));
+                    $payment->setTransactionType(Payment::DR);
+                    $payment->setVerified(true);
+                    $payment->addOrder($order);
+                    $this->_em->persist($payment);
+                    $this->_em->flush();
+                }
+            }
         }
     }
 
