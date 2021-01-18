@@ -603,7 +603,7 @@ class ChickOrderController extends BaseController
      */
     public function addAction(Depo $depo, Request $request)
     {
-
+        date_default_timezone_set("Asia/Dhaka");
         set_time_limit(0);
         ini_set('memory_limit','1024M');
         $em = $this->getDoctrine()->getManager();
@@ -650,15 +650,15 @@ WHERE a.agent_type = 'CHICK' AND u.deleted_at IS NULL AND l.id IN ({$areaId})";
 
                       $orderObj = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderChickTemp')->find($order['id']);
 
-                      /*$locationDist = $orderObj->getAgent()->getUser()->getZilla()->getId();
+                      $locationDist = $orderObj->getAgent()->getUser()->getZilla()->getId();
                       $sqlChild ="INSERT INTO sales_order_items_chick_temp
     (`order_id`, `item_id`,`quantity`, `price`, `mrp_price`, `total_amount`)
 SELECT {$order['id']}, core_items.id, 0, (SELECT core_item_price.price FROM `core_item_price` WHERE `item_id` = core_items.id AND `location_id` = {$locationDist} AND `is_active` = 1) as price, (SELECT core_item_price.mrp_price FROM `core_item_price` WHERE `item_id` = core_items.id AND `location_id` = {$locationDist} AND `is_active` = 1) AS mrpPrice,0 FROM `core_items` WHERE `item_types` = 3";
 
                       $qb = $em->getConnection()->prepare($sqlChild);
-                      $qb->execute();*/
+                      $qb->execute();
 
-                      $this->insertOrderItem($orderObj, $chickItems);
+//                      $this->insertOrderItem($orderObj, $chickItems);
                   }
                }
             $addedData = $this->getTempChickOrdersByDateDepot($date, $depo);
@@ -785,7 +785,7 @@ SELECT {$order['id']}, core_items.id, 0, (SELECT core_item_price.price FROM `cor
     }
 
     private function getChickTempOrdersByDateAgentDepot($date, $depot) {
-        $date= date('Y-m-d', strtotime($date));
+        $date = date('Y-m-d', strtotime($date));
         $repo = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderChickTemp');
         $qb = $repo->createQueryBuilder('o');
         $qb->select('o.id');

@@ -1,5 +1,5 @@
 <?php
-
+date_default_timezone_set("Asia/Dhaka");
 defined('APPLICATION_ENV')
 || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'prod'));
 
