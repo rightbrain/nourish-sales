@@ -402,10 +402,9 @@ class VehicleForChickController extends BaseController
 
     public function downloadPdf($html,$fileName = '')
     {
-//        $wkhtmltopdfPath = 'xvfb-run --server-args="-screen 0, 1280x1024x24" /usr/bin/wkhtmltopdf --use-xserver';
-//        $snappy          = new Pdf($wkhtmltopdfPath);
-//        $pdf             = $snappy->getOutputFromHtml($html);
-        $pdf= $this->get('knp_snappy.pdf')->getOutputFromHtml($html);
+        $wkhtmltopdfPath = 'xvfb-run --server-args="-screen 0, 1280x1024x24" /usr/bin/wkhtmltopdf --use-xserver';
+        $snappy          = new Pdf($wkhtmltopdfPath);
+        $pdf             = $snappy->getOutputFromHtml($html);
         header('Content-Type: application/pdf');
 //        header("Content-Disposition: attachment; filename={$fileName}");
         echo $pdf;
