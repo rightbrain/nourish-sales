@@ -23,6 +23,8 @@
                 </div>
             </div>
             <div class="portlet-body">
+
+                {{ "now"|date("Y-m-d") }}
                 {{ include('RbsSalesBundle:DailyDepotStock:_filter_add_daliy_depot_stock_form.html.twig') }}
 
             </div>
