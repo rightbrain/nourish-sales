@@ -386,6 +386,7 @@ var Order = function()
                 '<div id="order-payment-status"></div>' +
                 '<div id="order-delivery-status"></div>' +
                 '<div id="order-agent"></div>' +
+                '<div id="order-id"></div>' +
                 '</div>').appendTo('#order_datatable_filter');
         }
         $("#order_datatable").dataTable().yadcf([
@@ -396,6 +397,13 @@ var Order = function()
                     filter_container_id: "order-agent",
                     filter_reset_button_text: false,
                     filter_default_label: "Agent Id"
+                },
+                {
+                    column_number: 0,
+                    filter_type: 'text',
+                    filter_container_id: "order-id",
+                    filter_reset_button_text: false,
+                    filter_default_label: "Order Id"
                 },
                 {
                     column_number: 4,
