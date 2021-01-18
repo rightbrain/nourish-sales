@@ -608,6 +608,11 @@ class ChickOrderController extends BaseController
         ini_set('memory_limit','1024M');
         $em = $this->getDoctrine()->getManager();
         $date = $request->query->get('order_date') ? date('Y-m-d H:i:s', strtotime($request->query->get('order_date'))) : date('Y-m-d H:i:s', time());
+
+        $currentTime = date('H:i:s',strtotime('now'));
+        $requestDate = $request->query->get('order_date')?date('Y-m-d',strtotime($request->query->get('order_date'))):date('Y-m-d',strtotime('now'));
+        $orderDate = $requestDate.' '.$currentTime;
+
         $areaRegionIds = array();
         $areaIds = array();
         foreach($depo->getAreas() as $area) {
@@ -636,7 +641,7 @@ class ChickOrderController extends BaseController
                if(!$this->getChickTempOrdersByDateAgentDepot($date,$depo)){
                    $sql ="INSERT INTO sales_orders_chick_temp
     (`agent_id`, `depo_id`,`order_type`, `location_id`, `created_at`)
-SELECT a.id ,{$depotId},'CHICK',u.upozilla_id as upId, now() FROM sales_agents AS a 
+SELECT a.id ,{$depotId},'CHICK',u.upozilla_id as upId, '{$orderDate}' FROM sales_agents AS a 
 INNER JOIN user_users u ON a.user_id = u.id 
 INNER JOIN core_locations l ON u.zilla_id = l.id 
 WHERE a.agent_type = 'CHICK' AND u.deleted_at IS NULL AND l.id IN ({$areaId})";
