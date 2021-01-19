@@ -68,6 +68,7 @@ class ItemRepository extends EntityRepository
         $query->join('i.itemType', 'it');
         $query->where('it.itemType = :itemType');
         $query->setParameter('itemType', ItemType::Chick);
+        $query->andWhere('i.status = 1');
 
         return $query->getQuery()->getResult();
     }
@@ -77,6 +78,7 @@ class ItemRepository extends EntityRepository
         $query->join('i.itemType', 'it');
         $query->where('it.itemType != :itemType');
         $query->setParameter('itemType', ItemType::Chick);
+        $query->andWhere('i.status = 1');
         $query->orderBy('i.name');
 
         return $query->getQuery()->getResult();
