@@ -844,10 +844,10 @@ SELECT {$order['id']}, core_items.id, 0, (SELECT core_item_price.price FROM `cor
         $qb->where($qb->expr()->between('o.createdAt', ':start', ':end'));
         $qb->setParameters(array('start' => $date . ' 00:00:00' , 'end' => $date . ' 23:59:59' ));
 
-        /*$qb->andWhere('o.orderState=:orderSate');
+        $qb->andWhere('o.orderState=:orderSate');
         $qb->setParameter('orderSate', Order::ORDER_STATE_PROCESSING);
         $qb->andWhere('o.deliveryState=:deliveryState');
-        $qb->setParameter('deliveryState', Order::DELIVERY_STATE_READY);*/
+        $qb->setParameter('deliveryState', Order::DELIVERY_STATE_READY);
 
 
         $qb->andWhere('o.depo = :depot');
