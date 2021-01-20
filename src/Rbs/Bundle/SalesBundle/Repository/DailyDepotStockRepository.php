@@ -127,7 +127,7 @@ class DailyDepotStockRepository extends EntityRepository
         $qb->andWhere('i.id = :item');
         $qb->setParameter('item', $item);
 
-        $results = $qb->getQuery()->getSingleResult();
+        $results = $qb->getQuery()->getOneOrNullResult();
 
         return $results;
     }

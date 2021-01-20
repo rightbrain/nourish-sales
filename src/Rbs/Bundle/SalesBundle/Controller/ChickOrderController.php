@@ -881,7 +881,7 @@ SELECT {$order['id']}, core_items.id, 0, (SELECT core_item_price.price FROM `cor
 
 
 //        $order->setT($stock->getOnHand() + $stockItemOnHand);
-        if($stock->getRemainingQuantity()>=$itemQuantity){
+        if(($stock->getRemainingQuantity()+$previousOrderItemQuantity)>=$itemQuantity){
             $orderItem->setQuantity($itemQuantity);
             $orderItem->calculateTotalAmount(true);
 
@@ -1091,4 +1091,38 @@ SELECT {$order['id']}, core_items.id, 0, (SELECT core_item_price.price FROM `cor
         }
     }
 
+
+    /**
+     * remove order item and daily depot stock update by item and depot using ajax
+     * @Route("remove_order_item_and_stock_update_by_item_depot/{order}/{item}", name="remove_order_item_and_stock_update_by_item_depot_ajax", options={"expose"=true})
+     * @param Request $request
+     * @return Response
+     * @JMS\Secure(roles="ROLE_CHICK_ORDER_MANAGE")
+     */
+    public function removeOrderItemAndStockUpdateByItemDepotAjax(Request $request, Order $order, Item $item)
+    {
+        $orderCreatedDate = $request->query->get('order_date') ? date('Y-m-d', strtotime($request->query->get('order_date'))) : date('Y-m-d', time());
+
+        $em = $this->getDoctrine()->getManager();
+
+        $orderItem = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->findOneBy(array('order'=>$order, 'item'=>$item));
+
+        if($orderItem){
+            $dailyDepotStockArray = $em->getRepository('RbsSalesBundle:DailyDepotStock')->getDailyStockByDateItemDepot($orderCreatedDate, $item, $order->getDepo() );
+
+            if($dailyDepotStockArray){
+                $dailyDepotStock = $em->getRepository('RbsSalesBundle:DailyDepotStock')->find($dailyDepotStockArray['id']);
+                $dailyDepotStock->setOnHold($dailyDepotStock->getOnHold()-$orderItem->getQuantity());
+                $em->getRepository('RbsSalesBundle:DailyDepotStock')->update($dailyDepotStock);
+            }
+
+        }
+
+        $response = array(
+            'status'     => 200,
+            'message'     => 'Order item remove and stock update successfully',
+        );
+
+        return new JsonResponse($response);
+    }
 }

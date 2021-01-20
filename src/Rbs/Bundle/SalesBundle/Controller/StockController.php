@@ -167,10 +167,14 @@ class StockController extends Controller
             $dailyDepotStock = $this->getDoctrine()->
             getRepository('RbsSalesBundle:DailyDepotStock')->
             getDailyStockByDateItemDepot($date, $item, $depo);
+            $receivedQty=0;
+            $transferQty=0;
+            if($dailyDepotStock){
+                $dailyDepotStockObj = $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStock')->find($dailyDepotStock['id']);
+                $receivedQty = $dailyDepotStockObj?$dailyDepotStockObj->getTotalReceivedQuantity():0;
+                $transferQty = $dailyDepotStockObj?$dailyDepotStockObj->getTotalTransferredQuantity():0;
+            }
 
-            $dailyDepotStockObj = $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStock')->find($dailyDepotStock['id']);
-            $receivedQty = $dailyDepotStockObj?$dailyDepotStockObj->getTotalReceivedQuantity():0;
-            $transferQty = $dailyDepotStockObj?$dailyDepotStockObj->getTotalTransferredQuantity():0;
             // If edit mode, add current qty itemUnit
             $response = array(
                 'onHand'    => $dailyDepotStock ? $dailyDepotStock['onHand']+$receivedQty : 0,

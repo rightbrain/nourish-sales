@@ -49,7 +49,34 @@ var Order = function()
             bootbox.alert("Minimum One Item Require.");
             return false;
         }
-        $('#order-item-'+index).remove();
+
+        var selectedItemId= $('#order_orderItems_'+index+'_item').val();
+        var order = $('#order_id').val();
+        var order_date = $('#order_created_at').val();
+        if (selectedItemId !=='' && order !== '') {
+            if (confirm('Are you sure you want to delete this?')) {
+                $.ajax({
+                    type: "post",
+                    url: Routing.generate('remove_order_item_and_stock_update_by_item_depot_ajax', {
+                        order: order,
+                        item: selectedItemId,
+                        order_date: order_date
+                    }),
+                    //data: "item=" + item + "&agent=" + $('#order_agent').val() + "&depoId=" + $('#order_depo').val() + "&orderId=" + $('#order_id').val() ? $('#order_id').val() : '',
+                    dataType: 'json',
+                    success: function (response) {
+                        $('#order-item-' + index).remove();
+                        totalAmountCalculate();
+                        totalQuantityCalculate();
+                    },
+                    error: function () {
+                        Metronic.unblockUI(collectionHolder);
+                    }
+                });
+            }
+        }
+
+
         totalAmountCalculate();
         totalQuantityCalculate();
     }
@@ -272,6 +299,7 @@ var Order = function()
         var $addTagLink = $('#add_order_item');
         var agentElm = $('#order_agent');
         var depoElm = $('#order_depo');
+        var orderCreatedAt = $('#order_created_at');
         $collectionHolderItem = $('tbody.tags');
 
         $collectionHolderItem.data('index', $collectionHolderItem.find(':input').length);
@@ -282,6 +310,18 @@ var Order = function()
         });
 
         depoElm.change(function () {
+            // $collectionHolderItem.find('tr').remove();
+            if (depoElm.val() != '' && agentElm.val() != '') {
+                // $addTagLink.trigger('click');
+                $collectionHolderItem.find('tr').each(function(index, elm){
+                    $(elm).find('select').change(function(){
+                        findStockItem($(this).val(), index);
+                    }).change();
+                });
+            }
+        });
+
+        orderCreatedAt.change(function () {
             // $collectionHolderItem.find('tr').remove();
             if (depoElm.val() != '' && agentElm.val() != '') {
                 // $addTagLink.trigger('click');
