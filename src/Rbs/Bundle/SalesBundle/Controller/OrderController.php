@@ -935,6 +935,22 @@ class OrderController extends BaseController
 
     }
 
+    /**
+     * @Route("/depo/for/chick", name="depot_for_chick", options={"expose"=true})
+     * @param Request $request
+     * @return JsonResponse|\Symfony\Component\HttpFoundation\RedirectResponse
+     *
+     */
+    public function getDepotsForChick() {
+        $depots = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->getAllActiveDepotForChick();
+        $arrayReturn= array();
+        foreach ($depots as $depot){
+            $arrayReturn[]=$depot->getName();
+        }
+        return new JsonResponse($arrayReturn);
+
+    }
+
 
     /**
      * @Route("/order/partial/shipped/close/{id}", name="order_partial_shipped_close")

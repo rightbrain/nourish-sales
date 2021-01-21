@@ -285,8 +285,8 @@ class Order
 
     public function removeOrderItem(OrderItem $item)
     {
-        $item->setOrder(null);
         $this->orderItems->removeElement($item);
+        $item->setOrder(null);
     }
 
     /**

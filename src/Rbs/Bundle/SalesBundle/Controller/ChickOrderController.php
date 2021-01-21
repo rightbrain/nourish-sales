@@ -1104,18 +1104,54 @@ SELECT {$order['id']}, core_items.id, 0, (SELECT core_item_price.price FROM `cor
         $orderCreatedDate = $request->query->get('order_date') ? date('Y-m-d', strtotime($request->query->get('order_date'))) : date('Y-m-d', time());
 
         $em = $this->getDoctrine()->getManager();
-
+        /* @var $orderItem OrderItem */
         $orderItem = $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->findOneBy(array('order'=>$order, 'item'=>$item));
 
         if($orderItem){
-            $dailyDepotStockArray = $em->getRepository('RbsSalesBundle:DailyDepotStock')->getDailyStockByDateItemDepot($orderCreatedDate, $item, $order->getDepo() );
 
-            if($dailyDepotStockArray){
-                $dailyDepotStock = $em->getRepository('RbsSalesBundle:DailyDepotStock')->find($dailyDepotStockArray['id']);
-                $dailyDepotStock->setOnHold($dailyDepotStock->getOnHold()-$orderItem->getQuantity());
-                $em->getRepository('RbsSalesBundle:DailyDepotStock')->update($dailyDepotStock);
+            $em = $this->getDoctrine()->getManager();
+            $response = "invalid";
+            if (!$orderItem) {
+                throw $this->createNotFoundException('Unable to find Particular entity.');
             }
+            try {
 
+                if($order->getDeliveries()){
+
+                    $deliveryItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->findBy(array('order'=>$order, 'orderItem'=>$orderItem));
+
+                    if($deliveryItems){
+                        /* @var $deliveryItem DeliveryItem */
+                        foreach ($deliveryItems as $deliveryItem){
+                            $em->getRepository('RbsSalesBundle:DeliveryItem')->delete($deliveryItem);
+                        }
+                    }
+                }
+
+                $dailyDepotStockArray = $em->getRepository('RbsSalesBundle:DailyDepotStock')->getDailyStockByDateItemDepot($orderCreatedDate, $item, $order->getDepo() );
+
+                if($dailyDepotStockArray){
+                    $dailyDepotStock = $em->getRepository('RbsSalesBundle:DailyDepotStock')->find($dailyDepotStockArray['id']);
+                    $dailyDepotStock->setOnHold($dailyDepotStock->getOnHold()-$orderItem->getQuantity());
+                    $em->getRepository('RbsSalesBundle:DailyDepotStock')->update($dailyDepotStock);
+                }
+
+                $order->removeOrderItem($orderItem);
+                $em->getRepository('RbsSalesBundle:OrderItem')->delete($orderItem);
+
+                $em->getRepository('RbsSalesBundle:Order')->onlyUpdate($order);
+                $em->flush();
+                $response = array(
+                    'status'     => 200,
+                    'message'     => 'Order item remove and stock update successfully',
+                );
+
+            } catch (\Exception $e) {
+                $this->get('session')->getFlashBag()->add(
+                    'notice', 'Please contact system administrator further notification.'
+                );
+            }
+            return new JsonResponse($response);
         }
 
         $response = array(

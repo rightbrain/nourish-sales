@@ -29,6 +29,12 @@ class DeliveryItemRepository extends EntityRepository
         return $this->_em;
     }
 
+    public function delete($data)
+    {
+        $this->_em->remove($data);
+        $this->_em->flush();
+    }
+
     public function getPartialDeliveredItems(Delivery $delivery)
     {
         $orders = $delivery->getOrders();
