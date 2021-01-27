@@ -44,6 +44,16 @@ class VehicleChickDatatable extends BaseDatatable
             'url' => $this->router->generate('chick_truck_info_list_ajax'),
             'type' => 'GET'
         ));
+        $this->callbacks->setCallbacks(array
+            (
+                'init_complete' => "function(settings) {
+                        VehicleChick.filterInit();
+                }",
+                'pre_draw_callback' => "function(settings) {
+                    $('.dataTables_scrollHead').find('table thead tr').eq(1).remove();
+                }"
+            )
+        );
 
         $twigVars = $this->twig->getGlobals();
         $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';

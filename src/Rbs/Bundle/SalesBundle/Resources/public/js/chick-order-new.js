@@ -407,12 +407,14 @@ var Order = function()
             $('<div id="external_filter_container">' +
                 'Filter: <div id="order-depot"></div>' +
                 '<div id="order-status"></div>' +
-                '<div id="order-payment-status"></div>' +
+                // '<div id="order-payment-status"></div>' +
                 '<div id="order-delivery-status"></div>' +
                 '<div id="order-agent"></div>' +
                 '<div id="order-id"></div>' +
+                '<div><input class="form-control date-picker order-date" placeholder="Order Date"></div>' +
                 '</div>').appendTo('#order_datatable_filter');
         }
+
         $("#order_datatable").dataTable().yadcf([
 
                 {
@@ -443,13 +445,13 @@ var Order = function()
                     filter_reset_button_text: false,
                     filter_default_label: "Order State"
                 },
-                {
+                /*{
                     column_number: 7,
                     data: ["PENDING", "PARTIALLY_PAID", "PAID"],
                     filter_container_id: "order-payment-status",
                     filter_reset_button_text: false,
                     filter_default_label: "Payment State"
-                },
+                },*/
                 {
                     column_number: 8,
                     data: ["PENDING", "PARTIALLY_SHIPPED", "SHIPPED", "HOLD"],
@@ -460,6 +462,12 @@ var Order = function()
             ]
         );
 
+        $('.date-picker').datepicker({
+            autoclose: true,
+            todayBtn: "linked",
+            format: 'dd-mm-yyyy'
+        });
+        var table = $('#order_datatable').DataTable();
         var orderFilterContainer = $('#order_datatable_filter');
         // Add class to select to match with theme
         orderFilterContainer.find('select').addClass("form-control");
@@ -476,6 +484,19 @@ var Order = function()
                 $(this).text($(this).text().replace('_', ' '));
             });
         },500);
+        setTimeout(function(){
+            orderFilterContainer.find('input.order-date').on('change', function(e){
+                // if (e.keyCode == 13) {
+                var date = $(this).datepicker("getDate");
+                date = date ? moment(date).format('DD-MM-YYYY') : '';
+                // alert(date);
+                // }
+                table.columns(5).search(date)
+                    .draw();
+            });
+        },500);
+
+
     }
 
     function init()

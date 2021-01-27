@@ -65,7 +65,7 @@ class ChickOrderController extends BaseController
      * @Method("GET")
      * @JMS\Secure(roles="ROLE_DEPO_USER, ROLE_ORDER_VIEW, ROLE_ORDER_CREATE, ROLE_ORDER_EDIT, ROLE_ORDER_APPROVE, ROLE_ORDER_CANCEL, ROLE_CHICK_ORDER_MANAGE")
      */
-    public function chickListAjaxAction()
+    public function chickListAjaxAction(Request $request)
     {
         if($this->isGranted('ROLE_DEPO_USER') and !$this->isGranted('ROLE_ADMIN')){
             $datatable = $this->get('rbs_erp.sales.datatable.chick.order.depo');
@@ -73,10 +73,17 @@ class ChickOrderController extends BaseController
             $datatable = $this->get('rbs_erp.sales.datatable.chick.order');
         }
         $datatable->buildDatatable();
+
+        $dateFilter = $request->query->get('columns[5][search][value]', null, true);
+
+        $columns = $request->query->get('columns');
+        $columns[5]['search']['value'] = '';
+        $request->query->set('columns', $columns);
+
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
 
         /** @var QueryBuilder $qb */
-        $function = function($qb)
+        $function = function($qb) use ($dateFilter)
         {
             if($this->isGranted('ROLE_DEPO_USER')){
                 $qb->join('sales_orders.depo', 'd');
@@ -86,6 +93,16 @@ class ChickOrderController extends BaseController
             }
             $qb->andWhere('sales_orders.orderType = :type');
             $qb->setParameter('type', Order::ORDER_TYPE_CHICK);
+
+            if ($dateFilter) {
+                $qb->andWhere('sales_orders.createdAt BETWEEN :fromDate AND :toDate')
+                    ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($dateFilter)))
+                    ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($dateFilter)));
+            }else{
+                $qb->andWhere('sales_orders.createdAt BETWEEN :fromDate AND :toDate')
+                    ->setParameter('fromDate', date('Y-m-d 00:00:00'))
+                    ->setParameter('toDate', date('Y-m-d 23:59:59'));
+            }
         };
         $query->addWhereAll($function);
 

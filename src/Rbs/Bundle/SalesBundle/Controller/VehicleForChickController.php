@@ -36,7 +36,7 @@ class VehicleForChickController extends BaseController
         $datatable = $this->get('rbs_erp.sales.datatable.chick.vehicle');
         $datatable->buildDatatable();
 
-        return $this->render('RbsSalesBundle:Vehicle:index.html.twig', array(
+        return $this->render('RbsSalesBundle:Vehicle:index-chick.html.twig', array(
             'datatable' => $datatable
         ));
     }
@@ -46,15 +46,21 @@ class VehicleForChickController extends BaseController
      * @Method("GET")
      * @JMS\Secure(roles="ROLE_CHICK_TRUCK_MANAGE, ROLE_SUPER_ADMIN")
      */
-    public function listAjaxAction()
+    public function listAjaxAction(Request $request)
     {
         $user = $this->getUser();
         $datatable = $this->get('rbs_erp.sales.datatable.chick.vehicle');
         $datatable->buildDatatable();
 
+        $dateFilter = $request->query->get('columns[0][search][value]', null, true);
+
+        $columns = $request->query->get('columns');
+        $columns[0]['search']['value'] = '';
+        $request->query->set('columns', $columns);
+
         $query = $this->get('sg_datatables.query')->getQueryFrom($datatable);
         /** @var QueryBuilder $qb */
-        $function = function($qb) use ($user)
+        $function = function($qb) use ($user, $dateFilter)
         {
             $qb->join("sales_vehicles.depo", "d");
             $qb->andWhere('d.depotType = :type');
@@ -64,6 +70,13 @@ class VehicleForChickController extends BaseController
                 $qb->andWhere("u = :user");
                 $qb->setParameter('user', $user);
             }
+
+            if ($dateFilter) {
+                $qb->andWhere('sales_vehicles.createdAt BETWEEN :fromDate AND :toDate')
+                    ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($dateFilter)))
+                    ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($dateFilter)));
+            }
+
         };
         $query->addWhereAll($function);
 

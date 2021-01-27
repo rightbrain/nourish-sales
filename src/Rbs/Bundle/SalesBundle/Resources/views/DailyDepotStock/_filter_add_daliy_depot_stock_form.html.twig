@@ -26,6 +26,7 @@
         <table class="table table-bordered table-striped chick-daily-stock">
             <tr>
                 <th style="width: 12%">Depot Name</th>
+                <th>Stock (Qty)</th>
                 {% for item in items %}
                 <th title="{{ item.name }}">{{ item.sku }}</th>
                 {% endfor %}
@@ -33,7 +34,8 @@
             </tr>
             {% for depot in depots %}
             <tr>
-                <td>{{ depot.name }}</td>
+                <td rowspan="2">{{ depot.name }}</td>
+                <td>Remaining</td>
                 {% set totalOnHand=0 %}
                 {% set totalOnHold=0 %}
                 {% set totalRemainingQty=0 %}
@@ -41,10 +43,13 @@
                     {% set totalOnHand=totalOnHand+dailyStock[depot.id][item.id]['onHand'] %}
                     {% set totalOnHold=totalOnHold+dailyStock[depot.id][item.id]['onHold'] %}
                     {% set totalRemainingQty=totalRemainingQty+dailyStock[depot.id][item.id]['remainingQty'] %}
-                    <td><span style="display: block;padding-bottom: 3px;padding-left: 3px" class="stock_item remainingQty">{{ dailyStock[depot.id][item.id]['remainingQty'] }}</span><input class="form-control item_stock" type="text" data-id="{{ dailyStock[depot.id][item.id]['id'] }}" data-depot="{{ depot.id }}" data-item="{{ item.id }}" value="{{ dailyStock[depot.id][item.id]['onHand'] }}"></td>
+                    <td rowspan="2"><span style="display: block;padding-bottom: 3px;padding-left: 3px" class="stock_item remainingQty">{{ dailyStock[depot.id][item.id]['remainingQty'] }}</span><input class="form-control item_stock" type="text" data-id="{{ dailyStock[depot.id][item.id]['id'] }}" data-depot="{{ depot.id }}" data-item="{{ item.id }}" value="{{ dailyStock[depot.id][item.id]['onHand'] }}"></td>
                 {% endfor %}
-                <td style="vertical-align: middle"><a target="_blank" style="{{ totalRemainingQty<=0?'display: none':'' }}" href="{{ path('order_chick_add', { 'id': depot.id }) }}?order_date={{ date }}" class="btn btn-primary btn-xs chick_order_generate">Order Generate</a> </td>
+                <td rowspan="2" style="vertical-align: middle"><a target="_blank" style="{{ totalRemainingQty<=0?'display: none':'' }}" href="{{ path('order_chick_add', { 'id': depot.id }) }}?order_date={{ date }}" class="btn btn-primary btn-xs chick_order_generate">Order Generate</a> </td>
             </tr>
+                <tr>
+                    <td>Production</td>
+                </tr>
             {% endfor %}
         </table>
     </div>
