@@ -65,10 +65,47 @@ var Area = function()
         }).change();
     }
 
+    function userUniqueCheckByPhone()
+    {
+        $("#user_profile_cellphoneForMapping").on('keyup blur', function () {
+            var element = $(this);
+            var phone_number =$(this).val();
+            var user_userType =$('#user_userType').val();
+            var agent_type =$('#agent_type').val();
+
+            if(user_userType !=='' && phone_number!=='' ){
+                $.ajax({
+                    type: "post",
+                    dataType: 'json',
+                    url: Routing.generate('duplicate_user_check_by_phone'),
+                    data: {
+                        'phone_number':phone_number,
+                        'user_userType':user_userType,
+                        'agent_type':agent_type,
+                    },
+                    success: function(data){
+                        if(data.status==301){
+                            $(element).closest('.form-group').addClass('has-error');
+                            $("#user_submit"). attr("disabled", true);
+                        }else {
+                            $(element).closest('.form-group').removeClass('has-error');
+                            $("#user_submit"). attr("disabled", false);
+                        }
+                    },
+                    error: function(){
+                        Metronic.alert('Server Error');
+                        Metronic.unblockUI(el);
+                    }
+                });
+            }
+        }).change();
+    }
+
     function init()
     {
         areaChangeAction();
         userOrAgent();
+        userUniqueCheckByPhone();
     }
 
     // Not Implemented
@@ -109,8 +146,6 @@ var Area = function()
             },
 
             errorPlacement: function (error, element) { // render error placement for each input type
-                console.log(error);
-                console.log(element);
                 if (element.parent(".input-group").size() > 0) {
                     error.insertAfter(element.parent(".input-group"));
                 } else if (element.attr("data-error-container")) {
@@ -129,29 +164,22 @@ var Area = function()
             },
 
             invalidHandler: function (event, validator) { //display error alert on form submit
-                console.log(event);
                 success3.hide();
                 error3.show();
                 Metronic.scrollTo(error3, -200);
             },
 
             highlight: function (element) { // hightlight error inputs
-                console.log('hight');
-                console.log(element);
                 $(element)
                     .closest('.form-group').addClass('has-error'); // set error class to the control group
             },
 
             unhighlight: function (element) { // revert the change done by hightlight
-                console.log('unhi');
-                console.log(element);
                 $(element)
                     .closest('.form-group').removeClass('has-error'); // set error class to the control group
             },
 
             success: function (label) {
-                console.log('success');
-                console.log(label);
                 label
                     .closest('.form-group').removeClass('has-error'); // set success class to the control group
             },
@@ -173,3 +201,4 @@ var Area = function()
 }();
 
 Area.init();
+Area.userFormValidation();

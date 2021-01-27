@@ -30,6 +30,7 @@ class UserForm extends AbstractType
                 ),
             ))
             ->add('userType', 'choice', array(
+                'empty_value' => 'Select User Type',
                 'choices'  => array(
                     'USER' => User::USER,
                     'ZM' => User::ZM,
@@ -37,7 +38,13 @@ class UserForm extends AbstractType
                     'SR' => User::SR,
                     'AGENT' => User::AGENT
                 ),
-                'data' => User::USER
+                'constraints' => array(
+                    new NotBlank(array(
+                        'message'=>'User Type should not be blank'
+                    )),
+                    new email()
+                ),
+//                'data' => 'Select User Type'
             ))
             ->add('plainPassword', 'repeated', array(
                 'type' => 'password',

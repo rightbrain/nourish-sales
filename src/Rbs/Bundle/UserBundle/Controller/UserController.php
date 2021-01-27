@@ -11,6 +11,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use JMS\SecurityExtraBundle\Annotation as JMS;
 
@@ -273,6 +274,28 @@ class UserController extends Controller
         );
 
         return $this->redirect($this->generateUrl('users_home'));
+    }
+
+    /**
+     * @Route("/user/duplicate/check", name="duplicate_user_check_by_phone", options={"expose"=true})
+     * @param User $user
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_USER_CREATE, ROLE_ADMIN")
+     */
+    public function userDuplicateCheckByPhoneAction(Request $request)
+    {
+
+        $phone = $request->request->get('phone_number');
+        $user_userType = $request->request->get('user_userType');
+        $agentType = $request->request->get('agent_type');
+
+        $user =  $this->getDoctrine()->getRepository('RbsUserBundle:User')->findDuplicateByPhoneNumberUserTypeAndAgentType($phone, $user_userType, $agentType);
+        if($user){
+            $return=array('status'=>301);
+            return new JsonResponse($return);
+        }
+        $return=array('status'=>200);
+        return new JsonResponse($return);
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\UserBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\UserBundle\Entity\User;
 
 /**
@@ -118,6 +119,27 @@ class UserRepository extends EntityRepository
         $query->join('u.profile', 'p');
         $query->where('p.cellphone = :phoneNumber');
         $query->setParameter('phoneNumber', $phoneNumber);
+        $query->setMaxResults(1);
+
+        return $query->getQuery()->getResult();
+    }
+
+    public function findDuplicateByPhoneNumberUserTypeAndAgentType($phoneNumber, $userType, $agentType)
+    {
+        $query = $this->createQueryBuilder('u');
+        $query->join('u.profile', 'p');
+        if($userType==User::AGENT){
+            if($agentType==Agent::AGENT_TYPE_CHICK){
+                $query->where('p.cellphoneForChick = :phoneNumber');
+                $query->setParameter('phoneNumber', $phoneNumber);
+            }else{
+                $query->where('p.cellphone = :phoneNumber');
+                $query->setParameter('phoneNumber', $phoneNumber);
+            }
+        }else{
+            $query->where('p.cellphone = :phoneNumber');
+            $query->setParameter('phoneNumber', $phoneNumber);
+        }
         $query->setMaxResults(1);
 
         return $query->getQuery()->getResult();

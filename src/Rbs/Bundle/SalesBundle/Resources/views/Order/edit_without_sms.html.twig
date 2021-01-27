@@ -46,10 +46,13 @@
     Order.init();
     Order.autoFocusQuantityField();
 
+    var date = new Date();
+    date.setDate(date.getDate() - 7);
+
     $('#order_created_at').datepicker({
     format: "dd-mm-yyyy",
     todayHighlight:true,
-    startDate: new Date(),
+    startDate: date,
     autoclose: true
     });
 {% endblock documentReady %}
