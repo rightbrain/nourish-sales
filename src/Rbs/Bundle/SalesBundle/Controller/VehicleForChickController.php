@@ -75,8 +75,11 @@ class VehicleForChickController extends BaseController
                 $qb->andWhere('sales_vehicles.createdAt BETWEEN :fromDate AND :toDate')
                     ->setParameter('fromDate', date('Y-m-d 00:00:00', strtotime($dateFilter)))
                     ->setParameter('toDate', date('Y-m-d 23:59:59', strtotime($dateFilter)));
+            }else{
+                $qb->andWhere('sales_vehicles.createdAt BETWEEN :fromDate AND :toDate')
+                    ->setParameter('fromDate', date('Y-m-d 00:00:00'))
+                    ->setParameter('toDate', date('Y-m-d 23:59:59'));
             }
-
         };
         $query->addWhereAll($function);
 
