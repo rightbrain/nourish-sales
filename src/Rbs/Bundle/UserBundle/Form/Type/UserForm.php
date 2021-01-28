@@ -42,9 +42,7 @@ class UserForm extends AbstractType
                     new NotBlank(array(
                         'message'=>'User Type should not be blank'
                     )),
-                    new email()
                 ),
-//                'data' => 'Select User Type'
             ))
             ->add('plainPassword', 'repeated', array(
                 'type' => 'password',
