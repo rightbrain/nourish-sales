@@ -72,7 +72,8 @@ var Area = function()
             var phone_number =$(this).val();
             var user_userType =$('#user_userType').val();
             var agent_type =$('#agent_type'). find('#user_agentType').val();
-
+console.log(user_userType);
+console.log(agent_type);
             if(user_userType !=='' && phone_number!=='' ){
                 $.ajax({
                     type: "post",
