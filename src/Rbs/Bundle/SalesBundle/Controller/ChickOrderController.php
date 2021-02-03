@@ -984,13 +984,14 @@ SELECT {$order['id']}, core_items.id, 0, (SELECT core_item_price.price FROM `cor
                 $order->setAgent($orderChickTemp->getAgent());
                 $order->setDepo($orderChickTemp->getDepo());
                 $order->setTotalAmount($orderChickTemp->getTotalAmount());
+                $order->setTotalApprovedAmount($orderChickTemp->getTotalAmount());
                 $order->setLocation($orderChickTemp->getAgent()->getUser()->getUpozilla());
                 $order->setDeliveryState(Order::DELIVERY_STATE_READY);
                 $order->setOrderState(Order::ORDER_STATE_PROCESSING);
                 $order->setPaymentState(Order::PAYMENT_STATE_PENDING);
                 $order->setOrderType(Order::ORDER_TYPE_CHICK);
                 $order->setOrderVia('SYSTEM');
-                $order->setCreatedAt(new \DateTime($date) );
+                $order->setCreatedAt($orderChickTemp->getCreatedAt());
 
                 $this->getDoctrine()->getManager()->persist($order);
 
