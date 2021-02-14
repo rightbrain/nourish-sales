@@ -243,7 +243,7 @@ class VehicleForChickController extends BaseController
                 $this->em()->getRepository('RbsSalesBundle:Order')->update($order);
             }
             $delivery->setShipped(false);
-            $delivery->setTransportGiven(Delivery::NOURISH);
+            $delivery->setTransportGiven($vehicle->getTransportGiven());
             $this->em()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
 
             $vehicle->setTruckInvoiceAttachedBy($this->getUser());

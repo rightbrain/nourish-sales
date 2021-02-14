@@ -211,7 +211,7 @@ class DeliveryItemRepository extends EntityRepository
             $this->handleSearchByDate($query, $data['start_date'], $data['start_date']);
 //            $query->groupBy('i.id');
 //            $query->addGroupBy('d.depo');
-//            $query->orderBy('c.id', 'ASC');
+            $query->orderBy('i.name', 'ASC');
 
             foreach ($query->getQuery()->getResult() as $result) {
                 $results[$result['catName']][] = $result;
