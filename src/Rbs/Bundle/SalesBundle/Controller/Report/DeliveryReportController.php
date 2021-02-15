@@ -60,7 +60,7 @@ class DeliveryReportController extends Controller
      * @Route("/report/chick/delivery", name="report_chick_delivery")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_SALES_REPORT")
+     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_REPORT")
      */
     public function chickDeliveryReportAction(Request $request)
     {
