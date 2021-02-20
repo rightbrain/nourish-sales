@@ -597,8 +597,8 @@ class OrderRepository extends EntityRepository
             $qp->andWhere('o.orderState != :orderState');
             $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
             $qp->setParameter('orderState', Order::ORDER_STATE_CANCEL);
-            if (!empty($data['depo'])) {
-                $this->handleSearchByDepot($data['depo'], $qp);
+            if (!empty($data['region'])) {
+                $this->handleSearchByRegion($data['region'], $qp);
             }
             $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
             $qp->groupBy('o.id');
@@ -717,6 +717,14 @@ class OrderRepository extends EntityRepository
         if (!empty($depot)) {
             $query->andWhere('d.id = :depot');
             $query->setParameter('depot', $depot);
+        }
+    }
+
+    protected function handleSearchByRegion($region, $query)
+    {
+        if (!empty($region)) {
+            $query->andWhere('z.parentId = :region');
+            $query->setParameter('region', $region);
         }
     }
 

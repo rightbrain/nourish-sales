@@ -30,6 +30,9 @@
         {% for region in locationsRegions %}
 
             {% if orders[region.id] is defined and orders[region.id] is not empty %}
+                {% set regionTotalQty = 0 %}
+                {% set regionTotalAmount = 0 %}
+                {% set regionTotalPaymentAmount = 0 %}
                 <tr>
                     <td style="font-weight: bold;text-align: center" colspan="12">{{ region.name }}</td>
                 </tr>
@@ -47,11 +50,34 @@
                         <td>{{ paymentAmountViaOrders[order.id].totalAmount|default('')|number_format(2,'.',',') }}</td>
                         <td>{{ order.remarks|default('') }}</td>
                     </tr>
+
+                    {% set regionTotalQty =regionTotalQty+ order.totalQuantity %}
+                    {% set regionTotalAmount = regionTotalAmount+order.totalAmount %}
+                    {% set regionTotalPaymentAmount =regionTotalPaymentAmount + (paymentAmountViaOrders[order.id].totalAmount|default(0)) %}
                 {% endfor %}
+                <tr>
+                    <td colspan="7" style="text-align: right"><strong>Total</strong></td>
+                    <td>{{ regionTotalQty|number_format(2,'.',',') }}</td>
+                    <td>{{ regionTotalAmount|number_format(2,'.',',') }}</td>
+                    <td>{{ regionTotalPaymentAmount|number_format(2,'.',',') }}</td>
+                    <td></td>
+                </tr>
+
+                {% set grandTotalQty = grandTotalQty + regionTotalQty %}
+                {% set grandTotalAmount = grandTotalAmount + regionTotalAmount %}
+                {% set grandTotalPaymentAmount = grandTotalPaymentAmount + regionTotalPaymentAmount %}
             {% endif %}
             {% set sl = sl + 1 %}
-        {% endfor %}
 
+        {% endfor %}
+        <tr>
+            <td colspan="7" style="text-align: right"><strong>Grand Total</strong></td>
+            <td>{{ grandTotalQty|number_format(2,'.',',') }}</td>
+            <td>{{ grandTotalAmount|number_format(2,'.',',') }}</td>
+            <td>{{ grandTotalPaymentAmount|number_format(2,'.',',') }}</td>
+            <td></td>
+        </tr>
         </tbody>
+
     {% endif %}
 </table>

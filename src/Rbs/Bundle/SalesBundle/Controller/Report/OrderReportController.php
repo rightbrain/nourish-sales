@@ -11,6 +11,7 @@ namespace Rbs\Bundle\SalesBundle\Controller\Report;
 use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\SalesBundle\Form\Search\Type\DistrictItemMonthSearchType;
 use Rbs\Bundle\SalesBundle\Form\Search\Type\FeedOrderItemReportType;
+use Rbs\Bundle\SalesBundle\Form\Search\Type\FeedOrderReportRegionWiseType;
 use Rbs\Bundle\SalesBundle\Form\Search\Type\FeedOrderReportType;
 use Rbs\Bundle\SalesBundle\Form\Search\Type\SearchType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -133,7 +134,7 @@ class OrderReportController extends Controller
      */
     public function getFeedOrderReportRegionWise(Request $request){
 
-        $form = new FeedOrderReportType();
+        $form = new FeedOrderReportRegionWiseType();
         $data = $request->query->get($form->getName());
         $pdf_create = $request->query->get('pdf_create');
         $submit = $request->query->get('submit');
@@ -169,7 +170,7 @@ class OrderReportController extends Controller
      */
     public function getFeedOrderReportRegionWiseExcel(Request $request){
 
-        $form = new FeedOrderReportType();
+        $form = new FeedOrderReportRegionWiseType();
         $data = $request->get($form->getName());
 
         $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getFeedOrderReportZoneWise($data);
