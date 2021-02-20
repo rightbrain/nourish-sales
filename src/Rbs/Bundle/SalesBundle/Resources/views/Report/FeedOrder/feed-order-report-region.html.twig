@@ -1,0 +1,69 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{{ parent() }} : Stock {% endblock %}
+
+{% block body %}
+
+    <div class="col-md-12">
+        <div class="portlet box blue">
+            <div class="portlet-title hidden-print">
+                <div class="caption">
+                    <i class="fa fa-list"></i>Order Report
+                </div>
+            </div>
+            <div class="portlet-body">
+
+                <form method="get" novalidate="novalidate" id="feed_order_report_region_wise" class="form-inline hidden-print feed_order_report_region_wise" style="margin-bottom: 20px;">
+
+                    <div class="form-group hidden-print">
+                        <span class="visible-print-inline">Depot:</span>
+                        {{ form_widget(formSearch.depo) }}
+                    </div>
+                    <div class="form-group hidden-print">
+                            <div class="input-group input-daterange">
+                                {{ form_widget(formSearch.start_date) }}
+                            </div>
+                    </div>
+
+                    <div class="form-group  hidden-print">
+                        <div class="col-md-1">
+                            <input type="submit" name="submit" value="Search" class="btn blue hidden-print">
+                        </div>
+                    </div>
+                    <div class="form-group  hidden-print">
+                        <div class="col-md-1">
+                            <input type="button" value="Export in excel" name="dailyOrderReportRegionWiseExcel" id="dailyOrderReportRegionWiseExcel" class=" hidden-print btn blue">
+                        </div>
+                    </div>
+                    <div class="pull-right">
+                        {#<button type="submit" name="pdf_create" value="1" class="btn blue hidden-print">PDF</button>#}
+                        <button type="button" class="btn green hidden-print" onclick="print()">Print</button>
+                    </div>
+                    {{ form_end(formSearch) }}
+
+                <div class="row">
+                    <div class="col-md-12">
+                        {% include 'RbsSalesBundle:Report/FeedOrder:_content-feed-order-report-region.html.twig' %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="clear: both"></div>
+
+    <script type="text/javascript">
+        var url = '{{ path('report_feed_order_region_wise') }}';
+    </script>
+{% endblock %}
+
+
+{% block javascripts %}
+    {{ parent() }}
+
+    {% javascripts
+        '@RbsSalesBundle/Resources/public/js/report.js'
+        '@RbsCoreBundle/Resources/public/js/jquery-form-transport.js'
+    %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock %}

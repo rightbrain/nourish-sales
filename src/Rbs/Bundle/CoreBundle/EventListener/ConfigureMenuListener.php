@@ -160,6 +160,13 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
             if ($this->authorizationChecker->isGranted('ROLE_FEED_ORDER_REPORT')) {
+                $menu['Report']->addChild('Region Wise Order Report', array('route' => 'report_feed_order_region_wise'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('report_feed_order_region_wise')) {
+                    $menu['Report']->getChild('Region Wise Order Report')->setCurrent(true);
+                }
+            }
+            if ($this->authorizationChecker->isGranted('ROLE_FEED_ORDER_REPORT')) {
                 $menu['Report']->addChild('Order Item Report', array('route' => 'report_daily_feed_order_item'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('report_daily_feed_order_item')) {
@@ -167,14 +174,14 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
-            if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN', 'ROLE_SALES_REPORT', 'ROLE_FEED_ORDER_REPORT'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_SALES_REPORT', 'ROLE_FEED_ORDER_REPORT'))) {
                 $menu['Report']->addChild('Upazilla Wise Report', array('route' => 'upozilla_wise_item_report'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('upozilla_wise_item_report')) {
                     $menu['Report']->getChild('Upazilla Wise Report')->setCurrent(true);
                 }
             }
-            if ($this->authorizationChecker->isGranted(array('ROLE_ADMIN', 'ROLE_SALES_REPORT', 'ROLE_FEED_ORDER_REPORT'))) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_SALES_REPORT', 'ROLE_FEED_ORDER_REPORT'))) {
                 $menu['Report']->addChild('Item Yearly Report', array('route' => 'item_yearly_report'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('item_yearly_report')) {
