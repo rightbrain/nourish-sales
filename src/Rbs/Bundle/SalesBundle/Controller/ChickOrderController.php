@@ -164,10 +164,10 @@ class ChickOrderController extends BaseController
 
                 /** @var OrderItem $item */
                 foreach ($order->getOrderItems() as $item){
-                    $mrpPrice = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentMrpPrice(
+                    /*$mrpPrice = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentMrpPrice(
                         $item->getItem(), $order->getDepo()->getLocation()
                     );
-                    $item->setMrpPrice($mrpPrice);
+                    $item->setMrpPrice($mrpPrice);*/
                     $item->setPreviousQuantity($item->getQuantity());
                     $item->setBonusQuantity((int) $item->getQuantity()/$item->getItem()->getPacketWeight());
 
@@ -301,10 +301,10 @@ class ChickOrderController extends BaseController
 
                 /** @var OrderItem $item */
                 foreach ($order->getOrderItems() as $item){
-                    $mrpPrice = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentMrpPrice(
+                    /*$mrpPrice = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentMrpPrice(
                         $item->getItem(), $depo->getLocation()
                     );
-                    $item->setMrpPrice($mrpPrice);
+                    $item->setMrpPrice($mrpPrice);*/
                     $item->setPreviousQuantity($item->getQuantity());
                     $item->setBonusQuantity((int) $item->getQuantity()/$item->getItem()->getPacketWeight());
 
