@@ -145,6 +145,7 @@ class StockController extends Controller
 
         /** Getting Item Price */
         $price = 0;
+        $mrpPrice = 0;
         $orderItem = null;
         $date = $request->query->get('order_date') ? date('Y-m-d', strtotime($request->query->get('order_date'))) : date('Y-m-d',strtotime('now'));
         $order = $em->getRepository('RbsSalesBundle:Order')->find($request->query->get('order', 0));
@@ -154,11 +155,17 @@ class StockController extends Controller
                 array('order' => $order, 'item' => $item)
             );
             $price = $orderItem ? $orderItem->getPrice() : 0;
+            $mrpPrice = $orderItem ? $orderItem->getMrpPrice() : 0;
         }
 
         // new entry or new item add to edit mode
         if (!$price) {
             $price = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentPrice(
+                $item, $depo->getLocation()
+            );
+        }
+        if (!$mrpPrice) {
+            $mrpPrice = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemPrice')->getCurrentMrpPrice(
                 $item, $depo->getLocation()
             );
         }
@@ -181,6 +188,7 @@ class StockController extends Controller
                 'onHold'    => $dailyDepotStock ? $dailyDepotStock['onHold']+$transferQty : 0,
                 'available' => 0,
                 'price'     => number_format($price, 2),
+                'mrp_price'     => number_format($mrpPrice, 2),
                 'itemUnit'  => $dailyDepotStock ? $dailyDepotStock['itemUnit'] : 'Pc',
             );
         } else {

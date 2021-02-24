@@ -53,6 +53,7 @@
             <th style="width: 20px;" class="text-center">Unit</th>
             <th style="width: 150px;" class="text-center">Available</th>
             <th style="width: 50px;">Price</th>
+            <th style="width: 50px;">MrpPrice</th>
             <th style="width: 70px;">Total</th>
             <th style="width: 70px;"></th>
         </tr>
@@ -69,8 +70,10 @@
                 <td class="stock-available text-center"></td>
                 {% if priceModifyAccess.status==1 %}
                     <td class="item-price">{{ form_widget(orderItem.price, { 'attr': {'class': 'price'}}) }}</td>
+                    <td class="item-mrp-price">{{ form_widget(orderItem.mrp_price, { 'attr': {'class': 'mrp_price'}}) }}</td>
                 {% else %}
                     <td class="item-price">{{ form_widget(orderItem.price, { 'attr': {'class': 'price','readonly':'true'}}) }}</td>
+                    <td class="item-mrp-price">{{ form_widget(orderItem.mrp_price, { 'attr': {'class': 'mrp_price','readonly':'true'}}) }}</td>
                 {% endif %}
 
                 <td>{{ form_widget(orderItem.totalAmount, { 'attr': {'class': 'total_price'}} ) }}</td>

@@ -133,7 +133,7 @@ var Order = function()
     function findStockItem(item, index) {
         var collectionHolder = $('.order-item-list');
         if (item == "") {
-            setOrderItemValue(index, 0, 0, false, 0, '');
+            setOrderItemValue(index, 0, 0, false, 0, 0, '');
             totalAmountCalculate();
             totalQuantityCalculate();
             return false;
@@ -169,9 +169,10 @@ var Order = function()
                 var onHold = response.onHold;
                 var available = response.available;
                 var price = response.price;
+                var mrp_price = response.mrp_price;
                 var itemUnit = response.itemUnit;
 
-                setOrderItemValue(index, onHand, onHold, available, price, itemUnit, false);
+                setOrderItemValue(index, onHand, onHold, available, price, mrp_price, itemUnit, false);
                 Metronic.unblockUI(collectionHolder);
             },
             error: function(){
@@ -225,7 +226,7 @@ var Order = function()
         totalQuantityCalculate();
     }
 
-    function setOrderItemValue(index, onHand, onHold, availableOnDemand, price, itemUnit, itemQty){
+    function setOrderItemValue(index, onHand, onHold, availableOnDemand, price, mrpPrice, itemUnit, itemQty){
         var row = $('#order-item-'+index);
 
         var stockAvailableInfo = 'Available On Demand';
@@ -234,6 +235,7 @@ var Order = function()
             stockAvailableInfo = parseInt(onHand) - parseInt(onHold);
         }
         row.find('.item-price input').val(price);
+        row.find('.item-mrp-price input').val(mrpPrice);
         row.find('.stock-available').text(stockAvailableInfo);
         if (itemQty) {
             row.find('.quantity').val(itemQty);

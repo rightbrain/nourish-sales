@@ -74,6 +74,9 @@ class ChickOrderItemForm extends AbstractType
             ->add('price', 'text', array(
 //                'read_only' => true
             ))
+            ->add('mrp_price', 'text', array(
+//                'read_only' => true
+            ))
             ->add('remove', 'button')
         ;
     }
