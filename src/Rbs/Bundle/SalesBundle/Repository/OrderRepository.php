@@ -457,6 +457,36 @@ class OrderRepository extends EntityRepository
 
     }
 
+    public function getOrdersZoneWiseForAgentDelivery($user)
+    {
+        $regions = $this->getEntityManager()->getRepository('RbsCoreBundle:Location')->getRegionsForChick();
+        $districts = $this->getEntityManager()->getRepository('RbsCoreBundle:Location')->getDistrictsForChick();
+
+        $orders = $this->getOrdersOptionForAgent($user);
+        $dataArray = array();
+        /** @var  Location $region */
+        foreach ($regions as $region){
+            /** @var  Location $district */
+            foreach ($districts as $district){
+                if($district['parentId']==$region['id']){
+
+                    if (array_key_exists($district['id'], $orders)){
+                        foreach ($orders[$district['id']] as $key=>$order){
+                            $dataArray[$region['name']][$key]=$order;
+                        }
+                    }
+
+                }
+
+
+            }
+        }
+
+        return $dataArray;
+
+
+    }
+
     private function getOrdersOption($user, $agent){
         $qp = $this->createQueryBuilder('o');
         $qp->join('o.depo', 'd');
@@ -474,6 +504,29 @@ class OrderRepository extends EntityRepository
             $qp->andWhere('o.agent = :agent');
             $qp->setParameter('agent', $agent);
         }
+        $qp->orderBy('o.id', 'desc');
+        $arrayData = array();
+        /** @var  Order $item */
+        foreach ($qp->getQuery()->getResult() as $item){
+            $arrayData[$item->getLocation()->getParentId()][$item->getId()]= $item->getOrderInfoWithAgentForChick().', Qty:'.$item->getOrderItemsTotalQuantity();
+        }
+
+        return $arrayData;
+    }
+
+    private function getOrdersOptionForAgent($user){
+        $qp = $this->createQueryBuilder('o');
+        $qp->join('o.depo', 'd');
+        $qp->join('d.users', 'u');
+        $qp->join('o.location', 'l');
+        $qp->where('o.deliveryState = :PARTIALLY_SHIPPED OR o.deliveryState = :READY');
+        $qp->andWhere('o.orderType = :orderType');
+        $qp->andWhere('u.id = :user');
+        $qp->andWhere('o.vehicleState IS NULL');
+        $qp->setParameters(array('PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED, 'READY'=>Order::DELIVERY_STATE_READY,
+            'user' => $user->getId()));
+        $qp->setParameter('orderType', Order::ORDER_TYPE_CHICK);
+
         $qp->orderBy('o.id', 'desc');
         $arrayData = array();
         /** @var  Order $item */

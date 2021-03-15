@@ -102,3 +102,46 @@
     {% endif %}
     </tbody>
 </table>
+<h4 style="margin: 5px 0px">Daily Stock Summery</h4>
+<table class="table" cellpadding="5px" cellspacing="0" border="1" width="100%">
+    <thead>
+    <tr>
+        <th>Stock (Qty)</th>
+        {% for item in chickItems %}
+            <th title="{{ item.name }}">{{ item.sku }}</th>
+        {% endfor %}
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td rowspan="1">Total Production</td>
+        {% for item in chickItems %}
+            <td title="{{ item.name }}">{{ dailyDepotStock['stock'][item.id]['onHand']|default('') }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td rowspan="1">Total Sales</td>
+        {% for item in chickItems %}
+            <td title="{{ item.name }}">{{ dailyDepotStock['stock'][item.id]['onHold']|default('') }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td rowspan="1">Total Received</td>
+        {% for item in chickItems %}
+            <td title="{{ item.name }}">{{ dailyDepotStock['received'][item.id]|default('') }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td rowspan="1">Total Transfer</td>
+        {% for item in chickItems %}
+            <td title="{{ item.name }}">{{ dailyDepotStock['transfer'][item.id]|default('') }}</td>
+        {% endfor %}
+    </tr>
+    <tr>
+        <td rowspan="1">Total Remaining</td>
+        {% for item in chickItems %}
+            <td title="{{ item.name }}">{{ dailyDepotStock['remaining'][item.id]|default('') }}</td>
+        {% endfor %}
+    </tr>
+    </tbody>
+</table>

@@ -132,6 +132,36 @@ class DailyDepotStockRepository extends EntityRepository
         return $results;
     }
 
+    public function getDailyStockByDateDepot($date, $depot){
+        $qb = $this->createQueryBuilder('dds');
+        $qb->select('dds.id, dds.onHand, dds.onHold, d.id as dId, i.id as iId, i.itemUnit as itemUnit');
+        $qb->join('dds.depo', 'd');
+        $qb->join('dds.item', 'i');
+        $qb->where($qb->expr()->between('dds.createdAt', ':start', ':end'));
+        $qb->setParameters(array('start' => $date . ' 00:00:00', 'end' => $date . ' 23:59:59'));
+
+        $qb->andWhere('d.id = :depot');
+        $qb->setParameter('depot', $depot);
+
+        $results = $qb->getQuery()->getArrayResult();
+        $returnArray = array();
+
+        foreach ($results as $result){
+
+            $dailyDepotStockObj = $this->_em->getRepository('RbsSalesBundle:DailyDepotStock')->find($result['id']);
+            $receivedQty = $dailyDepotStockObj?$dailyDepotStockObj->getTotalReceivedQuantity():0;
+            $transferQty = $dailyDepotStockObj?$dailyDepotStockObj->getTotalTransferredQuantity():0;
+
+
+            $returnArray['stock'][$result['iId']]=$result;
+            $returnArray['received'][$result['iId']]=$receivedQty;
+            $returnArray['transfer'][$result['iId']]=$transferQty;
+            $returnArray['remaining'][$result['iId']]=($result['onHand']+$receivedQty) - ($result['onHold']+$transferQty);
+        }
+
+        return $returnArray;
+    }
+
 
     public function addStockToOnHold($date, Order $order, Depo $depo, $prevOrderItems)
     {

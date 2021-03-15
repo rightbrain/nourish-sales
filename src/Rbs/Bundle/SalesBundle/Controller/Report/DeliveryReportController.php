@@ -70,13 +70,20 @@ class DeliveryReportController extends Controller
         $formSearch = $this->createForm($form, $data);
 
         $formSearch->submit($data);
+        $date = $data['start_date'] ? date('Y-m-d', strtotime($data['start_date'])) : date('Y-m-d', strtotime('now'));
+
         $deliveries = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getChickDeliveredItemsByDepo($data);
+        $dailyDepotStock = $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStock')->getDailyStockByDateDepot($date, $data['depo']);
+        $chickItems = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->getChickItems();
+
         if(empty($pdf_create)){
 
             return $this->render('RbsSalesBundle:Report/Delivery:daily-chick-delivery-report.html.twig', array(
                 'formSearch' => $formSearch->createView(),
                 'data' => $data,
                 'deliveries' => $deliveries,
+                'dailyDepotStock' => $dailyDepotStock,
+                'chickItems' => $chickItems,
             ));
 
         }else{
@@ -84,6 +91,8 @@ class DeliveryReportController extends Controller
                     'formSearch' => $formSearch->createView(),
                     'data' => $data,
                     'deliveries' => $deliveries,
+                    'dailyDepotStock' => $dailyDepotStock,
+                    'chickItems' => $chickItems,
                 )
             );
             $this->downloadPdf($html,'dailyDeliveryReportPdf.pdf');

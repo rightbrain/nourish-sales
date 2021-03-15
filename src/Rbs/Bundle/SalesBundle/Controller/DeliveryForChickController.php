@@ -124,7 +124,7 @@ class DeliveryForChickController extends BaseController
 
             }
         ))
-            ->add('chickAgent', 'entity', array(
+            /*->add('chickAgent', 'entity', array(
             'class' => 'RbsSalesBundle:Agent',
             'attr'=>array('class'=>'select2me'),
             'placeholder' => 'Select Agent',
@@ -144,10 +144,15 @@ class DeliveryForChickController extends BaseController
                     ->orderBy('p.fullName','ASC');
 
             }
+            ))*/
+            ->add('orders', 'choice', array(
+                'required' => false,
+                'multiple' => true,
+                'choices' => $this->getOrdersList(),
             ))
             ->add('agentDepot', 'entity', array(
             'class' => 'RbsCoreBundle:Depo',
-            'placeholder' => 'Select Depo',
+             'empty_value' => false,
             'property' => 'name',
             'required'=>false,
             'query_builder' => function (DepoRepository $repository) use ($user)
@@ -167,16 +172,6 @@ class DeliveryForChickController extends BaseController
                 'label'=>'If provided vehicle by agent',
                 'required'=>false,
                 ))
-            ->add('driverName', 'text', array(
-                'required' => false
-            ))
-            ->add('driverPhone', 'text', array(
-                'required' => false,
-                'max_length' => 50
-            ))
-            ->add('truckNumber', 'text', array(
-                'required' => false
-            ))
 
             ->add('submit','submit',array('attr'=>array('class'=>'btn btn-primary downloadpdf-btn'),'label'=>'Assign >>'));
         $form = $form->getForm();
@@ -186,16 +181,60 @@ class DeliveryForChickController extends BaseController
             $data = $form->getData();
             // be absolutely sure they agree
             if (true === $form['agent_own_vehicle']->getData()) {
-                $vehicle->setDepo($this->em()->getRepository('RbsCoreBundle:Depo')->find($data['agentDepot']));
-                $vehicle->setAgent($this->em()->getRepository('RbsSalesBundle:Agent')->find($data['chickAgent']));
-                $vehicle->setDriverName($data['driverName']);
-                $vehicle->setDriverPhone($data['driverPhone']);
-                $vehicle->setTruckNumber($data['truckNumber']);
+                $depot = $this->em()->getRepository('RbsCoreBundle:Depo')->find($data['agentDepot']);
+                if($data['orders']){
+
+                    foreach ($data['orders'] as $orderId){
+
+                        $order= $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->find($orderId);
+
+                        $vehicleAgent = new Vehicle();
+                        $vehicleAgent->setDepo($depot);
+                        $vehicleAgent->setAgent($order->getAgent());
+                        $vehicleAgent->setDriverName('OWN');
+                        $vehicleAgent->setDriverPhone($order->getAgent()->getUser()->getProfile()->getCellphoneForMapping());
+                        $vehicleAgent->setTruckNumber($order->getAgent()->getAgentCodeForDatatable());
+                        $vehicleAgent->setTransportGiven(Vehicle::AGENT);
+                        $vehicleAgent->setShipped(false);
+                        $vehicleAgent->setVehicleIn(new \DateTime());
+                        $vehicleAgent->setTransportStatus(Vehicle::IN);
+                        $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->create($vehicleAgent);
+
+                        $delivery = new Delivery();
+
+
+                        $delivery->addOrder($order);
+                        $delivery->setDepo($order->getDepo());
+
+                        $order->setVehicleState(Order::VEHICLE_STATE_IN);
+                        $this->em()->getRepository('RbsSalesBundle:Order')->update($order);
+
+                        $delivery->setShipped(false);
+                        $delivery->setTransportGiven($vehicleAgent->getTransportGiven());
+                        $this->em()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
+
+                        $vehicleAgent->setTruckInvoiceAttachedBy($this->getUser());
+                        $vehicleAgent->setTruckInvoiceAttachedAt(new \DateTime());
+                        $vehicleAgent->setDeliveries($delivery);
+                        $vehicleAgent->setShipped(false);
+                        $vehicleAgent->setOrderText($this->setOrderText($delivery->getOrders()));
+
+                        $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicleAgent);
+
+                    }
+                    return $this->redirect($this->generateUrl('chick_deliveries_home'));
+                }
+
+                /*$vehicle->setDepo($this->em()->getRepository('RbsCoreBundle:Depo')->find($data['agentDepot']));
+//                $vehicle->setAgent($this->em()->getRepository('RbsSalesBundle:Agent')->find($data['chickAgent']));
+                $vehicle->setDriverName('Own');
+                $vehicle->setDriverPhone('0000000000');
+                $vehicle->setTruckNumber('0000000000');
                 $vehicle->setTransportGiven(Vehicle::AGENT);
                 $vehicle->setShipped(false);
                 $vehicle->setVehicleIn(new \DateTime());
                 $vehicle->setTransportStatus(Vehicle::IN);
-                $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->create($vehicle);
+                $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->create($vehicle);*/
 
             }else{
                 if(empty($data['vehicleNourish'])){
@@ -228,7 +267,23 @@ class DeliveryForChickController extends BaseController
         );
 
     }
+    private function setOrderText($orders){
+        $returnText = '';
+        $key = 0;
+        /** @var Order $order */
+        foreach ($orders as $order){
+            $returnText .= $order->getId();
+            if (count($orders)!=$key+1) $returnText .= ", ";
 
+            $key++;
+        }
+        return $returnText;
+    }
+
+    private function getOrdersList()
+    {
+        return $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getOrdersZoneWiseForAgentDelivery($this->getUser());
+    }
 
     /**
      * @Route("/chick/delivery/{id}", name="chick_delivery_view", options={"expose"=true})
