@@ -51,17 +51,17 @@
             {% for delivery in result %}
 
                 <tr>
-                    <td>{{ delivery.agentCodeForDatatable }}</td>
-                    <td>{{ delivery.fullName }}</td>
-                    <td>{{ delivery.zillaName }}</td>
-                    <td>{{ delivery.itemName }} ({{ delivery.itemCode }})</td>
-                    <td>{{ delivery.price }}</td>
-                    <td>{{ delivery.transportGiven }}</td>
-                    <td style="text-align: right">{{ delivery.totalDeliveredQuantity }}</td>
-                    <td style="text-align: right">{{ delivery.bonusQuantity }}</td>
-                    <td style="text-align: right">{{ delivery.totalDeliveredQuantity + delivery.bonusQuantity  }}</td>
-                    <td style="text-align: right">{{ delivery.damageQuantity  }}</td>
-                    <td style="text-align: right">{{ delivery.totalDeliveredQuantity - delivery.damageQuantity  }}</td>
+                    <td style="padding: 2px">{{ delivery.agentCodeForDatatable }}</td>
+                    <td style="padding: 2px">{{ delivery.fullName }}</td>
+                    <td style="padding: 2px">{{ delivery.zillaName }}</td>
+                    <td style="padding: 2px">{{ delivery.itemName }}</td>
+                    <td style="padding: 2px">{{ delivery.price }}</td>
+                    <td style="padding: 2px">{{ delivery.transportGiven }}</td>
+                    <td style="text-align: right;padding: 2px">{{ delivery.totalDeliveredQuantity }}</td>
+                    <td style="text-align: right;padding: 2px">{{ delivery.bonusQuantity }}</td>
+                    <td style="text-align: right;padding: 2px">{{ delivery.totalDeliveredQuantity + delivery.bonusQuantity  }}</td>
+                    <td style="text-align: right;padding: 2px">{{ delivery.damageQuantity  }}</td>
+                    <td style="text-align: right;padding: 2px">{{ delivery.totalDeliveredQuantity - delivery.damageQuantity  }}</td>
                 </tr>
                 {% set sl = sl + 1 %}
                 {% set totalReceived = totalReceived + delivery.totalDeliveredQuantity %}
@@ -86,11 +86,8 @@
 
         {% endfor %}
         <tr style="font-weight: bold">
-            <td>{{ depoName }}</td>
-            <td style="text-align: center" colspan="2">Grand Total</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td colspan="2">{{ depoName }}</td>
+            <td style="text-align: center" colspan="4">Grand Total</td>
             <td style="text-align: right">{{ grandTotalReceived }}</td>
             <td style="text-align: right">{{ grandTotalBonus }}</td>
             <td style="text-align: right">{{ grandTotalReceived + grandTotalBonus }}</td>

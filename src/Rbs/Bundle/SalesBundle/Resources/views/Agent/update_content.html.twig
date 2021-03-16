@@ -18,10 +18,12 @@
         {% endif %}
         {{ form_row(form.user.profile.cellphoneForMapping) }}
         {{ form_row(form.user.profile.address) }}
+        {{ form_row(form.user.zilla, { 'attr': {'class': 'zilla-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'ZillaZilla'} }) }}
+        {{ form_row(form.user.upozilla, { 'attr': {'class': 'thana-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'Thana/UpoZilla'} }) }}
         {{ form_row(form.agentGroup) }}
 
         {{ form_row(form.user.email) }}
 
     {{ form_row(form.submit) }}
-
+<input id="user_id_hidden" type="hidden" value="{{ agent.user.id }}"/>
 {{ form_end(form) }}

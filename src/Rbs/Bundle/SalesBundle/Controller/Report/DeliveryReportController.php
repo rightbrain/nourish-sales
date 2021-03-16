@@ -95,7 +95,7 @@ class DeliveryReportController extends Controller
                     'chickItems' => $chickItems,
                 )
             );
-            $this->downloadPdf($html,'dailyDeliveryReportPdf.pdf');
+            $this->downloadPdf($html,'dailyDeliveryReportPdf_'.time().'.pdf');
         }
 
     }
