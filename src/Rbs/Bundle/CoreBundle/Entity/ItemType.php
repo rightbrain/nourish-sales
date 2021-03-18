@@ -74,10 +74,17 @@ class ItemType
      **/
     private $bundles;
 
+
+    /**
+     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\Agent", mappedBy="itemTypes")
+     **/
+    private $agent;
+
     public function __construct()
     {
         $this->vendors = new ArrayCollection();
         $this->bundles = new ArrayCollection();
+        $this->agent = new ArrayCollection();
     }
 
     /**
@@ -163,7 +170,6 @@ class ItemType
      */
     public function addVendor(Vendor $vendor)
     {
-        var_dump($vendor);exit;
         if (!$this->getVendors()->contains($vendor)) {
             $this->vendors->add($vendor);
         }
@@ -213,4 +219,22 @@ class ItemType
     {
         return $this->bundles;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param mixed $agent
+     */
+    public function setAgent($agent)
+    {
+        $this->agent = $agent;
+    }
+
+
 }

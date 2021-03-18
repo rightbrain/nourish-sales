@@ -4,7 +4,9 @@
 
         {{ form_row(form.VIP) }}
         {{ form_row(form.agentCodeForDatatable) }}
+        {% if agent.agentType=='CHICK' %}
         {{ form_row(form.itemType) }}
+        {% endif %}
         {{ form_row(form.user.profile.fullName) }}
         {% if agent.openingBalanceFlag != 1 %}
             {{ form_row(form.openingBalance) }}
@@ -23,6 +25,9 @@
         {{ form_row(form.agentGroup) }}
 
         {{ form_row(form.user.email) }}
+        {% if agent.agentType=='FEED' %}
+        {{ form_row(form.itemTypes) }}
+        {% endif %}
 
     {{ form_row(form.submit) }}
 <input id="user_id_hidden" type="hidden" value="{{ agent.user.id }}"/>

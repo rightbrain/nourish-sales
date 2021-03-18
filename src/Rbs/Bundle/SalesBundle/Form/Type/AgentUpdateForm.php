@@ -10,6 +10,7 @@ use Rbs\Bundle\SalesBundle\Repository\AgentGroupRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class AgentUpdateForm extends AbstractType
 {
@@ -37,23 +38,6 @@ class AgentUpdateForm extends AbstractType
                         '1' => 'Yes',
                     ),
                     'label' => 'VIP'
-                )
-            )
-            ->add(
-                'itemType',
-                'entity',
-                array(
-                    'class'         => 'RbsCoreBundle:ItemType',
-                    'label'         => 'Item Type',
-                    'property'      => 'itemType',
-                    'required'      => false,
-                    'empty_value'   => 'Select Item Type',
-                    'empty_data'    => null,
-                    'query_builder' => function (ItemTypeRepository $repository) {
-                        return $repository->createQueryBuilder('it')
-                            ->where('it.deletedAt IS NULL')
-                            ->orderBy('it.itemType', 'ASC');
-                    },
                 )
             )
             ->add(
@@ -97,7 +81,25 @@ class AgentUpdateForm extends AbstractType
                             ->orderBy('w.name', 'ASC');
                     },
                 )
-            );
+            )
+                ->add(
+                    'itemType',
+                    'entity',
+                    array(
+                        'class'         => 'RbsCoreBundle:ItemType',
+                        'label'         => 'Item Type',
+                        'property'      => 'itemType',
+                        'required'      => false,
+                        'empty_value'   => 'Select Item Type',
+                        'empty_data'    => null,
+                        'query_builder' => function (ItemTypeRepository $repository) {
+                            return $repository->createQueryBuilder('it')
+                                ->where('it.deletedAt IS NULL')
+                                ->orderBy('it.itemType', 'ASC');
+                        },
+                    )
+                )
+            ;
         }
         if($agentType==Agent::AGENT_TYPE_FEED){
 
@@ -117,7 +119,19 @@ class AgentUpdateForm extends AbstractType
                                 ->orderBy('w.name', 'ASC');
                         },
                     )
-                );
+                )
+                ->add('itemTypes', 'entity', array(
+                    'class' => 'Rbs\Bundle\CoreBundle\Entity\ItemType',
+                    'query_builder' => function(ItemTypeRepository $repository) {
+                        return $repository->createQueryBuilder('c')
+                            ->andWhere("c.deletedAt IS NULL")
+                            ->orderBy('c.itemType', 'ASC');
+                    },
+                    'property' => 'itemType',
+                    'multiple' => true,
+                    'required' => false
+                ))
+            ;
         }
            $builder ->add(
                 'agentGroup',

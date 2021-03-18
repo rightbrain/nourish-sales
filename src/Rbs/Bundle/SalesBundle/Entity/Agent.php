@@ -123,6 +123,14 @@ class Agent
     private $itemType;
 
     /**
+     * @var ItemType
+     *
+     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\ItemType", inversedBy="agent")
+     * @ORM\JoinTable(name="sales_join_agents_item_types")
+     */
+    private $itemTypes;
+
+    /**
      * @var boolean
      *
      * @ORM\Column(name="vip", type="boolean", nullable=true)
@@ -168,6 +176,12 @@ class Agent
      * @ORM\Column(name="agent_type", type="string", length=255, columnDefinition="ENUM('FEED', 'CHICK')")
      */
     private $agentType=self::AGENT_TYPE_FEED;
+
+
+    public function __construct()
+    {
+        $this->itemTypes = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -497,4 +511,22 @@ class Agent
     {
         return Agent::agentIdNameFormat($this->getChickAgentID(), $this->getUser()->getProfile()->getFullName());
     }
+
+    /**
+     * @return ItemType
+     */
+    public function getItemTypes()
+    {
+        return $this->itemTypes;
+    }
+
+    /**
+     * @param ItemType $itemTypes
+     */
+    public function setItemTypes($itemTypes)
+    {
+        $this->itemTypes = $itemTypes;
+    }
+
+
 }
