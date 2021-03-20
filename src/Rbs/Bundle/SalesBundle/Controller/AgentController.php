@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Controller;
 
 use Doctrine\ORM\QueryBuilder;
+use Rbs\Bundle\CoreBundle\Entity\CoreSettings;
 use Rbs\Bundle\CoreBundle\Entity\Upload;
 use Rbs\Bundle\CoreBundle\Form\Type\UploadForm;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
@@ -12,6 +13,7 @@ use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentDocForm;
 use Rbs\Bundle\SalesBundle\Form\Type\AgentUpdateForm;
 use Rbs\Bundle\SalesBundle\Form\Type\OrderForm;
+use Rbs\Bundle\SalesBundle\Form\Type\OrderWithoutSmsForm;
 use Rbs\Bundle\UserBundle\Entity\Group;
 use Rbs\Bundle\UserBundle\Entity\Profile;
 use Rbs\Bundle\UserBundle\Entity\User;
@@ -251,6 +253,8 @@ class AgentController extends BaseController
      */
     public function findAgentAction(Request $request)
     {
+        $priceModifyAccess = $this->getDoctrine()->getRepository("RbsCoreBundle:CoreSettings")->findOneBy(array('settingType'=>CoreSettings::SETTING_TYPE_FEED,'slug'=>'item-price-modify-access'));
+
         $agentId = $request->request->get('agent');
         $agentRepo = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent');
         $agent = $agentRepo->find($agentId);
@@ -258,7 +262,10 @@ class AgentController extends BaseController
         $order = new Order();
         $order->setAgent($agent);
         $form = $this->createForm(new OrderForm(0), $order);
-        $prototype = $this->renderView('@RbsSales/Order/_itemTypePrototype.html.twig', array('form' => $form->createView()));
+        $prototype = $this->renderView('@RbsSales/Order/_itemTypePrototype.html.twig', array(
+            'form' => $form->createView(),
+            'priceModifyAccess' => $priceModifyAccess,
+        ));
 
         return new JsonResponse(array('item_type_prototype' => $prototype));
     }

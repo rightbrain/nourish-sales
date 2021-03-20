@@ -29,6 +29,13 @@ class OrderItemForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $itemTypeId = $this->agent && $this->agent->getItemType() ? $this->agent->getItemType()->getId() :  null;
+        $itemTypes = $this->agent && $this->agent->getItemTypes() ? $this->agent->getItemTypes() :  null;
+        $itemTypesId=array();
+        if($itemTypes){
+            foreach ($itemTypes as $itemType){
+                $itemTypesId[]=$itemType->getId();
+            }
+        }
 
         $builder
             ->add('item', 'entity', array(
@@ -39,7 +46,7 @@ class OrderItemForm extends AbstractType
                 'property' => 'getItemCodeName',
                 'required' => true,
                 'empty_value' => 'Select Item',
-                'query_builder' => function (ItemRepository $repository) use ($itemTypeId)
+                'query_builder' => function (ItemRepository $repository) use ($itemTypeId, $itemTypesId )
                 {
                     $qb = $repository->createQueryBuilder('i')
                         ->where('i.deletedAt IS NULL')
@@ -49,9 +56,14 @@ class OrderItemForm extends AbstractType
                         ->where('i.status=1')
                         ->andWhere('itemType.itemType <>:itemType')->setParameter('itemType', ItemType::Chick)
                         ->andWhere('bundles.id = :saleBundleId')->setParameter('saleBundleId', RbsSalesBundle::ID);
-                    if ($itemTypeId) {
+                    /*if ($itemTypeId) {
                         $qb->join('i.itemType', 'it');
                         $qb->andWhere($qb->expr()->eq('it.id', $itemTypeId));
+                    }*/
+                    if ($itemTypesId) {
+                        $qb->join('i.itemType', 'it');
+                        $qb->andWhere('it.id IN (:itemTypesId)');
+                        $qb->setParameter('itemTypesId', $itemTypesId);
                     }
 
                     return $qb;

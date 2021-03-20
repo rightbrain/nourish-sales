@@ -278,7 +278,7 @@ var Order = function()
                 $addTagLink.trigger('click');
             }
         });
-/*
+
         agentElm.change(function () {
 
             $collectionHolder.find('tr').remove();
@@ -310,7 +310,7 @@ var Order = function()
                 });
                 $('.hide_button').show();
             }
-        }).change();*/
+        }).change();
 
         $('.order-item-list tbody').on("click keyup", ".quantity, .price", (totalPriceCalculation));
         recalculateItemPriceOnEdit();

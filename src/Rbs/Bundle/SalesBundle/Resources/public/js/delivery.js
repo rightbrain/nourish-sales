@@ -398,6 +398,28 @@ var Delivery = function()
             });
         }).change();
 
+        $('body').on('change','#order_id', function () {
+            var element = $(this),
+            orderId = element.val();
+            if(orderId==''){
+                return false;
+            }
+
+            $.ajax({
+                type: "post",
+                url: Routing.generate('feed_items_agent_types', {order:orderId}),
+                dataType: 'json',
+                success: function (response) {
+                    var htmlOption='<option value="">Select Item</option>';
+                    $.each( response, function( key, value ) {
+                        htmlOption += '<option value="'+key+'">'+value+'</option>'
+                    });
+
+                    $('#item_id').html(htmlOption);
+                }
+            });
+        }).change();
+
         /*$('body').on('change', '#amendment_item_id', function () {
             var element = $(this);
 
@@ -538,9 +560,10 @@ var Delivery = function()
             var amendment_item_id = element.closest('tr').find('.amendment_item_id').val();
             var amendment_item_unit_price = element.closest('tr').find('.amendment_item_unit_price').val();
 
+            element.closest('tr').find('.itemQty').val('');
 
 
-            var amendmentItemQty = parentElement.find('.itemId_'+amendment_item_id).text();
+            var amendmentItemQty = parentElement.find('.order_'+orderId).find('.itemId_'+amendment_item_id).text();
 // console.log(amendmentItemQty)
             //
             var totalApprovedAmount = parseInt(amendmentItemQty*amendment_item_unit_price);

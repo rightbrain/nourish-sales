@@ -165,6 +165,35 @@ class DeliveryController extends BaseController
     }
 
     /**
+     * @Route("/feed/items/agent/types/{order}", name="feed_items_agent_types", options={"expose"=true})
+     * @param Order $order
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE")
+     */
+    public function getFeedItemsByAgentTypes(Order $order) {
+
+        $agent = $order->getAgent();
+
+        $agentTypes = $agent->getItemTypes();
+
+        $agentTypesId = array();
+        foreach ($agentTypes as $agentType){
+            $agentTypesId[]=$agentType->getId();
+        }
+
+        $em = $this->getDoctrine()->getManager();
+
+        $results = $em->getRepository('RbsCoreBundle:Item')->getFeedItemsByAgentTypes($agentTypesId);
+        $returnArray = array();
+
+        foreach ($results as $result){
+            $returnArray[$result['itemId']]= $result['code'].'-'.$result['itemName'];
+        }
+
+        return new JsonResponse($returnArray);
+    }
+
+    /**
      * @Route("/update-delivery/{id}", name="update_delivery", options={"expose"=true})
      * @Template("RbsSalesBundle:Delivery:_edit.html.twig")
      * @param Request $request

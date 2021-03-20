@@ -83,6 +83,23 @@ class ItemRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+    public function getFeedItemsByAgentTypes($agentTypesId) {
+        $query = $this->createQueryBuilder('i');
+        $query->join('i.itemType', 'it');
+        $query->select('i.id as itemId');
+        $query->addSelect('i.name as itemName');
+        $query->addSelect('i.sku as code');
+        $query->where('it.itemType != :itemType');
+        $query->setParameter('itemType', ItemType::Chick);
+        $query->andWhere('i.status = 1');
+        $query->orderBy('i.name');
+        if($agentTypesId){
+            $query->andWhere('it.id IN (:itemTypesId)');
+            $query->setParameter('itemTypesId', $agentTypesId);
+        }
+
+        return $query->getQuery()->getResult();
+    }
 
 
 }
