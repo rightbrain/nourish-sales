@@ -164,13 +164,16 @@ class DeliveryRepository extends EntityRepository
 
 //                $qty = $qty - $data['damage-qty'][$orderId][$itemId];
 
-                $deliveryItem = new DeliveryItem();
-                $deliveryItem->setOrder($order);
-                $deliveryItem->setDelivery($delivery);
-                $deliveryItem->setOrderItem($item);
-                $deliveryItem->setQty($qty);
+                $checkDuplicateDeliveryItem = $this->_em->getRepository('RbsSalesBundle:DeliveryItem')->findOneBy(array('delivery'=>$delivery,'orderItem'=>$item));
+                if(!$checkDuplicateDeliveryItem){
+                    $deliveryItem = new DeliveryItem();
+                    $deliveryItem->setOrder($order);
+                    $deliveryItem->setDelivery($delivery);
+                    $deliveryItem->setOrderItem($item);
+                    $deliveryItem->setQty($qty);
 
-                $this->_em->persist($deliveryItem);
+                    $this->_em->persist($deliveryItem);
+                }
 
                 $output['orders'][$order->getId()] = $order;
             }
@@ -189,15 +192,16 @@ class DeliveryRepository extends EntityRepository
                     $item = $this->_em->getRepository('RbsSalesBundle:OrderItem')->find($itemId);
 
 
+                    $checkDuplicateDeliveryItem = $this->_em->getRepository('RbsSalesBundle:DeliveryItem')->findOneBy(array('delivery'=>$delivery,'orderItem'=>$item));
+                    if(!$checkDuplicateDeliveryItem) {
+                        $deliveryItem = new DeliveryItem();
+                        $deliveryItem->setOrder($order);
+                        $deliveryItem->setDelivery($delivery);
+                        $deliveryItem->setOrderItem($item);
+                        $deliveryItem->setQty($previousItems[$orderId][$itemId]);
 
-                    $deliveryItem = new DeliveryItem();
-                    $deliveryItem->setOrder($order);
-                    $deliveryItem->setDelivery($delivery);
-                    $deliveryItem->setOrderItem($item);
-                    $deliveryItem->setQty($previousItems[$orderId][$itemId]);
-
-                    $this->_em->persist($deliveryItem);
-
+                        $this->_em->persist($deliveryItem);
+                    }
                     $output['orders'][$order->getId()] = $order;
                 }
             }
@@ -226,7 +230,6 @@ class DeliveryRepository extends EntityRepository
 
                 $deliveryItem = $this->_em->getRepository('RbsSalesBundle:DeliveryItem')->find($data['deliveryItemId'][$orderId][$itemId]);
 
-//                $deliveryItem = new DeliveryItem();
                 $deliveryItem->setOrder($order);
                 $deliveryItem->setDelivery($delivery);
                 $deliveryItem->setOrderItem($item);
