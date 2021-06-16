@@ -220,6 +220,27 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Report']->getChild('Delivery Report')->setCurrent(true);
                 }
             }
+            if ($this->authorizationChecker->isGranted('ROLE_CHICK_DELIVERY_REPORT')) {
+                $menu['Report']->addChild('Breed Wise Report', array('route' => 'report_chick_breed_wise_daily_delivery'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('report_chick_breed_wise_daily_delivery')) {
+                    $menu['Report']->getChild('Breed Wise Report')->setCurrent(true);
+                }
+            }
+            if ($this->authorizationChecker->isGranted('ROLE_CHICK_DELIVERY_REPORT')) {
+                $menu['Report']->addChild('Region Wise Report', array('route' => 'report_chick_region_wise_daily_delivery'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('report_chick_region_wise_daily_delivery')) {
+                    $menu['Report']->getChild('Region Wise Report')->setCurrent(true);
+                }
+            }
+            if ($this->authorizationChecker->isGranted('ROLE_CHICK_DELIVERY_REPORT')) {
+                $menu['Report']->addChild('District Wise Report', array('route' => 'report_chick_district_wise_daily_delivery'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('report_chick_district_wise_daily_delivery')) {
+                    $menu['Report']->getChild('District Wise Report')->setCurrent(true);
+                }
+            }
 
             if (empty($menu->getChild('Report')->getChildren())) {
                 $menu->removeChild($menu['Report']);

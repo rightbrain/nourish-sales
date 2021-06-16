@@ -221,6 +221,69 @@ class DeliveryItemRepository extends EntityRepository
            return array();
         }
     }
+    public function getChickDeliveredItemsByDepotLocationBreed($data)
+    {
+
+        $results= array();
+        if(!empty($data['depo'])) {
+            $query = $this->createQueryBuilder('di');
+            $query->join('di.delivery', 'd');
+            $query->join('d.depo', 'depo');
+            $query->join('di.orderItem', 'oi');
+            $query->join('di.order', 'o');
+            $query->join('o.agent', 'a');
+            $query->join('a.user', 'u');
+            $query->join('u.profile', 'p');
+            $query->join('u.zilla', 'z');
+            $query->join('oi.item', 'i');
+            $query->join('i.category', 'c');
+            $query->select('i.id');
+            $query->addSelect('i.name as itemName');
+            $query->addSelect('i.sku as itemCode');
+            $query->addSelect('depo.name as depoName');
+            $query->addSelect('c.id as catId');
+            $query->addSelect('c.name as catName');
+            $query->addSelect('d.transportGiven');
+            $query->addSelect('di.qty as totalDeliveredQuantity');
+            $query->addSelect('oi.damageQuantity');
+            $query->addSelect('oi.bonusQuantity');
+            $query->addSelect('oi.price');
+            $query->addSelect('p.fullName');
+            $query->addSelect('z.name as zillaName');
+            $query->addSelect('a.agentCodeForDatatable');
+            $query->where('d.shipped = 1');
+            $query->andWhere('o.orderType = :type');
+            $query->setParameter('type', Order::ORDER_TYPE_CHICK);
+            if (!empty($data['depo'])) {
+                $this->handleSearchByDepo($data['depo'], $query);
+            }
+
+            if (!empty($data['zilla'])) {
+                $query->andWhere('z.id = :zilla');
+                $query->setParameter('zilla', $data['zilla']);
+            }
+
+            if (!empty($data['region'])) {
+                $query->andWhere('z.parentId = :region');
+                $query->setParameter('region', $data['region']);
+            }
+            if (!empty($data['item'])) {
+                $query->andWhere('i.id = :item');
+                $query->setParameter('item', $data['item']);
+            }
+            $this->handleSearchByDate($query, $data['start_date'], $data['end_date']);
+//            $query->groupBy('i.id');
+//            $query->addGroupBy('d.depo');
+            $query->orderBy('i.name', 'ASC');
+
+            foreach ($query->getQuery()->getResult() as $result) {
+                $results[$result['catName']][] = $result;
+            }
+            return $results;
+        }else{
+           return array();
+        }
+    }
 
     public function getDeliveryIncentive($deliveryId)
     {

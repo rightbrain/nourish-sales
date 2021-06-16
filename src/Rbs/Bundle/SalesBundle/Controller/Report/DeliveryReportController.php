@@ -8,6 +8,7 @@
 
 namespace Rbs\Bundle\SalesBundle\Controller\Report;
 use Knp\Snappy\Pdf;
+use Rbs\Bundle\SalesBundle\Form\Search\Type\DeliveryBreedWiseReportChickType;
 use Rbs\Bundle\SalesBundle\Form\Search\Type\DeliveryReportChickType;
 use Rbs\Bundle\SalesBundle\Form\Search\Type\DeliveryReportType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -92,6 +93,129 @@ class DeliveryReportController extends Controller
                     'data' => $data,
                     'deliveries' => $deliveries,
                     'dailyDepotStock' => $dailyDepotStock,
+                    'chickItems' => $chickItems,
+                )
+            );
+            $this->downloadPdf($html,'dailyDeliveryReportPdf_'.time().'.pdf');
+        }
+
+    }
+
+    /**
+     * @Route("/report/chick/breed/wise/delivery", name="report_chick_breed_wise_daily_delivery")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_REPORT")
+     */
+    public function chickBreedWiseDailyDeliveryReportAction(Request $request)
+    {
+        $form = new DeliveryBreedWiseReportChickType();
+        $data = $request->query->get($form->getName());
+        $pdf_create = $request->query->get('pdf_create');
+        $formSearch = $this->createForm($form, $data);
+
+        $formSearch->submit($data);
+        $date = $data['start_date'] ? date('Y-m-d', strtotime($data['start_date'])) : date('Y-m-d', strtotime('now'));
+
+        $deliveries = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getChickDeliveredItemsByDepotLocationBreed($data);
+        $chickItems = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->getChickItems();
+
+        if(empty($pdf_create)){
+
+            return $this->render('RbsSalesBundle:Report/Delivery:daily-chick-delivery-breed-wise-report.html.twig', array(
+                'formSearch' => $formSearch->createView(),
+                'data' => $data,
+                'deliveries' => $deliveries,
+                'chickItems' => $chickItems,
+            ));
+
+        }else{
+            $html = $this->renderView('RbsSalesBundle:Report/Delivery:daily-chick-delivery-breed-wise-report-pdf.html.twig', array(
+                    'formSearch' => $formSearch->createView(),
+                    'data' => $data,
+                    'deliveries' => $deliveries,
+                    'chickItems' => $chickItems,
+                )
+            );
+            $this->downloadPdf($html,'dailyDeliveryReportPdf_'.time().'.pdf');
+        }
+
+    }
+
+    /**
+     * @Route("/report/chick/region/wise/delivery", name="report_chick_region_wise_daily_delivery")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_REPORT")
+     */
+    public function chickRegionWiseDailyDeliveryReportAction(Request $request)
+    {
+        $form = new DeliveryBreedWiseReportChickType();
+        $data = $request->query->get($form->getName());
+        $pdf_create = $request->query->get('pdf_create');
+        $formSearch = $this->createForm($form, $data);
+
+        $formSearch->submit($data);
+        $date = $data['start_date'] ? date('Y-m-d', strtotime($data['start_date'])) : date('Y-m-d', strtotime('now'));
+
+        $deliveries = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getChickDeliveredItemsByDepotLocationBreed($data);
+        $chickItems = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->getChickItems();
+
+        if(empty($pdf_create)){
+
+            return $this->render('RbsSalesBundle:Report/Delivery:daily-chick-delivery-region-wise-report.html.twig', array(
+                'formSearch' => $formSearch->createView(),
+                'data' => $data,
+                'deliveries' => $deliveries,
+                'chickItems' => $chickItems,
+            ));
+
+        }else{
+            $html = $this->renderView('RbsSalesBundle:Report/Delivery:daily-chick-delivery-region-wise-report-pdf.html.twig', array(
+                    'formSearch' => $formSearch->createView(),
+                    'data' => $data,
+                    'deliveries' => $deliveries,
+                    'chickItems' => $chickItems,
+                )
+            );
+            $this->downloadPdf($html,'dailyDeliveryReportPdf_'.time().'.pdf');
+        }
+
+    }
+
+    /**
+     * @Route("/report/chick/district/wise/delivery", name="report_chick_district_wise_daily_delivery")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_CHICK_DELIVERY_REPORT")
+     */
+    public function chickDistrictWiseDailyDeliveryReportAction(Request $request)
+    {
+        $form = new DeliveryBreedWiseReportChickType();
+        $data = $request->query->get($form->getName());
+        $pdf_create = $request->query->get('pdf_create');
+        $formSearch = $this->createForm($form, $data);
+
+        $formSearch->submit($data);
+        $date = $data['start_date'] ? date('Y-m-d', strtotime($data['start_date'])) : date('Y-m-d', strtotime('now'));
+
+        $deliveries = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getChickDeliveredItemsByDepotLocationBreed($data);
+        $chickItems = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->getChickItems();
+
+        if(empty($pdf_create)){
+
+            return $this->render('RbsSalesBundle:Report/Delivery:daily-chick-delivery-district-wise-report.html.twig', array(
+                'formSearch' => $formSearch->createView(),
+                'data' => $data,
+                'deliveries' => $deliveries,
+                'chickItems' => $chickItems,
+            ));
+
+        }else{
+            $html = $this->renderView('RbsSalesBundle:Report/Delivery:daily-chick-delivery-district-wise-report-pdf.html.twig', array(
+                    'formSearch' => $formSearch->createView(),
+                    'data' => $data,
+                    'deliveries' => $deliveries,
                     'chickItems' => $chickItems,
                 )
             );
