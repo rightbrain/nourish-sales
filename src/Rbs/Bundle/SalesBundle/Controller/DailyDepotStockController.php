@@ -103,7 +103,7 @@ class DailyDepotStockController extends Controller
         $em = $this->getDoctrine()->getManager();
 
 
-        if($stockItemOnHand >=($stock->getOnHold() + $stock->getTotalTransferredQuantity())){
+        if(($stockItemOnHand+$stock->getTotalReceivedQuantity()) >=($stock->getOnHold() + $stock->getTotalTransferredQuantity())){
             $stock->setOnHand($stockItemOnHand);
         }
 
