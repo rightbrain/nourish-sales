@@ -212,8 +212,10 @@ class OrderController extends BaseController
                 
                 $this->flashMessage('success', 'Order Created Successfully');
 
-                $msg = "Dear Customer, Your Order No: ".$order->getId()." / ".date('d-m-Y').'. ';
-                if($order->getOrderItems()){
+//                $msg = "Dear Customer, Your Order No: ".$order->getId()." / ".date('d-m-Y').'. ';
+                $msg = "Dear Agent, Your order no ".$order->getId()." is in process for confirmation.";
+
+                /*if($order->getOrderItems()){
                     $msg.='Product Info: ';
                     $i=1;
                     $array_count = count($order->getOrderItems());
@@ -226,7 +228,7 @@ class OrderController extends BaseController
                         }
                         $i++;
                     }
-                }
+                }*/
                 $part1s = str_split($msg, $split_length = 160);
                 foreach($part1s as $part){
                     $smsSender = $this->get('rbs_erp.sales.service.smssender');
@@ -311,8 +313,10 @@ class OrderController extends BaseController
                 $em->getRepository('RbsSalesBundle:Stock')->addStockToOnHold($order, $depo);
 
                 $this->flashMessage('success', 'Order Created Successfully');
-                $msg = "Dear Customer, Your Order No: ".$order->getId()." / ".date('d-m-Y').'. ';
-                if($order->getOrderItems()){
+//                $msg = "Dear Customer, Your Order No: ".$order->getId()." / ".date('d-m-Y').'. ';
+                $msg = "Dear Agent, Your order no ".$order->getId()." is in process for confirmation.";
+
+                /*if($order->getOrderItems()){
                     $msg.='Product Info: ';
                     $i=1;
                     $array_count = count($order->getOrderItems());
@@ -325,7 +329,7 @@ class OrderController extends BaseController
                         }
                         $i++;
                     }
-                }
+                }*/
                 $part1s = str_split($msg, $split_length = 160);
                 foreach($part1s as $part){
                     $smsSender = $this->get('rbs_erp.sales.service.smssender');
@@ -792,12 +796,14 @@ class OrderController extends BaseController
 
         if (!$agent->isVIP() && $isOverCredit) {
             $order->setPaymentState(Order::PAYMENT_STATE_CREDIT_APPROVAL);
-        } else if ($order->getTotalAmount() <= $order->getPaidAmount()) {
+        } else if (number_format($order->getTotalAmount(),0,'.','') <= number_format($order->getPaidAmount(),0,'.','')) {
             $order->setPaymentState(Order::PAYMENT_STATE_PAID);
             $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
+//            $msg = "Dear Agent, Received with thanks BDT ".$order->getPaidAmount()." against order no ".$order->getId()." & provide clearance to respective feed mill/depot to delivery your goods.";
         } else {
             $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
             $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
+//            $msg = "Dear Agent, We couldn't make clearance your order due to partial payment. Please make sure your full payment.";
         }
 
         /*$em = $this->getDoctrine()->getManager();
@@ -813,6 +819,10 @@ class OrderController extends BaseController
         $em->getRepository('RbsSalesBundle:Payment')->create($payment);
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);*/
+
+        /*$msg='Dear Agent, Your order no '.$order->getId().' is confirmed & provide clearance to depot/feed mill for delivery';
+
+        $this->smsSend($order, $msg);*/
 
         $this->dispatchApproveProcessEvent('payment.approved', $order);
         $this->flashMessage('success', 'Payment Approved Successfully');
@@ -830,9 +840,11 @@ class OrderController extends BaseController
         /** TODO: Refactor adjustment method. Multiple Update Query Executed */
         $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
 
-        if ($order->getTotalAmount() <= $order->getPaidAmount()) {
+        if (number_format($order->getTotalAmount(),0,'.','') <= number_format($order->getPaidAmount(),0,'.','')) {
             $order->setPaymentState(Order::PAYMENT_STATE_PAID);
+//            $msg = "Dear Agent, Received with thanks BDT ".$order->getPaidAmount()." against order no ".$order->getId()." & provide clearance to respective feed mill/depot to delivery your goods.";
         } else {
+//            $msg = "Dear Agent, We couldn't make clearance your order due to partial payment. Please make sure your full payment.";
             $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
         }
 
@@ -851,6 +863,10 @@ class OrderController extends BaseController
             $payment->addOrder($order);
             $em->getRepository('RbsSalesBundle:Payment')->create($payment);
         }*/
+
+        /*$msg='Dear Agent, Your order no '.$order->getId().' is confirmed & provide clearance to depot/feed mill for delivery';
+
+        $this->smsSend($order, $msg);*/
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
         $this->dispatchApproveProcessEvent('payment.over.credit.approved', $order);
@@ -880,7 +896,24 @@ class OrderController extends BaseController
             $this->flashMessage('success', 'Order Verified Successfully and Ready for Delivery');
         }
 
+        $msg='Dear Agent, Your order no '.$order->getId().' is confirmed & provide clearance to depot/feed mill for delivery';
+
+        $this->smsSend($order, $msg);
+
         return $this->redirect($this->generateUrl('orders_home'));
+    }
+
+
+    private function smsSend(Order $order, $msg)
+    {
+
+//        $msg = "Dear Agent, Your order no ".$order->getId()." is in process for payment Confirmation.";
+
+        $part1s = str_split($msg, $split_length = 160);
+        foreach($part1s as $part){
+            $smsSender = $this->get('rbs_erp.sales.service.smssender');
+            $smsSender->agentBankInfoSmsAction($part, $order->getAgent()->getUser()->getProfile()->getCellphoneForMapping());
+        }
     }
 
     /**

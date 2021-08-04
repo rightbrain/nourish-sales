@@ -183,6 +183,7 @@ class ChickOrderController extends BaseController
 
                     }
                 }
+
                 if($delivery){
 //                    $vehicle = $delivery->getVehicles()[0];
                     $delivery->addOrder($order);
@@ -201,6 +202,14 @@ class ChickOrderController extends BaseController
                         $vehicle->setOrderText($this->setOrderText($delivery->getOrders()));
                         $this->getDoctrine()->getRepository('RbsSalesBundle:Vehicle')->update($vehicle);
                     }
+                }
+
+                $msg = "Dear Agent, Your order no ".$order->getId()." is in process for confirmation.";
+
+                $part1s = str_split($msg, $split_length = 160);
+                foreach($part1s as $part){
+                    $smsSender = $this->get('rbs_erp.sales.service.smssender');
+                    $smsSender->agentBankInfoSmsAction($part, $order->getAgent()->getUser()->getProfile()->getCellphoneForChick());
                 }
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
@@ -1013,8 +1022,9 @@ SELECT {$order['id']}, core_items.id, 0, (SELECT core_item_price.price FROM `cor
                     $orderChickTemp->removeOrderItem($orderChickItemTemp);
 
                 }
-
+                $this->getDoctrine()->getManager()->flush();
                 $data[]= $order->getId();
+                $this->smsSend($order);
             }
             $this->getDoctrine()->getManager()->remove($orderChickTemp);
        }
@@ -1028,6 +1038,19 @@ SELECT {$order['id']}, core_items.id, 0, (SELECT core_item_price.price FROM `cor
         $this->getDoctrine()->getManager()->flush();
 
         return $this->redirect($this->generateUrl('chick_orders_home'));
+    }
+
+    private function smsSend(Order $order)
+    {
+//            $orderItems=$this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->findBy(array('order'=>$order));
+
+        $msg = "Dear Agent, Your order no ".$order->getId()." is in process for confirmation.";
+
+        $part1s = str_split($msg, $split_length = 160);
+        foreach($part1s as $part){
+            $smsSender = $this->get('rbs_erp.sales.service.smssender');
+            $smsSender->agentBankInfoSmsAction($part, $order->getAgent()->getUser()->getProfile()->getCellphoneForChick());
+        }
     }
 
     /**

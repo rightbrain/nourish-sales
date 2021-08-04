@@ -6,6 +6,7 @@ use Doctrine\ORM\QueryBuilder;
 use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
+use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleDeliverySetForm;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleEditForm;
@@ -446,9 +447,31 @@ class VehicleController extends BaseController
         $vehicle->setTransportStatus(Vehicle::OUT);
         $vehicle->setShipped(true);
         $this->vehicleRepo()->update($vehicle);
+
+        $this->smsSend($vehicle);
+
         $this->get('session')->getFlashBag()->add('success', 'Vehicle Out Successfully');
 
         return $this->redirect($this->generateUrl('truck_info_in_out_list'));
+    }
+
+    private function smsSend(Vehicle $vehicle)
+    {
+//        $msg = "Dear Agent, Your goods loading already complete. Vehicle No: ".$vehicle->getTruckNumber().", Driver Contact No: ".$vehicle->getDriverPhone()." will start for destination soon.";
+        $msg = "Dear Agent, Your goods are delivered. Vehicle No: ".$vehicle->getTruckNumber().", Driver Contact No: ".$vehicle->getDriverPhone().".";
+
+        /** @var Delivery $delivery*/
+        $delivery=$vehicle->getDeliveries();
+
+            /** @var Order $order*/
+            foreach ($delivery->getOrders() as $order){
+
+                $part1s = str_split($msg, $split_length = 160);
+                foreach($part1s as $part){
+                    $smsSender = $this->get('rbs_erp.sales.service.smssender');
+                    $smsSender->agentBankInfoSmsAction($part, $order->getAgent()->getUser()->getProfile()->getCellphoneForMapping());
+                }
+            }
     }
 
     /**

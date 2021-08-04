@@ -117,6 +117,7 @@ leezy_pheanstalk:
 guzzle:
     clients:
         api_crm:
-            base_url: "http://api.bulksms.icombd.com"
+#            base_url: "http://api.bulksms.icombd.com"
+            base_url: "http://api.icombd.com"
             headers:
                 Accept: "application/json"

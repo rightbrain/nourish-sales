@@ -23,13 +23,43 @@ class SmsGateWay
     }
 
     function send($msg, $phone){
+        $curl = curl_init();
+        $data =[
+            "username"=>$this->username,
+            "password"=>$this->password,
+            "sender"=>"Nourish",
+            "message"=>$msg,
+            "to"=>$phone
+        ];
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => "http://api.icombd.com/api/v2/sendsms/plaintext",
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "POST",
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_HTTPHEADER => array(
+                "Content-Type: application/json",
+            ),
+        ));
+        $response = curl_exec($curl);
+        $err = curl_error($curl);
+        curl_close($curl);
+        if ($err) {
+            echo "cURL Error #:" . $err;
+        } else {
+            echo $response;
+        }
 
-        try {
+        /*try {
 
             $body = '{"authentication": {"username": "' . $this->username .'","password": "'.$this->password.'"},"messages": [{"sender": "Nourish","text": "'.$msg.'","recipients": [{"gsm": "'.$phone.'"}]}]}';
 
             $response = $this->client->post(
-                "/api/v3/sendsms/json",
+//                "/api/v3/sendsms/json",
+                "/api/v1/campaigns/sendsms/plain",
                 [
                     'headers' => [
                         'Content-Type' => 'application/json',
@@ -45,7 +75,7 @@ class SmsGateWay
             if ($e->hasResponse()) {
 //                var_dump($e->getResponse()->getReasonPhrase());
             }
-        }
+        }*/
 
     }
 }

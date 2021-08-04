@@ -326,11 +326,29 @@ class DeliveryForChickController extends BaseController
             }
         }
 
+        $this->smsSend($delivery);
+
         $this->dispatch('delivery.delivered', new DeliveryEvent($delivery));
 
         $this->flashMessage('success', $delivery->getId().' Delivery Completed Successfully');
 
         return $this->redirect($this->generateUrl('chick_truck_info_list'));
+    }
+
+    private function smsSend(Delivery $delivery)
+    {
+        $vehicle = $delivery->getVehicles()[0];
+        $msg = "Dear Agent, Your goods are delivered. Vehicle No: ".$vehicle->getTruckNumber().", Driver Contact No: ".$vehicle->getDriverPhone().".";
+
+        /** @var Order $order*/
+        foreach ($delivery->getOrders() as $order){
+
+            $part1s = str_split($msg, $split_length = 160);
+            foreach($part1s as $part){
+                $smsSender = $this->get('rbs_erp.sales.service.smssender');
+                $smsSender->agentBankInfoSmsAction($part, $order->getAgent()->getUser()->getProfile()->getCellphoneForMapping());
+            }
+        }
     }
 
     /**
