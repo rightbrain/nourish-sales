@@ -458,13 +458,13 @@ class VehicleController extends BaseController
     private function smsSend(Vehicle $vehicle)
     {
 //        $msg = "Dear Agent, Your goods loading already complete. Vehicle No: ".$vehicle->getTruckNumber().", Driver Contact No: ".$vehicle->getDriverPhone()." will start for destination soon.";
-        $msg = "Dear Agent, Your goods are delivered. Vehicle No: ".$vehicle->getTruckNumber().", Driver Contact No: ".$vehicle->getDriverPhone().".";
 
         /** @var Delivery $delivery*/
         $delivery=$vehicle->getDeliveries();
 
             /** @var Order $order*/
             foreach ($delivery->getOrders() as $order){
+                $msg = "Dear Agent, (Feed ID: ".$order->getAgent()->getAgentCodeForDatatable()."), Your goods (Order No: ".$order->getId().") delivered to ".$vehicle->getDriverName().", Vehicle No: ".$vehicle->getTruckNumber().", Contact No: ".$vehicle->getDriverPhone().".";
 
                 $part1s = str_split($msg, $split_length = 160);
                 foreach($part1s as $part){

@@ -213,7 +213,7 @@ class OrderController extends BaseController
                 $this->flashMessage('success', 'Order Created Successfully');
 
 //                $msg = "Dear Customer, Your Order No: ".$order->getId()." / ".date('d-m-Y').'. ';
-                $msg = "Dear Agent, Your order no ".$order->getId()." is in process for confirmation.";
+//                $msg = "Dear Agent, Feed ID: ".$order->getAgent()->getAgentCodeForDatatable()." Your order no ".$order->getId()." is in process for confirmation.";
 
                 /*if($order->getOrderItems()){
                     $msg.='Product Info: ';
@@ -229,11 +229,11 @@ class OrderController extends BaseController
                         $i++;
                     }
                 }*/
-                $part1s = str_split($msg, $split_length = 160);
+                /*$part1s = str_split($msg, $split_length = 160);
                 foreach($part1s as $part){
                     $smsSender = $this->get('rbs_erp.sales.service.smssender');
                     $smsSender->agentBankInfoSmsAction($part, $order->getAgent()->getUser()->getProfile()->getCellphone());
-                }
+                }*/
 
                 return $this->redirect($this->generateUrl('orders_home'));
             }
@@ -314,27 +314,13 @@ class OrderController extends BaseController
 
                 $this->flashMessage('success', 'Order Created Successfully');
 //                $msg = "Dear Customer, Your Order No: ".$order->getId()." / ".date('d-m-Y').'. ';
-                $msg = "Dear Agent, Your order no ".$order->getId()." is in process for confirmation.";
+                /*$msg = "Dear Agent, Feed ID: ".$order->getAgent()->getAgentCodeForDatatable()." Your order no ".$order->getId()." is in process for confirmation.";
 
-                /*if($order->getOrderItems()){
-                    $msg.='Product Info: ';
-                    $i=1;
-                    $array_count = count($order->getOrderItems());
-                    foreach ($order->getOrderItems() as $item){
-                        $msg.= $item->getItem()->getSku().'-'.$item->getQuantity();
-                        if($i==$array_count){
-                            $msg.='.';
-                        }else{
-                            $msg.=', ';
-                        }
-                        $i++;
-                    }
-                }*/
                 $part1s = str_split($msg, $split_length = 160);
                 foreach($part1s as $part){
                     $smsSender = $this->get('rbs_erp.sales.service.smssender');
                     $smsSender->agentBankInfoSmsAction($part, $order->getAgent()->getUser()->getProfile()->getCellphone());
-                }
+                }*/
                 if($this->isGranted('ROLE_AGENT')){
                     return $this->redirect($this->generateUrl('orders_my_home'));
                 }
@@ -799,11 +785,9 @@ class OrderController extends BaseController
         } else if (number_format($order->getTotalAmount(),0,'.','') <= number_format($order->getPaidAmount(),0,'.','')) {
             $order->setPaymentState(Order::PAYMENT_STATE_PAID);
             $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
-//            $msg = "Dear Agent, Received with thanks BDT ".$order->getPaidAmount()." against order no ".$order->getId()." & provide clearance to respective feed mill/depot to delivery your goods.";
         } else {
             $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
             $this->orderRepository()->adjustPaymentViaSms($order->getPayments());
-//            $msg = "Dear Agent, We couldn't make clearance your order due to partial payment. Please make sure your full payment.";
         }
 
         /*$em = $this->getDoctrine()->getManager();
@@ -819,10 +803,6 @@ class OrderController extends BaseController
         $em->getRepository('RbsSalesBundle:Payment')->create($payment);
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);*/
-
-        /*$msg='Dear Agent, Your order no '.$order->getId().' is confirmed & provide clearance to depot/feed mill for delivery';
-
-        $this->smsSend($order, $msg);*/
 
         $this->dispatchApproveProcessEvent('payment.approved', $order);
         $this->flashMessage('success', 'Payment Approved Successfully');
@@ -842,9 +822,7 @@ class OrderController extends BaseController
 
         if (number_format($order->getTotalAmount(),0,'.','') <= number_format($order->getPaidAmount(),0,'.','')) {
             $order->setPaymentState(Order::PAYMENT_STATE_PAID);
-//            $msg = "Dear Agent, Received with thanks BDT ".$order->getPaidAmount()." against order no ".$order->getId()." & provide clearance to respective feed mill/depot to delivery your goods.";
         } else {
-//            $msg = "Dear Agent, We couldn't make clearance your order due to partial payment. Please make sure your full payment.";
             $order->setPaymentState(Order::PAYMENT_STATE_PARTIALLY_PAID);
         }
 
@@ -863,10 +841,6 @@ class OrderController extends BaseController
             $payment->addOrder($order);
             $em->getRepository('RbsSalesBundle:Payment')->create($payment);
         }*/
-
-        /*$msg='Dear Agent, Your order no '.$order->getId().' is confirmed & provide clearance to depot/feed mill for delivery';
-
-        $this->smsSend($order, $msg);*/
 
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->update($order);
         $this->dispatchApproveProcessEvent('payment.over.credit.approved', $order);
@@ -896,7 +870,7 @@ class OrderController extends BaseController
             $this->flashMessage('success', 'Order Verified Successfully and Ready for Delivery');
         }
 
-        $msg='Dear Agent, Your order no '.$order->getId().' is confirmed & provide clearance to depot/feed mill for delivery';
+        $msg="Dear Agent, (Feed ID: ".$order->getAgent()->getAgentCodeForDatatable()."), Your Order No: ".$order->getId()." is confirmed & provide clearance to ".$order->getDepo()->getName()." for delivery.";
 
         $this->smsSend($order, $msg);
 
@@ -906,8 +880,6 @@ class OrderController extends BaseController
 
     private function smsSend(Order $order, $msg)
     {
-
-//        $msg = "Dear Agent, Your order no ".$order->getId()." is in process for payment Confirmation.";
 
         $part1s = str_split($msg, $split_length = 160);
         foreach($part1s as $part){
