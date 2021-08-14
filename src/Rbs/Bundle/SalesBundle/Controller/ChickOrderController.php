@@ -205,13 +205,13 @@ class ChickOrderController extends BaseController
                 }
 
 //                $msg = "Dear Agent, Feed ID: ".$order->getAgent()->getAgentCodeForDatatable()." Your order no ".$order->getId()." is in process for confirmation.";
-                $msg="Dear Agent, (CHICK ID: ".$order->getAgent()->getAgentCodeForDatatable()."), Your Order No: ".$order->getId()." is confirmed & provide clearance to ".$order->getDepo()->getName()." for delivery";
+                /*$msg="Dear Agent, (CHICK ID: ".$order->getAgent()->getAgentCodeForDatatable()."), Your Order No: ".$order->getId()." is confirmed & provide clearance to ".$order->getDepo()->getName()." for delivery";
 
                 $part1s = str_split($msg, $split_length = 160);
                 foreach($part1s as $part){
                     $smsSender = $this->get('rbs_erp.sales.service.smssender');
                     $smsSender->agentBankInfoSmsAction($part, $order->getAgent()->getUser()->getProfile()->getCellphoneForChick());
-                }
+                }*/
 
                 $this->getDoctrine()->getRepository('RbsSalesBundle:OrderIncentiveFlag')->create($orderIncentiveFlag);
 
@@ -1025,7 +1025,7 @@ SELECT {$order['id']}, core_items.id, 0, (SELECT core_item_price.price FROM `cor
                 }
                 $this->getDoctrine()->getManager()->flush();
                 $data[]= $order->getId();
-                $this->smsSend($order);
+//                $this->smsSend($order);
             }
             $this->getDoctrine()->getManager()->remove($orderChickTemp);
        }

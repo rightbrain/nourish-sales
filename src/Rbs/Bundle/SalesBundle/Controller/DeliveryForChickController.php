@@ -341,7 +341,7 @@ class DeliveryForChickController extends BaseController
 
         /** @var Order $order*/
         foreach ($delivery->getOrders() as $order){
-            $msg = "Dear Agent, (CHICK ID: ".$order->getAgent()->getAgentCodeForDatatable()."), Your goods (Order No: ".$order->getId().") delivered to ".$vehicle->getDriverName().", Vehicle No: ".$vehicle->getTruckNumber().", Contact No: ".$vehicle->getDriverPhone().".";
+            $msg = "Dear Agent (".$order->getAgent()->getAgentCodeForDatatable()."), Your Total DOC ".$order->getOrderItemsTotalQuantity()." delivered to Name: ".$vehicle->getDriverName().", Vehicle No: ".$vehicle->getTruckNumber().", Contact No: ".$vehicle->getDriverPhone().".";
 
             $part1s = str_split($msg, $split_length = 160);
             foreach($part1s as $part){
