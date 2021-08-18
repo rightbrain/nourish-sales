@@ -90,7 +90,7 @@
                                         <td>{{ delivery.zillaName }}</td>
                                         <td>{{ delivery.itemName }} ({{ delivery.itemCode }})</td>
                                         <td>{{ delivery.price }}</td>
-                                        <td>{{ delivery.transportGiven }}</td>
+                                        <td>{{ delivery.transportGiven=='AGENT'?'OWN':delivery.transportGiven }}</td>
                                         <td style="text-align: right">{{ delivery.totalDeliveredQuantity }}</td>
                                         <td style="text-align: right">{{ delivery.bonusQuantity }}</td>
                                         <td style="text-align: right">{{ delivery.totalDeliveredQuantity + delivery.bonusQuantity  }}</td>
@@ -143,4 +143,9 @@
     </div>
 
     <div style="clear: both"></div>
+    <style>
+        .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th{
+            padding: 4px 8px;
+        }
+    </style>
 {% endblock %}

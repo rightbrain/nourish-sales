@@ -27,7 +27,7 @@ class SmsGateWay
         $data =[
             "username"=>$this->username,
             "password"=>$this->password,
-            "sender"=>"Nourish",
+            "sender"=>"NOURISH",
             "message"=>$msg,
             "to"=>$phone
         ];

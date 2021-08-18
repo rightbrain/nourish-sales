@@ -56,7 +56,7 @@
                     <td style="padding: 2px">{{ delivery.zillaName }}</td>
                     <td style="padding: 2px">{{ delivery.itemName }}</td>
                     <td style="padding: 2px">{{ delivery.price }}</td>
-                    <td style="padding: 2px">{{ delivery.transportGiven }}</td>
+                    <td>{{ delivery.transportGiven=='AGENT'?'OWN':delivery.transportGiven }}</td>
                     <td style="text-align: right;padding: 2px">{{ delivery.totalDeliveredQuantity }}</td>
                     <td style="text-align: right;padding: 2px">{{ delivery.bonusQuantity }}</td>
                     <td style="text-align: right;padding: 2px">{{ delivery.totalDeliveredQuantity + delivery.bonusQuantity  }}</td>
