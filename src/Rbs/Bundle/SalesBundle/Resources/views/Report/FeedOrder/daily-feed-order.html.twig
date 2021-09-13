@@ -79,12 +79,12 @@
                                             {% set catTotalQty = catTotalQty + catQty %}
                                             {% set catTotalAmount = catTotalAmount + catAmount %}
                                             {% set depotAndCategoryTotal=depotAndCategoryTotal|merge([{(category.id):catQty}]) %}
-                                            <td>{{ orders[depot.id][category.id].totalQuantity|default(0)  }}</td>
+                                            <td>{{ orders[depot.id][category.id].totalQuantity|number_format(2,',',',')  }}</td>
                                             {% endif %}
                                         {% endfor %}
-                                        <td>{{ catTotalQty }}</td>
-                                        <td>{{ catTotalAmount }}</td>
-                                        <td>{{ paymentAmountViaOrders[depot.id].totalAmount|default(0) }}</td>
+                                        <td>{{ catTotalQty|number_format(2,',',',') }}</td>
+                                        <td>{{ catTotalAmount|number_format(2,',',',') }}</td>
+                                        <td>{{ paymentAmountViaOrders[depot.id].totalAmount|number_format(2,',',',') }}</td>
                                         {% set grandTotalQty = grandTotalQty+catTotalQty %}
                                         {% set grandTotalAmount = grandTotalAmount + catTotalAmount %}
                                         {% set grandTotalPaymentAmount = grandTotalPaymentAmount + paymentAmountViaOrders[depot.id].totalAmount|default(0) %}
@@ -100,13 +100,13 @@
                                             {% for totalItems in depotAndCategoryTotal %}
                                                 {% set itemTotal= itemTotal+ totalItems[category.id]|default(0) %}
                                             {% endfor %}
-                                            {{ itemTotal }}
+                                            {{ itemTotal|number_format(2,',',',') }}
                                         </td>
                                         {% endif %}
                                     {% endfor %}
-                                    <td>{{ grandTotalQty }}</td>
-                                    <td>{{ grandTotalAmount }}</td>
-                                    <td>{{ grandTotalPaymentAmount }}</td>
+                                    <td>{{ grandTotalQty|number_format(2,',',',') }}</td>
+                                    <td>{{ grandTotalAmount|number_format(2,',',',') }}</td>
+                                    <td>{{ grandTotalPaymentAmount|number_format(2,',',',') }}</td>
                                 </tr>
                             </tbody>
                             {% endif %}
