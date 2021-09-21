@@ -72,7 +72,11 @@ class DeliveryReportController extends Controller
 
         $formSearch->submit($data);
         $date = $data['start_date'] ? date('Y-m-d', strtotime($data['start_date'])) : date('Y-m-d', strtotime('now'));
-
+        $depotId= $data['depo']?$data['depo']:'';
+        $depot=null;
+        if($depotId){
+            $depot = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->find($depotId);
+        }
         $deliveries = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getChickDeliveredItemsByDepo($data);
         $dailyDepotStock = $this->getDoctrine()->getRepository('RbsSalesBundle:DailyDepotStock')->getDailyStockByDateDepot($date, $data['depo']);
         $chickItems = $this->getDoctrine()->getRepository('RbsCoreBundle:Item')->getChickItems();
@@ -85,6 +89,7 @@ class DeliveryReportController extends Controller
                 'deliveries' => $deliveries,
                 'dailyDepotStock' => $dailyDepotStock,
                 'chickItems' => $chickItems,
+                'depot' => $depot,
             ));
 
         }else{
@@ -94,6 +99,7 @@ class DeliveryReportController extends Controller
                     'deliveries' => $deliveries,
                     'dailyDepotStock' => $dailyDepotStock,
                     'chickItems' => $chickItems,
+                    'depot' => $depot,
                 )
             );
             $this->downloadPdf($html,'dailyDeliveryReportPdf_'.time().'.pdf');
