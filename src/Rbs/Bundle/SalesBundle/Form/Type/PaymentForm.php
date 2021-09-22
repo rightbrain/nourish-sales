@@ -3,6 +3,8 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Doctrine\ORM\EntityManager;
+use Rbs\Bundle\CoreBundle\Repository\BankBranchRepository;
+use Rbs\Bundle\CoreBundle\Repository\BankRepository;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\AgentBank;
 use Rbs\Bundle\SalesBundle\Entity\Order;
@@ -101,7 +103,7 @@ class PaymentForm extends AbstractType
             ->add('agentBankBranch', 'entity', array(
                 'class' => 'RbsSalesBundle:AgentBank',
                 'attr' => array(
-                    'class' => 'select2me'
+                    'class' => ''
                 ),
                 'property' => 'getBankBranchName',
                 'empty_value' => 'Select Agent Bank',
@@ -110,6 +112,44 @@ class PaymentForm extends AbstractType
                 {
                     return $repository->createQueryBuilder('ab')
                         ->where('ab.deletedAt IS NULL');
+                }
+            ))
+            ->add('bank', 'entity', array(
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\Bank',
+                'constraints' => array(
+                    new NotBlank(array('message' => 'Bank should not be blank')),
+                ),
+                'attr' => array(
+                    'class' => ''
+                ),
+                'property' => 'name',
+                'empty_value' => 'Select Bank',
+                'empty_data' => null,
+                'query_builder' => function (BankRepository $repository)
+                {
+                    $qb = $repository->createQueryBuilder('bank')
+                        ->where('bank.name IS NOT NULL');
+                    return $qb;
+                }
+            ))
+
+            ->add('branch', 'entity', array(
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\BankBranch',
+                'required' => true,
+                'constraints' => array(
+                    new NotBlank(array('message' => 'Branch should not be blank')),
+                ),
+                'attr' => array(
+                    'class' => ''
+                ),
+                'property' => 'name',
+                'empty_value' => 'Select Branch',
+                'empty_data' => null,
+                'query_builder' => function (BankBranchRepository $repository)
+                {
+                    $qb = $repository->createQueryBuilder('branch')
+                        ->where('branch.name IS NOT NULL');
+                    return $qb;
                 }
             ))
             ->add('remark', 'textarea', array(

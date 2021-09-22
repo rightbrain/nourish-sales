@@ -37,6 +37,16 @@ class BankBranch
     private $bank;
 
     /**
+     * @ORM\Column(name="mobile", type="string", nullable=true)
+     */
+    private $mobile;
+
+    /**
+     * @ORM\Column(name="branch_code", type="string", nullable=true)
+     */
+    private $branchCode;
+
+    /**
      * Get id
      *
      * @return integer 

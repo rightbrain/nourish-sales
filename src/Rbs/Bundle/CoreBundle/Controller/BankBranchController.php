@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -180,6 +181,31 @@ class BankBranchController extends Controller
         }
 
         return $this->redirect($this->generateUrl('settings_bankbranch'));
+    }
+
+    /**
+     * Deletes a BankBranch entity.
+     *
+     * @Route("/find/branch/by/bank/{id}", name="branch_by_bank", options={"expose"=true})
+     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @param $id
+     * @Method("GET")
+     * @return JsonResponse
+     */
+    public function getBranchByBankAction($id)
+    {
+        $returnArray = array();
+        if($id){
+            $branches = $this->getDoctrine()->getRepository('RbsCoreBundle:BankBranch')->findBranchByBank($id);
+
+            if($branches){
+                foreach ($branches as $key=>$branch){
+                    $returnArray[]= array('id'=>$key, 'name'=>$branch);
+                }
+            }
+        }
+
+        return new JsonResponse($returnArray);
     }
 
     /**

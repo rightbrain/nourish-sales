@@ -29,7 +29,40 @@ var Order = function()
                     deleteOrderPaymentHandler(collectionHolderPayment, index);
                 });
 
-                $("#order_payments_"+index+"_depositDate").datepicker( {
+            $("#order_payments_" + index + "_bank").on('change',function () {
+                var bankId = $(this).val();
+                var branchId= jQuery("#order_payments_" + index + "_branch").val();
+
+                if(bankId==''){
+                    return false;
+                }
+
+                $.ajax({
+                    type: "get",
+                    url: Routing.generate('branch_by_bank', {
+                        id: bankId,
+                    }),
+                    dataType: 'json',
+                    success: function (response) {
+                        var dataOption='<option value="">Select Branch</option>';
+                        jQuery.each(response, function(i, item) {
+                            if(branchId==item.id){
+                                var selected= 'selected="selected"'
+                            }else{
+                                var selected='';
+                            }
+                            dataOption += '<option value="'+item.id+'" '+selected+'>'+item.name+'</option>';
+                        });
+                        jQuery("#order_payments_" + index + "_branch").html(dataOption);
+                    },
+                    error: function(){
+                        Metronic.unblockUI(collectionHolder);
+                    }
+                });
+            }).change();
+
+
+            $("#order_payments_"+index+"_depositDate").datepicker( {
                     format: "yyyy-mm-dd",
                     viewMode: "default",
                     minViewMode: "default",
@@ -114,6 +147,32 @@ var Order = function()
 
         $("#order_payments_"+index+"_remove").click(function () {
             deleteOrderPaymentHandler($collectionHolderPayment, index);
+        });
+
+        $("#order_payments_" + index + "_bank").on('change',function () {
+            var bankId = $(this).val();
+            console.log(bankId)
+            if(bankId==''){
+                return false;
+            }
+
+            $.ajax({
+                type: "get",
+                url: Routing.generate('branch_by_bank', {
+                    id: bankId,
+                }),
+                dataType: 'json',
+                success: function (response) {
+                    var dataOption='<option value="">Select Branch</option>';
+                    jQuery.each(response, function(i, item) {
+                        dataOption += '<option value="'+item.id+'">'+item.name+'</option>';
+                    });
+                    jQuery("#order_payments_" + index + "_branch").html(dataOption);
+                },
+                error: function(){
+                    Metronic.unblockUI(collectionHolder);
+                }
+            });
         });
 
         $("#order_payments_"+index+"_depositDate").datepicker( {

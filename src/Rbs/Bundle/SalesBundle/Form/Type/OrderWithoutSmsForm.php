@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\SalesBundle\Form\Type;
 
 use Doctrine\ORM\EntityManager;
+use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Repository\AgentRepository;
@@ -87,6 +88,8 @@ class OrderWithoutSmsForm extends AbstractType
                     {
                         return $repository->createQueryBuilder('p')
                             ->andWhere('p.deletedAt IS NULL')
+                            ->andWhere('p.depotType != :type or p.depotType IS NULL')
+                            ->setParameter('type', Depo::DEPOT_TYPE_CHICK)
                             ;
                     }
                 ))

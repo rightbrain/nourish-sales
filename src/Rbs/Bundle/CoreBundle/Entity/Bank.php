@@ -30,6 +30,12 @@ class Bank
     private $name;
 
     /**
+     * @var string
+     * @ORM\Column(name="slug", type="string", length=255, nullable=true)
+     */
+    private $slug;
+
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\BankBranch", mappedBy="bank")
@@ -58,6 +64,22 @@ class Bank
         $this->name = $name;
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string $slug
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
     }
 
     /**

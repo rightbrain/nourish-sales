@@ -101,17 +101,16 @@
         <thead>
         <tr>
             <th colspan="5"><h3 class="table pull-left">Payment Information:</h3></th>
-            <th colspan="4"><div class="pull-left"><a href="#" class="add_payment_tag_link blue btn" id="add_payment_item">Add Payment Info</a></div></th>
+            <th colspan="4"><div class="pull-right"><a href="#" class="add_payment_tag_link blue btn" id="add_payment_item">Add Payment Info</a></div></th>
         </tr>
         <tr>
-            <th>Agent Bank Brnch</th>
-            <th width="200px" style="width: 200px;">Deposit Amount</th>
-            <th style="width: 150px;" class="text-center">Date</th>
-            <th style="width: 100px" class="text-center">Fx cx</th>
-            <th style="width: 100px">Payment Method</th>
-            <th>Bank Account</th>
-            <th>Remarks</th>
-            <th></th>
+            <th style="width: 22%" width="300px">Agent Bank Brnch</th>
+            <th style="width: 8%;">Deposit Amount</th>
+            <th style="width: 10%;">Date</th>
+            <th style="width: 8%">Fx cx</th>
+            <th style="width: 8%">Payment Method</th>
+            <th style="width: 15%">Bank Account</th>
+            <th class="text-center" colspan="2" style="width: 15%">Remarks</th>
         </tr>
         </thead>
         <tbody id="payments" class="payments" data-prototype="
@@ -120,14 +119,36 @@
         {% endfilter %}">
         {% for j,payment in form.payments %}
             <tr id="payment-{{ j }}">
-                <td>{{ form_widget(payment.agentBankBranch, { 'attr': {}}) }}</td>
-                <td>{{ form_widget(payment.depositedAmount, { 'attr': {'class': 'amount width_100'}}) }}</td>
-                <td>{{ form_widget(payment.depositDate, { 'attr': {'class': 'width_100'}}) }}</td>
-                <td>{{ form_widget(payment.fxCx, { 'attr': {'class': 'width_80'}}) }}</td>
-                <td>{{ form_widget(payment.paymentMethod,{ 'attr': {'class': 'width_85'}}) }}</td>
-                <td>{{ form_widget(payment.bankAccount) }}</td>
-                <td>{{ form_widget(payment.remark) }}</td>
-                <td>{{ form_widget(payment.remove) }}</td>
+                <td colspan="9">
+                    <table class="table">
+                        <tr>
+                            <td style="width: 20%;">{{ form_widget(payment.agentBankBranch, { 'attr': {'class': 'width_250'}}) }}</td>
+                            <td style="width: 8%;">{{ form_widget(payment.depositedAmount, { 'attr': {'class': 'width_100 amount'}}) }}</td>
+                            <td style="width: 15%;">{{ form_widget(payment.depositDate) }}</td>
+                            <td style="width: 8%;">{{ form_widget(payment.fxCx, { 'attr': {'class': 'width_100'}}) }}</td>
+                            <td style="width: 8%;">{{ form_widget(payment.paymentMethod, { 'attr': {'class': 'width_100'}}) }}</td>
+                            <td style="width: 15%;">{{ form_widget(payment.bankAccount, { 'attr': {'class': 'width_250'}}) }}</td>
+                            <td colspan="2" style="width: 15%;">{{ form_widget(payment.remark) }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="border: none">
+                                <table width="100%">
+                                    <tr>
+                                        <td width="80px">Bank Name </td>
+                                        <td>
+                                            {{ form_widget(payment.bank, { 'attr': {}}) }}
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td style="border: none">Branch Name</td>
+                            <td style="border: none" colspan="3">
+                                {{ form_widget(payment.branch, { 'attr': {}}) }}
+                            </td>
+                            <td style="border: none; text-align: center">{{ form_widget(payment.remove) }}</td>
+                        </tr>
+                    </table>
+                </td>
             </tr>
         {% endfor %}
         </tbody>

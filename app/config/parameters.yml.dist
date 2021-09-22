@@ -30,4 +30,5 @@ parameters:
     #sms_username: username
     sms_password: password
     #sms_password: password
-    sms_api_key: '123456789adfadfdfff'
+    sms_api_key: 79b8428a0dea686430a7f20ccbe857bd
+    payment_api_key: 79b8428a0dea686430a7f20ccbe857bd

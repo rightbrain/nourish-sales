@@ -557,4 +557,46 @@ class PaymentRepository extends EntityRepository
         }
         return ['data' => $qb->getQuery()->getResult(), 'start' => $start, 'end' => $end];
     }
+
+    public function getPaymentsByDate($requestDate)
+    {
+        $date = $requestDate?date('Y-m-d', strtotime($requestDate)): date('Y-m-d', strtotime('now'));
+        $start= $date.' 00:00:00';
+        $end = $date.' 23:59:59';
+
+        $qb = $this->createQueryBuilder('p');
+        $qb->join('p.agent', 'agent');
+        $qb->join('agent.user', 'user');
+        $qb->join('user.profile', 'profile');
+        $qb->join('p.bank', 'b');
+        $qb->join('p.branch', 'br');
+
+        $qb->select('p.createdAt, p.depositDate, profile.fullName as agentName, agent.agentCodeForDatatable as agentId, p.amount, b.name as bankName, br.name as branchName, br.branchCode as branchCode');
+
+        $qb->where('p.verified = :verified')->setParameter('verified', true);
+        $qb->andWhere('p.transactionType = :transactionType')->setParameter('transactionType', Payment::CR);
+
+        $qb->andWhere('p.createdAt BETWEEN :start AND :end');
+        $qb->setParameter('start', $start);
+        $qb->setParameter('end', $end);
+
+        $results = $qb->getQuery()->getResult();
+        $returnArray=array();
+        if($results){
+            foreach ($results as $result){
+                $returnArray[]= array(
+                    'agentId'=> $result['agentId'],
+                    'agentName'=> $result['agentName'],
+                    'createdAt'=> $result['createdAt']?$result['createdAt']->format('d-m-Y'):'',
+                    'depositDate'=> $result['depositDate']?$result['depositDate']->format('d-m-Y'):'',
+                    'amount'=> $result['amount'],
+                    'bankName'=> $result['bankName'],
+                    'branchName'=> $result['branchName'],
+                );
+            }
+        }
+
+        return $returnArray;
+
+    }
 }

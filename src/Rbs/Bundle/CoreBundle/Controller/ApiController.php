@@ -336,4 +336,32 @@ class ApiController extends BaseController
 
         return $response;
     }
+
+    /**
+     * @Route("/api/payments", name="api_payments_by_date")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getPaymentsByDateAction(Request $request)
+    {
+        $paymentApiKey = $this->getParameter('payment_api_key');
+
+        $date = $request->query->get('request_date');
+
+        if ('GET' === $request->getMethod()) {
+            if ($paymentApiKey == $request->headers->get('X-API-KEY')) {
+                $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getPaymentsByDate($date);
+                $response= new JsonResponse($payments, 200);
+
+            } else {
+                $response = new JsonResponse(array("message" => 'Authentication Fail'), 401);
+            }
+        } else {
+            $response = new JsonResponse(array("message" => 'Invalid Request'), 404);
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
 }

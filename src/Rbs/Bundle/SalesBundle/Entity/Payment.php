@@ -3,7 +3,9 @@ namespace Rbs\Bundle\SalesBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Rbs\Bundle\CoreBundle\Entity\Bank;
 use Rbs\Bundle\CoreBundle\Entity\BankAccount;
+use Rbs\Bundle\CoreBundle\Entity\BankBranch;
 use Symfony\Component\Validator\Constraints as Assert;
 use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
@@ -80,6 +82,24 @@ class Payment
      *
      */
     private $bankAccount;
+
+    /**
+     * @var Bank
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\Bank", inversedBy="payments", cascade={"persist"})
+     * @ORM\JoinColumn(name="bank_id", nullable=true)
+     *
+     */
+    private $bank;
+
+    /**
+     * @var BankBranch
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\CoreBundle\Entity\BankBranch", inversedBy="payments", cascade={"persist"})
+     * @ORM\JoinColumn(name="branch_id", nullable=true)
+     *
+     */
+    private $branch;
 
     /**
      * @var float
@@ -527,6 +547,42 @@ class Payment
     public function setRefDeliveryId($refDeliveryId)
     {
         $this->refDeliveryId = $refDeliveryId;
+    }
+
+    /**
+     * @return Bank
+     */
+    public function getBank()
+    {
+        return $this->bank;
+    }
+
+    /**
+     * @param Bank $bank
+     */
+    public function setBank($bank)
+    {
+        $this->bank = $bank;
+    }
+
+    /**
+     * @return BankBranch
+     */
+    public function getBranch()
+    {
+        return $this->branch;
+    }
+
+    /**
+     * @param $branch
+     *
+     * @return Payment
+     */
+    public function setBranch($branch)
+    {
+        $this->branch = $branch;
+
+        return $this;
     }
 
 }

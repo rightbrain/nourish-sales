@@ -117,8 +117,8 @@ var Payment = function()
             var payment_nourishBankAccount = $('#payment_bankAccount');
             var agent = $(this).val();
             if (agent=='') {
-                ordersElm.find('option').remove();
-                return fales;
+                // ordersElm.find('option').remove();
+                return false;
             }
             $.ajax({
                 type: "post",
@@ -165,6 +165,37 @@ var Payment = function()
                 },
                 error: function(){
                     toastr.error('Server Error');
+                }
+            });
+        }).change();
+
+        $("#payment_bank").change(function () {
+            var bankId = $(this).val();
+            var branchId= jQuery("#payment_branch").val();
+            if(bankId==''){
+                var dataOption='<option value="">Select Branch</option>';
+                jQuery("#payment_branch").html(dataOption);
+                return false;
+            }
+            console.log(bankId);
+            $.ajax({
+                type: "get",
+                url: Routing.generate('branch_by_bank', {
+                    id: bankId,
+                }),
+                dataType: 'json',
+                success: function (response) {
+                    var dataOption='<option value="">Select Branch</option>';
+                    jQuery.each(response, function(i, item) {
+                        if(branchId==item.id){
+                            var selected= 'selected="selected"'
+                        }else{
+                            var selected='';
+                        }
+                        dataOption += '<option value="'+item.id+'" '+selected+'>'+item.name+'</option>';
+                    });
+
+                    jQuery("#payment_branch").html(dataOption);
                 }
             });
         }).change();

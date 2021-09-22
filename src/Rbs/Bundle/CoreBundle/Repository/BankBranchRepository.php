@@ -28,4 +28,29 @@ class BankBranchRepository extends EntityRepository
 
         return $data;
     }
+
+
+    public function findBranchByBank($bankId)
+    {
+        $data = array();
+        if($bankId){
+            $qb = $this->createQueryBuilder('branch');
+            $qb->select("bank.name AS bankName, branch.name as branchName, branch.id");
+            $qb->join('branch.bank', 'bank');
+            if($bankId) {
+                $qb->andWhere('bank.id = :bank');
+                $qb->setParameter('bank', $bankId);
+            }
+            $qb->orderBy('branch.name', 'asc');
+            $results = $qb->getQuery()->getResult();
+
+            if($results){
+                foreach ($results as $row) {
+                    $data[$row['id']] = $row['branchName'];
+                }
+            }
+
+        }
+        return $data;
+    }
 }
