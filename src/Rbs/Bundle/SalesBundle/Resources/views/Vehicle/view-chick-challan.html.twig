@@ -48,7 +48,7 @@
                         <table cellpadding="5px" border="1" collapse="0" cellspacing="0" width="100%" class="table table-bordered">
                             <thead>
                             <tr>
-                                <td style="border-top: .2ex solid #000; vertical-align: middle" colspan="10"><strong>Name & Address: {{ order.agent.user.profile.fullName }}, {{ order.agent.user.zilla.name }}; Mobile No: {{ order.agent.user.profile.cellphoneForMapping }}</strong></td>
+                                <td style="border-top: .2ex solid #000; vertical-align: middle" colspan="10"><strong>Name & Address: {{ order.agent.user.profile.fullName }}, {{ order.agent.user.profile.address|default('') }}, {{ order.agent.user.upozilla.name|default('') }}, {{ order.agent.user.zilla.name|default('') }}; Mobile No: {{ order.agent.user.profile.cellphoneForMapping }}</strong></td>
                             </tr>
                             <tr>
                                 <th>SL. No.</th>
