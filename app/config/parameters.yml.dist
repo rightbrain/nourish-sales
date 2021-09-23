@@ -32,3 +32,5 @@ parameters:
     #sms_password: password
     sms_api_key: 79b8428a0dea686430a7f20ccbe857bd
     payment_api_key: 79b8428a0dea686430a7f20ccbe857bd
+    order_api_key: 79b8428a0dea686430a7f20ccbe857bd
+
