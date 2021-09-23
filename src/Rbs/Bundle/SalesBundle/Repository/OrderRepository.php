@@ -795,4 +795,59 @@ class OrderRepository extends EntityRepository
             $query->setParameter('endDate', $endDate.' 23:59:59');
         }
     }
+
+
+
+    public function getOrderByZoneWiseForApi($date){
+
+        $qp = $this->createQueryBuilder('o');
+        $qp->join('o.depo', 'd');
+        $qp->join('o.agent', 'a');
+        $qp->join('a.user', 'u');
+        $qp->join('u.profile', 'p');
+        $qp->join('u.zilla', 'z');
+        $qp->join('o.orderItems', 'oi');
+        $qp->join('oi.item', 'i');
+        $qp->select('o.id');
+        $qp->addSelect('i.id AS iId');
+        $qp->addSelect('i.name AS iName');
+        $qp->addSelect('z.id AS districtId');
+        $qp->addSelect('z.name AS districtName');
+        $qp->addSelect('z.parentId AS regionId');
+        $qp->addSelect('SUM(oi.quantity) AS totalQuantity');
+        $qp->addSelect('SUM(oi.totalAmount) AS totalAmount');
+//        $qp->where('o.orderType = :orderType');
+        $qp->where('o.orderState != :orderState');
+//        $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+        $qp->setParameter('orderState', Order::ORDER_STATE_CANCEL);
+
+        $startDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
+        $endDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
+        $qp->andWhere('o.createdAt >= :startDate');
+        $qp->andWhere('o.createdAt <= :endDate');
+        $qp->setParameter('startDate', $startDate.' 00:00:00');
+        $qp->setParameter('endDate', $endDate.' 23:59:59');
+
+        $qp->groupBy('z.id');
+        $qp->addGroupBy('i.id');
+        $qp->orderBy('z.name', 'ASC');
+        $results=$qp->getQuery()->getResult();
+        $returnArray= array();
+        if($results){
+            foreach ($results as $result) {
+                $returnArray[] = array(
+                    'itemId'=>$result['iId'],
+                    'itemName'=>$result['iName'],
+                    'districtId'=>$result['districtId'],
+                    'districtName'=>$result['districtName'],
+                    'regionId'=>$result['regionId'],
+                    'totalQuantity'=>$result['totalQuantity'],
+                    'totalAmount'=>$result['totalAmount'],
+                );
+            }
+        }
+
+        return $returnArray;
+
+    }
 }
