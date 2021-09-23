@@ -570,8 +570,10 @@ class PaymentRepository extends EntityRepository
         $qb->join('user.profile', 'profile');
         $qb->join('p.bank', 'b');
         $qb->join('p.branch', 'br');
+        $qb->join('user.zilla', 'zilla');
+        $qb->join('user.upozilla', 'upozilla');
 
-        $qb->select('p.createdAt, p.depositDate, profile.fullName as agentName, agent.agentCodeForDatatable as agentId, p.amount, b.name as bankName, br.name as branchName, br.branchCode as branchCode');
+        $qb->select('user.email as email, zilla.id as zId, upozilla.id as upzId, p.createdAt, p.depositDate, profile.fullName as agentName, profile.cellphoneForMapping as phone, agent.agentCodeForDatatable as agentId, agent.agentType as agentType, p.amount, b.name as bankName, b.slug as bankSlag, br.name as branchName, br.branchCode as branchCode');
 
         $qb->where('p.verified = :verified')->setParameter('verified', true);
         $qb->andWhere('p.transactionType = :transactionType')->setParameter('transactionType', Payment::CR);
@@ -586,12 +588,19 @@ class PaymentRepository extends EntityRepository
             foreach ($results as $result){
                 $returnArray[]= array(
                     'agentId'=> $result['agentId'],
+                    'upozillaId'=> $result['upzId'],
+                    'districtId'=> $result['zId'],
                     'agentName'=> $result['agentName'],
+                    'email'=> $result['email'],
+                    'phone'=> $result['phone'],
+                    'agentType'=> $result['agentType'],
                     'createdAt'=> $result['createdAt']?$result['createdAt']->format('d-m-Y'):'',
                     'depositDate'=> $result['depositDate']?$result['depositDate']->format('d-m-Y'):'',
                     'amount'=> $result['amount'],
                     'bankName'=> $result['bankName'],
+                    'bankSlag'=> $result['bankSlag'],
                     'branchName'=> $result['branchName'],
+                    'branchCode'=> $result['branchCode'],
                 );
             }
         }

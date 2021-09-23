@@ -366,7 +366,7 @@ class ApiController extends BaseController
     }
 
     /**
-     * @Route("/api/orders", name="api_payments_by_date")
+     * @Route("/api/orders", name="api_orders_by_date")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      */
