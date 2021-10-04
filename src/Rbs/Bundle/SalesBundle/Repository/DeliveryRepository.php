@@ -259,4 +259,56 @@ class DeliveryRepository extends EntityRepository
 
         return $query->getQuery()->getResult();
     }
+
+
+    public function getDeliveryQuantityByZoneWiseForApi($date){
+
+        $qp = $this->createQueryBuilder('d');
+        $qp->join('d.deliveryItems', 'di');
+        $qp->join('di.order', 'o');
+        $qp->join('di.orderItem', 'oi');
+        $qp->join('o.agent', 'a');
+        $qp->join('a.user', 'u');
+        $qp->join('u.zilla', 'z');
+        $qp->join('oi.item', 'i');
+        $qp->select('d.id');
+        $qp->addSelect('i.id AS iId');
+        $qp->addSelect('i.name AS iName');
+        $qp->addSelect('z.id AS districtId');
+        $qp->addSelect('z.name AS districtName');
+        $qp->addSelect('z.parentId AS regionId');
+        $qp->addSelect('SUM(di.qty) AS totalQuantity');
+//        $qp->where('o.orderType = :orderType');
+        $qp->where('o.deliveryState IN (:deliveryState)');
+//        $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+        $qp->setParameter('deliveryState', ['PARTIALLY_SHIPPED','SHIPPED']);
+
+        $startDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
+        $endDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
+        $qp->andWhere('d.createdAt >= :startDate');
+        $qp->andWhere('d.createdAt <= :endDate');
+        $qp->setParameter('startDate', $startDate.' 00:00:00');
+        $qp->setParameter('endDate', $endDate.' 23:59:59');
+
+        $qp->groupBy('z.id');
+        $qp->addGroupBy('i.id');
+        $qp->orderBy('z.name', 'ASC');
+        $results=$qp->getQuery()->getResult();
+        $returnArray= array();
+        if($results){
+            foreach ($results as $result) {
+                $returnArray[] = array(
+                    'itemId'=>$result['iId'],
+                    'itemName'=>$result['iName'],
+                    'districtId'=>$result['districtId'],
+                    'districtName'=>$result['districtName'],
+                    'regionId'=>$result['regionId'],
+                    'totalQuantity'=>$result['totalQuantity'],
+                );
+            }
+        }
+
+        return $returnArray;
+
+    }
 }

@@ -378,7 +378,7 @@ class ApiController extends BaseController
 
         if ('GET' === $request->getMethod()) {
             if ($orderApiKey == $request->headers->get('X-API-KEY')) {
-                $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getOrderByZoneWiseForApi($date);
+                $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->getDeliveryQuantityByZoneWiseForApi($date);
                 $response= new JsonResponse($payments, 200);
 
             } else {
