@@ -176,3 +176,6 @@ input.total_price{
     text-align: center;
     font-weight: bold;
 }
+.has-error .form-control {
+    border: 1px solid #ff0000 !important;
+}

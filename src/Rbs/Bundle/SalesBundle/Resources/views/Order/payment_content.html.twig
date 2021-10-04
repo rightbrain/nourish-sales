@@ -1,7 +1,7 @@
-    <tr id="payment-__name__">
+    <tr class="payment_info" id="payment-__name__">
        <td colspan="9">
            <table class="table">
-               <tr>
+               <tr class="payment_section">
                    <td>{{ form_widget(form.agentBankBranch, { 'attr': {'class': 'width_250'}}) }}</td>
                    <td>{{ form_widget(form.depositedAmount, { 'attr': {'class': 'amount'}}) }}</td>
                    <td>{{ form_widget(form.depositDate, { 'attr': {'class': 'width_100'}}) }}</td>
@@ -10,10 +10,10 @@
                    <td>{{ form_widget(form.bankAccount) }}</td>
                    <td colspan="2">{{ form_widget(form.remark) }}</td>
                </tr>
-               <tr>
+               <tr class="bank_branch_section">
                    <td colspan="3" style="border: none">
                        <table width="100%">
-                           <tr>
+                           <tr class="bank_section">
                                <td width="80px">Bank Name </td>
                                <td>
                                    {{ form_widget(form.bank, { 'attr': {}}) }}
@@ -22,7 +22,7 @@
                        </table>
                    </td>
                    <td style="border: none">Branch Name</td>
-                   <td style="border: none" colspan="3">
+                   <td class="branch_section" style="border: none" colspan="3">
                        {{ form_widget(form.branch, { 'attr': {}}) }}
                    </td>
                    <td style="border: none; text-align: center">{{ form_widget(form.remove) }}</td>

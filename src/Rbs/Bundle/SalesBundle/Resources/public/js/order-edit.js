@@ -505,7 +505,9 @@ var Order = function()
                 amountError = false,
                 paymentForError = false,
                 paymentMethodError = false,
+                nourishBankError = false;
                 bankError = false;
+                branchError = false;
 
 
             if ($('#order_agent').val() == '') {
@@ -574,29 +576,39 @@ var Order = function()
                 toastr.error("Invalid Price");
             }
 
-            payments.find('tr').each(function(index, e){
+            payments.find('tr.payment_info').each(function(index, e){
                 var elm = $(e);
-                var agentBank = elm.find('td:eq(0)');
-                var amount = elm.find('td:eq(1)');
-                var depositDate = elm.find('td:eq(2)');
-                var paymentFor = elm.find('td:eq(3)');
-                var paymentMethod = elm.find('td:eq(4)');
-                var bank = elm.find('td:eq(5)');
-                var remarks = elm.find('td:eq(6)');
+                var agentBank = elm.find('.payment_section').find('td:eq(0)');
+                var amount = elm.find('.payment_section').find('td:eq(1)');
+                var depositDate = elm.find('.payment_section').find('td:eq(2)');
+                var paymentFor = elm.find('.payment_section').find('td:eq(3)');
+                var paymentMethod = elm.find('.payment_section').find('td:eq(4)');
+                var nourishBank = elm.find('.payment_section').find('td:eq(5)');
+                var remarks = elm.find('.payment_section').find('td:eq(6)');
+
+                var bank = elm.find('.bank_branch_section').find('.bank_section').find('td:eq(1)');
+                var branch = elm.find('.bank_branch_section').find('td.branch_section');
+
+                console.log(branch.find('select').val());
+                // return false;
 
                 agentBank.removeClass('has-error');
                 amount.removeClass('has-error');
-                bank.removeClass('has-error');
+                nourishBank.removeClass('has-error');
                 depositDate.removeClass('has-error');
                 paymentFor.removeClass('has-error');
                 paymentMethod.removeClass('has-error');
+                bank.removeClass('has-error');
+                branch.removeClass('has-error');
 
                 if ((amount.find('input').val() == '' && agentBank.find('select').val() != '')||
-                    (amount.find('input').val() == '' && bank.find('select').val() != '')||
+                    (amount.find('input').val() == '' && nourishBank.find('select').val() != '')||
                     (amount.find('input').val() == '' && depositDate.find('input').val() != '')||
                     (amount.find('input').val() == '' && paymentFor.find('select').val() != '')||
                     (amount.find('input').val() == '' && paymentMethod.find('select').val() != '')||
-                    (amount.find('input').val() == '' && remarks.find('textarea').val() != '')) {
+                    (amount.find('input').val() == '' && remarks.find('textarea').val() != '')||
+                    (amount.find('input').val() == '' && bank.find('select').val() != '')||
+                    (amount.find('input').val() == '' && branch.find('select').val() != '')) {
                     amount.addClass('has-error');
                     isFormValid = false;
                     amountError = true;
@@ -611,10 +623,10 @@ var Order = function()
                     isFormValid = false;
                     depositDateError = true;
                 }
-                if (amount.find('input').val() != '' && bank.find('select').val() == '') {
-                    bank.addClass('has-error');
+                if (amount.find('input').val() != '' && nourishBank.find('select').val() == '') {
+                    nourishBank.addClass('has-error');
                     isFormValid = false;
-                    bankError = true;
+                    nourishBankError = true;
                 }
                 if (amount.find('input').val() != '' && paymentFor.find('select').val() == '') {
                     paymentFor.addClass('has-error');
@@ -625,6 +637,18 @@ var Order = function()
                     paymentMethod.addClass('has-error');
                     isFormValid = false;
                     paymentMethodError = true;
+                }
+
+                if (amount.find('input').val() != '' && bank.find('select').val() == '') {
+                    bank.addClass('has-error');
+                    isFormValid = false;
+                    bankError = true;
+                }
+
+                if (amount.find('input').val() != '' && branch.find('select').val() == '') {
+                    branch.addClass('has-error');
+                    isFormValid = false;
+                    branchError = true;
                 }
 
             });
@@ -638,16 +662,21 @@ var Order = function()
             if (depositDateError) {
                 toastr.error("Please enter deposit date.");
             }
-            if (bankError) {
-                toastr.error("Please select bank.");
+            if (nourishBankError) {
+                toastr.error("Please select bank account.");
             }
             if (paymentForError) {
                 toastr.error("Please select payment for.");
             }
             if (paymentMethodError) {
-                toastr.error("Please select payment mode.");
+                toastr.error("Please select payment Method.");
             }
-
+            if (bankError) {
+                toastr.error("Please select bank.");
+            }
+            if (branchError) {
+                toastr.error("Please select branch.");
+            }
             return isFormValid;
         });
     }
