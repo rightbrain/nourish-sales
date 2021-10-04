@@ -106,4 +106,37 @@ class BankBranch
     {
         return $this->bank->getName() . ' - ' . $this->name;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getMobile()
+    {
+        return $this->mobile;
+    }
+
+    /**
+     * @param mixed $mobile
+     */
+    public function setMobile($mobile)
+    {
+        $this->mobile = $mobile;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBranchCode()
+    {
+        return $this->branchCode;
+    }
+
+    /**
+     * @param mixed $branchCode
+     */
+    public function setBranchCode($branchCode)
+    {
+        $this->branchCode = $branchCode;
+    }
+
 }

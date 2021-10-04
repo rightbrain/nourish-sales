@@ -2,6 +2,9 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
+use Rbs\Bundle\CoreBundle\Entity\TransportIncentive;
+use Rbs\Bundle\CoreBundle\Entity\Upload;
+use Rbs\Bundle\CoreBundle\Form\Type\UploadForm;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -17,7 +20,7 @@ use JMS\SecurityExtraBundle\Annotation as JMS;
  *
  * @Route("/settings/bank-branch")
  */
-class BankBranchController extends Controller
+class BankBranchController extends BaseController
 {
 
     /**
@@ -223,5 +226,88 @@ class BankBranchController extends Controller
             ->add('submit', 'submit', array('label' => 'Delete'))
             ->getForm()
         ;
+    }
+
+    /**
+     * @Route("/bank/branch/import", name="bank_branch_import")
+     * @Template("RbsCoreBundle:TransportIncentive:import-form.html.twig")
+     * @param Request $request
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function importCsv(Request $request)
+    {
+        $upload = new Upload();
+        $form = $this->createForm(new UploadForm(), $upload);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            set_time_limit(0);
+            ini_set('memory_limit', '1014M');
+            $file = $upload->getFile();
+            $fileName = md5(uniqid()) . '_trans_commission.csv';
+            $file->move(
+                $this->getParameter('brochures_directory'),
+                $fileName
+            );
+            $upload->setFile($fileName);
+
+            $file = $this->get('request')->getSchemeAndHttpHost() . '/uploads/sales/csv-import/' . $fileName;
+            $data = $this->getCSVFileData($file);
+            $i = 0;
+            $j = 1;
+
+            foreach ($data as $col) {
+                if ($i == 0) {
+                    $i++;
+                    continue;
+                }
+
+                $bankBranchName = $col[0];
+                $mobile = $col[1];
+                $branchCode = $col[2];
+                $bankSlug = $col[3];
+
+                if ($bankBranchName == '' || $bankSlug == '') {
+                    continue;
+                }
+
+                $bank = $this->getDoctrine()->getRepository('RbsCoreBundle:Bank')->findOneBy(array('slug' => $bankSlug));
+
+                $existBranch= $this->getDoctrine()->getRepository('RbsCoreBundle:BankBranch')->findOneBy(array('name'=>strtoupper($bankBranchName),'bank'=>$bank));
+
+                if($existBranch){
+                    $branch=$existBranch;
+                }else{
+                    $branch= new BankBranch();
+                }
+                $branch->setBank($bank?$bank:null);
+                $branch->setBranchCode($branchCode);
+                $branch->setMobile($mobile);
+                $branch->setName($bankBranchName);
+                $em->persist($branch);
+                $em->flush();
+
+                $i++;
+            }
+
+            $this->flashMessage('success', 'Branch imported successfully');
+            return $this->redirect($this->generateUrl('bankbranch'));
+        }
+
+        return array(
+            'form' => $form->createView()
+        );
+    }
+
+
+    public function getCSVFileData($webPath) {
+        $fileData = array();
+        $file = fopen($webPath,"r");
+        while(! feof($file)) {
+            $fileData[] = fgetcsv($file, 1024);
+        }
+        fclose($file);
+        return $fileData;
     }
 }
