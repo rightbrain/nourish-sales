@@ -121,9 +121,9 @@ class PaymentWithoutSmsForm extends AbstractType
             ->add('branch', 'entity', array(
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\BankBranch',
                 'attr' => array(
-                    'class' => ''
+                    'class' => 'select2me'
                 ),
-                'property' => 'name',
+                'property' => 'nameWithCode',
                 'empty_value' => 'Select Branch',
                 'empty_data' => null,
                 'query_builder' => function (BankBranchRepository $repository)

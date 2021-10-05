@@ -35,7 +35,7 @@ class BankBranchRepository extends EntityRepository
         $data = array();
         if($bankId){
             $qb = $this->createQueryBuilder('branch');
-            $qb->select("bank.name AS bankName, branch.name as branchName, branch.id");
+            $qb->select("bank.name AS bankName, branch.name as branchName, branch.branchCode as branchCode, branch.id");
             $qb->join('branch.bank', 'bank');
             if($bankId) {
                 $qb->andWhere('bank.id = :bank');
@@ -46,7 +46,7 @@ class BankBranchRepository extends EntityRepository
 
             if($results){
                 foreach ($results as $row) {
-                    $data[$row['id']] = $row['branchName'];
+                    $data[$row['id']] = $row['branchCode']!=''?'('. $row['branchCode'].') '. $row['branchName']:$row['branchName'];
                 }
             }
 

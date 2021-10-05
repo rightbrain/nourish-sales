@@ -278,9 +278,9 @@ class DeliveryRepository extends EntityRepository
         $qp->addSelect('z.name AS districtName');
         $qp->addSelect('z.parentId AS regionId');
         $qp->addSelect('SUM(di.qty) AS totalQuantity');
-//        $qp->where('o.orderType = :orderType');
-        $qp->where('o.deliveryState IN (:deliveryState)');
-//        $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+        $qp->where('o.orderType = :orderType');
+        $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+        $qp->andWhere('o.deliveryState IN (:deliveryState)');
         $qp->setParameter('deliveryState', ['PARTIALLY_SHIPPED','SHIPPED']);
 
         $startDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
