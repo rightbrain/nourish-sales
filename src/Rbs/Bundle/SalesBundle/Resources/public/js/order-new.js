@@ -74,6 +74,7 @@ var Order = function()
 
         $collectionHolder.data('index', index + 1);
         //var $newFormLi = $('<div></div>').append(newForm);
+
         $collectionHolder.append($newForm);
 
         $("#order_orderItems_" + index + "_item").change(function () {
@@ -86,6 +87,9 @@ var Order = function()
         });
 
         App.integerMask($collectionHolder.find('tr:eq('+index+')').find('.quantity'));
+        $("#order_orderItems_" + index + "_item").select2({
+            'allowClear': true
+        });
     }
 
     function addPaymentForm($collectionHolder) {
@@ -178,6 +182,9 @@ var Order = function()
             var selectedItem = $('#order-item-'+index).find('select');
             toastr.error(selectedItem.find(":selected").text() + " Item Already Selected.");
             selectedItem.val("").trigger('change');
+            var option = new Option('Select Item', '', true, true);
+            selectedItem.append(option).trigger('change');
+            selectedItem.select2();
             return false;
         }
 
