@@ -696,6 +696,9 @@ class OrderRepository extends EntityRepository
             $qp->addSelect('SUM(oi.totalAmount) AS totalAmount');
             $qp->where('o.orderType = :orderType');
             $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+            $qp->andWhere('o.orderState != :orderState');
+            $qp->setParameter('orderState', Order::ORDER_STATE_CANCEL);
+
             if (!empty($data['depo'])) {
                 $this->handleSearchByDepot($data['depo'], $qp);
             }
