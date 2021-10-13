@@ -164,12 +164,12 @@ class SmsController extends Controller
 
                 }
             }
-            $part1s = str_split($msg, $split_length = 160);
+            /*$part1s = str_split($msg, $split_length = 160);
             $smsMessage = array_merge($parts, $part1s);
             foreach($smsMessage as $part){
                 $smsSender = $this->get('rbs_erp.sales.service.smssender');
                 $smsSender->agentBankInfoSmsAction($part, $agent->getUser()->getProfile()->getCellphone());
-            }
+            }*/
 
 //            return $this->redirect($this->generateUrl('agent_bank_info_sms'));
             return $this->redirect($this->generateUrl('agent_bank_list_sms', array('id' => $agent)));
