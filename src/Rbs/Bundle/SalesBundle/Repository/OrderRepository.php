@@ -143,6 +143,7 @@ class OrderRepository extends EntityRepository
                         $payment->setAmount(0);
                     }
                     $payment->setTransactionType(Payment::CR);
+                    $payment->setFxCx('FD');
 //                    $this->_em->getRepository('RbsSalesBundle:Order')->orderAmountAdjust($payment);
                     $payment->addOrder($order);
                 }

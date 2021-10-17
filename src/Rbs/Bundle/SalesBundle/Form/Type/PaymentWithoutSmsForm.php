@@ -48,15 +48,15 @@ class PaymentWithoutSmsForm extends AbstractType
         $builder
             ->add('depositedAmount', null, array(
                 'attr' => array(
-                    'class' => 'input-small input-mask-amount'
+                    'class' => 'amount'
                 )
             ))
-            ->add('bankAccount', 'choice', array(
+            /*->add('bankAccount', 'choice', array(
                 'required' => false,
                 'empty_value' => 'Select Bank',
                 'choices' => $this->getAccountList(),
                 'attr' => array('class' => 'select2me')
-            ))
+            ))*/
             ->add('depositDate', 'datetime', array(
                 'widget'=>'single_text',
                 'format' => 'yyyy-MM-dd',
@@ -75,14 +75,14 @@ class PaymentWithoutSmsForm extends AbstractType
                 ),
                 'required' => false,
             ))
-            ->add('fxCx', 'choice', array(
+            /*->add('fxCx', 'choice', array(
                 'empty_value' => 'Select Payment For',
                 'choices'  => array(
                     'FD' => 'FEED',
                 ),
                 'required' => false,
-            ))
-            ->add('agentBankBranch', 'entity', array(
+            ))*/
+            /*->add('agentBankBranch', 'entity', array(
                 'class' => 'RbsSalesBundle:AgentBank',
                 'attr' => array(
                     'class' => 'select2me'
@@ -101,7 +101,7 @@ class PaymentWithoutSmsForm extends AbstractType
                         }
                         return $qb;
                 }
-            ))
+            ))*/
             ->add('bank', 'entity', array(
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\Bank',
                 'attr' => array(
@@ -133,6 +133,15 @@ class PaymentWithoutSmsForm extends AbstractType
                         return $qb;
                 }
             ))
+            ->add('receiveAccount', 'choice', array(
+                'empty_value' => 'Select Receive Account',
+                'choices'  => array(
+                    'POULTRY' => 'Poultry',
+                    'FEED' => 'Feed',
+                    'AGRO' => 'Agro',
+                ),
+                'required' => false,
+            ))
             ->add('remark', 'textarea', array(
                 'required' => false,
             ))
@@ -163,8 +172,8 @@ class PaymentWithoutSmsForm extends AbstractType
             ))
         ;
 
-        $builder->get('bankAccount')
-            ->addModelTransformer(new BankAccountTransformer($this->em));
+       /* $builder->get('bankAccount')
+            ->addModelTransformer(new BankAccountTransformer($this->em));*/
     }
 
     /**
@@ -184,7 +193,7 @@ class PaymentWithoutSmsForm extends AbstractType
 
     private function getAccountList()
     {
-        return $this->em->getRepository('RbsCoreBundle:BankAccount')->getAccountListWithBankBranchByAgent($this->agent);
+//        return $this->em->getRepository('RbsCoreBundle:BankAccount')->getAccountListWithBankBranchByAgent($this->agent);
     }
 
     private function getBranchList()

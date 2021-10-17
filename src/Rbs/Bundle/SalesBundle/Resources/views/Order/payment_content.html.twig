@@ -2,16 +2,15 @@
        <td colspan="9">
            <table class="table">
                <tr class="payment_section">
-                   <td>{{ form_widget(form.agentBankBranch, { 'attr': {'class': 'width_250'}}) }}</td>
-                   <td>{{ form_widget(form.depositedAmount, { 'attr': {'class': 'amount'}}) }}</td>
-                   <td>{{ form_widget(form.depositDate, { 'attr': {'class': 'width_100'}}) }}</td>
-                   <td>{{ form_widget(form.fxCx) }}</td>
-                   <td>{{ form_widget(form.paymentMethod) }}</td>
-                   <td>{{ form_widget(form.bankAccount) }}</td>
-                   <td colspan="2">{{ form_widget(form.remark) }}</td>
+{#                   <td>{{ form_widget(form.agentBankBranch, { 'attr': {'class': 'width_250'}}) }}</td>#}
+                   <td style="width: 17%">{{ form_widget(form.depositedAmount, { 'attr': {'class': 'amount'}}) }}</td>
+                   <td style="width: 18%">{{ form_widget(form.depositDate, { 'attr': {'class': ''}}) }}</td>
+                   <td style="width: 18%">{{ form_widget(form.receiveAccount) }}</td>
+                   <td style="width: 15%">{{ form_widget(form.paymentMethod) }}</td>
+                   <td style="width: 30%" colspan="2">{{ form_widget(form.remark) }}</td>
                </tr>
                <tr class="bank_branch_section">
-                   <td colspan="3" style="border: none">
+                   <td colspan="2" style="border: none">
                        <table width="100%">
                            <tr class="bank_section">
                                <td width="80px">Bank Name </td>
@@ -21,7 +20,7 @@
                            </tr>
                        </table>
                    </td>
-                   <td style="border: none">Branch Name</td>
+                   <td style="border: none; text-align: right">Branch Name</td>
                    <td class="branch_section" style="border: none" colspan="3">
                        {{ form_widget(form.branch, { 'attr': {}}) }}
                    </td>

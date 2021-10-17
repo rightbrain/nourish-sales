@@ -53,7 +53,7 @@ var Order = function()
                             }
                             dataOption += '<option value="'+item.id+'" '+selected+'>'+item.name+'</option>';
                         });
-                        jQuery("#order_payments_" + index + "_branch").html(dataOption);
+                        jQuery("#order_payments_" + index + "_branch").html(dataOption).select2();
                     },
                     error: function(){
                         Metronic.unblockUI(collectionHolder);
@@ -61,6 +61,9 @@ var Order = function()
                 });
             }).change();
 
+            $("#order_payments_" + index + "_bank").select2({
+                'allowClear': true
+            });
 
             $("#order_payments_"+index+"_depositDate").datepicker( {
                     format: "yyyy-mm-dd",
@@ -167,12 +170,19 @@ var Order = function()
                     jQuery.each(response, function(i, item) {
                         dataOption += '<option value="'+item.id+'">'+item.name+'</option>';
                     });
-                    jQuery("#order_payments_" + index + "_branch").html(dataOption);
+                    jQuery("#order_payments_" + index + "_branch").html(dataOption).select2();
                 },
                 error: function(){
                     Metronic.unblockUI(collectionHolder);
                 }
             });
+        });
+
+        $("#order_payments_" + index + "_bank").select2({
+            'allowClear': true
+        });
+        $("#order_payments_" + index + "_branch").select2({
+            'allowClear': true
         });
 
         $("#order_payments_"+index+"_depositDate").datepicker( {
@@ -500,12 +510,13 @@ var Order = function()
                 payments = $('#payments'),
                 qtyError = false,
                 priceError = false,
-                agentBankError = false,
+                // agentBankError = false,
                 depositDateError = false,
                 amountError = false,
                 paymentForError = false,
+                receiveAccountError = false,
                 paymentMethodError = false,
-                nourishBankError = false;
+                // nourishBankError = false;
                 bankError = false;
                 branchError = false;
 
@@ -523,11 +534,17 @@ var Order = function()
             if (isFormValid && $('#order_depo').val() == '') {
                 toastr.error("Please select a depot");
                 isFormValid = false;
+                $('#order_depo').closest('div').addClass('has-error');
+            }else {
+                $('#order_depo').closest('div').removeClass('has-error');
             }
 
             if (isFormValid && $('#order_paymentMode').val() == '') {
                 toastr.error("Please select a payment mode");
                 isFormValid = false;
+                $('#order_paymentMode').closest('div').addClass('has-error');
+            }else {
+                $('#order_paymentMode').closest('div').removeClass('has-error');
             }
 
             if (isFormValid && orderItem.find('tr').length == 0) {
@@ -578,13 +595,14 @@ var Order = function()
 
             payments.find('tr.payment_info').each(function(index, e){
                 var elm = $(e);
-                var agentBank = elm.find('.payment_section').find('td:eq(0)');
-                var amount = elm.find('.payment_section').find('td:eq(1)');
-                var depositDate = elm.find('.payment_section').find('td:eq(2)');
-                var paymentFor = elm.find('.payment_section').find('td:eq(3)');
-                var paymentMethod = elm.find('.payment_section').find('td:eq(4)');
-                var nourishBank = elm.find('.payment_section').find('td:eq(5)');
-                var remarks = elm.find('.payment_section').find('td:eq(6)');
+                // var agentBank = elm.find('.payment_section').find('td:eq(0)');
+                var amount = elm.find('.payment_section').find('td:eq(0)');
+                var depositDate = elm.find('.payment_section').find('td:eq(1)');
+                // var paymentFor = elm.find('.payment_section').find('td:eq(3)');
+                var receiveAccount = elm.find('.payment_section').find('td:eq(2)');
+                var paymentMethod = elm.find('.payment_section').find('td:eq(3)');
+                // var nourishBank = elm.find('.payment_section').find('td:eq(5)');
+                var remarks = elm.find('.payment_section').find('td:eq(4)');
 
                 var bank = elm.find('.bank_branch_section').find('.bank_section').find('td:eq(1)');
                 var branch = elm.find('.bank_branch_section').find('td.branch_section');
@@ -592,19 +610,22 @@ var Order = function()
                 console.log(branch.find('select').val());
                 // return false;
 
-                agentBank.removeClass('has-error');
+                // agentBank.removeClass('has-error');
                 amount.removeClass('has-error');
-                nourishBank.removeClass('has-error');
+                // nourishBank.removeClass('has-error');
                 depositDate.removeClass('has-error');
-                paymentFor.removeClass('has-error');
+                // paymentFor.removeClass('has-error');
+                receiveAccount.removeClass('has-error');
                 paymentMethod.removeClass('has-error');
                 bank.removeClass('has-error');
                 branch.removeClass('has-error');
 
-                if ((amount.find('input').val() == '' && agentBank.find('select').val() != '')||
-                    (amount.find('input').val() == '' && nourishBank.find('select').val() != '')||
+                if (
+                    /*(amount.find('input').val() == '' && agentBank.find('select').val() != '')||
+                    (amount.find('input').val() == '' && nourishBank.find('select').val() != '')||*/
                     (amount.find('input').val() == '' && depositDate.find('input').val() != '')||
-                    (amount.find('input').val() == '' && paymentFor.find('select').val() != '')||
+                    (amount.find('input').val() == '' && receiveAccount.find('select').val() != '')||
+                    /*(amount.find('input').val() == '' && paymentFor.find('select').val() != '')||*/
                     (amount.find('input').val() == '' && paymentMethod.find('select').val() != '')||
                     (amount.find('input').val() == '' && remarks.find('textarea').val() != '')||
                     (amount.find('input').val() == '' && bank.find('select').val() != '')||
@@ -613,26 +634,31 @@ var Order = function()
                     isFormValid = false;
                     amountError = true;
                 }
-                if (amount.find('input').val() != '' && agentBank.find('select').val() == '') {
+                /*if (amount.find('input').val() != '' && agentBank.find('select').val() == '') {
                     agentBank.addClass('has-error');
                     isFormValid = false;
                     agentBankError = true;
-                }
+                }*/
                 if (amount.find('input').val() != '' && depositDate.find('input').val() == '') {
                     depositDate.addClass('has-error');
                     isFormValid = false;
                     depositDateError = true;
                 }
-                if (amount.find('input').val() != '' && nourishBank.find('select').val() == '') {
+                /*if (amount.find('input').val() != '' && nourishBank.find('select').val() == '') {
                     nourishBank.addClass('has-error');
                     isFormValid = false;
                     nourishBankError = true;
+                }*/
+                if (amount.find('input').val() != '' && receiveAccount.find('select').val() == '') {
+                    receiveAccount.addClass('has-error');
+                    isFormValid = false;
+                    receiveAccountError = true;
                 }
-                if (amount.find('input').val() != '' && paymentFor.find('select').val() == '') {
+                /*if (amount.find('input').val() != '' && paymentFor.find('select').val() == '') {
                     paymentFor.addClass('has-error');
                     isFormValid = false;
                     paymentForError = true;
-                }
+                }*/
                 if (amount.find('input').val() != '' && paymentMethod.find('select').val() == '') {
                     paymentMethod.addClass('has-error');
                     isFormValid = false;
@@ -656,18 +682,21 @@ var Order = function()
             if (amountError) {
                 toastr.error("Please enter deposit amount.");
             }
-            if (agentBankError) {
+            /*if (agentBankError) {
                 toastr.error("Please select agent bank.");
-            }
+            }*/
             if (depositDateError) {
                 toastr.error("Please enter deposit date.");
             }
-            if (nourishBankError) {
+            /*if (nourishBankError) {
                 toastr.error("Please select bank account.");
+            }*/
+            if (receiveAccountError) {
+                toastr.error("Please select account receive.");
             }
-            if (paymentForError) {
+            /*if (paymentForError) {
                 toastr.error("Please select payment for.");
-            }
+            }*/
             if (paymentMethodError) {
                 toastr.error("Please select payment Method.");
             }

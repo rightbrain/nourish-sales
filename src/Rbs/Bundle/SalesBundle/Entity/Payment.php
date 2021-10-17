@@ -196,6 +196,12 @@ class Payment
      */
     private $refDeliveryId;
 
+    /**
+     * @var array $type
+     *
+     * @ORM\Column(name="receive_account", type="string", length=255, columnDefinition="ENUM('POULTRY', 'FEED', 'AGRO')", nullable=true)
+     */
+    private $receiveAccount;
 
     /**
      * Get id
@@ -583,6 +589,22 @@ class Payment
         $this->branch = $branch;
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getReceiveAccount()
+    {
+        return $this->receiveAccount;
+    }
+
+    /**
+     * @param array $receiveAccount
+     */
+    public function setReceiveAccount($receiveAccount)
+    {
+        $this->receiveAccount = $receiveAccount;
     }
 
 }
