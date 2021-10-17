@@ -36,6 +36,7 @@ class OrderDatatable extends BaseDatatable
 //            $line["totalApprovedAmount"] = number_format($order->getTotalApprovedAmount(), 0);
 //            $line["paymentAmount"] = $order->getPaymentState() != Order::PAYMENT_STATE_PENDING ? number_format($order->getTotalPaymentDepositedAmount(), 0): number_format(0, 2);
             $line["paymentAmount"] = $order->getPayments()? number_format($order->getTotalPaymentDepositedAmount(), 0): number_format(0, 2);
+            $line["dueAmount"] = $order->getTotalAmount()? number_format($order->calculateDueAmount(), 0): number_format(0, 2);
             $line["actualAmount"] = $order->getPaymentState() != Order::PAYMENT_STATE_PENDING ? number_format($order->getTotalPaymentActualAmount(), 0): number_format(0, 2);
             $line["paymentMode"] = $order->getPaymentModeTitle();
             if ($this->showAgentName) {
@@ -104,6 +105,7 @@ class OrderDatatable extends BaseDatatable
             ->add('totalAmount', 'column', array('title' => 'Trade Value', 'render' => 'Order.OrderPaymentFormat'))
 //            ->add('totalApprovedAmount', 'virtual', array('title' => 'Clearance Amount', 'render' => 'Order.OrderPaymentFormat'))
             ->add('paymentAmount', 'virtual', array('title' => 'Payment Amount', 'render' => 'Order.OrderPaymentFormat'))
+            ->add('dueAmount', 'virtual', array('title' => 'Due Amount', 'render' => 'Order.OrderPaymentFormat'))
             ->add('actualAmount', 'virtual', array('title' => 'Actual Amount', 'render' => 'Order.OrderPaymentFormat'))
             ->add('paymentMode', 'virtual', array('title' => 'Payment Mode', 'render' => 'Order.OrderPaymentFormat'))
             ->add('clearanceRemark', 'column', array('title' => 'Remarks', 'render' => 'Order.OrderPaymentFormat'))

@@ -794,6 +794,10 @@ class Order
         return $data;
     }
 
+    public function calculateDueAmount(){
+        return $this->getTotalAmount()-$this->getTotalPaymentDepositedAmount();
+    }
+
     public function getTotalPaymentActualAmount()
     {
         $data = 0;
