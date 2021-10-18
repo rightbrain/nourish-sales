@@ -44,8 +44,17 @@ var ChickOrderTemp = function()
                     element.attr('data-item-value', Number(response.itemQuantity));
                     $('.item_'+itemId+'_quantity').text(response.stockRemainingQuantity);
 
-                    // console.log(response.onHand)
+                    var row = $(element).closest('tr');
+                    var rowTotal = 0;
+                    $(row).find('.item_quantity').each(function () {
+                        var itemQuantity = $(this);
+                        if (itemQuantity.val()>0) {
+                            rowTotal += parseFloat(itemQuantity.val());
+                        }
+                    });
+                    row.find('.line_total').text(rowTotal);
 
+                    updateRegionTotal();
                 }
             });
         });
@@ -56,7 +65,10 @@ var ChickOrderTemp = function()
 
         $('.chick-order-region-summary').each(function(){
             var currentRegion = $(this);
+            var regionLineTotal=0;
             $(this).find('thead tr:nth-child(1) td.region').each(function () {
+
+                var element=$(this);
 
                 var regionTag = $(this).attr('data-region-item');
                 var totalElm = $(currentRegion).find('.region_item_total_'+regionTag);
@@ -67,7 +79,13 @@ var ChickOrderTemp = function()
                 });
 
                 calcTotalOfCurrentRegion(currentRegion, totalElm);
+
+                var val = $(this).is('td') ? $(this).text() : $(this).val();
+
+                if (!val) val = 0;
+                regionLineTotal += parseInt(val);
             });
+            $(this).find('thead tr:nth-child(1) td.region_line_total').text(regionLineTotal);
         });
 
         $('.final-chick-order-region-summary').each(function(){
@@ -93,6 +111,7 @@ var ChickOrderTemp = function()
             });
         });
         calTotalOfAllRegion();
+        calLineTotal();
     }
 
     function calcTotalOfCurrentRegion(currentRegion, totalElm) {
@@ -116,17 +135,38 @@ var ChickOrderTemp = function()
         $('.grand-total span').text(total);
     }
 
+    function calLineTotal() {
+        $('.chick-order-region-summary .item_table tr').each(function () {
+            var row = $(this);
+            var rowTotal = 0;
+            $(this).find('.item_quantity').each(function () {
+                var itemQuantity = $(this);
+                if (itemQuantity.val()>0) {
+                    rowTotal += parseFloat(itemQuantity.val());
+                }
+            });
+            row.find('.line_total').text(rowTotal);
+        });
+    }
+
     function updateRegionTotal() {
 
         $('.chick-order-region-summary').each(function(){
             var currentRegion = $(this);
+            var regionLineTotal=0;
             $(this).find('thead tr:nth-child(1) td.region').each(function () {
 
                 var regionTag = $(this).attr('data-region-item');
                 var totalElm = $(currentRegion).find('.region_item_total_'+regionTag);
 
                 calcTotalOfCurrentRegion(currentRegion, totalElm);
+
+                var val = $(this).is('td') ? $(this).text() : $(this).val();
+
+                if (!val) val = 0;
+                regionLineTotal += parseInt(val);
             });
+            $(this).find('thead tr:nth-child(1) td.region_line_total').text(regionLineTotal);
         });
     }
 

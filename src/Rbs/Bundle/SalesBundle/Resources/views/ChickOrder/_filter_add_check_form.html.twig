@@ -20,7 +20,7 @@
                         <tr>
                             <td style="width: 5%" rowspan="2">Agent Code</td>
                             <td style="width: 15%" rowspan="2">Name</td>
-                            <td style="padding: 0px" colspan="{{ chickItems|length }}">
+                            <td style="padding: 0px" colspan="{{ chickItems|length+1 }}">
                                 <table style="margin-bottom: 0;table-layout: fixed;" class="table table-bordered">
                                     <tr>
                                         {% for item in chickItems %}
@@ -28,12 +28,14 @@
                                                 {{ item.sku }}
                                             </td>
                                         {% endfor %}
+                                        <td></td>
                                     </tr>
                                 </table>
                             </td>
+
                         </tr>
                         <tr>
-                            <td style="padding: 0px" colspan="{{ chickItems|length }}">
+                            <td style="padding: 0px" colspan="{{ chickItems|length+1 }}">
                                 <table style="margin-bottom: 0;table-layout: fixed;" class="table table-bordered">
                                     <tr>
                                         {% for item in chickItems %}
@@ -44,6 +46,7 @@
                                                 <span class="stock_item item_{{ dailyStocks[depot.id][item.id]['iId'] }}_quantity">{{ dailyStocks[depot.id][item.id]['remainingQty'] }}</span>
                                             </td>
                                         {% endfor %}
+                                        <td style="padding: 0px; width: 9%; vertical-align: middle">Total</td>
                                     </tr>
                                 </table>
                             </td>
@@ -67,16 +70,18 @@
                                         <thead>
                                         <tr>
                                             <td colspan="2">Total</td>
-                                            <td style="padding: 0px" colspan="{{ chickItems|length }}">
+                                            <td style="padding: 0px" colspan="{{ chickItems|length+1 }}">
                                                 <table style="margin-bottom: 0;table-layout: fixed;" class="table table-bordered">
                                                     <tr>
                                                         {% for item in chickItems %}
                                                             <td data-region-item="{{ region.id }}_{{ item.id }}" data-region-item-id="{{ item.id }}" class="region region_item_total_{{ region.id }}_{{ item.id }}" style="padding: 8px 2px!important;">
                                                             </td>
                                                         {% endfor %}
+                                                        <td style="padding: 0px; text-align: center; vertical-align: middle" class="region_line_total">0</td>
                                                     </tr>
                                                 </table>
                                             </td>
+
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -95,8 +100,8 @@
                                                                 {{ agent['chickAgentID'] }}
                                                             </td>
                                                             <td style="width: 15%">{{ agent['fullName'] }}</td>
-                                                            <td style="padding: 0px" colspan="{{ chickItems|length }}">
-                                                                <table style="margin-bottom: 0;table-layout: fixed;" class="table table-bordered">
+                                                            <td style="padding: 0px" colspan="{{ chickItems|length+1 }}">
+                                                                <table style="margin-bottom: 0;table-layout: fixed;" class="table table-bordered item_table">
                                                                     <tr>
                                                                         {% for item in chickItems %}
                                                                             <td style="width: 9%">
@@ -112,10 +117,10 @@
                                                                                 {#{{ item.id }}#}
                                                                             </td>
                                                                         {% endfor %}
+                                                                        <td style="width: 9%; text-align: center; vertical-align: middle" class="line_total">0</td>
                                                                     </tr>
                                                                 </table>
                                                             </td>
-
                                                         </tr>
                                                     {% endfor %}
                                                 {% endif %}

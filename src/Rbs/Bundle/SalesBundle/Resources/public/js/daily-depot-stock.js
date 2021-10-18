@@ -45,7 +45,28 @@ var DailyDepotSock = function()
                     }
                 }
             });
-        })
+        });
+
+            $('.chick-daily-stock .item_stock').each(function () {
+                var currentRegion = $(this);
+                var itemId = $(this).attr('data-item');
+                $(currentRegion).keyup(function(){
+                    calculateItemTotal(itemId);
+                });
+
+                calculateItemTotal(itemId);
+            });
+        }
+
+    function calculateItemTotal(itemId) {
+        var total = 0;
+        var totalElm = $('.item_wise_'+itemId);
+        $(totalElm).each(function(){
+            var val = $(this).val();
+            if (!val) val = 0;
+            total += parseInt(val);
+        });
+        $('.colTotal_'+itemId).text(total);
     }
 
 
