@@ -47,11 +47,11 @@ class PaymentFormForChick extends AbstractType
                     'class' => 'input-small input-mask-amount'
                 )
             ))
-            ->add('bankAccount', 'choice', array(
+            /*->add('bankAccount', 'choice', array(
                 'required' => false,
                 'choices' => $this->getAccountList(),
                 'attr' => array('class' => 'select2me')
-            ))
+            ))*/
             ->add('depositDate', 'datetime', array(
                 'widget'=>'single_text',
                 'format' => 'yyyy-MM-dd',
@@ -69,6 +69,15 @@ class PaymentFormForChick extends AbstractType
                 'empty_data' => null,
                 'required' => false,
                 'placeholder' => null
+            ))
+            ->add('receiveAccount', 'choice', array(
+                'empty_value' => 'Select Receive Account',
+                'choices'  => array(
+                    'POULTRY' => 'Poultry',
+                    'FEED' => 'Feed',
+                    'AGRO' => 'Agro',
+                ),
+                'required' => false,
             ))
             ->add('fxCx', 'choice', array(
                 'choices'  => array(
@@ -100,7 +109,7 @@ class PaymentFormForChick extends AbstractType
                         ->orderBy('p.fullName','ASC');
                 }
             ))
-            ->add('agentBankBranch', 'entity', array(
+            /*->add('agentBankBranch', 'entity', array(
                 'class' => 'RbsSalesBundle:AgentBank',
                 'attr' => array(
                     'class' => 'select2me'
@@ -113,7 +122,7 @@ class PaymentFormForChick extends AbstractType
                     return $repository->createQueryBuilder('ab')
                         ->where('ab.deletedAt IS NULL');
                 }
-            ))
+            ))*/
             ->add('bank', 'entity', array(
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\Bank',
                 'required' => true,
@@ -121,7 +130,7 @@ class PaymentFormForChick extends AbstractType
                     new NotBlank(array('message' => 'Bank should not be blank')),
                 ),
                 'attr' => array(
-                    'class' => ''
+                    'class' => 'select2me'
                 ),
                 'property' => 'name',
                 'empty_value' => 'Select Bank',
@@ -141,7 +150,7 @@ class PaymentFormForChick extends AbstractType
                     new NotBlank(array('message' => 'Branch should not be blank')),
                 ),
                 'attr' => array(
-                    'class' => ''
+                    'class' => 'select2me'
                 ),
                 'property' => 'name',
                 'empty_value' => 'Select Branch',
@@ -181,8 +190,8 @@ class PaymentFormForChick extends AbstractType
             ))
         ;
 
-        $builder->get('bankAccount')
-            ->addModelTransformer(new BankAccountTransformer($this->em));
+        /*$builder->get('bankAccount')
+            ->addModelTransformer(new BankAccountTransformer($this->em));*/
     }
 
     /**

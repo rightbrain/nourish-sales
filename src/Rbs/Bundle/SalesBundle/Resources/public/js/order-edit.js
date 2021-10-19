@@ -15,6 +15,10 @@ var Order = function()
                 });
 
             }).trigger('change');
+
+            $("#order_orderItems_" + index + "_item").select2({
+                'allowClear': true
+            });
         });
     }
 
@@ -129,7 +133,9 @@ var Order = function()
         $("#order_orderItems_" + index + "_remove").click(function () {
             deleteOrderItemHandler($collectionHolder, index);
         });
-
+        $("#order_orderItems_" + index + "_item").select2({
+            'allowClear': true
+        });
         App.integerMask($collectionHolder.find('tr:eq('+index+')').find('.quantity'));
     }
 
@@ -208,6 +214,9 @@ var Order = function()
             var selectedItem = $('#order-item-'+index).find('select');
             toastr.error(selectedItem.find(":selected").text() + " Item Already Selected.");
             selectedItem.val("").trigger('change');
+            var option = new Option('Select Item', '', true, true);
+            selectedItem.append(option).trigger('change');
+            selectedItem.select2();
             return false;
         }
 

@@ -174,7 +174,7 @@ var Payment = function()
             var branchId= jQuery("#payment_branch").val();
             if(bankId==''){
                 var dataOption='<option value="">Select Branch</option>';
-                jQuery("#payment_branch").html(dataOption);
+                jQuery("#payment_branch").html(dataOption).select2();
                 return false;
             }
             console.log(bankId);
@@ -195,7 +195,7 @@ var Payment = function()
                         dataOption += '<option value="'+item.id+'" '+selected+'>'+item.name+'</option>';
                     });
 
-                    jQuery("#payment_branch").html(dataOption);
+                    jQuery("#payment_branch").html(dataOption).select2();
                 }
             });
         }).change();
