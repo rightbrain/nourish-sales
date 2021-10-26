@@ -1,5 +1,6 @@
 {{ form_start(form, {'method': 'POST', attr: { novalidate: 'novalidate'}}) }}
 
+<div class="row">
     <div class="col-md-6">
         <div class="form-group">
             <label class="col-md-4 control-label">Agent *</label>
@@ -8,6 +9,19 @@
                 {{ form_errors(form.agent) }}
             </div>
         </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <label class="col-md-4 control-label">Depo *</label>
+            <div class="col-md-8" style="margin-top: 10px;">
+                {{ form_widget(form.depo, {'attr' : depoAttr}) }}
+                {{ form_errors(form.depo) }}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
         <div class="form-group">
             <label class="col-md-4 control-label">Payment Mode *</label>
             <div class="col-md-8" style="margin-top: 10px;">
@@ -22,24 +36,17 @@
                 {{ form_errors(form.created_at) }}
             </div>
         </div>
-
     </div>
     <div class="col-md-6">
-        <div class="form-group">
-            <label class="col-md-4 control-label">Depo *</label>
-            <div class="col-md-8" style="margin-top: 10px;">
-                {{ form_widget(form.depo, {'attr' : depoAttr}) }}
-                {{ form_errors(form.depo) }}
-            </div>
-        </div>
         <div class="form-group">
             <label class="col-md-4 control-label">Remark</label>
             <div class="col-md-8" style="margin-top: 10px;">
                 {{ form_widget(form.remark) }}
             </div>
         </div>
-
     </div>
+</div>
+
 
     <div class="order-item-list">
         <table class="table table-condensed table-hover" style="margin-bottom:0!important;">

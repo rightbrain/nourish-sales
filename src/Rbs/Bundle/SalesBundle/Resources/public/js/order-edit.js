@@ -347,6 +347,16 @@ var Order = function()
             e.preventDefault();
             addItemForm($collectionHolderItem);
         });
+
+        $(document).on('keypress','tbody.tags .quantity',function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                e.stopPropagation();
+                addItemForm($collectionHolderItem);
+                $(this).closest('tr').next('tr').find('select.orderItem').focus().select2("open");
+                return false;
+            }
+        });
 /*
 
         depoElm.change(function () {

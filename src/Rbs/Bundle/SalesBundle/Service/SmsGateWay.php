@@ -23,7 +23,30 @@ class SmsGateWay
     }
 
     function send($msg, $phone){
-        $curl = curl_init();
+        try {
+            $apiEndPoint = 'https://smpp.ajuratech.com:7790/sendtext';
+            $response = $this->client->request('GET', $apiEndPoint, array(
+                'query' => array(
+                    'apikey' => $this->username,
+                    'secretkey' => $this->password,
+                    'callerID' => 'NOURISH',
+                    'toUser' => $phone,
+                    'messageContent' => $msg,
+                )
+            ));
+            if ($response->getStatusCode() == 200)
+            {
+                print_r($response->getBody()->getContents()) ;
+            }
+
+        } catch (RequestException $e) {
+            if ($e->hasResponse()) {
+                echo 'Caught exception: ',  $e->getMessage();
+//                var_dump($e->getResponse()->getReasonPhrase());
+            }
+        }
+
+        /*$curl = curl_init();
         $data =[
             "username"=>$this->username,
             "password"=>$this->password,
@@ -51,7 +74,7 @@ class SmsGateWay
             echo "cURL Error #:" . $err;
         } else {
             echo $response;
-        }
+        }*/
 
         /*try {
 

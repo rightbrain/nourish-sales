@@ -320,6 +320,16 @@ var Order = function()
             addItemForm($collectionHolder);
         });
 
+        $(document).on('keypress','tbody.tags .quantity',function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                e.stopPropagation();
+                addItemForm($collectionHolder);
+                $(this).closest('tr').next('tr').find('select.orderItem').focus().select2("open");
+                return false;
+            }
+        });
+
         depoElm.change(function () {
             $collectionHolder.find('tr').remove();
             if (depoElm.val() != '' && agentElm.val() != '') {
