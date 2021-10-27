@@ -38,7 +38,7 @@ class DeliveryItem
     private $orderItem;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order")
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\Order", inversedBy="deliveryItems")
      * @ORM\JoinColumn(name="order_id")
      */
     private $order;

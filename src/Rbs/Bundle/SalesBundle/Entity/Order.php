@@ -207,6 +207,13 @@ class Order
      * @ORM\Column(name="clearance_remark", type="text", nullable=true)
      */
     private $clearanceRemark;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\DeliveryItem", mappedBy="order"))
+     */
+    private $deliveryItems;
     
     /**
      * Get id
@@ -226,6 +233,7 @@ class Order
     public function __construct()
     {
         $this->orderItems = new ArrayCollection();
+        $this->deliveryItems = new ArrayCollection();
         $this->payments = new ArrayCollection();
     }
 
@@ -855,5 +863,32 @@ class Order
                 return 'Depot Payment';
 
         }
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDeliveryItems()
+    {
+        return $this->deliveryItems;
+    }
+
+    /**
+     * @param ArrayCollection $deliveryItems
+     */
+    public function setDeliveryItems($deliveryItems)
+    {
+        $this->deliveryItems = $deliveryItems;
+    }
+
+    public function getTotalTransportIncentive(){
+        $total = 0;
+        if($this->deliveryItems){
+            /** @var DeliveryItem $item */
+            foreach($this->deliveryItems as $item) {
+                $total += $item->getTransportIncentiveAmount();
+            }
+        }
+        return $total;
     }
 }
