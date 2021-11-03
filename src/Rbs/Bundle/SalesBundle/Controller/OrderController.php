@@ -203,6 +203,16 @@ class OrderController extends BaseController
 
                 /** @var OrderItem $item */
                 foreach ($order->getOrderItems() as $item){
+
+                    $amount = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentive($order->getAgent()->getUser()->getUpozilla()->getId(), $order->getDepo()->getId(), $item->getItem()->getItemType()->getId());
+
+                    if($amount){
+                        $amount = $amount[0]['amount'];
+                    }else{
+                        $amount = 0;
+                    }
+
+                    $item->setPoTransportIncentiveAmount($item->getQuantity()*$amount);
                     $item->setPreviousQuantity($item->getQuantity());
                     $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->update($item);
                 }
@@ -303,6 +313,16 @@ class OrderController extends BaseController
 
                 /** @var OrderItem $item */
                 foreach ($order->getOrderItems() as $item){
+
+                    $amount = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentive($order->getAgent()->getUser()->getUpozilla()->getId(), $order->getDepo()->getId(), $item->getItem()->getItemType()->getId());
+
+                    if($amount){
+                        $amount = $amount[0]['amount'];
+                    }else{
+                        $amount = 0;
+                    }
+
+                    $item->setPoTransportIncentiveAmount($item->getQuantity()*$amount);
                     $item->setPreviousQuantity($item->getQuantity());
                     $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->update($item);
                 }
@@ -399,6 +419,16 @@ class OrderController extends BaseController
 
                 /** @var OrderItem $item */
                 foreach ($order->getOrderItems() as $item){
+
+                    $amount = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentive($order->getAgent()->getUser()->getUpozilla()->getId(), $order->getDepo()->getId(), $item->getItem()->getItemType()->getId());
+
+                    if($amount){
+                        $amount = $amount[0]['amount'];
+                    }else{
+                        $amount = 0;
+                    }
+
+                    $item->setPoTransportIncentiveAmount($item->getQuantity()*$amount);
                     $item->setPreviousQuantity($item->getQuantity());
                     $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->update($item);
                 }
@@ -487,6 +517,15 @@ class OrderController extends BaseController
 
                 /** @var OrderItem $item */
                 foreach ($order->getOrderItems() as $item){
+                    $amount = $this->getDoctrine()->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentive($order->getAgent()->getUser()->getUpozilla()->getId(), $order->getDepo()->getId(), $item->getItem()->getItemType()->getId());
+
+                    if($amount){
+                        $amount = $amount[0]['amount'];
+                    }else{
+                        $amount = 0;
+                    }
+
+                    $item->setPoTransportIncentiveAmount($item->getQuantity()*$amount);
                     $item->setPreviousQuantity($item->getQuantity());
                     $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->update($item);
                 }

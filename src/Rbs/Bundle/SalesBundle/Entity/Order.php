@@ -891,4 +891,15 @@ class Order
         }
         return $total;
     }
+
+    public function getTotalPoTransportIncentive(){
+        $total = 0;
+        if($this->orderItems){
+            /** @var OrderItem $item */
+            foreach($this->orderItems as $item) {
+                $total += $item->getPoTransportIncentiveAmount();
+            }
+        }
+        return $total;
+    }
 }

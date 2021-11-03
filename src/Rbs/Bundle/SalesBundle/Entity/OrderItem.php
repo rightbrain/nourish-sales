@@ -95,6 +95,13 @@ class OrderItem
     private $paidAmount = 0;
 
     /**
+     * @var float
+     *
+     * @ORM\Column(name="po_transport_incentive_amount", type="float", nullable=true)
+     */
+    private $poTransportIncentiveAmount;
+
+    /**
      * Get id
      *
      * @return integer
@@ -292,4 +299,22 @@ class OrderItem
     public function calculateBonusQuantity(){
       return  $this->getQuantity()/$this->getItem()->getPacketWeight();
     }
+
+    /**
+     * @return float
+     */
+    public function getPoTransportIncentiveAmount()
+    {
+        return $this->poTransportIncentiveAmount;
+    }
+
+    /**
+     * @param float $poTransportIncentiveAmount
+     */
+    public function setPoTransportIncentiveAmount($poTransportIncentiveAmount)
+    {
+        $this->poTransportIncentiveAmount = $poTransportIncentiveAmount;
+    }
+
+
 }
