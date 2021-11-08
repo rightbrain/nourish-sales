@@ -795,7 +795,7 @@ class Order
         $data = 0;
         /** @var Payment $payment */
         foreach ($this->getPayments() as $payment) {
-            if($payment->getTransactionType()==Payment::CR){
+            if($payment->getTransactionType()==Payment::CR && $payment->getPaymentVia()!='TRANSPORT_COMMISSION'){
                 $data+= $payment->getDepositedAmount();
             }
         }
@@ -811,7 +811,7 @@ class Order
         $data = 0;
         /** @var Payment $payment */
         foreach ($this->getPayments() as $payment) {
-            if($payment->getTransactionType()==Payment::CR && $payment->isVerified()) {
+            if($payment->getTransactionType()==Payment::CR && $payment->isVerified() && $payment->getPaymentVia()!='TRANSPORT_COMMISSION') {
                 $data += $payment->getAmount();
             }
         }

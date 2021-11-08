@@ -142,7 +142,7 @@ class Payment
     /**
      * @var string
      *
-     * @ORM\Column(name="payment_via", type="string", length=6, nullable=true)
+     * @ORM\Column(name="payment_via", type="string", length=20, nullable=true)
      */
     private $paymentVia = 'SYSTEM';
 
@@ -605,6 +605,22 @@ class Payment
     public function setReceiveAccount($receiveAccount)
     {
         $this->receiveAccount = $receiveAccount;
+    }
+
+    public function getTransportCommission(){
+        $amount=0;
+        if($this->orders){
+            /* @var Order $order*/
+            foreach ($this->orders as $order){
+                if($order->getDeliveryItems()){
+                    /* @var DeliveryItem $deliveryItem*/
+                    foreach ($order->getDeliveryItems() as $deliveryItem){
+                        $amount+=$deliveryItem->getTransportIncentiveAmount();
+                    }
+                }
+            }
+        }
+        return $amount;
     }
 
 }

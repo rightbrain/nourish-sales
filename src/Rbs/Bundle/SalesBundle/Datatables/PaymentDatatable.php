@@ -30,9 +30,18 @@ class PaymentDatatable extends BaseDatatable
             $line['region'] = $locationRepository->getRegionById($payment->getDistrictByAgent()->getParentId())?$locationRepository->getRegionById($payment->getDistrictByAgent()->getParentId()):"";
             $line['district'] = $payment->getDistrictByAgent()?$payment->getDistrictByAgent()->getName():"";
             $line['agentBankInfo'] = $payment->getAgentBankBranch()?$payment->getAgentBankBranch()->getBank().', '.$payment->getAgentBankBranch()->getBranch():"";
-            $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2) .'</div>';
+            $line['transportCommission'] = '<div style="text-align: right;">'. number_format($payment->getTransportCommission(), 2) .'</div>';
             $line['orderStatus'] = $this->orderStateCancel($payment->getOrders()[0]);
-            $line['depositedAmount'] = '<div style="text-align: right;">'. number_format($payment->getDepositedAmount(), 2) .'</div>';
+            if($payment->getPaymentVia()!="TRANSPORT_COMMISSION"){
+                $line['totalAmount'] = '<div style="text-align: right;">'. number_format($line['amount'], 2).'</div>';
+
+                $line['depositedAmount'] = '<div style="text-align: right;">'. number_format($payment->getDepositedAmount(), 2) .'</div>';
+
+            }else{
+                $line['totalAmount'] = '<div style="text-align: right;">'. number_format(0, 2) .'</div>';
+
+                $line['depositedAmount'] = '<div style="text-align: right;">'. number_format(0, 2) .'</div>';
+            }
             if ($this->allowAgentSearch) {
                 //$line["fullName"] = $this->resolveAgentName($line['agent']);
                 $line["fullName"] = $payment->getAgent()->getIdName();
@@ -89,6 +98,7 @@ class PaymentDatatable extends BaseDatatable
             ->add('region', 'virtual', array('title' => 'Region'))
             ->add('district', 'virtual', array('title' => 'District'))
             ->add('depositedAmount', 'virtual', array('title' => 'Deposited Amount'))
+            ->add('transportCommission', 'virtual', array('title' => 'Trans. Comm.'))
             ->add('totalAmount', 'virtual', array('title' => 'Actual Amount'))
             ->add('paymentMethod', 'column', array('visible' => false))
             ->add('agentBankInfo', 'virtual', array('title' => 'Sender Bank'))

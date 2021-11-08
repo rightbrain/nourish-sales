@@ -316,6 +316,83 @@ class PaymentRepository extends EntityRepository
         );
     }
 
+    public function createDeliveredTransportValue(Delivery $delivery)
+    {
+
+        if($delivery->getOrders()){
+            foreach ($delivery->getOrders() as $order){
+                $amount=0;
+                /* @var DeliveryItem $deliveryItem*/
+                foreach ($order->getDeliveryItems() as $deliveryItem){
+                    $amount+=$deliveryItem->getTransportIncentiveAmount();
+                }
+                if($amount>0){
+                    $payment = new Payment();
+                    $payment->setAgent($order->getAgent());
+                    $payment->setAmount($amount);
+                    $payment->setDepositedAmount($amount);
+                    $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+                    $payment->setRemark('Transport Commission');
+                    $payment->setDepositDate(new \DateTime("now"));
+                    $payment->setTransactionType(Payment::CR);
+                    $payment->setFxCx('FD');
+                    $payment->setPaymentVia('TRANSPORT_COMMISSION');
+                    $payment->setVerified(true);
+                    $payment->setRefDeliveryId($delivery->getId());
+                    $payment->addOrder($order);
+
+                    $this->_em->persist($payment);
+                    $this->_em->flush();
+                }
+
+            }
+        }
+
+    }
+
+    public function updateDeliveredTransportValue(Delivery $delivery)
+    {
+
+        if($delivery->getOrders()){
+            /* @var Order $order*/
+            foreach ($delivery->getOrders() as $order){
+                $amount=0;
+                /* @var DeliveryItem $deliveryItem*/
+                foreach ($order->getDeliveryItems() as $deliveryItem){
+                    $amount+=$deliveryItem->getTransportIncentiveAmount();
+                }
+                if($amount>0){
+                    $payments = $order->getPayments();
+                    /** @var Payment $payment */
+                    if($payments){
+                        foreach ($payments as $payment){
+                            if($payment->getRefDeliveryId()==$delivery->getId() && $payment->getTransactionType()==Payment::CR && $payment->getPaymentVia()=="TRANSPORT_COMMISSION"){
+                                $payment->setAgent($order->getAgent());
+                                $payment->setAmount($amount);
+                                $payment->setDepositedAmount($amount);
+                                $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
+                                $payment->setRemark('Transport Commission');
+                                $payment->setDepositDate(new \DateTime("now"));
+                                $payment->setTransactionType(Payment::CR);
+                                $payment->setFxCx('FD');
+                                $payment->setPaymentVia('TRANSPORT_COMMISSION');
+                                $payment->setVerified(true);
+                                $payment->setRefDeliveryId($delivery->getId());
+                                $payment->addOrder($order);
+
+                                $this->_em->persist($payment);
+                                $this->_em->flush();
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+    }
+
     public function createDeliveredProductValueForSingleChickOrder(Delivery $delivery, Order $order)
     {
         $this->addPaymentByDeliveryItemSingleOrder($this->extractOrderItemSummary($delivery, $order), $delivery, $order);
@@ -482,7 +559,7 @@ class PaymentRepository extends EntityRepository
             $payments = $order->getPayments();
             /** @var Payment $payment */
             foreach ($payments as $payment){
-                if($payment->getRefDeliveryId()==$deliveryId){
+                if($payment->getRefDeliveryId()==$deliveryId && $payment->getPaymentVia()!='TRANSPORT_COMMISSION'){
                     $payment->setAgent($order->getAgent());
                     $payment->setAmount($total);
                     $payment->setQuantity($quantity);
