@@ -246,7 +246,8 @@ class DeliveryController extends BaseController
         $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updateDeliveryState($data['orders']);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->removeStock($delivery);
         $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->createDeliveredProductValue($delivery);
-        $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->createDeliveredTransportValue($delivery);
+
+        $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->createDeliveredTransportValue($delivery, 'FD');
 
         if (!empty($this->get('request')->request->get('checked-vehicles'))) {
             foreach ($this->get('request')->request->get('checked-vehicles') as $vehicleId => $vehicle) {

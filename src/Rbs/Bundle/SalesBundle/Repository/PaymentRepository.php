@@ -316,7 +316,7 @@ class PaymentRepository extends EntityRepository
         );
     }
 
-    public function createDeliveredTransportValue(Delivery $delivery)
+    public function createDeliveredTransportValue(Delivery $delivery, $fdFx)
     {
 
         if($delivery->getOrders()){
@@ -335,7 +335,7 @@ class PaymentRepository extends EntityRepository
                     $payment->setRemark('Transport Commission');
                     $payment->setDepositDate(new \DateTime("now"));
                     $payment->setTransactionType(Payment::CR);
-                    $payment->setFxCx('FD');
+                    $payment->setFxCx($fdFx);
                     $payment->setPaymentVia('TRANSPORT_COMMISSION');
                     $payment->setVerified(true);
                     $payment->setRefDeliveryId($delivery->getId());
@@ -372,13 +372,7 @@ class PaymentRepository extends EntityRepository
                                 $payment->setDepositedAmount($amount);
                                 $payment->setPaymentMethod(Payment::PAYMENT_METHOD_BANK);
                                 $payment->setRemark('Transport Commission');
-                                $payment->setDepositDate(new \DateTime("now"));
                                 $payment->setTransactionType(Payment::CR);
-                                $payment->setFxCx('FD');
-                                $payment->setPaymentVia('TRANSPORT_COMMISSION');
-                                $payment->setVerified(true);
-                                $payment->setRefDeliveryId($delivery->getId());
-                                $payment->addOrder($order);
 
                                 $this->_em->persist($payment);
                                 $this->_em->flush();

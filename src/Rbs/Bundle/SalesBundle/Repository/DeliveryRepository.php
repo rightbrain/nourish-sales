@@ -167,6 +167,16 @@ class DeliveryRepository extends EntityRepository
                 $checkDuplicateDeliveryItem = $this->_em->getRepository('RbsSalesBundle:DeliveryItem')->findOneBy(array('delivery'=>$delivery,'orderItem'=>$item));
                 if(!$checkDuplicateDeliveryItem){
                     $deliveryItem = new DeliveryItem();
+                    $amount = $this->_em->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentive($order->getAgent()->getUser()->getUpozilla()->getId(), $order->getDepo()->getId(), $item->getItem()->getItemType()->getId());
+
+                    if($amount){
+                        $amount = $amount[0]['amount'];
+                    }else{
+                        $amount = 0;
+                    }
+
+                    $deliveryItem->setTransportIncentiveAmount($qty*$amount);
+
                     $deliveryItem->setOrder($order);
                     $deliveryItem->setDelivery($delivery);
                     $deliveryItem->setOrderItem($item);
@@ -229,6 +239,16 @@ class DeliveryRepository extends EntityRepository
 //                $qty = $qty - $data['damage-qty'][$orderId][$itemId];
 
                 $deliveryItem = $this->_em->getRepository('RbsSalesBundle:DeliveryItem')->find($data['deliveryItemId'][$orderId][$itemId]);
+
+                $amount = $this->_em->getRepository('RbsCoreBundle:TransportIncentive')->getTransportIncentive($order->getAgent()->getUser()->getUpozilla()->getId(), $order->getDepo()->getId(), $item->getItem()->getItemType()->getId());
+
+                if($amount){
+                    $amount = $amount[0]['amount'];
+                }else{
+                    $amount = 0;
+                }
+
+                $deliveryItem->setTransportIncentiveAmount($qty*$amount);
 
                 $deliveryItem->setOrder($order);
                 $deliveryItem->setDelivery($delivery);
