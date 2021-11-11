@@ -803,7 +803,7 @@ class Order
     }
 
     public function calculateDueAmount(){
-        return $this->getTotalAmount()-$this->getTotalPaymentDepositedAmount();
+        return $this->getTotalAmount()-$this->getTotalPaymentActualAmount()-$this->getTotalPoTransportIncentive();
     }
 
     public function getTotalPaymentActualAmount()

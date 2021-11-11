@@ -679,4 +679,22 @@ class PaymentRepository extends EntityRepository
         return $returnArray;
 
     }
+
+    public function agentOutstandingBalance(Order $order){
+        $orderDate = $order->getCreatedAt()->format('Y-m-d');
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('p.transactionType','SUM(p.amount) as totalAmount');
+        $qb->join('p.agent', 'agent');
+        $qb->join('agent.user', 'user');
+        $qb->join('user.profile', 'profile');
+        $qb->where('p.verified =1');
+        $qb->andWhere('p.agent = :agent');
+        $qb->setParameter('agent', $order->getAgent());
+        $qb->andWhere('p.createdAt <=:end');
+        $qb->setParameter('end', $order->getCreatedAt());
+        $qb->groupBy('p.transactionType');
+        $results = $qb->getQuery()->getResult();
+
+        return $results;
+    }
 }

@@ -589,11 +589,14 @@ class OrderController extends BaseController
             $deliveredItems[$deliveredOrderItem['oiId']]= $deliveredOrderItem;
         }
 
+//        $outStanding= $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->agentOutstandingBalance($order);
+
         return $this->render('RbsSalesBundle:Order:details.html.twig', array(
             'order' => $order,
             'deliveryItems' => $deliveryItems,
             'deliveredItems' => $deliveredItems,
             'auditLogs' => $auditLogs,
+//            'outStanding' => $outStanding,
         ));
     }
 
@@ -1025,6 +1028,11 @@ class OrderController extends BaseController
                         'depo' => $order->getDepo(),
                     )
                 );
+
+                $orderItem->setQuantity($deliveredQty);
+
+                $this->getDoctrine()->getRepository('RbsSalesBundle:OrderItem')->update($orderItem);
+
                 $stock->setOnHold($stock->getOnHold() - $remainingQty);
                 $this->getDoctrine()->getRepository('RbsSalesBundle:Stock')->update($stock);
             }
@@ -1036,7 +1044,7 @@ class OrderController extends BaseController
                 $order->setDeliveryState(Order::DELIVERY_STATE_SHIPPED);
             }
             $order->setOrderState(Order::ORDER_STATE_COMPLETE);
-            $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->updatePartialShippedStatus($order);
+            $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->onlyUpdate($order);
 
 
 

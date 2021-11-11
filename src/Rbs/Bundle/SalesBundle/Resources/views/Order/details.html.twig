@@ -27,50 +27,66 @@
 
                                     <table class="table">
                                         <tr>
-                                            <th colspan="4"><h4 class="modal-title">Order No <span class="badge badge-primary">{{ order.id }}</span></h4></th>
+                                            <th colspan="2"><h4 class="modal-title">Order Number <span class="badge badge-primary">{{ order.id }}</span></h4></th>
+
+                                            <th colspan="2">Order Date: {{ order.createdAt|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</th>
+                                        </tr>
+                                        <tr>
+                                            <th>Agent Code</th>
+                                            <td>{{ order.agent.agentCodeForDatatable }}</td>
+                                            <th>Order Amount</th>
+                                            <td>{{ order.totalAmount|number_format(2,'.',',') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Agent Name</th>
-                                            <td>{{ order.agent.idName }}</td>
-                                            <th>Order Date</th>
-                                            <td>{{ order.createdAt|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
+                                            <td>{{ order.agent.name }}</td>
+                                            <th>Payment Amount</th>
+                                            <td>{{ order.totalPaymentDepositedAmount|number_format(2,'.',',') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Agent Mobile</th>
                                             <td>{{order.agent.user.profile.cellphone}}</td>
-                                            <th>Created By</th>
-                                            <td>{{ order.createdBy.profile.fullName | default('SMS') }}</td>
-
+                                            <th>Actual Amount</th>
+                                            <td>{{ order.totalPaymentActualAmount|number_format(2,'.',',') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Agent Address</th>
                                             <td>{{ order.agent.user.profile.address }}</td>
-                                            <th>SMS ref.</th>
-                                            <td>{{ order.refSMS.msg | default('N/A') | raw }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Order Amount</th>
-                                            <td>{{ order.totalAmount }}</td>
-                                            <th>Paid Amount</th>
-                                            <td>{{ order.paidAmount }}</td>
+                                            <th>Carrying Subsidy</th>
+                                            <td>{{ order.totalPoTransportIncentive|number_format(2,'.',',') }}</td>
+                                            {#<th>SMS ref.</th>
+                                            <td>{{ order.refSMS.msg | default('N/A') | raw }}</td>#}
                                         </tr>
                                         <tr>
                                             <th>Location</th>
                                             <td>{{ order.location.name | default('') }}</td>
-                                            <th>Order Via</th>
-                                            <td>{{ order.orderVia }}</td>
+                                            <th>Balance this order</th>
+                                            <td>{{ order.calculateDueAmount|number_format(2,'.',',') }}</td>
+                                            {#<th>Order Via</th>
+                                            <td>{{ order.orderVia }}</td>#}
+
+                                        </tr>
+                                        <tr>
+                                            <th>Created By</th>
+                                            <td>{{ order.createdBy.profile.fullName | default('SMS') }}</td>
+                                            <th>Clearance Amount</th>
+                                            <td colspan="1">{{ order.totalApprovedAmount|number_format(2,'.',',') }}</td>
                                         </tr>
                                         <tr>
                                             <th>Depo</th>
                                             <td>{{ order.depo.name | default('') }}</td>
-                                            <th>Remarks</th>
-                                            <td>{{ order.remark }}</td>
+{#                                            <td>{{ dump(outStanding) }}</td>#}
+                                            <th>SMS ref.</th>
+                                            <td>{{ order.refSMS.msg | default('N/A') | raw }}</td>
                                         </tr>
                                         <tr>
-                                            <th>Payment Mode</th>
-                                            <td colspan="1">{{ order.paymentModeTitle | default('N/A') }}</td>
-                                            <th>Clearance Amount</th>
-                                            <td colspan="1">{{ order.totalApprovedAmount }}</td>
+                                            <th>Remarks</th>
+                                            <td colspan="3">{{ order.remark }}</td>
+                                        </tr>
+                                        <tr>
+                                            {#<th>Payment Mode</th>
+                                            <td colspan="1">{{ order.paymentModeTitle | default('N/A') }}</td>#}
+
                                         </tr>
                                         <tr>
                                             <th>Clearance Remarks</th>
@@ -271,7 +287,7 @@
                                             {% set index = 1 %}
                                             {% for payment in order.payments %}
                                                 {#{% if payment.paymentMethod == 'BANK' and payment.verified and payment.transactionType == 'CR' %}#}
-                                                {% if payment.transactionType == 'CR' %}
+                                                {% if payment.transactionType == 'CR' and payment.paymentVia!='TRANSPORT_COMMISSION' %}
                                                 <tr>
                                                     <td>{{ index }}.</td>
                                                     <td>{{ payment.depositDate | date("d-m-Y", "Asia/Dhaka") }}</td>
