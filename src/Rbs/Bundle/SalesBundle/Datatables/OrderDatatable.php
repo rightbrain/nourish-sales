@@ -93,8 +93,8 @@ class OrderDatatable extends BaseDatatable
         $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
         $this->columnBuilder->add('id', 'column', array('title' => 'Order ID'));
         if ($this->showAgentName) {
-            $this->columnBuilder->add('agent.agentID', 'column', array('title' => 'Agent Id'));
-            $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName'));
+            $this->columnBuilder->add('agent.agentID', 'column', array('title' => 'Agent Id', 'class'=>'text-center'));
+            $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName', 'class'=>'text-center'));
             $this->columnBuilder->add('agentDistrict', 'virtual', array('title' => 'Agent District'));
         }
         $this->columnBuilder->add('depo.name', 'column', array('title' => 'Depot'))
@@ -102,13 +102,13 @@ class OrderDatatable extends BaseDatatable
             ->add('orderState', 'column', array('title' => 'Order State', 'render' => 'Order.OrderStateFormat'))
             ->add('paymentState', 'column', array('title' => 'Payment State', 'render' => 'Order.OrderStateFormat'))
             ->add('deliveryState', 'column', array('title' => 'Delivery State', 'render' => 'Order.OrderStateFormat'))
-            ->add('totalQuantity', 'virtual', array('title' => 'Total Qty(KG)', 'render' => 'Order.OrderPaymentFormat'))
-            ->add('totalAmount', 'column', array('title' => 'Trade Value', 'render' => 'Order.OrderPaymentFormat'))
+            ->add('totalQuantity', 'virtual', array('title' => 'Total Qty(KG)', 'render' => 'Order.OrderPaymentFormat', 'class'=>'text-center'))
+            ->add('totalAmount', 'column', array('title' => 'Trade Value', 'render' => 'Order.OrderPaymentFormat', 'class'=>'text-center'))
 //            ->add('totalApprovedAmount', 'virtual', array('title' => 'Clearance Amount', 'render' => 'Order.OrderPaymentFormat'))
-            ->add('paymentAmount', 'virtual', array('title' => 'Payment Amount', 'render' => 'Order.OrderPaymentFormat'))
-            ->add('actualAmount', 'virtual', array('title' => 'Actual Amount', 'render' => 'Order.OrderPaymentFormat'))
-            ->add('transportAmount', 'virtual', array('title' => 'Trans. Comm.', 'render' => 'Order.OrderPaymentFormat'))
-            ->add('dueAmount', 'virtual', array('title' => 'Due Amount', 'render' => 'Order.OrderPaymentFormat'))
+            ->add('paymentAmount', 'virtual', array('title' => 'Payment Amount', 'render' => 'Order.OrderPaymentFormat', 'class'=>'text-center'))
+            ->add('actualAmount', 'virtual', array('title' => 'Actual Amount', 'render' => 'Order.OrderPaymentFormat', 'class'=>'text-center'))
+            ->add('transportAmount', 'virtual', array('title' => 'Trans. Comm.', 'render' => 'Order.OrderPaymentFormat', 'class'=>'text-center'))
+            ->add('dueAmount', 'virtual', array('title' => 'Due Amount', 'render' => 'Order.OrderPaymentFormat', 'class'=>'text-center'))
             ->add('paymentMode', 'virtual', array('title' => 'Payment Mode', 'render' => 'Order.OrderPaymentFormat'))
             ->add('clearanceRemark', 'column', array('title' => 'Remarks', 'render' => 'Order.OrderPaymentFormat'))
             ->add('isComplete', 'virtual', array('visible' => false))
