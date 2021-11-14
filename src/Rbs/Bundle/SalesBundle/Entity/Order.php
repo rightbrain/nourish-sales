@@ -803,7 +803,7 @@ class Order
     }
 
     public function calculateDueAmount(){
-        return $this->getTotalAmount()-$this->getTotalPaymentActualAmount()-$this->getTotalPoTransportIncentive();
+        return $this->getTotalAmount()-$this->getTotalPaymentActualAmountForDueAmount()-$this->getTotalPoTransportIncentive();
     }
 
     public function getTotalPaymentActualAmount()
@@ -813,6 +813,20 @@ class Order
         foreach ($this->getPayments() as $payment) {
             if($payment->getTransactionType()==Payment::CR && $payment->isVerified() && $payment->getPaymentVia()!='TRANSPORT_COMMISSION') {
                 $data += $payment->getAmount();
+            }
+        }
+        return $data;
+    }
+
+    public function getTotalPaymentActualAmountForDueAmount()
+    {
+        $data = 0;
+        /** @var Payment $payment */
+        foreach ($this->getPayments() as $payment) {
+            if($payment->getTransactionType()==Payment::CR && $payment->isVerified() && $payment->getPaymentVia()!='TRANSPORT_COMMISSION') {
+                $data += $payment->getAmount();
+            }elseif ($payment->getTransactionType()==Payment::CR && !$payment->isVerified() && $payment->getPaymentVia()!='TRANSPORT_COMMISSION'){
+                $data += $payment->getDepositedAmount();
             }
         }
         return $data;
