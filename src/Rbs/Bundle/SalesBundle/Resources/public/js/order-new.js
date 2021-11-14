@@ -140,6 +140,15 @@ var Order = function()
                 }
             });
         }).change();
+        $("#order_payments_" + index + "_receiveAccount").change(function () {
+            var receiveAccount = $(this).val();
+            if(receiveAccount){
+                $("#order_payments_" + index + "_paymentMethod option[value=BANK]").attr('selected',true);
+                console.log(receiveAccount);
+            }else {
+                $("#order_payments_" + index + "_paymentMethod option[value='']").attr('selected', true);
+            }
+        }).change();
 
         $("#order_payments_" + index + "_bank").select2({
             'allowClear': true

@@ -70,7 +70,7 @@ class PaymentWithoutSmsForm extends AbstractType
                 'empty_value' => 'Select Payment Method',
                 'choices'  => array(
                     'BANK' => 'BANK',
-                    'CHEQUE' => 'CHEQUE',
+//                    'CHEQUE' => 'CHEQUE',
                     'CASH' => 'CASH'
                 ),
                 'required' => false,
@@ -137,7 +137,7 @@ class PaymentWithoutSmsForm extends AbstractType
                 'empty_value' => 'Select Receive Account',
                 'choices'  => array(
                     'POULTRY' => 'Poultry',
-                    'FEED' => 'Feed',
+                    'FEED' => 'Feeds',
                     'AGRO' => 'Agro',
                 ),
                 'required' => false,
