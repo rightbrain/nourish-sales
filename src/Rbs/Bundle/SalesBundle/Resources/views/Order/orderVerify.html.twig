@@ -86,8 +86,15 @@
                                         <td>{{ payment.depositDate | date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
                                         <td>{{ payment.id | default('') }}</td>
                                         <td>{{ payment.paymentMethod | default('') }}</td>
-                                        <td>{{ payment.agentBankBranch.bank | default('') }}</td>
-                                        <td>{{ payment.agentBankBranch.branch | default('') }}</td>
+                                        <td>{{ payment.agentBankBranch.bank | default('') }} {{ payment.bank.name|default('') }}</td>
+                                        <td>{{ payment.agentBankBranch.branch | default('') }} {{ payment.branch.name | default('') }}</td>
+                                        <td>
+                                            {% if payment.receiveAccount is not empty and payment.receiveAccount=='FEED' %}
+                                                {{ payment.receiveAccount }}S
+                                            {% else %}
+                                                {{ payment.receiveAccount | default('') }}
+                                            {% endif %}
+                                        </td>
                                         <td>{{ payment.amount | default('') }}</td>
                                         <td>{{ payment.remark| default('') }}</td>
                                     </tr>

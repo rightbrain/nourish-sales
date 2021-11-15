@@ -36,6 +36,7 @@
                                     <th class="col-md-2">Date</th>
                                     <th class="col-md-3">Bank</th>
                                     <th class="col-md-4">Branch</th>
+                                    <th class="col-md-4">Receive Account</th>
                                     <th class="text-right col-md-1">Deposited Amount</th>
                                     <th class="text-right col-md-1">Actual Amount</th>
                                     <th class="text-right col-md-1">Action</th>
@@ -47,8 +48,15 @@
                                     {% if payment.transactionType == 'CR' %}
                                     <tr>
                                         <td>{{ payment.depositDate|date("d-m-Y \\a\\t g:ia", "Asia/Dhaka") }}</td>
-                                        <td>{{ payment.bankAccount.branch.bank.name|default('') }}</td>
-                                        <td>{{ payment.bankAccount.branch.name|default('') }}</td>
+                                        <td>{{ payment.bankAccount.branch.bank.name|default('') }} {{ payment.bank.name|default('') }}</td>
+                                        <td>{{ payment.bankAccount.branch.name|default('') }} {{ payment.branch.name | default('') }}</td>
+                                        <td>
+                                            {% if payment.receiveAccount is not empty and payment.receiveAccount=='FEED' %}
+                                                {{ payment.receiveAccount }}S
+                                            {% else %}
+                                                {{ payment.receiveAccount | default('') }}
+                                            {% endif %}
+                                        </td>
                                         <td class="text-right"><input type="hidden" name="deposit_amount" class="deposit_amount" value="{{ payment.depositedAmount }}"><span id="amount" class="hidden">{{ payment.depositedAmount }}</span>{{ payment.depositedAmount|number_format(2) }}</td>
                                         <td class="text-right">
                                             {% if payment.amount %}
