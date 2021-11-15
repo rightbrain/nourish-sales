@@ -19,6 +19,9 @@ class BankBranchForm extends AbstractType
 
         $builder
             ->add('name')
+            ->add('branchCode', 'text', array(
+                'required' => false
+            ))
             ->add('bank', 'entity', array(
                 'class' => 'Rbs\Bundle\CoreBundle\Entity\Bank',
                 'property' => 'name',
