@@ -94,7 +94,7 @@ class OrderDatatable extends BaseDatatable
         $this->columnBuilder->add('id', 'column', array('title' => 'Order ID'));
         if ($this->showAgentName) {
             $this->columnBuilder->add('agent.agentID', 'column', array('title' => 'Agent Id', 'class'=>'text-center'));
-            $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName', 'class'=>'text-center'));
+            $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName'));
             $this->columnBuilder->add('agentDistrict', 'virtual', array('title' => 'Agent District'));
         }
         $this->columnBuilder->add('depo.name', 'column', array('title' => 'Depot'))
