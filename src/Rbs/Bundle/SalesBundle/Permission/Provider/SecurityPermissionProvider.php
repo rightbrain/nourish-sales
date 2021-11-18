@@ -59,7 +59,7 @@ class SecurityPermissionProvider implements ProviderInterface
             ),
 
             'REPORT' => array(
-                'ROLE_SALES_REPORT','ROLE_FEED_ORDER_REPORT','ROLE_CHICK_DELIVERY_REPORT'
+                'ROLE_SALES_REPORT','ROLE_FEED_ORDER_REPORT','ROLE_REGION_FEED_ORDER_REPORT','ROLE_CHICK_DELIVERY_REPORT'
             ),
 
             'BANK_SLIP' => array(

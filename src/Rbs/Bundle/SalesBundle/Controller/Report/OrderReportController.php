@@ -130,7 +130,7 @@ class OrderReportController extends Controller
      * @Route("/report/region/feed/order", name="report_feed_order_region_wise")
      * @param Request $request
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_FEED_ORDER_REPORT")
+     * @JMS\Secure(roles="ROLE_REGION_FEED_ORDER_REPORT")
      */
     public function getFeedOrderReportRegionWise(Request $request){
 
@@ -166,7 +166,7 @@ class OrderReportController extends Controller
      * @Route("/report/region/feed/order/excel", name="report_feed_order_region_wise_excel", options={"expose"=true})
      * @param Request $request
      * @return Response
-     * @JMS\Secure(roles="ROLE_FEED_ORDER_REPORT")
+     * @JMS\Secure(roles="ROLE_REGION_FEED_ORDER_REPORT")
      */
     public function getFeedOrderReportRegionWiseExcel(Request $request){
 
