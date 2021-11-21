@@ -672,7 +672,7 @@ class PaymentRepository extends EntityRepository
                     'bankSlag'=> $result['bankSlag'],
                     'branchName'=> $result['branchName'],
                     'branchCode'=> $result['branchCode'],
-                    'receiveAccount'=> $result['receiveAccount']?$result['receiveAccount']:'',
+//                    'receiveAccount'=> isset($result['receiveAccount'])?$result['receiveAccount']:'',
                 );
             }
         }
