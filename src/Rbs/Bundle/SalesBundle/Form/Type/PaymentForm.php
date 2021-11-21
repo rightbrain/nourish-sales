@@ -63,7 +63,7 @@ class PaymentForm extends AbstractType
             ->add('paymentMethod', 'choice', array(
                 'choices'  => array(
                     'BANK' => 'BANK',
-                    'CHEQUE' => 'CHEQUE',
+//                    'CHEQUE' => 'CHEQUE',
                     'CASH' => 'CASH'
                 ),
                 'empty_data' => null,
@@ -74,7 +74,7 @@ class PaymentForm extends AbstractType
                 'empty_value' => 'Select Receive Account',
                 'choices'  => array(
                     'POULTRY' => 'Poultry',
-                    'FEED' => 'Feed',
+                    'FEED' => 'Feeds',
                     'AGRO' => 'Agro',
                 ),
                 'required' => false,

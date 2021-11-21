@@ -74,7 +74,7 @@ class PaymentFormForChick extends AbstractType
                 'empty_value' => 'Select Receive Account',
                 'choices'  => array(
                     'POULTRY' => 'Poultry',
-                    'FEED' => 'Feed',
+                    'FEED' => 'Feeds',
                     'AGRO' => 'Agro',
                 ),
                 'required' => false,
