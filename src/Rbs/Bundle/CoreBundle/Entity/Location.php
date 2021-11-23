@@ -2,6 +2,7 @@
 namespace Rbs\Bundle\CoreBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Rbs\Bundle\UserBundle\Entity\User;
 
 /**
  * Location
@@ -47,6 +48,13 @@ class Location
      * @ORM\Column(name="address", type="string", length=250, nullable=true)
      */
     private $address;
+
+
+    /**
+     * @var User
+     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\UserBundle\Entity\User", mappedBy="district")
+     **/
+    protected $userDistricts;
 
     public function __toString()
     {

@@ -103,10 +103,22 @@ class User extends BaseUser
      */
     private $upozilla;
 
+
+    /**
+     * Many Users have Many Location.
+     * @ORM\ManyToMany(targetEntity="Rbs\Bundle\CoreBundle\Entity\Location", inversedBy="userDistricts")
+     * @ORM\JoinTable(name="users_access_districts",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="district_id", referencedColumnName="id")}
+     *      )
+     */
+    private $accessDistrict;
+
     public function __construct()
     {
         parent::__construct();
         $this->projects = new ArrayCollection();
+        $this->accessDistrict = new ArrayCollection();
     }
 
     /**
@@ -149,6 +161,22 @@ class User extends BaseUser
         }
 //        return false;
 
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAccessDistrict()
+    {
+        return $this->accessDistrict;
+    }
+
+    /**
+     * @param ArrayCollection $accessDistrict
+     */
+    public function setAccessDistrict($accessDistrict)
+    {
+        $this->accessDistrict = $accessDistrict;
     }
 
     /**

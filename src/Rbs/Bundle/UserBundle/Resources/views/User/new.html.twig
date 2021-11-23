@@ -32,12 +32,11 @@
 {% block javascripts %}
     {{ parent() }}
     {% javascripts
-    "assets/global/plugins/select2/select2.min.js"
-    "assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js"
-
-    "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
-    "assets/admin/pages/scripts/form-validation.js"
-    'bundles/rbsuser/js/user.js' %}
+        "assets/global/plugins/select2/select2.min.js"
+        "assets/global/plugins/jquery-multi-select/js/jquery.multi-select.js"
+        "assets/global/plugins/jquery-validation/js/jquery.validate.min.js"
+        "assets/admin/pages/scripts/form-validation.js"
+        'bundles/rbsuser/js/user.js' %}
     %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}

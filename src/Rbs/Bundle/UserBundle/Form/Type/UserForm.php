@@ -134,6 +134,19 @@ class UserForm extends AbstractType
                 'multiple' => true,
                 'required' => false
             ))
+            ->add('accessDistrict', 'entity', array(
+                'class' => 'Rbs\Bundle\CoreBundle\Entity\Location',
+                'query_builder' => function(EntityRepository $locationRepository) {
+                    return $locationRepository->createQueryBuilder('l')
+                        ->andWhere("l.level = :level")
+                        ->orderBy('l.name', 'ASC')
+                        ->setParameter('level', '4');
+                },
+                'property' => 'name',
+                'multiple' => true,
+                'label' => 'Access Districts',
+                'required' => false
+            ))
         ;
 
         $builder
