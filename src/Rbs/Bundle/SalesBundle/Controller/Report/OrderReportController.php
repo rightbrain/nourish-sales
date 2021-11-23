@@ -32,7 +32,7 @@ class OrderReportController extends Controller
      */
     public function getDailyFeedOrder(Request $request){
 
-        $form = new FeedOrderReportType();
+        $form = new FeedOrderReportType($this->getUser());
         $data = $request->query->get($form->getName());
         $pdf_create = $request->query->get('pdf_create');
         $submit = $request->query->get('submit');
@@ -69,7 +69,7 @@ class OrderReportController extends Controller
      */
     public function getFeedOrderReport(Request $request){
 
-        $form = new FeedOrderReportType();
+        $form = new FeedOrderReportType($this->getUser());
         $data = $request->query->get($form->getName());
         $pdf_create = $request->query->get('pdf_create');
         $submit = $request->query->get('submit');
@@ -80,7 +80,7 @@ class OrderReportController extends Controller
             $formSearch->handleRequest($request);
             $formSearch->submit($data);
             if ($formSearch->isValid()) {
-                $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getFeedOrderReport($data);
+                $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getFeedOrderReport($this->getUser(), $data);
                 $paymentAmountViaOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getPaymentAmountWithOrderForReport($data);
              }
         }
@@ -104,10 +104,10 @@ class OrderReportController extends Controller
      */
     public function getFeedOrderReportExcel(Request $request){
 
-        $form = new FeedOrderReportType();
+        $form = new FeedOrderReportType($this->getUser());
         $data = $request->get($form->getName());
 
-        $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getFeedOrderReport($data);
+        $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getFeedOrderReport($this->getUser(), $data);
         $paymentAmountViaOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getPaymentAmountWithOrderForReport($data);
         $depots = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->getActiveDepotForFeed($data);
 
@@ -145,7 +145,7 @@ class OrderReportController extends Controller
             $formSearch->handleRequest($request);
             $formSearch->submit($data);
             if ($formSearch->isValid()) {
-                $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getFeedOrderReportZoneWise($data);
+                $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getFeedOrderReportZoneWise($this->getUser(), $data);
                 $paymentAmountViaOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getPaymentAmountWithOrderForReport($data);
             }
         }
@@ -173,7 +173,7 @@ class OrderReportController extends Controller
         $form = new FeedOrderReportRegionWiseType();
         $data = $request->get($form->getName());
 
-        $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getFeedOrderReportZoneWise($data);
+        $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getFeedOrderReportZoneWise($this->getUser(), $data);
         $paymentAmountViaOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getPaymentAmountWithOrderForReport($data);
         $locationsRegions = $this->getDoctrine()->getRepository('RbsCoreBundle:Location')->getRegionsForChick();
 

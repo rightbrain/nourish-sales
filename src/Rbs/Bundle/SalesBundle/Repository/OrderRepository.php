@@ -11,6 +11,7 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\OrderItem;
 use Rbs\Bundle\SalesBundle\Entity\Payment;
 use Rbs\Bundle\SalesBundle\Entity\Sms;
+use Rbs\Bundle\UserBundle\Entity\User;
 
 /**
  * OrderRepository
@@ -579,9 +580,15 @@ class OrderRepository extends EntityRepository
 
     }
 
-    public function getFeedOrderReport($data){
+    public function getFeedOrderReport(User $user, $data){
 
         $results= array();
+        $districtsId=array();
+        if ($user->getAccessDistrict()){
+            foreach ($user->getAccessDistrict() as $district){
+                $districtsId[]=$district->getId();
+            }
+        }
         if(!empty($data['start_date'])) {
             $qp = $this->createQueryBuilder('o');
             $qp->join('o.depo', 'd');
@@ -609,6 +616,11 @@ class OrderRepository extends EntityRepository
             if (!empty($data['depo'])) {
                 $this->handleSearchByDepot($data['depo'], $qp);
             }
+
+            if(!$user->hasRole("ROLE_SUPER_ADMIN")){
+                $qp->andWhere('z.id IN (:districtId)');
+                $qp->setParameter('districtId', $districtsId);
+            }
             $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
             $qp->groupBy('o.id');
 //            $qp->addGroupBy('c.id');
@@ -626,9 +638,16 @@ class OrderRepository extends EntityRepository
 
     }
 
-    public function getFeedOrderReportZoneWise($data){
+    public function getFeedOrderReportZoneWise(User $user, $data){
 
         $results= array();
+        $districtsId=array();
+        if ($user->getAccessDistrict()){
+            foreach ($user->getAccessDistrict() as $district){
+                $districtsId[]=$district->getId();
+            }
+        }
+
         if(!empty($data['start_date'])) {
             $qp = $this->createQueryBuilder('o');
             $qp->join('o.depo', 'd');
@@ -656,6 +675,10 @@ class OrderRepository extends EntityRepository
             $qp->setParameter('orderState', Order::ORDER_STATE_CANCEL);
             if (!empty($data['region'])) {
                 $this->handleSearchByRegion($data['region'], $qp);
+            }
+            if(!$user->hasRole("ROLE_SUPER_ADMIN")){
+                $qp->andWhere('z.id IN (:districtId)');
+                $qp->setParameter('districtId', $districtsId);
             }
             $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
             $qp->groupBy('o.id');
@@ -783,7 +806,7 @@ class OrderRepository extends EntityRepository
     protected function handleSearchByRegion($region, $query)
     {
         if (!empty($region)) {
-            $query->andWhere('z.parentId = :region');
+            $query->andWhere('z.parentId IN (:region)');
             $query->setParameter('region', $region);
         }
     }

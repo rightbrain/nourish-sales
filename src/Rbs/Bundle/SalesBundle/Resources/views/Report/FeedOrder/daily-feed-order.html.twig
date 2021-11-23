@@ -79,7 +79,7 @@
                                             {% set catTotalQty = catTotalQty + catQty %}
                                             {% set catTotalAmount = catTotalAmount + catAmount %}
                                             {% set depotAndCategoryTotal=depotAndCategoryTotal|merge([{(category.id):catQty}]) %}
-                                            <td>{{ orders[depot.id][category.id].totalQuantity|number_format(2,'.',',')  }}</td>
+                                            <td>{{ orders[depot.id] is defined and orders[depot.id][category.id] is defined ? orders[depot.id][category.id].totalQuantity|number_format(2,'.',','):'0.00'  }}</td>
                                             {% endif %}
                                         {% endfor %}
                                         <td>{{ catTotalQty|number_format(2,'.',',') }}</td>

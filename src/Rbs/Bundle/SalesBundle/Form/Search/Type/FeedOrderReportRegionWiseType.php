@@ -26,6 +26,7 @@ class FeedOrderReportRegionWiseType extends AbstractType
                 ),
                 'property' => 'name',
                 'required' => true,
+                'multiple' => true,
                 'empty_value' => 'Select Region',
                 'empty_data' => null,
                 'query_builder' => function (LocationRepository $repository)
