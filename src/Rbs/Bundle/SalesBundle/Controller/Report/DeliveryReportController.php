@@ -30,7 +30,7 @@ class DeliveryReportController extends Controller
      */
     public function deliveryReportAction(Request $request)
     {
-        $form = new DeliveryReportType();
+        $form = new DeliveryReportType($this->getUser());
         $data = $request->query->get($form->getName());
         $pdf_create = $request->query->get('pdf_create');
         $formSearch = $this->createForm($form, $data);

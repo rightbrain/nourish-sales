@@ -10,6 +10,12 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class DeliveryReportType extends AbstractType
 {
+    private $user;
+
+    public function __construct($user)
+    {
+        $this->user = $user;
+    }
     /**
      * @param FormBuilderInterface $builder
      * @param array $options
@@ -29,11 +35,19 @@ class DeliveryReportType extends AbstractType
                 'empty_data' => null,
                 'query_builder' => function (DepoRepository $repository)
                 {
-                    return $repository->createQueryBuilder('d')
-                        ->where('d.deletedAt IS NULL')
-                        ->andWhere('d.depotType IS NULL or d.depotType =:type')
-                        ->setParameter('type', Depo::DEPOT_TYPE_FEED)
-                        ;
+                    if($this->user->hasRole("ROLE_DEPO_USER")){
+                        return $repository->createQueryBuilder('d')
+                            ->innerJoin('d.users','users')
+                            ->andWhere('d.deletedAt IS NULL')
+                            ->andWhere('users = :userId')
+                            ->setParameter('userId', $this->user->getId());
+                    }else{
+                        return $repository->createQueryBuilder('d')
+                            ->where('d.deletedAt IS NULL')
+                            ->andWhere('d.depotType IS NULL or d.depotType =:type')
+                            ->setParameter('type', Depo::DEPOT_TYPE_FEED)
+                            ;
+                    }
                 }
             ))
             ->add('start_date', 'text', array(

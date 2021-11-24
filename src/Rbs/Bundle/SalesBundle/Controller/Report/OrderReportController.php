@@ -25,10 +25,10 @@ use Symfony\Component\HttpFoundation\Response;
 class OrderReportController extends Controller
 {
     /**
-     * @Route("/report/daily/feed/order", name="report_daily_feed_order")
+     * @Route("/report/depot/feed/order", name="report_daily_feed_order")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_FEED_ORDER_REPORT")
+     * @JMS\Secure(roles="ROLE_DEPOT_FEED_ORDER_REPORT,ROLE_SUPER_ADMIN")
      */
     public function getDailyFeedOrder(Request $request){
 

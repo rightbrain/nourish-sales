@@ -152,7 +152,7 @@ class ConfigureMenuListener extends ContextAwareListener
                     $menu['Report']->getChild('Daily Order Report')->setCurrent(true);
                 }
             }
-            if ($this->authorizationChecker->isGranted('ROLE_FEED_ORDER_REPORT')) {
+            if ($this->authorizationChecker->isGranted(array('ROLE_DEPOT_FEED_ORDER_REPORT','ROLE_SUPER_ADMIN'))) {
                 $menu['Report']->addChild('Depot Wise Order Report', array('route' => 'report_daily_feed_order'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('report_daily_feed_order')) {
