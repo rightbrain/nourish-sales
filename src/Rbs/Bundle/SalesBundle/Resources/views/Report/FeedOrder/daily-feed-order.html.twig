@@ -8,7 +8,7 @@
         <div class="portlet box blue">
             <div class="portlet-title hidden-print">
                 <div class="caption">
-                    <i class="fa fa-list"></i>Daily Order Report
+                    <i class="fa fa-list"></i>Depot Wise Order Report
                 </div>
             </div>
             <div class="portlet-body">
@@ -84,7 +84,7 @@
                                         {% endfor %}
                                         <td>{{ catTotalQty|number_format(2,'.',',') }}</td>
                                         <td>{{ catTotalAmount|number_format(2,'.',',') }}</td>
-                                        <td>{{ paymentAmountViaOrders[depot.id].totalAmount|number_format(2,'.',',') }}</td>
+                                        <td>{{ paymentAmountViaOrders[depot.id].totalAmount|default(0)|number_format(2,'.',',') }}</td>
                                         {% set grandTotalQty = grandTotalQty+catTotalQty %}
                                         {% set grandTotalAmount = grandTotalAmount + catTotalAmount %}
                                         {% set grandTotalPaymentAmount = grandTotalPaymentAmount + paymentAmountViaOrders[depot.id].totalAmount|default(0) %}

@@ -43,8 +43,8 @@ class OrderReportController extends Controller
             $formSearch->handleRequest($request);
             $formSearch->submit($data);
             if ($formSearch->isValid()) {
-                $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getDailyFeedOrder($data);
-                $paymentAmountViaOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getPaymentAmountWithOrder($data);
+                $dailyOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getDailyFeedOrder($this->getUser(), $data);
+                $paymentAmountViaOrders = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getPaymentAmountWithOrder($this->getUser(), $data);
              }
         }
         $depots = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->getActiveDepotForFeed($data);

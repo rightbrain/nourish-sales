@@ -28,11 +28,17 @@
         {% set grandTotalPaymentAmount = 0 %}
         {% set depotAndCategoryTotal = [] %}
         {% for depot in depots %}
-            <tr>
-                <td style="font-weight: bold;text-align: center" colspan="12">{{ depot.name }}</td>
-            </tr>
             {% if orders[depot.id] is defined %}
+                <tr>
+                    <td style="font-weight: bold;text-align: center" colspan="12">{{ depot.name }}</td>
+                </tr>
+                {% set depotTotalQty = 0 %}
+                {% set depotTotalAmount = 0 %}
+                {% set depotTotalPaymentAmount = 0 %}
                 {% for order in orders[depot.id] %}
+                    {% set depotTotalQty = depotTotalQty+order.totalQuantity %}
+                    {% set depotTotalAmount = depotTotalAmount + order.totalAmount %}
+                    {% set depotTotalPaymentAmount = depotTotalPaymentAmount + paymentAmountViaOrders[order.id].totalAmount|default(0) %}
                     <tr>
                         <td>{{ order.id }}</td>
                         <td>{{ order.agentId|default('') }}</td>
@@ -47,6 +53,13 @@
                         <td>{{ order.remarks|default('') }}</td>
                     </tr>
                 {% endfor %}
+                <tr>
+                    <th class="text-right" colspan="7">Total</th>
+                    <th>{{ depotTotalQty|number_format(2,'.',',') }}</th>
+                    <th>{{ depotTotalAmount|number_format(2,'.',',') }}</th>
+                    <th>{{ depotTotalPaymentAmount|number_format(2,'.',',') }}</th>
+                    <td></td>
+                </tr>
             {% endif %}
             {% set sl = sl + 1 %}
         {% endfor %}

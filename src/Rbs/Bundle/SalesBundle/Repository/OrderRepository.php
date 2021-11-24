@@ -539,43 +539,97 @@ class OrderRepository extends EntityRepository
         return $arrayData;
     }
 
-    public function getDailyFeedOrder($data){
+    public function getDailyFeedOrder(User $user, $data){
 
         $results= array();
-        if(!empty($data['start_date'])) {
-            $qp = $this->createQueryBuilder('o');
-            $qp->join('o.depo', 'd');
-            $qp->join('o.orderItems', 'oi');
-            $qp->join('oi.item', 'i');
-            $qp->join('i.category', 'c');
-            $qp->select('o.id');
-            $qp->addSelect('d.id as depotId');
-            $qp->addSelect('c.id as catId');
-            $qp->addSelect('c.name as catName');
-            $qp->addSelect('d.name as depotName');
-            $qp->addSelect('oi.totalAmount');
-            $qp->addSelect('SUM(oi.quantity) AS totalQuantity');
-            $qp->addSelect('SUM(oi.totalAmount) AS totalAmount');
-            $qp->where('o.orderType = :orderType');
-            $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
-            $qp->andWhere('o.orderState != :orderState');
-            $qp->setParameter('orderState', Order::ORDER_STATE_CANCEL);
+        $districtsId=array();
+        if ($user->getAccessDistrict()){
+            foreach ($user->getAccessDistrict() as $district){
+                $districtsId[]=$district->getId();
+            }
+        }
+        if($user->hasRole("ROLE_DEPO_USER")) {
+            if(!empty($data['start_date']) && !empty($data['depo'])) {
+                $qp = $this->createQueryBuilder('o');
+                $qp->join('o.depo', 'd');
+                $qp->join('o.orderItems', 'oi');
+                $qp->join('oi.item', 'i');
+                $qp->join('i.category', 'c');
+                $qp->select('o.id');
+                $qp->addSelect('d.id as depotId');
+                $qp->addSelect('c.id as catId');
+                $qp->addSelect('c.name as catName');
+                $qp->addSelect('d.name as depotName');
+                $qp->addSelect('oi.totalAmount');
+                $qp->addSelect('SUM(oi.quantity) AS totalQuantity');
+                $qp->addSelect('SUM(oi.totalAmount) AS totalAmount');
+                $qp->where('o.orderType = :orderType');
+                $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+                $qp->andWhere('o.orderState != :orderState');
+                $qp->setParameter('orderState', Order::ORDER_STATE_CANCEL);
 
-            if (!empty($data['depo'])) {
                 $this->handleSearchByDepot($data['depo'], $qp);
-            }
-            $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
-            $qp->groupBy('o.depo');
-            $qp->addGroupBy('c.id');
-            $qp->orderBy('d.name', 'ASC');
 
-            foreach ($qp->getQuery()->getResult() as $result) {
-                $results[$result['depotId']][$result['catId']] = $result;
+                $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
+
+                $qp->groupBy('o.depo');
+                $qp->addGroupBy('c.id');
+                $qp->orderBy('d.name', 'ASC');
+
+                foreach ($qp->getQuery()->getResult() as $result) {
+                    $results[$result['depotId']][$result['catId']] = $result;
+                }
+                return $results;
+            }else{
+                return array();
             }
-            return $results;
+        }elseif (!$user->hasRole("ROLE_DEPO_USER")){
+            if(!empty($data['start_date'])) {
+                $qp = $this->createQueryBuilder('o');
+                $qp->join('o.depo', 'd');
+                $qp->join('o.agent', 'a');
+                $qp->join('a.user', 'u');
+                $qp->join('u.zilla', 'z');
+                $qp->join('o.orderItems', 'oi');
+                $qp->join('oi.item', 'i');
+                $qp->join('i.category', 'c');
+                $qp->select('o.id');
+                $qp->addSelect('d.id as depotId');
+                $qp->addSelect('c.id as catId');
+                $qp->addSelect('c.name as catName');
+                $qp->addSelect('d.name as depotName');
+                $qp->addSelect('oi.totalAmount');
+                $qp->addSelect('SUM(oi.quantity) AS totalQuantity');
+                $qp->addSelect('SUM(oi.totalAmount) AS totalAmount');
+                $qp->where('o.orderType = :orderType');
+                $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+                $qp->andWhere('o.orderState != :orderState');
+                $qp->setParameter('orderState', Order::ORDER_STATE_CANCEL);
+
+                if (!empty($data['depo'])) {
+                    $this->handleSearchByDepot($data['depo'], $qp);
+                }
+                if(!$user->hasRole("ROLE_SUPER_ADMIN") && !empty($districtsId)){
+                    $qp->andWhere('z.id IN (:districtId)');
+                    $qp->setParameter('districtId', $districtsId);
+                }
+
+                $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
+                $qp->groupBy('o.depo');
+                $qp->addGroupBy('c.id');
+                $qp->orderBy('d.name', 'ASC');
+
+                foreach ($qp->getQuery()->getResult() as $result) {
+                    $results[$result['depotId']][$result['catId']] = $result;
+                }
+                return $results;
+            }else{
+                return array();
+            }
         }else{
             return array();
         }
+
 
 
     }
@@ -589,49 +643,100 @@ class OrderRepository extends EntityRepository
                 $districtsId[]=$district->getId();
             }
         }
-        if(!empty($data['start_date'])) {
-            $qp = $this->createQueryBuilder('o');
-            $qp->join('o.depo', 'd');
-            $qp->join('o.agent', 'a');
-            $qp->join('a.user', 'u');
-            $qp->join('u.profile', 'p');
-            $qp->join('u.zilla', 'z');
-            $qp->join('o.orderItems', 'oi');
-            $qp->select('o.id');
-            $qp->addSelect('o.createdAt as createdAt');
-            $qp->addSelect('o.deliveryState as deliveryState');
-            $qp->addSelect('o.remark as remarks');
-            $qp->addSelect('d.id as depotId');
-            $qp->addSelect('d.name as depotName');
-            $qp->addSelect('a.agentCodeForDatatable AS agentId');
-            $qp->addSelect('p.fullName AS fullName');
-            $qp->addSelect('z.name AS zillaName');
-            $qp->addSelect('oi.totalAmount');
-            $qp->addSelect('SUM(oi.quantity) AS totalQuantity');
-            $qp->addSelect('SUM(oi.totalAmount) AS totalAmount');
-            $qp->where('o.orderType = :orderType');
-            $qp->andWhere('o.orderState != :orderState');
-            $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
-            $qp->setParameter('orderState', Order::ORDER_STATE_CANCEL);
-            if (!empty($data['depo'])) {
+        if($user->hasRole("ROLE_DEPO_USER")) {
+            if(!empty($data['start_date']) && !empty($data['depo'])){
+                $qp = $this->createQueryBuilder('o');
+                $qp->join('o.depo', 'd');
+                $qp->join('o.agent', 'a');
+                $qp->join('a.user', 'u');
+                $qp->join('u.profile', 'p');
+                $qp->join('u.zilla', 'z');
+                $qp->join('o.orderItems', 'oi');
+                $qp->select('o.id');
+                $qp->addSelect('o.createdAt as createdAt');
+                $qp->addSelect('o.deliveryState as deliveryState');
+                $qp->addSelect('o.remark as remarks');
+                $qp->addSelect('d.id as depotId');
+                $qp->addSelect('d.name as depotName');
+                $qp->addSelect('a.agentCodeForDatatable AS agentId');
+                $qp->addSelect('p.fullName AS fullName');
+                $qp->addSelect('z.name AS zillaName');
+                $qp->addSelect('oi.totalAmount');
+                $qp->addSelect('SUM(oi.quantity) AS totalQuantity');
+                $qp->addSelect('SUM(oi.totalAmount) AS totalAmount');
+                $qp->where('o.orderType = :orderType');
+                $qp->andWhere('o.orderState != :orderState');
+                $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+                $qp->setParameter('orderState', Order::ORDER_STATE_CANCEL);
+
                 $this->handleSearchByDepot($data['depo'], $qp);
-            }
 
-            if(!$user->hasRole("ROLE_SUPER_ADMIN")){
-                $qp->andWhere('z.id IN (:districtId)');
-                $qp->setParameter('districtId', $districtsId);
-            }
-            $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
-            $qp->groupBy('o.id');
+                if(!empty($districtsId)){
+                    $qp->andWhere('z.id IN (:districtId)');
+                    $qp->setParameter('districtId', $districtsId);
+                }
+                $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
+                $qp->groupBy('o.id');
 //            $qp->addGroupBy('c.id');
-            $qp->orderBy('d.name', 'ASC');
-            $qp->addOrderBy('o.id', 'ASC');
+                $qp->orderBy('d.name', 'ASC');
+                $qp->addOrderBy('o.id', 'ASC');
 
-            foreach ($qp->getQuery()->getResult() as $result) {
-                $results[$result['depotId']][] = $result;
+                foreach ($qp->getQuery()->getResult() as $result) {
+                    $results[$result['depotId']][] = $result;
+                }
+                return $results;
+            }else{
+                return array();
             }
-            return $results;
-        }else{
+
+        }elseif (!$user->hasRole("ROLE_DEPO_USER")){
+            if(!empty($data['start_date'])){
+                $qp = $this->createQueryBuilder('o');
+                $qp->join('o.depo', 'd');
+                $qp->join('o.agent', 'a');
+                $qp->join('a.user', 'u');
+                $qp->join('u.profile', 'p');
+                $qp->join('u.zilla', 'z');
+                $qp->join('o.orderItems', 'oi');
+                $qp->select('o.id');
+                $qp->addSelect('o.createdAt as createdAt');
+                $qp->addSelect('o.deliveryState as deliveryState');
+                $qp->addSelect('o.remark as remarks');
+                $qp->addSelect('d.id as depotId');
+                $qp->addSelect('d.name as depotName');
+                $qp->addSelect('a.agentCodeForDatatable AS agentId');
+                $qp->addSelect('p.fullName AS fullName');
+                $qp->addSelect('z.name AS zillaName');
+                $qp->addSelect('oi.totalAmount');
+                $qp->addSelect('SUM(oi.quantity) AS totalQuantity');
+                $qp->addSelect('SUM(oi.totalAmount) AS totalAmount');
+                $qp->where('o.orderType = :orderType');
+                $qp->andWhere('o.orderState != :orderState');
+                $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+                $qp->setParameter('orderState', Order::ORDER_STATE_CANCEL);
+                if (!empty($data['depo'])) {
+                    $this->handleSearchByDepot($data['depo'], $qp);
+                }
+
+                if(!$user->hasRole("ROLE_SUPER_ADMIN") && !empty($districtsId)){
+                    $qp->andWhere('z.id IN (:districtId)');
+                    $qp->setParameter('districtId', $districtsId);
+                }
+                $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
+                $qp->groupBy('o.id');
+//            $qp->addGroupBy('c.id');
+                $qp->orderBy('d.name', 'ASC');
+                $qp->addOrderBy('o.id', 'ASC');
+
+                foreach ($qp->getQuery()->getResult() as $result) {
+                    $results[$result['depotId']][] = $result;
+                }
+                return $results;
+            }else{
+                return array();
+            }
+        }
+        else{
             return array();
         }
 
@@ -676,7 +781,7 @@ class OrderRepository extends EntityRepository
             if (!empty($data['region'])) {
                 $this->handleSearchByRegion($data['region'], $qp);
             }
-            if(!$user->hasRole("ROLE_SUPER_ADMIN")){
+            if(!$user->hasRole("ROLE_SUPER_ADMIN") && !empty($districtsId)){
                 $qp->andWhere('z.id IN (:districtId)');
                 $qp->setParameter('districtId', $districtsId);
             }
@@ -743,29 +848,73 @@ class OrderRepository extends EntityRepository
 
     }
 
-    public function getPaymentAmountWithOrder($data){
+    public function getPaymentAmountWithOrder(User $user, $data){
         $results= array();
-        if(!empty($data['start_date'])) {
-            $qp = $this->createQueryBuilder('o');
-            $qp->join('o.depo', 'd');
-            $qp->join('o.payments','p');
-            $qp->select('o.id');
-            $qp->addSelect('d.id as depotId');
-            $qp->addSelect('SUM(p.amount) AS totalAmount');
-            $qp->andWhere('p.transactionType = :CR');
-            $qp->setParameter('CR', Payment::CR);
-            $qp->andWhere('o.orderType = :orderType');
-            $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
-            if (!empty($data['depo'])) {
-                $this->handleSearchByDepot($data['depo'], $qp);
-            }
-            $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
-            $qp->groupBy('o.depo');
-
-            foreach ($qp->getQuery()->getResult() as $result) {
-                $results[$result['depotId']] = $result;
+        $districtsId=array();
+        if ($user->getAccessDistrict()){
+            foreach ($user->getAccessDistrict() as $district){
+                $districtsId[]=$district->getId();
             }
         }
+        if($user->hasRole("ROLE_DEPO_USER")) {
+            if(!empty($data['start_date']) && !empty($data['depo'])) {
+                $qp = $this->createQueryBuilder('o');
+                $qp->join('o.depo', 'd');
+                $qp->join('o.payments','p');
+                $qp->select('o.id');
+                $qp->addSelect('d.id as depotId');
+                $qp->addSelect('SUM(p.amount) AS totalAmount');
+                $qp->andWhere('p.transactionType = :CR');
+                $qp->setParameter('CR', Payment::CR);
+                $qp->andWhere('o.orderType = :orderType');
+                $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+
+                $this->handleSearchByDepot($data['depo'], $qp);
+
+                $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
+
+                $qp->groupBy('o.depo');
+
+                foreach ($qp->getQuery()->getResult() as $result) {
+                    $results[$result['depotId']] = $result;
+                }
+            }else{
+                return $results;
+            }
+        }elseif (!$user->hasRole("ROLE_DEPO_USER")){
+            if(!empty($data['start_date'])) {
+                $qp = $this->createQueryBuilder('o');
+                $qp->join('o.depo', 'd');
+                $qp->join('o.agent', 'a');
+                $qp->join('a.user', 'u');
+                $qp->join('u.zilla', 'z');
+                $qp->join('o.payments','p');
+                $qp->select('o.id');
+                $qp->addSelect('d.id as depotId');
+                $qp->addSelect('SUM(p.amount) AS totalAmount');
+                $qp->andWhere('p.transactionType = :CR');
+                $qp->setParameter('CR', Payment::CR);
+                $qp->andWhere('o.orderType = :orderType');
+                $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+                if (!empty($data['depo'])) {
+                    $this->handleSearchByDepot($data['depo'], $qp);
+                }
+                if(!$user->hasRole("ROLE_SUPER_ADMIN") && !empty($districtsId)){
+                    $qp->andWhere('z.id IN (:districtId)');
+                    $qp->setParameter('districtId', $districtsId);
+                }
+
+                $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
+                $qp->groupBy('o.depo');
+
+                foreach ($qp->getQuery()->getResult() as $result) {
+                    $results[$result['depotId']] = $result;
+                }
+            }else{
+                return $results;
+            }
+        }
+
         return $results;
     }
 
