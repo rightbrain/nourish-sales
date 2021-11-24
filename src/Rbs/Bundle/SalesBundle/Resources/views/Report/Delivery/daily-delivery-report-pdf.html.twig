@@ -51,8 +51,8 @@
                     <td>{{ delivery.catName }}</td>
                     <td style="text-align: center">{{ delivery.itemCode }}</td>
                     <td>{{ delivery.itemName }}</td>
-                    <td style="text-align: right">{{ delivery.totalDeliveredQuantity }}</td>
-                    <td style="text-align: right">{{ delivery.totalValue }}</td>
+                    <td style="text-align: right">{{ delivery.totalDeliveredQuantity|number_format(2,'.',',') }}</td>
+                    <td style="text-align: right">{{ delivery.totalValue|number_format(2,'.',',') }}</td>
                 </tr>
                 {% set sl = sl + 1 %}
                 {% set totalReceived = totalReceived + delivery.totalDeliveredQuantity %}
@@ -63,8 +63,8 @@
                 <td>{{ catName }}</td>
                 <td></td>
                 <td></td>
-                <td style="text-align: right">{{ totalReceived }}</td>
-                <td style="text-align: right">{{ totalReceivedValue }}</td>
+                <td style="text-align: right">{{ totalReceived|number_format(2,'.',',') }}</td>
+                <td style="text-align: right">{{ totalReceivedValue|number_format(2,'.',',') }}</td>
             </tr>
             {% set grandTotalReceived = grandTotalReceived + totalReceived %}
             {% set grandTotalReceivedValue = grandTotalReceivedValue + totalReceivedValue %}
@@ -75,8 +75,8 @@
             <td style="text-align: center" colspan="2">Grand Total</td>
             <td></td>
             <td></td>
-            <td style="text-align: right">{{ grandTotalReceived }}</td>
-            <td style="text-align: right">{{ grandTotalReceivedValue }}</td>
+            <td style="text-align: right">{{ grandTotalReceived|number_format(2,'.',',') }}</td>
+            <td style="text-align: right">{{ grandTotalReceivedValue|number_format(2,'.',',') }}</td>
         </tr>
     {% else %}
         <tr>

@@ -7,6 +7,7 @@ use Rbs\Bundle\SalesBundle\Entity\Agent;
 use Rbs\Bundle\SalesBundle\Entity\Delivery;
 use Rbs\Bundle\SalesBundle\Entity\DeliveryItem;
 use Rbs\Bundle\SalesBundle\Entity\Order;
+use Rbs\Bundle\UserBundle\Entity\User;
 
 /**
  * DeliveryRepository
@@ -132,44 +133,100 @@ class DeliveryItemRepository extends EntityRepository
         return $query->getQuery()->getResult();
     }
 
-    public function getDeliveredItemsByDepo($data)
+    public function getDeliveredItemsByDepo(User $user, $data)
     {
 
         $results= array();
-        if(!empty($data['start_date'])&&!empty($data['end_date'])) {
-            $query = $this->createQueryBuilder('di');
-            $query->join('di.delivery', 'd');
-            $query->join('d.depo', 'depo');
-            $query->join('di.orderItem', 'oi');
-            $query->join('oi.item', 'i');
-            $query->join('i.category', 'c');
-            $query->select('i.id');
-            $query->addSelect('i.name as itemName');
-            $query->addSelect('i.sku as itemCode');
-            $query->addSelect('oi.price as unitPrice');
-            $query->addSelect('depo.name as depoName');
-            $query->addSelect('c.id as catId');
-            $query->addSelect('c.name as catName');
-            $query->addSelect('SUM(di.qty) AS totalDeliveredQuantity');
-            $query->addSelect('SUM(oi.totalAmount) AS totalValue');
-            $query->where('d.shipped = 1');
-            if (!empty($data['depo'])) {
-                $this->handleSearchByDepo($data['depo'], $query);
+        $districtsId=array();
+        if ($user->getAccessDistrict()){
+            foreach ($user->getAccessDistrict() as $district){
+                $districtsId[]=$district->getId();
             }
-            $this->handleSearchByDate($query, $data['start_date'], $data['end_date']);
-            $query->groupBy('i.id');
-            $query->addGroupBy('d.depo');
-            $query->orderBy('depo.name', 'ASC');
-            $query->addOrderBy('c.id', 'ASC');
-            $query->addOrderBy('i.name', 'ASC');
-
-            foreach ($query->getQuery()->getResult() as $result) {
-                $results[$result['depoName']][$result['catName']][] = $result;
-            }
-            return $results;
-        }else{
-           return array();
         }
+        if($user->hasRole("ROLE_DEPO_USER")) {
+            if(!empty($data['start_date'])&&!empty($data['end_date']) && !empty($data['depo'])) {
+                $query = $this->createQueryBuilder('di');
+                $query->join('di.delivery', 'd');
+                $query->join('d.depo', 'depo');
+                $query->join('di.orderItem', 'oi');
+                $query->join('oi.item', 'i');
+                $query->join('i.category', 'c');
+                $query->select('i.id');
+                $query->addSelect('i.name as itemName');
+                $query->addSelect('i.sku as itemCode');
+                $query->addSelect('oi.price as unitPrice');
+                $query->addSelect('depo.name as depoName');
+                $query->addSelect('c.id as catId');
+                $query->addSelect('c.name as catName');
+                $query->addSelect('SUM(di.qty) AS totalDeliveredQuantity');
+                $query->addSelect('SUM(oi.totalAmount) AS totalValue');
+                $query->where('d.shipped = 1');
+                if (!empty($data['depo'])) {
+                    $this->handleSearchByDepo($data['depo'], $query);
+                }
+                $this->handleSearchByDate($query, $data['start_date'], $data['end_date']);
+                $query->groupBy('i.id');
+                $query->addGroupBy('d.depo');
+                $query->orderBy('depo.name', 'ASC');
+                $query->addOrderBy('c.id', 'ASC');
+                $query->addOrderBy('i.name', 'ASC');
+
+                foreach ($query->getQuery()->getResult() as $result) {
+                    $results[$result['depoName']][$result['catName']][] = $result;
+                }
+                return $results;
+            }else{
+                return array();
+            }
+        }elseif (!$user->hasRole("ROLE_DEPO_USER")){
+            if(!empty($data['start_date'])&&!empty($data['end_date'])) {
+                $query = $this->createQueryBuilder('di');
+                $query->join('di.delivery', 'd');
+                $query->join('d.depo', 'depo');
+                $query->join('di.orderItem', 'oi');
+                $query->join('oi.order', 'o');
+                $query->join('o.agent', 'a');
+                $query->join('a.user', 'u');
+                $query->join('u.zilla', 'z');
+                $query->join('oi.item', 'i');
+                $query->join('i.category', 'c');
+                $query->select('i.id');
+                $query->addSelect('i.name as itemName');
+                $query->addSelect('i.sku as itemCode');
+                $query->addSelect('oi.price as unitPrice');
+                $query->addSelect('depo.name as depoName');
+                $query->addSelect('c.id as catId');
+                $query->addSelect('c.name as catName');
+                $query->addSelect('SUM(di.qty) AS totalDeliveredQuantity');
+                $query->addSelect('SUM(oi.totalAmount) AS totalValue');
+                $query->where('d.shipped = 1');
+                if (!empty($data['depo'])) {
+                    $this->handleSearchByDepo($data['depo'], $query);
+                }
+
+                if(!$user->hasRole("ROLE_SUPER_ADMIN") && !empty($districtsId)){
+                    $query->andWhere('z.id IN (:districtId)');
+                    $query->setParameter('districtId', $districtsId);
+                }
+
+                $this->handleSearchByDate($query, $data['start_date'], $data['end_date']);
+                $query->groupBy('i.id');
+                $query->addGroupBy('d.depo');
+                $query->orderBy('depo.name', 'ASC');
+                $query->addOrderBy('c.id', 'ASC');
+                $query->addOrderBy('i.name', 'ASC');
+
+                foreach ($query->getQuery()->getResult() as $result) {
+                    $results[$result['depoName']][$result['catName']][] = $result;
+                }
+                return $results;
+            }else{
+                return array();
+            }
+        }else{
+            return array();
+        }
+
     }
 
     public function getChickDeliveredItemsByDepo($data)

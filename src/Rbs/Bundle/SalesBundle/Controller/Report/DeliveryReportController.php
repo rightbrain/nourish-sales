@@ -26,7 +26,7 @@ class DeliveryReportController extends Controller
      * @Route("/report/delivery", name="report_delivery")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
-     * @JMS\Secure(roles="ROLE_SALES_REPORT, ROLE_FEED_ORDER_REPORT")
+     * @JMS\Secure(roles="ROLE_SUPER_ADMIN, ROLE_FEED_DELIVERY_REPORT")
      */
     public function deliveryReportAction(Request $request)
     {
@@ -36,7 +36,7 @@ class DeliveryReportController extends Controller
         $formSearch = $this->createForm($form, $data);
 
         $formSearch->submit($data);
-        $deliveries = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItemsByDepo($data);
+        $deliveries = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getDeliveredItemsByDepo($this->getUser(), $data);
         if(empty($pdf_create)){
 
             return $this->render('RbsSalesBundle:Report/Delivery:daily-delivery-report.html.twig', array(
@@ -52,7 +52,7 @@ class DeliveryReportController extends Controller
                     'deliveries' => $deliveries,
                 )
             );
-            $this->downloadPdf($html,'dailyDeliveryReportPdf.pdf');
+            $this->downloadPdf($html,time().'_dailyDeliveryReportPdf.pdf');
         }
 
     }
