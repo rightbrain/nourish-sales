@@ -552,6 +552,9 @@ class OrderRepository extends EntityRepository
             if(!empty($data['start_date']) && !empty($data['depo'])) {
                 $qp = $this->createQueryBuilder('o');
                 $qp->join('o.depo', 'd');
+                $qp->join('o.agent', 'a');
+                $qp->join('a.user', 'u');
+                $qp->join('u.zilla', 'z');
                 $qp->join('o.orderItems', 'oi');
                 $qp->join('oi.item', 'i');
                 $qp->join('i.category', 'c');
@@ -569,6 +572,11 @@ class OrderRepository extends EntityRepository
                 $qp->setParameter('orderState', Order::ORDER_STATE_CANCEL);
 
                 $this->handleSearchByDepot($data['depo'], $qp);
+
+                if(!empty($districtsId)){
+                    $qp->andWhere('z.id IN (:districtId)');
+                    $qp->setParameter('districtId', $districtsId);
+                }
 
                 $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
 
@@ -860,6 +868,9 @@ class OrderRepository extends EntityRepository
             if(!empty($data['start_date']) && !empty($data['depo'])) {
                 $qp = $this->createQueryBuilder('o');
                 $qp->join('o.depo', 'd');
+                $qp->join('o.agent', 'a');
+                $qp->join('a.user', 'u');
+                $qp->join('u.zilla', 'z');
                 $qp->join('o.payments','p');
                 $qp->select('o.id');
                 $qp->addSelect('d.id as depotId');
@@ -870,6 +881,11 @@ class OrderRepository extends EntityRepository
                 $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
 
                 $this->handleSearchByDepot($data['depo'], $qp);
+
+                if(!empty($districtsId)){
+                    $qp->andWhere('z.id IN (:districtId)');
+                    $qp->setParameter('districtId', $districtsId);
+                }
 
                 $this->handleSearchByDate($qp, $data['start_date'], $data['start_date']);
 
