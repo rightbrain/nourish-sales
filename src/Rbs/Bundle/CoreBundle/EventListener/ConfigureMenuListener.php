@@ -213,6 +213,14 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
+            if ($this->authorizationChecker->isGranted(array('ROLE_FEED_DELIVERY_REPORT','ROLE_SUPER_ADMIN'))) {
+                $menu['Report']->addChild('Delivery Item Report', array('route' => 'report_feed_delivery_item'))
+                    ->setAttribute('icon', 'fa fa-th-list');
+                if ($this->isMatch('report_feed_delivery_item')) {
+                    $menu['Report']->getChild('Delivery Item Report')->setCurrent(true);
+                }
+            }
+
             if ($this->authorizationChecker->isGranted('ROLE_CHICK_DELIVERY_REPORT')) {
                 $menu['Report']->addChild('Delivery Report', array('route' => 'report_chick_delivery'))
                     ->setAttribute('icon', 'fa fa-th-list');

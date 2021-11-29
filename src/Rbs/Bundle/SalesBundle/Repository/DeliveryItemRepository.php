@@ -149,6 +149,10 @@ class DeliveryItemRepository extends EntityRepository
                 $query->join('di.delivery', 'd');
                 $query->join('d.depo', 'depo');
                 $query->join('di.orderItem', 'oi');
+                $query->join('oi.order', 'o');
+                $query->join('o.agent', 'a');
+                $query->join('a.user', 'u');
+                $query->join('u.zilla', 'z');
                 $query->join('oi.item', 'i');
                 $query->join('i.category', 'c');
                 $query->select('i.id');
@@ -163,6 +167,10 @@ class DeliveryItemRepository extends EntityRepository
                 $query->where('d.shipped = 1');
                 if (!empty($data['depo'])) {
                     $this->handleSearchByDepo($data['depo'], $query);
+                }
+                if( !empty($districtsId)){
+                    $query->andWhere('z.id IN (:districtId)');
+                    $query->setParameter('districtId', $districtsId);
                 }
                 $this->handleSearchByDate($query, $data['start_date'], $data['end_date']);
                 $query->groupBy('i.id');
@@ -212,6 +220,120 @@ class DeliveryItemRepository extends EntityRepository
                 $this->handleSearchByDate($query, $data['start_date'], $data['end_date']);
                 $query->groupBy('i.id');
                 $query->addGroupBy('d.depo');
+                $query->orderBy('depo.name', 'ASC');
+                $query->addOrderBy('c.id', 'ASC');
+                $query->addOrderBy('i.name', 'ASC');
+
+                foreach ($query->getQuery()->getResult() as $result) {
+                    $results[$result['depoName']][$result['catName']][] = $result;
+                }
+                return $results;
+            }else{
+                return array();
+            }
+        }else{
+            return array();
+        }
+
+    }
+
+    public function getFeedDeliveredItemsByDepotAndDateRange(User $user, $data)
+    {
+
+        $results= array();
+        $districtsId=array();
+        if ($user->getAccessDistrict()){
+            foreach ($user->getAccessDistrict() as $district){
+                $districtsId[]=$district->getId();
+            }
+        }
+        if($user->hasRole("ROLE_DEPO_USER")) {
+            if(!empty($data['start_date'])&&!empty($data['end_date']) && !empty($data['depo'])) {
+                $query = $this->createQueryBuilder('di');
+                $query->join('di.delivery', 'd');
+                $query->join('d.depo', 'depo');
+                $query->join('di.orderItem', 'oi');
+                $query->join('oi.order', 'o');
+                $query->join('o.agent', 'a');
+                $query->join('a.user', 'u');
+                $query->join('u.profile', 'profile');
+                $query->join('u.zilla', 'z');
+                $query->join('oi.item', 'i');
+                $query->join('i.category', 'c');
+                $query->select('i.id');
+                $query->addSelect('i.name as itemName');
+                $query->addSelect('i.sku as itemCode');
+                $query->addSelect('oi.price as unitPrice');
+                $query->addSelect('depo.name as depoName');
+                $query->addSelect('c.id as catId');
+                $query->addSelect('c.name as catName');
+                $query->addSelect('a.agentCodeForDatatable as agentId');
+                $query->addSelect('profile.fullName as agentName');
+                $query->addSelect('SUM(di.qty) AS totalDeliveredQuantity');
+                $query->addSelect('SUM(oi.totalAmount) AS totalValue');
+                $query->where('d.shipped = 1');
+                if (!empty($data['depo'])) {
+                    $this->handleSearchByDepo($data['depo'], $query);
+                }
+                if( !empty($districtsId)){
+                    $query->andWhere('z.id IN (:districtId)');
+                    $query->setParameter('districtId', $districtsId);
+                }
+                $this->handleSearchByDate($query, $data['start_date'], $data['end_date']);
+                $query->groupBy('i.id');
+                $query->addGroupBy('d.depo');
+                $query->addGroupBy('a.id');
+                $query->orderBy('depo.name', 'ASC');
+                $query->addOrderBy('c.id', 'ASC');
+                $query->addOrderBy('i.name', 'ASC');
+
+                foreach ($query->getQuery()->getResult() as $result) {
+                    $results[$result['depoName']][$result['catName']][] = $result;
+                }
+                return $results;
+            }else{
+                return array();
+            }
+        }elseif (!$user->hasRole("ROLE_DEPO_USER")){
+            if(!empty($data['start_date'])&&!empty($data['end_date'])) {
+                $query = $this->createQueryBuilder('di');
+                $query->join('di.delivery', 'd');
+                $query->join('d.depo', 'depo');
+                $query->join('di.orderItem', 'oi');
+                $query->join('oi.order', 'o');
+                $query->join('o.agent', 'a');
+                $query->join('a.user', 'u');
+                $query->join('u.profile', 'profile');
+                $query->join('u.zilla', 'z');
+                $query->join('oi.item', 'i');
+                $query->join('i.category', 'c');
+                $query->select('i.id');
+                $query->addSelect('d.createdAt as deliveryDate');
+                $query->addSelect('o.createdAt as orderDate');
+                $query->addSelect('i.name as itemName');
+                $query->addSelect('i.sku as itemCode');
+                $query->addSelect('oi.price as unitPrice');
+                $query->addSelect('depo.name as depoName');
+                $query->addSelect('c.id as catId');
+                $query->addSelect('c.name as catName');
+                $query->addSelect('a.agentCodeForDatatable as agentId');
+                $query->addSelect('profile.fullName as agentName');
+                $query->addSelect('SUM(di.qty) AS totalDeliveredQuantity');
+                $query->addSelect('SUM(oi.totalAmount) AS totalValue');
+                $query->where('d.shipped = 1');
+                if (!empty($data['depo'])) {
+                    $this->handleSearchByDepo($data['depo'], $query);
+                }
+
+                if(!$user->hasRole("ROLE_SUPER_ADMIN") && !empty($districtsId)){
+                    $query->andWhere('z.id IN (:districtId)');
+                    $query->setParameter('districtId', $districtsId);
+                }
+
+                $this->handleSearchByDate($query, $data['start_date'], $data['end_date']);
+                $query->groupBy('i.id');
+                $query->addGroupBy('d.depo');
+                $query->addGroupBy('a.id');
                 $query->orderBy('depo.name', 'ASC');
                 $query->addOrderBy('c.id', 'ASC');
                 $query->addOrderBy('i.name', 'ASC');

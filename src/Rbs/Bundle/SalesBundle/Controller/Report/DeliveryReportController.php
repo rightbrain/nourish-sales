@@ -58,6 +58,41 @@ class DeliveryReportController extends Controller
     }
 
     /**
+     * @Route("/report/feed/delivery/item", name="report_feed_delivery_item")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @JMS\Secure(roles="ROLE_SUPER_ADMIN, ROLE_FEED_DELIVERY_REPORT")
+     */
+    public function feedDeliveryItemReportAction(Request $request)
+    {
+        $form = new DeliveryReportType($this->getUser());
+        $data = $request->query->get($form->getName());
+        $pdf_create = $request->query->get('pdf_create');
+        $formSearch = $this->createForm($form, $data);
+
+        $formSearch->submit($data);
+        $deliveries = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getFeedDeliveredItemsByDepotAndDateRange($this->getUser(), $data);
+        if(empty($pdf_create)){
+
+            return $this->render('RbsSalesBundle:Report/DeliveryItem:delivery-item-report.html.twig', array(
+                'formSearch' => $formSearch->createView(),
+                'data' => $data,
+                'deliveries' => $deliveries,
+            ));
+
+        }else{
+            $html = $this->renderView('RbsSalesBundle:Report/DeliveryItem:delivery-item-report-pdf.html.twig', array(
+                    'formSearch' => $formSearch->createView(),
+                    'data' => $data,
+                    'deliveries' => $deliveries,
+                )
+            );
+            $this->downloadPdf($html,time().'_dailyDeliveryReportPdf.pdf');
+        }
+
+    }
+
+    /**
      * @Route("/report/chick/delivery", name="report_chick_delivery")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
