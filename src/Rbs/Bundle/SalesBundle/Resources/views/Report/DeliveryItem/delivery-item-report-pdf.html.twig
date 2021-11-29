@@ -24,15 +24,10 @@
     <thead>
     <tr>
         <th>Agent Name & Code</th>
-        <th>Order Date</th>
-        <th>Delivery Date</th>
-        <th>Unit Name</th>
-        <th>Category Code</th>
-        <th>Category Name</th>
-        <th>Item Code</th>
-        <th>Item Name</th>
-        <th>Total</th>
-        <th>Value</th>
+        <th>Agent District</th>
+        <th>Depot Name</th>
+        <th>Total (Kg)</th>
+        <th>Value (Tk)</th>
     </tr>
     </thead>
     <tbody>
@@ -40,23 +35,18 @@
         {% set grandTotalReceived = 0 %}
         {% set grandTotalReceivedValue = 0 %}
         {% set depoName = '' %}
-        {% for catName, results in deliveries %}
-        {% for catName, result in results %}
+        {% for depotName, results in deliveries %}
+            {#                                {% for catName, result in results %}#}
             {% set totalReceived = 0 %}
             {% set totalReceivedValue = 0 %}
-            {% set depoName = result[0].depoName %}
+            {#                                    {% set depoName = result[0].depoName %}#}
             {% set sl = 1 %}
-            {% for delivery in result %}
+            {% for delivery in results %}
 
                 <tr>
                     <td>({{ delivery.agentId }}) {{ delivery.agentName }}</td>
-                    <td>{{ delivery.orderDate|date('d-m-Y') }}</td>
-                    <td>{{ delivery.deliveryDate|date('d-m-Y') }}</td>
+                    <td>{{ delivery.zillaName|default('') }}</td>
                     <td>{{ delivery.depoName }}</td>
-                    <td style="text-align: center">{{ delivery.catId }}</td>
-                    <td>{{ delivery.catName }}</td>
-                    <td style="text-align: center">{{ delivery.itemCode }}</td>
-                    <td>{{ delivery.itemName }}</td>
                     <td style="text-align: right">{{ delivery.totalDeliveredQuantity|number_format(2,'.',',') }}</td>
                     <td style="text-align: right">{{ delivery.totalValue|number_format(2,'.',',') }}</td>
                 </tr>
@@ -65,32 +55,22 @@
                 {% set totalReceivedValue = totalReceivedValue + delivery.totalValue %}
             {% endfor %}
             <tr style="font-weight: bold">
-                <td style="text-align: center" colspan="5">Total</td>
-                <td>{{ catName }}</td>
-                <td></td>
-                <td></td>
+                <td style="text-align: center" colspan="2">Total</td>
+                <td>{{ depotName }}</td>
                 <td style="text-align: right">{{ totalReceived|number_format(2,'.',',') }}</td>
                 <td style="text-align: right">{{ totalReceivedValue|number_format(2,'.',',') }}</td>
             </tr>
             {% set grandTotalReceived = grandTotalReceived + totalReceived %}
             {% set grandTotalReceivedValue = grandTotalReceivedValue + totalReceivedValue %}
-        {% endfor %}
+            {#                                {% endfor %}#}
         {% endfor %}
         <tr style="font-weight: bold">
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td style="text-align: center" colspan="2">Grand Total</td>
-            <td></td>
-            <td></td>
+            <td style="text-align: center" colspan="3">Grand Total</td>
             <td style="text-align: right">{{ grandTotalReceived|number_format(2,'.',',') }}</td>
             <td style="text-align: right">{{ grandTotalReceivedValue|number_format(2,'.',',') }}</td>
         </tr>
     {% else %}
-        <tr>
-            <td colspan="11">No record found.</td>
-        </tr>
+        <tr><td colspan="11">No record found.</td></tr>
     {% endif %}
     </tbody>
 </table>

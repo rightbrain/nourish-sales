@@ -267,6 +267,7 @@ class DeliveryItemRepository extends EntityRepository
                 $query->addSelect('depo.name as depoName');
                 $query->addSelect('c.id as catId');
                 $query->addSelect('c.name as catName');
+                $query->addSelect('z.name as zillaName');
                 $query->addSelect('a.agentCodeForDatatable as agentId');
                 $query->addSelect('profile.fullName as agentName');
                 $query->addSelect('SUM(di.qty) AS totalDeliveredQuantity');
@@ -280,15 +281,15 @@ class DeliveryItemRepository extends EntityRepository
                     $query->setParameter('districtId', $districtsId);
                 }
                 $this->handleSearchByDate($query, $data['start_date'], $data['end_date']);
-                $query->groupBy('i.id');
-                $query->addGroupBy('d.depo');
+//                $query->groupBy('i.id');
+                $query->groupBy('d.depo');
                 $query->addGroupBy('a.id');
                 $query->orderBy('depo.name', 'ASC');
                 $query->addOrderBy('c.id', 'ASC');
                 $query->addOrderBy('i.name', 'ASC');
 
                 foreach ($query->getQuery()->getResult() as $result) {
-                    $results[$result['depoName']][$result['catName']][] = $result;
+                    $results[$result['depoName']][] = $result;
                 }
                 return $results;
             }else{
@@ -316,6 +317,7 @@ class DeliveryItemRepository extends EntityRepository
                 $query->addSelect('depo.name as depoName');
                 $query->addSelect('c.id as catId');
                 $query->addSelect('c.name as catName');
+                $query->addSelect('z.name as zillaName');
                 $query->addSelect('a.agentCodeForDatatable as agentId');
                 $query->addSelect('profile.fullName as agentName');
                 $query->addSelect('SUM(di.qty) AS totalDeliveredQuantity');
@@ -331,15 +333,15 @@ class DeliveryItemRepository extends EntityRepository
                 }
 
                 $this->handleSearchByDate($query, $data['start_date'], $data['end_date']);
-                $query->groupBy('i.id');
-                $query->addGroupBy('d.depo');
+//                $query->groupBy('i.id');
+                $query->groupBy('d.depo');
                 $query->addGroupBy('a.id');
                 $query->orderBy('depo.name', 'ASC');
                 $query->addOrderBy('c.id', 'ASC');
                 $query->addOrderBy('i.name', 'ASC');
 
                 foreach ($query->getQuery()->getResult() as $result) {
-                    $results[$result['depoName']][$result['catName']][] = $result;
+                    $results[$result['depoName']][] = $result;
                 }
                 return $results;
             }else{
