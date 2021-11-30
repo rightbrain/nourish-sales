@@ -629,53 +629,62 @@ class PaymentRepository extends EntityRepository
         return ['data' => $qb->getQuery()->getResult(), 'start' => $start, 'end' => $end];
     }
 
-    public function getPaymentsByDate($requestDate)
+    public function getPaymentsByDate($requestDate, $bankId, $receiveAccount)
     {
         $date = $requestDate?date('Y-m-d', strtotime($requestDate)): date('Y-m-d', strtotime('now'));
         $start= $date.' 00:00:00';
         $end = $date.' 23:59:59';
-
-        $qb = $this->createQueryBuilder('p');
-        $qb->join('p.agent', 'agent');
-        $qb->join('agent.user', 'user');
-        $qb->join('user.profile', 'profile');
-        $qb->join('p.bank', 'b');
-        $qb->join('p.branch', 'br');
-        $qb->join('user.zilla', 'zilla');
-        $qb->join('user.upozilla', 'upozilla');
-
-        $qb->select('user.email as email, zilla.id as zId, upozilla.id as upzId, p.receiveAccount, p.createdAt, p.depositDate, profile.fullName as agentName, profile.cellphoneForMapping as phone, agent.agentCodeForDatatable as agentId, agent.agentType as agentType, p.amount, b.name as bankName, b.slug as bankSlag, br.name as branchName, br.branchCode as branchCode');
-
-        $qb->where('p.verified = :verified')->setParameter('verified', true);
-        $qb->andWhere('p.transactionType = :transactionType')->setParameter('transactionType', Payment::CR);
-
-        $qb->andWhere('p.createdAt BETWEEN :start AND :end');
-        $qb->setParameter('start', $start);
-        $qb->setParameter('end', $end);
-
-        $results = $qb->getQuery()->getResult();
         $returnArray=array();
-        if($results){
-            foreach ($results as $result){
-                $returnArray[]= array(
-                    'agentId'=> $result['agentId'],
-                    'upozillaId'=> $result['upzId'],
-                    'districtId'=> $result['zId'],
-                    'agentName'=> $result['agentName'],
-                    'email'=> $result['email'],
-                    'phone'=> $result['phone'],
-                    'agentType'=> $result['agentType'],
-                    'createdAt'=> $result['createdAt']?$result['createdAt']->format('d-m-Y'):'',
-                    'depositDate'=> $result['depositDate']?$result['depositDate']->format('d-m-Y'):'',
-                    'amount'=> $result['amount'],
-                    'bankName'=> $result['bankName'],
-                    'bankSlag'=> $result['bankSlag'],
-                    'branchName'=> $result['branchName'],
-                    'branchCode'=> $result['branchCode'],
-                    'receiveAccount'=> isset($result['receiveAccount'])?$result['receiveAccount']:'',
-                );
+
+        if($receiveAccount && $bankId && $requestDate){
+
+            $qb = $this->createQueryBuilder('p');
+            $qb->join('p.agent', 'agent');
+            $qb->join('agent.user', 'user');
+            $qb->join('user.profile', 'profile');
+            $qb->join('p.bank', 'b');
+            $qb->join('p.branch', 'br');
+            $qb->join('user.zilla', 'zilla');
+            $qb->join('user.upozilla', 'upozilla');
+
+            $qb->select('user.email as email, zilla.id as zId, upozilla.id as upzId, p.receiveAccount, p.createdAt, p.depositDate, profile.fullName as agentName, profile.cellphoneForMapping as phone, agent.agentCodeForDatatable as agentId, agent.agentType as agentType, p.amount, b.name as bankName, b.slug as bankSlag, br.name as branchName, br.branchCode as branchCode');
+
+            $qb->where('p.verified = :verified')->setParameter('verified', true);
+            $qb->andWhere('p.transactionType = :transactionType')->setParameter('transactionType', Payment::CR);
+
+            $qb->andWhere('p.createdAt BETWEEN :start AND :end');
+            $qb->setParameter('start', $start);
+            $qb->setParameter('end', $end);
+            $qb->andWhere('b.id = :bankId');
+            $qb->setParameter('bankId', $bankId);
+            $qb->andWhere('p.receiveAccount = :receiveAccount');
+            $qb->setParameter('receiveAccount', strtoupper($receiveAccount));
+
+            $results = $qb->getQuery()->getResult();
+
+            if($results){
+                foreach ($results as $result){
+                    $returnArray[]= array(
+                        'agentId'=> $result['agentId'],
+                        'upozillaId'=> $result['upzId'],
+                        'districtId'=> $result['zId'],
+                        'agentName'=> $result['agentName'],
+                        'email'=> $result['email'],
+                        'phone'=> $result['phone'],
+                        'agentType'=> $result['agentType'],
+                        'createdAt'=> $result['createdAt']?$result['createdAt']->format('d-m-Y'):'',
+                        'depositDate'=> $result['depositDate']?$result['depositDate']->format('d-m-Y'):'',
+                        'amount'=> $result['amount'],
+                        'bankName'=> $result['bankName'],
+                        'bankSlag'=> $result['bankSlag'],
+                        'branchName'=> $result['branchName'],
+                        'branchCode'=> $result['branchCode'],
+                        'receiveAccount'=> isset($result['receiveAccount'])?$result['receiveAccount']:'',
+                    );
+                }
             }
         }
+
 
         return $returnArray;
 
