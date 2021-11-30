@@ -629,14 +629,14 @@ class PaymentRepository extends EntityRepository
         return ['data' => $qb->getQuery()->getResult(), 'start' => $start, 'end' => $end];
     }
 
-    public function getPaymentsByDate($requestDate, $bankId, $receiveAccount)
+    public function getPaymentsByDate($requestDate, $bank_slug, $receiveAccount)
     {
         $date = $requestDate?date('Y-m-d', strtotime($requestDate)): date('Y-m-d', strtotime('now'));
         $start= $date.' 00:00:00';
         $end = $date.' 23:59:59';
         $returnArray=array();
 
-        if($receiveAccount && $bankId && $requestDate){
+        if($receiveAccount && $bank_slug && $requestDate){
 
             $qb = $this->createQueryBuilder('p');
             $qb->join('p.agent', 'agent');
@@ -655,8 +655,8 @@ class PaymentRepository extends EntityRepository
             $qb->andWhere('p.createdAt BETWEEN :start AND :end');
             $qb->setParameter('start', $start);
             $qb->setParameter('end', $end);
-            $qb->andWhere('b.id = :bankId');
-            $qb->setParameter('bankId', $bankId);
+            $qb->andWhere('b.slug = :bank_slug');
+            $qb->setParameter('bank_slug', $bank_slug);
             $qb->andWhere('p.receiveAccount = :receiveAccount');
             $qb->setParameter('receiveAccount', strtoupper($receiveAccount));
 

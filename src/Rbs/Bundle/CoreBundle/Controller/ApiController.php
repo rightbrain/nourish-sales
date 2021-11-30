@@ -347,12 +347,12 @@ class ApiController extends BaseController
         $paymentApiKey = $this->getParameter('payment_api_key');
 
         $date = $request->query->get('request_date');
-        $bankId = $request->query->get('bank_id');
+        $bank_slug = $request->query->get('bank_slug');
         $receiveAccount = $request->query->get('receive_account');
 
         if ('GET' === $request->getMethod()) {
             if ($paymentApiKey == $request->headers->get('X-API-KEY')) {
-                $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getPaymentsByDate($date, $bankId, $receiveAccount);
+                $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Payment')->getPaymentsByDate($date, $bank_slug, $receiveAccount);
                 $response= new JsonResponse($payments, 200);
 
             } else {
