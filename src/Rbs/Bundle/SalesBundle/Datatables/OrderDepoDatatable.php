@@ -26,18 +26,29 @@ class OrderDepoDatatable extends BaseDatatable
             $line["isComplete"] = !$order->isComplete();
             $line["enabled"] = $order->isPending();
             $line["disabled"] = !$order->isPending();
+            $line["checkDeliveryState"] = !$order->checkDeliveryState();
             $line["orderState"] = '<span class="label label-sm label-'.$this->getStatusColor($order->getOrderState()).'"> '.$order->getOrderState().' </span>';
             $line["paymentState"] = $order->getOrderState() == Order::ORDER_STATE_CANCEL ? '' : '<span class="label label-sm label-'.$this->getStatusColor($order->getPaymentState()).'"> '.$order->getPaymentState().' </span>';
             $line["deliveryState"] = $order->getOrderState() == Order::ORDER_STATE_CANCEL ? '' : '<span class="label label-sm label-'.$this->getStatusColor($order->getDeliveryState()).'"> '.$order->getDeliveryState().' </span>';
             $line["totalQuantity"] = $order->getOrderItemsTotalQuantity();
-            $line["totalAmount"] = number_format($order->getTotalAmount(), 2);
-            $line["paidAmount"] = number_format($order->getPaidAmount(), 2);
+            $line["totalAmount"] = number_format($order->getTotalAmount(), 0);
+//            $line["totalApprovedAmount"] = number_format($order->getTotalApprovedAmount(), 0);
+//            $line["paymentAmount"] = $order->getPaymentState() != Order::PAYMENT_STATE_PENDING ? number_format($order->getTotalPaymentDepositedAmount(), 0): number_format(0, 2);
+            $line["paymentAmount"] = $order->getPayments()? number_format($order->getTotalPaymentDepositedAmount(), 0): number_format(0, 2);
+            $line["dueAmount"] = $order->getTotalAmount()? number_format($order->calculateDueAmount(), 0): number_format(0, 2);
+            $line["actualAmount"] = $order->getPaymentState() != Order::PAYMENT_STATE_PENDING ? number_format($order->getTotalPaymentActualAmount(), 0): number_format(0, 2);
+            $line["transportAmount"] = $order->getTotalPoTransportIncentive() ? number_format($order->getTotalPoTransportIncentive(), 0): number_format(0, 2);
             $line["paymentMode"] = $order->getPaymentModeTitle();
             if ($this->showAgentName) {
-                $line["fullName"] =$order->getAgent()->getUser()->getProfile()? $order->getAgent()->getUser()->getProfile()->getFullName():'';
-                $line["agentDistrict"] =$order->getAgent()->getUser()->getZilla()? $order->getAgent()->getUser()->getZilla()->getName():'';
+                $line["fullName"] = $order->getAgent()->getUser()->getProfile()->getFullName();
+                $line["agentDistrict"] = $order->getAgent()->getUser()->getZilla()?$order->getAgent()->getUser()->getZilla()->getName():'';
             }
             $line["actionButtons"] = $this->generateActionList($order);
+
+            if($order->isClearanceStatus()) {
+                $line['DT_RowClass'] = 'clearance_apply';
+            }
+
             return $line;
         };
 
@@ -80,25 +91,31 @@ class OrderDepoDatatable extends BaseDatatable
         $dateFormat = isset($twigVars['js_moment_date_format']) ? $twigVars['js_moment_date_format'] : 'D-MM-YY';
         $this->columnBuilder->add('id', 'column', array('title' => 'Order ID'));
         if ($this->showAgentName) {
-            $this->columnBuilder->add('agent.agentID', 'column', array('title' => 'Agent Id'));
+            $this->columnBuilder->add('agent.agentID', 'column', array('title' => 'Agent Id', 'class'=>'text-center'));
             $this->columnBuilder->add('agent.user.id', 'column', array('title' => 'Agent Name', 'render' => 'resolveAgentName'));
             $this->columnBuilder->add('agentDistrict', 'virtual', array('title' => 'Agent District'));
         }
-
-            $this->columnBuilder->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
-                ->add('orderState', 'column', array('title' => 'Order State', 'render' => 'Order.OrderStateFormat'))
-                ->add('paymentState', 'column', array('title' => 'Payment State', 'render' => 'Order.OrderStateFormat'))
-                ->add('deliveryState', 'column', array('title' => 'Delivery State', 'render' => 'Order.OrderStateFormat'))
-                ->add('totalQuantity', 'virtual', array('title' => 'Total Qty(KG)', 'render' => 'Order.OrderPaymentFormat'))
-                ->add('totalAmount', 'column', array('title' => 'Trade Value', 'render' => 'Order.OrderPaymentFormat'))
-                ->add('paidAmount', 'column', array('title' => 'Paid Amount', 'render' => 'Order.OrderPaymentFormat'))
-                ->add('paymentMode', 'virtual', array('title' => 'Payment Mode', 'render' => 'Order.OrderPaymentFormat'))
-                ->add('isComplete', 'virtual', array('visible' => false))
-                ->add('isCancel', 'virtual', array('visible' => false))
-                ->add('enabled', 'virtual', array('visible' => false))
-                ->add('disabled', 'virtual', array('visible' => false))
-                ->add('actionButtons', 'virtual', array('title' => 'Action'))
-            ;
+        $this->columnBuilder->add('depo.name', 'column', array('title' => 'Depot'))
+            ->add('createdAt', 'datetime', array('title' => 'Date', 'date_format' => $dateFormat))
+            ->add('orderState', 'column', array('title' => 'Order State', 'render' => 'Order.OrderStateFormat'))
+            ->add('paymentState', 'column', array('title' => 'Payment State', 'render' => 'Order.OrderStateFormat'))
+            ->add('deliveryState', 'column', array('title' => 'Delivery State', 'render' => 'Order.OrderStateFormat'))
+            ->add('totalQuantity', 'virtual', array('title' => 'Total Qty(KG)', 'render' => 'Order.OrderPaymentFormat', 'class'=>'text-center'))
+            ->add('totalAmount', 'column', array('title' => 'Trade Value', 'render' => 'Order.OrderPaymentFormat', 'class'=>'text-center'))
+//            ->add('totalApprovedAmount', 'virtual', array('title' => 'Clearance Amount', 'render' => 'Order.OrderPaymentFormat'))
+            ->add('paymentAmount', 'virtual', array('title' => 'Payment Amount', 'render' => 'Order.OrderPaymentFormat', 'class'=>'text-center'))
+            ->add('actualAmount', 'virtual', array('title' => 'Actual Amount', 'render' => 'Order.OrderPaymentFormat', 'class'=>'text-center'))
+            ->add('transportAmount', 'virtual', array('title' => 'Trans. Comm.', 'render' => 'Order.OrderPaymentFormat', 'class'=>'text-center'))
+            ->add('dueAmount', 'virtual', array('title' => 'Due Amount', 'render' => 'Order.OrderPaymentFormat', 'class'=>'text-center'))
+            ->add('paymentMode', 'virtual', array('title' => 'Payment Mode', 'render' => 'Order.OrderPaymentFormat'))
+            ->add('clearanceRemark', 'column', array('title' => 'Remarks', 'render' => 'Order.OrderPaymentFormat'))
+            ->add('isComplete', 'virtual', array('visible' => false))
+            ->add('isCancel', 'virtual', array('visible' => false))
+            ->add('enabled', 'virtual', array('visible' => false))
+            ->add('clearanceStatus', 'virtual', array('visible' => false))
+            ->add('disabled', 'virtual', array('visible' => false))
+            ->add('actionButtons', 'virtual', array('title' => 'Action'))
+        ;
     }
 
     /**
