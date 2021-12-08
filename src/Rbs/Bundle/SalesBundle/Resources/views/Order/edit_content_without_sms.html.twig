@@ -119,10 +119,10 @@
         {{ include('RbsSalesBundle:Order:payment_content.html.twig', { 'form': form.payments.vars.prototype }) }}
         {% endfilter %}">
         {% for j,payment in form.payments %}
-            <tr id="payment-{{ j }}">
-                <td colspan="6">
+            <tr class="payment_info" id="payment-{{ j }}">
+                <td colspan="9">
                     <table class="table">
-                        <tr>
+                        <tr class="payment_section">
 {#                            <td style="width: 20%;">{{ form_widget(payment.agentBankBranch, { 'attr': {'class': 'width_250'}}) }}</td>#}
                             <td style="width: 17%">{{ form_widget(payment.depositedAmount) }}</td>
                             <td style="width: 18%">{{ form_widget(payment.depositDate, { 'attr': {'class': 'amount'}}) }}</td>
@@ -132,10 +132,10 @@
 {#                            <td style="width: 15%;">{{ form_widget(payment.bankAccount, { 'attr': {'class': 'width_250'}}) }}</td>#}
                             <td style="width: 30%" colspan="2">{{ form_widget(payment.remark) }}</td>
                         </tr>
-                        <tr>
+                        <tr class="bank_branch_section">
                             <td colspan="2" style="border: none">
                                 <table width="100%">
-                                    <tr>
+                                    <tr class="bank_section">
                                         <td width="80px">Bank Name </td>
                                         <td>
                                             {{ form_widget(payment.bank, { 'attr': {}}) }}
@@ -144,7 +144,7 @@
                                 </table>
                             </td>
                             <td style="border: none; text-align: right">Branch Name</td>
-                            <td style="border: none" colspan="3">
+                            <td class="branch_section" style="border: none" colspan="3">
                                 {{ form_widget(payment.branch, { 'attr': {}}) }}
                             </td>
                             <td style="border: none; text-align: center">{{ form_widget(payment.remove) }}</td>

@@ -123,7 +123,7 @@ class PaymentWithoutSmsForm extends AbstractType
                 'attr' => array(
                     'class' => 'select2me'
                 ),
-                'property' => 'nameWithCode',
+                'property' => 'nameWithCodeBank',
                 'empty_value' => 'Select Branch',
                 'empty_data' => null,
                 'query_builder' => function (BankBranchRepository $repository)
