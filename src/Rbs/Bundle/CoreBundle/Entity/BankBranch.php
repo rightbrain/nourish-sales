@@ -116,7 +116,7 @@ class BankBranch
 
     public function nameWithCodeBank()
     {
-        return '('.$this->branchCode.') ' . $this->name.' - '.$this->bank->getName();
+        return $this->branchCode? '('.$this->branchCode.') ' . $this->name.' - '.$this->bank->getName():$this->name.' - '.$this->bank->getName();
     }
 
     /**
