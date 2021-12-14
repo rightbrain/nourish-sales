@@ -136,6 +136,7 @@ class OrderDepoDatatable extends BaseDatatable
 
     public function generateActionList(Order $order)
     {
+        $depotUser = $this->authorizationChecker->isGranted('ROLE_DEPO_USER');
         $canEdit = $this->authorizationChecker->isGranted('ROLE_ORDER_EDIT');
         $canView = $this->authorizationChecker->isGranted('ROLE_ORDER_VIEW');
         $canCancel = $this->authorizationChecker->isGranted('ROLE_ORDER_CANCEL');
@@ -178,6 +179,10 @@ class OrderDepoDatatable extends BaseDatatable
 
         if ($canApproveOverCredit && in_array($order->getPaymentState(), array(Order::PAYMENT_STATE_CREDIT_APPROVAL))) {
             $html .= '<li><a href="'.$this->router->generate('review_payment', array('id'=> $order->getId())).'" rel="tooltip" title="show-action" class="" role="button" data-target="#ajaxSummeryView" data-toggle="modal"><i class="glyphicon"></i> Approve Credit</a></li>';
+        }
+
+        if (($depotUser||$canApproveOrder)&&$order->getDeliveryState() == Order::DELIVERY_STATE_PARTIALLY_SHIPPED) {
+            $html .= '<li><a href="'.$this->router->generate('order_partial_shipped_close', array('id'=> $order->getId())).'" rel="tooltip" title="Order Close" class="confirmation-btn" data-title="Do you want to close?"><i class="glyphicon"></i> Order Close</a></li>';
         }
 
         if ($canOrderVerify && $order->getOrderState() == Order::ORDER_STATE_PROCESSING
