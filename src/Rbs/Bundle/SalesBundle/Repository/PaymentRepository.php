@@ -647,7 +647,7 @@ class PaymentRepository extends EntityRepository
             $qb->join('user.zilla', 'zilla');
             $qb->join('user.upozilla', 'upozilla');
 
-            $qb->select('user.email as email, zilla.id as zId, upozilla.id as upzId, p.receiveAccount, p.createdAt, p.depositDate, profile.fullName as agentName, profile.cellphoneForMapping as phone, agent.agentCodeForDatatable as agentId, agent.agentType as agentType, p.amount, b.name as bankName, b.slug as bankSlag, br.name as branchName, br.branchCode as branchCode');
+            $qb->select('user.email as email, zilla.id as zId, upozilla.id as upzId, p.receiveAccount, p.id as paymentId, p.createdAt, p.depositDate, profile.fullName as agentName, profile.cellphoneForMapping as phone, agent.agentCodeForDatatable as agentId, agent.agentType as agentType, p.amount, b.name as bankName, b.slug as bankSlag, br.name as branchName, br.branchCode as branchCode');
 
             $qb->where('p.verified = :verified')->setParameter('verified', true);
             $qb->andWhere('p.transactionType = :transactionType')->setParameter('transactionType', Payment::CR);
@@ -665,6 +665,7 @@ class PaymentRepository extends EntityRepository
             if($results){
                 foreach ($results as $result){
                     $returnArray[]= array(
+                        'paymentId'=> $result['paymentId'],
                         'agentId'=> $result['agentId'],
                         'upozillaId'=> $result['upzId'],
                         'districtId'=> $result['zId'],
