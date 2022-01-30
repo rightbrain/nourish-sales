@@ -73,6 +73,7 @@ class DeliveryController extends BaseController
             $qb->join('d.users', 'u');
             $qb->andWhere('u =:user');
             $qb->andWhere('sales_deliveries.shipped = 0');
+            $qb->andWhere('sales_deliveries.deletedAt IS NULL');
             $qb->andWhere('orders.deliveryState IN (:READY) OR orders.deliveryState IN (:PARTIALLY_SHIPPED)');
             $qb->setParameters(array('user'=>$this->getUser(), 'READY'=>Order::DELIVERY_STATE_READY, 'PARTIALLY_SHIPPED'=>Order::DELIVERY_STATE_PARTIALLY_SHIPPED));
 
