@@ -150,6 +150,9 @@ class AgentController extends BaseController
                     $profile->setCellphone($profile->getCellphoneForMapping());
                 }
                 $this->getDoctrine()->getRepository('RbsUserBundle:Profile')->update($profile);
+
+//                $this->agentCreateViaApi($profile, $agent);
+
                 $this->get('session')->getFlashBag()->add('success','User Updated Successfully!');
                 return $this->redirect($this->generateUrl('agents_home'));
             }
@@ -158,6 +161,30 @@ class AgentController extends BaseController
         return array(
             'form' => $form->createView(),
             'agent' => $agent
+        );
+    }
+
+    private function agentCreateViaApi($profile, $agent){
+        $requestedData=array(
+            'name'=>$profile->getFullName(),
+            'mobile'=>$profile->getCellphoneForMapping(),
+            'agentId'=>$agent->getAgentCodeForDatatable(),
+            'agentType'=>$agent->getAgentType(),
+            'address'=>$profile->getAddress(),
+            'email'=>$agent->getUser()->getEmail(),
+            'district_id'=>$agent->getUser()->getZilla()->getId(),
+            'upozila_id'=>$agent->getUser()->getUpozilla()->getId(),
+            'oldId'=>$agent->getId()
+        );
+        /** @var \GuzzleHttp\Client $client */
+        $client   = $this->get('guzzle.client.api_nourish_crm');
+
+        $response = $client->get(
+            '/en/crm/api/create-core-agent',
+            array(
+                'headers'=>array('Content-Type'=>'application/json'),
+                'query' => $requestedData,
+            )
         );
     }
 

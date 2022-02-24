@@ -121,3 +121,9 @@ guzzle:
             base_url: "http://api.icombd.com"
             headers:
                 Accept: "application/json"
+
+        api_nourish_crm:
+            base_url: "http://139.180.156.187:86"
+            options:
+                headers:
+                    Accept: "application/json"
