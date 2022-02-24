@@ -331,4 +331,70 @@ class DeliveryRepository extends EntityRepository
         return $returnArray;
 
     }
+
+    public function getDeliveryQuantityDetailsByDateAndZoneWiseForApi($date, $regionId){
+
+        $returnArray= array();
+        if($date&&$regionId){
+            $qp = $this->createQueryBuilder('d');
+            $qp->join('d.deliveryItems', 'di');
+            $qp->join('di.order', 'o');
+            $qp->join('di.orderItem', 'oi');
+            $qp->join('o.agent', 'a');
+            $qp->join('a.user', 'u');
+            $qp->join('u.profile', 'profile');
+            $qp->join('u.zilla', 'z');
+            $qp->join('oi.item', 'i');
+            $qp->select('d.id');
+            $qp->addSelect('i.id AS iId');
+            $qp->addSelect('i.name AS iName');
+            $qp->addSelect('z.id AS districtId');
+            $qp->addSelect('z.name AS districtName');
+            $qp->addSelect('z.parentId AS regionId');
+            $qp->addSelect('di.qty AS totalQuantity');
+            $qp->addSelect('o.id AS orderId');
+            $qp->addSelect('o.createdAt AS orderDate');
+            $qp->addSelect('profile.fullName AS agentName');
+            $qp->addSelect('a.agentCodeForDatatable AS agentId');
+            $qp->where('o.orderType = :orderType');
+            $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+            $qp->andWhere('o.deliveryState IN (:deliveryState)');
+            $qp->setParameter('deliveryState', ['PARTIALLY_SHIPPED','SHIPPED']);
+
+            $qp->andWhere('z.parentId = :regionId')->setParameter('regionId',$regionId);
+
+            $startDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
+            $endDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
+            $qp->andWhere('d.createdAt >= :startDate');
+            $qp->andWhere('d.createdAt <= :endDate');
+            $qp->setParameter('startDate', $startDate.' 00:00:00');
+            $qp->setParameter('endDate', $endDate.' 23:59:59');
+
+            /*$qp->groupBy('z.id');
+            $qp->addGroupBy('i.id');*/
+            $qp->orderBy('z.name', 'ASC');
+            $qp->addOrderBy('profile.fullName', 'ASC');
+            $results=$qp->getQuery()->getResult();
+
+            if($results){
+                foreach ($results as $result) {
+                    $returnArray[] = array(
+                        'itemId'=>$result['iId'],
+                        'itemName'=>$result['iName'],
+                        'agentName'=>$result['agentName'],
+                        'agentId'=>$result['agentId'],
+                        'orderId'=>$result['orderId'],
+                        'orderDate'=>$result['orderDate']->format('d-m-Y'),
+                        'districtId'=>$result['districtId'],
+                        'districtName'=>$result['districtName'],
+                        'regionId'=>$result['regionId'],
+                        'totalQuantity'=>$result['totalQuantity'],
+                    );
+                }
+            }
+        }
+
+        return $returnArray;
+
+    }
 }

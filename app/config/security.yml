@@ -40,6 +40,7 @@ security:
         - { path: ^/api/sms_vehicle_receive, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/payments, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/orders, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/order/details, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/products, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/itemTypes, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: ROLE_USER }

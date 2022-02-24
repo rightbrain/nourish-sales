@@ -394,4 +394,32 @@ class ApiController extends BaseController
 
         return $response;
     }
+    /**
+     * @Route("/api/order/details", name="api_order_details_by_region")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getOrderDetailsByRegionAction(Request $request)
+    {
+        $orderApiKey = $this->getParameter('order_api_key');
+
+        $date = $request->query->get('request_date');
+        $regionId = $request->query->get('region_id');
+
+        if ('GET' === $request->getMethod()) {
+            if ($orderApiKey == $request->headers->get('X-API-KEY')) {
+                $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->getDeliveryQuantityDetailsByDateAndZoneWiseForApi($date, $regionId);
+                $response= new JsonResponse($payments, 200);
+
+            } else {
+                $response = new JsonResponse(array("message" => 'Authentication Fail'), 401);
+            }
+        } else {
+            $response = new JsonResponse(array("message" => 'Invalid Request'), 404);
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
 }
