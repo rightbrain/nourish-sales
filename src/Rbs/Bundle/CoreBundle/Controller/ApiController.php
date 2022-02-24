@@ -404,11 +404,11 @@ class ApiController extends BaseController
         $orderApiKey = $this->getParameter('order_api_key');
 
         $date = $request->query->get('request_date');
-        $regionId = $request->query->get('region_id');
+        $districtIds = $request->query->get('district_id');
 
         if ('GET' === $request->getMethod()) {
             if ($orderApiKey == $request->headers->get('X-API-KEY')) {
-                $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->getDeliveryQuantityDetailsByDateAndZoneWiseForApi($date, $regionId);
+                $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->getDeliveryQuantityDetailsByDateAndZoneWiseForApi($date, $districtIds);
                 $response= new JsonResponse($payments, 200);
 
             } else {

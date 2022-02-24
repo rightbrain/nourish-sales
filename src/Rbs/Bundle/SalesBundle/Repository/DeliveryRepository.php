@@ -332,10 +332,11 @@ class DeliveryRepository extends EntityRepository
 
     }
 
-    public function getDeliveryQuantityDetailsByDateAndZoneWiseForApi($date, $regionId){
+    public function getDeliveryQuantityDetailsByDateAndZoneWiseForApi($date, $districtIds){
 
         $returnArray= array();
-        if($date&&$regionId){
+        if($date&&$districtIds){
+            $districtIds= explode(',',$districtIds);
             $qp = $this->createQueryBuilder('d');
             $qp->join('d.deliveryItems', 'di');
             $qp->join('di.order', 'o');
@@ -361,7 +362,7 @@ class DeliveryRepository extends EntityRepository
             $qp->andWhere('o.deliveryState IN (:deliveryState)');
             $qp->setParameter('deliveryState', ['PARTIALLY_SHIPPED','SHIPPED']);
 
-            $qp->andWhere('z.parentId = :regionId')->setParameter('regionId',$regionId);
+            $qp->andWhere('z.id IN (:districtIds)')->setParameter('districtIds',$districtIds);
 
             $startDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
             $endDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
@@ -373,7 +374,7 @@ class DeliveryRepository extends EntityRepository
             /*$qp->groupBy('z.id');
             $qp->addGroupBy('i.id');*/
             $qp->orderBy('z.name', 'ASC');
-            $qp->addOrderBy('profile.fullName', 'ASC');
+//            $qp->addOrderBy('profile.fullName', 'ASC');
             $results=$qp->getQuery()->getResult();
 
             if($results){
