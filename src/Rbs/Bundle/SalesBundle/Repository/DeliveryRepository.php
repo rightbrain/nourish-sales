@@ -336,7 +336,12 @@ class DeliveryRepository extends EntityRepository
 
         $returnArray= array();
         if($date&&$districtIds){
-            $districtIds= explode(',',$districtIds);
+            $arrayDistrictIds=null;
+            if($districtIds!='all'){
+
+                $arrayDistrictIds= explode(',',$districtIds);
+            }
+
             $qp = $this->createQueryBuilder('d');
             $qp->join('d.deliveryItems', 'di');
             $qp->join('di.order', 'o');
@@ -361,8 +366,9 @@ class DeliveryRepository extends EntityRepository
             $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
             $qp->andWhere('o.deliveryState IN (:deliveryState)');
             $qp->setParameter('deliveryState', ['PARTIALLY_SHIPPED','SHIPPED']);
-
-            $qp->andWhere('z.id IN (:districtIds)')->setParameter('districtIds',$districtIds);
+            if($districtIds!='all') {
+                $qp->andWhere('z.id IN (:districtIds)')->setParameter('districtIds', $arrayDistrictIds);
+            }
 
             $startDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
             $endDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
