@@ -125,6 +125,21 @@ class VehicleChickDatatable extends BaseDatatable
                         ),
                         'render_if' => array('isDeliveryFalse'),
                         'role' => 'ROLE_ADMIN',
+                    ),
+                    array(
+                        'route' => 'truck_info_edit_for_chick',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Vehicle Edit',
+                        'icon' => 'glyphicon glyphicon-edit',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'edit-action',
+                            'class' => 'btn btn-success btn-xs',
+                        ),
+//                        'render_if' => array('isOut'),
+                        'role' => 'ROLE_ADMIN',
                     )
                 )
             ))

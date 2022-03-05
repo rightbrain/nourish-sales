@@ -11,6 +11,7 @@ use Rbs\Bundle\SalesBundle\Entity\Order;
 use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleDeliverySetChickForm;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleDeliverySetForm;
+use Rbs\Bundle\SalesBundle\Form\Type\VehicleEditChickForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -317,32 +318,36 @@ class VehicleForChickController extends BaseController
     {
         return $this->getUser()->getUserType() == User::AGENT ?
             $this->redirect($this->generateUrl('truck_info_my_list')) :
-            $this->redirect($this->generateUrl('truck_info_list'));
+            $this->redirect($this->generateUrl('chick_truck_info_list'));
     }
 
+
     /**
+     * @Route("/vehicle/chick/edit/{id}", name="truck_info_edit_for_chick", options={"expose"=true})
+     * @Template("RbsSalesBundle:Vehicle:form-chick.html.twig")
      * @param Request $request
      * @param Vehicle $vehicle
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @JMS\Secure(roles="ROLE_AGENT, ROLE_CHICK_DELIVERY_MANAGE")
      */
-    protected function checkUserForFieldSet(Request $request, Vehicle $vehicle)
+    public function updateAction(Request $request, Vehicle $vehicle)
     {
-        if ($this->getUser()->getUserType() == User::AGENT) {
-            $order = $this->em()->getRepository('RbsSalesBundle:Order')->find($request->request->get('vehicle')['orders']);
-            $vehicle->setAgent($order->getAgent());
-            $vehicle->setTransportGiven(Vehicle::AGENT);
-            $vehicle->setDepo($order->getDepo());
-            $vehicle->setOrderText($request->request->get('vehicle')['orders']);
-            $delivery = new Delivery();
-            $delivery->addOrder($order);
-            $delivery->setShipped(false);
-            $delivery->setDepo($order->getDepo());
-            $delivery->setTransportGiven(Delivery::AGENT);
-            $vehicle->setDeliveries($delivery);
-            $this->em()->getRepository('RbsSalesBundle:Delivery')->createDelivery($delivery);
-        } else {
-            $vehicle->setTransportGiven(Vehicle::NOURISH);
+//        $vehicle = new Vehicle();
+        $form = $this->createForm(new VehicleEditChickForm($this->getUser()), $vehicle);
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+            if ($form->isValid()) {
+                $this->vehicleRepo()->update($vehicle);
+                $this->get('session')->getFlashBag()->add('success', 'Vehicle Info has been Updated Successfully');
+                return $this->redirect($this->generateUrl('chick_truck_info_in_out_list'));
+            }
         }
-        $vehicle->setShipped(false);
+
+        return array(
+            'form' => $form->createView(),
+            'user' => $this->getUser()
+        );
     }
 
     /**

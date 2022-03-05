@@ -31,6 +31,29 @@ class VehicleNourishDatatable extends BaseDatatable
                 ->add('driverName', 'column', array('title' => 'DriverName',))
                 ->add('driverPhone', 'column', array('title' => 'DriverPhone',))
                 ->add('truckNumber', 'column', array('title' => 'TruckNumber',))
+                ->add(null, 'action', array(
+                    'width' => '',
+                    'title' => 'Action',
+                    'start_html' => '<div class="wrapper">',
+                    'end_html' => '</div>',
+                    'actions' => array(
+                        array(
+                            'route' => 'nourish_truck_info_edit',
+                            'route_parameters' => array(
+                                'id' => 'id'
+                            ),
+                            'label' => 'Edit',
+                            'icon' => 'glyphicon glyphicon-edit',
+                            'attributes' => array(
+                                'rel' => 'tooltip',
+                                'title' => 'edit-action',
+                                'class' => 'btn btn-success btn-xs',
+                            )
+//                            'render_if' => array('isOut')
+    //                        'role' => 'ROLE_USER',
+                        )
+                    )
+                ))
                 ;
     }
 

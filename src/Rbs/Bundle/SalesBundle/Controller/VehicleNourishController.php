@@ -9,6 +9,7 @@ use Rbs\Bundle\SalesBundle\Entity\Vehicle;
 use Rbs\Bundle\SalesBundle\Entity\VehicleNourish;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleDeliverySetForm;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleForm;
+use Rbs\Bundle\SalesBundle\Form\Type\VehicleNourishEditForm;
 use Rbs\Bundle\SalesBundle\Form\Type\VehicleNourishForm;
 use Rbs\Bundle\UserBundle\Entity\User;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -95,6 +96,36 @@ class VehicleNourishController extends BaseController
 
 
                 $this->get('session')->getFlashBag()->add('success', 'Vehicle Info Added Successfully');
+                return $this->redirect($this->generateUrl('nourish_vehicle_info_list'));
+            }
+        }
+
+        return array(
+            'form' => $form->createView(),
+            'user' => $this->getUser()
+        );
+    }
+
+    /**
+     * @Route("/nourish/vehicle/edit/{id}", name="nourish_truck_info_edit", options={"expose"=true})
+     * @Template("RbsSalesBundle:VehicleNourish:form.html.twig")
+     * @param Request $request
+     * @param VehicleNourish $vehicle
+     * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @JMS\Secure(roles="ROLE_CHICK_TRUCK_MANAGE")
+     */
+    public function editAction(Request $request, VehicleNourish $vehicle)
+    {
+        $form = $this->createForm(new VehicleNourishEditForm(), $vehicle);
+
+        if ('POST' === $request->getMethod()) {
+            $form->handleRequest($request);
+
+
+            if ($form->isValid()) {
+                $this->vehicleRepo()->update($vehicle);
+
+                $this->get('session')->getFlashBag()->add('success', 'Vehicle Info Updated Successfully');
                 return $this->redirect($this->generateUrl('nourish_vehicle_info_list'));
             }
         }
