@@ -56,6 +56,7 @@
                                     <th>Sl</th>
                                     <th>ID</th>
                                     <th>Agent Name</th>
+                                    <th>Receive Account</th>
                                     <th>Bank</th>
                                     <th>Branch</th>
                                     <th class="text-right">Taka</th>
@@ -70,8 +71,9 @@
                                         <td>{{ sl }}</td>
                                         <td>{{ row.agentID }}</td>
                                         <td>{{ row.fullName }}</td>
-                                        <td>{{ row.bank }}</td>
-                                        <td>{{ row.branch }}</td>
+                                        <td>{{ row.receiveAccount|default('') }}</td>
+                                        <td>{{ row.bankName?row.bankName:row.bank }}</td>
+                                        <td>{{ row.branchName?row.branchName:row.branch|default('') }}</td>
                                         <td class="text-right">{{ row.amount }}</td>
                                     </tr>
                                     {% set sl = sl + 1 %}
