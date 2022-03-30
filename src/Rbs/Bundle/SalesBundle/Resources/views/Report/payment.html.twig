@@ -71,7 +71,13 @@
                                         <td>{{ sl }}</td>
                                         <td>{{ row.agentID }}</td>
                                         <td>{{ row.fullName }}</td>
-                                        <td>{{ row.receiveAccount|default('') }}</td>
+                                        <td>
+                                            {% if(row.receiveAccount=='FEED') %}
+                                            {{ 'Feeds' }}
+                                            {% else %}
+                                                {{ row.receiveAccount|capitalize|default('') }}
+                                            {% endif %}
+                                        </td>
                                         <td>{{ row.bankName?row.bankName:row.bank }}</td>
                                         <td>{{ row.branchName?row.branchName:row.branch|default('') }}</td>
                                         <td class="text-right">{{ row.amount }}</td>
