@@ -156,4 +156,48 @@ class AgentRepository extends EntityRepository
         return $output;
     }
 
+
+
+    public function getAgents(){
+        $query = $this->createQueryBuilder('a')
+            ->select('a.id','a.agentCodeForDatatable','a.agentType','a.createdAt','a.updatedAt')
+            ->addSelect('p.cellphoneForMapping','p.fullName','p.address')
+            ->addSelect('u.email')
+            ->addSelect('zilla.id as districtId','zilla.name as districtName')
+            ->addSelect('upozilla.id as upozillaId','upozilla.name as upozillaName')
+            ->join('a.user', 'u')
+            ->join('u.profile', 'p')
+            ->join('u.zilla','zilla')
+            ->join('u.upozilla','upozilla')
+            ->where('u.deletedAt IS NULL')
+            ->andWhere('a.deletedAt IS NULL')
+            ->andWhere('u.enabled = 1')
+            ->andWhere('u.userType = :AGENT')
+            ->setParameter('AGENT', 'AGENT')
+            ->orderBy('a.agentCodeForDatatable','ASC');
+        $results= $query->getQuery()->getArrayResult();
+        $returnArray=array();
+        if($results){
+            foreach ($results as $result) {
+                $returnArray[]=array(
+                    'name'=>$result['fullName'],
+                    'mobile'=>$result['cellphoneForMapping'],
+                    'agentId'=>$result['agentCodeForDatatable'],
+                    'agentType'=>$result['agentType'],
+                    'address'=>$result['address'],
+                    'email'=>$result['email'],
+                    'districtId'=>$result['districtId'],
+                    'districtName'=>$result['districtName'],
+                    'upozilaId'=>$result['upozillaId'],
+                    'upozillaName'=>$result['upozillaName'],
+                    'oldId'=>$result['id'],
+                    'cratedAt'=>$result['createdAt']->format('Y-m-d H:i:s'),
+                    'updatedAt'=>$result['updatedAt']->format('Y-m-d H:i:s'),
+                );
+            }
+        }
+
+        return $returnArray;
+    }
+
 }

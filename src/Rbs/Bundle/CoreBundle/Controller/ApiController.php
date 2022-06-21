@@ -422,4 +422,30 @@ class ApiController extends BaseController
 
         return $response;
     }
+
+    /**
+     * @Route("/api/agents", name="api_get_agnets")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getAgentsAction(Request $request)
+    {
+        $orderApiKey = $this->getParameter('order_api_key');
+
+        if ('GET' === $request->getMethod()) {
+            if ($orderApiKey == $request->headers->get('X-API-KEY')) {
+                $agents = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getAgents();
+                $response= new JsonResponse($agents, 200);
+
+            } else {
+                $response = new JsonResponse(array("message" => 'Authentication Fail'), 401);
+            }
+        } else {
+            $response = new JsonResponse(array("message" => 'Invalid Request'), 404);
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
 }

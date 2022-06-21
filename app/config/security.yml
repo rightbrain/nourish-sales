@@ -43,4 +43,5 @@ security:
         - { path: ^/api/order/details, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/products, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/itemTypes, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/agents, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: ROLE_USER }
