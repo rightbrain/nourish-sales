@@ -1,4 +1,5 @@
 <?php
+ini_set('memory_limit', '-1');
 date_default_timezone_set("Asia/Dhaka");
 defined('APPLICATION_ENV')
 || define('APPLICATION_ENV', (getenv('APPLICATION_ENV') ? getenv('APPLICATION_ENV') : 'prod'));

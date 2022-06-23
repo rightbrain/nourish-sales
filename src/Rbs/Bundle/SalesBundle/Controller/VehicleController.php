@@ -378,6 +378,7 @@ class VehicleController extends BaseController
      */
     public function deliverySetAction(Request $request, Vehicle $vehicle)
     {
+        ini_set('memory_limit', '-1');
         $form = $this->createForm(new VehicleDeliverySetForm($this->getUser(), $vehicle->getId()));
         $allRequest = $request->request->get('vehicle_delivery_form');
         if ('POST' === $request->getMethod()) {
