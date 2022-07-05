@@ -151,6 +151,7 @@ class VehicleController extends BaseController
 
             $qb->andWhere('d.depotType IS NULL OR d.depotType = :type');
             $qb->setParameter('type',Depo::DEPOT_TYPE_FEED);
+            $qb->andWhere('sales_vehicles.deletedAt IS NULL');
             $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
         };
         $query->addWhereAll($function);
@@ -258,6 +259,7 @@ class VehicleController extends BaseController
                 $qb->andWhere('sales_vehicles.vehicleIn IS NOT NULL');
                 $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
                 $qb->andWhere('sales_vehicles.deliveries IS NULL');
+                $qb->andWhere('sales_vehicles.deletedAt IS NULL');
                 $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
             }else{
 //                $qb->join('sales_vehicles.depo', 'd');
@@ -265,6 +267,7 @@ class VehicleController extends BaseController
                 $qb->andWhere('sales_vehicles.vehicleIn IS NOT NULL');
                 $qb->andWhere('sales_vehicles.vehicleOut IS NULL');
                 $qb->andWhere('sales_vehicles.deliveries IS NULL');
+                $qb->andWhere('sales_vehicles.deletedAt IS NULL');
                 $qb->orderBy('sales_vehicles.createdAt' ,'DESC');
                 $qb->setParameters(array('depoId'=>$depoId));
             }
@@ -590,6 +593,25 @@ class VehicleController extends BaseController
             'vehicle'      => $vehicle,
             'partialItems'  => $partialItems,
         ));
+    }
+
+
+    /**
+     * @Route("/vehicle/delete/{id}", name="truck_delete", options={"expose"=true})
+     * @param Vehicle $vehicle
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @JMS\Secure(roles="ROLE_DELIVERY_MANAGE, ROLE_TRUCK_OUT")
+     */
+    public function truckDeleteAction(Vehicle $vehicle)
+    {
+        $vehicle->setDeletedAt(new \DateTime());
+        $vehicle->setDeletedBy($this->getUser());
+        $vehicle->setStatus(Vehicle::INACTIVE);
+        $this->vehicleRepo()->update($vehicle);
+
+        $this->get('session')->getFlashBag()->add('success', 'Vehicle Deleted Successfully');
+
+        return $this->redirect($this->generateUrl('truck_info_in_out_list'));
     }
 
 }

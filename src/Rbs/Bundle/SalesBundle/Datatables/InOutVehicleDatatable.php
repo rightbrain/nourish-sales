@@ -144,6 +144,24 @@ class InOutVehicleDatatable extends BaseDatatable
                         ),
                         'role' => 'ROLE_ADMIN',
                         'render_if' => array('isOut', 'isFinishFalse', 'isShipped')
+                    ),
+                    array(
+                        'route' => 'truck_delete',
+                        'route_parameters' => array(
+                            'id' => 'id'
+                        ),
+                        'label' => 'Delete',
+                        'icon' => 'glyphicon glyphicon-remove',
+                        'attributes' => array(
+                            'rel' => 'tooltip',
+                            'title' => 'disable-action',
+                            'class' => 'btn btn-danger btn-xs delete-list-btn red',
+                            'role' => 'button'
+                        ),
+                        'confirm' => false,
+                        'confirm_message' => 'Are you sure?',
+                        'role' => 'ROLE_TRUCK_OUT',
+                        'render_if' => array('isDeliveryFalse')
                     )
                 )
             ))
