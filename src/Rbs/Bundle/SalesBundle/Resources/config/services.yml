@@ -218,3 +218,8 @@ services:
         class: Rbs\Bundle\SalesBundle\Datatables\VehicleNourishDatatable
         tags:
             - { name: sg.datatable.view }
+
+    rbs_erp.sales.datatable.DeliveryPoint:
+        class: Rbs\Bundle\SalesBundle\Datatables\DeliveryPointDatatable
+        tags:
+            - { name: sg.datatable.view }
