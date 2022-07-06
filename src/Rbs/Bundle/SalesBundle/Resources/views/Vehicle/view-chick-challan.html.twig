@@ -25,9 +25,12 @@
                         <p style="padding: 5px 0;margin: 0">Head Office: 39, Takia Center, Sector # 07, Uttara, Dhaka.</p>
                         <p style="padding: 5px 0;margin: 0">Tel: 7913023-27, Fax: 7913022, Web: www.nourish.com.bd</p>
                     </td>
-                    <td class="col-md-6" style="vertical-align: middle; width: 40%">
-                        <h4><strong>Challan: {{ order.id }} / {{ order.deliveries[0].id }}</strong></h4>
-                        <p><strong>Date: {{ order.createdAt|date('d-m-Y') }}</strong></p>
+                    <td class="col-md-6" style="vertical-align: top; width: 40%">
+                        <h4 style="margin-bottom: 0px; padding-bottom: 0px;"><strong>Challan: {{ order.id }} / {{ order.deliveries[0].id }}</strong></h4>
+                        <p style="margin: 5px 0 0; padding: 0px"><strong>Date: {{ order.createdAt|date('d-m-Y') }}</strong></p>
+                        {% if order.agent.deliveryPoint is defined and order.agent.deliveryPoint is not empty %}
+                            <p style="margin: 5px 0 0; padding: 0px;"><strong>Delivery Point: {{ order.agent.deliveryPoint.pointAddress|default('') }}</strong></p>
+                        {% endif %}
                     </td>
                 </tr>
             </table>

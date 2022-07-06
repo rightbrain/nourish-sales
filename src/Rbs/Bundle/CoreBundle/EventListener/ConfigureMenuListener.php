@@ -141,7 +141,7 @@ class ConfigureMenuListener extends ContextAwareListener
                 }
             }
 
-            if ($this->authorizationChecker->isGranted('ROLE_ADMIN')) {
+            if ($this->authorizationChecker->isGranted('ROLE_USER_CHICK') and $this->authorizationChecker->isGranted('ROLE_ADMIN')) {
                 $menu['Settings']->addChild('Delivery Point', array('route' => 'delivery_point_list'))
                     ->setAttribute('icon', 'fa fa-th-list');
                 if ($this->isMatch('delivery_point_list')) {

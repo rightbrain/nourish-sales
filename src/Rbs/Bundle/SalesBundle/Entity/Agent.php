@@ -177,6 +177,15 @@ class Agent
      */
     private $agentType=self::AGENT_TYPE_FEED;
 
+    /**
+     * @var DeliveryPoint
+     *
+     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\DeliveryPoint")
+     * @ORM\JoinColumn(name="delivery_point", nullable=true)
+     *
+     */
+    private $deliveryPoint;
+
 
     public function __construct()
     {
@@ -527,6 +536,23 @@ class Agent
     {
         $this->itemTypes = $itemTypes;
     }
+
+    /**
+     * @return DeliveryPoint
+     */
+    public function getDeliveryPoint()
+    {
+        return $this->deliveryPoint;
+    }
+
+    /**
+     * @param DeliveryPoint $deliveryPoint
+     */
+    public function setDeliveryPoint($deliveryPoint)
+    {
+        $this->deliveryPoint = $deliveryPoint;
+    }
+
 
 
 }

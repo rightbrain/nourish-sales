@@ -24,6 +24,10 @@
         {{ form_row(form.user.upozilla, { 'attr': {'class': 'thana-selector select2me form-control select2-offscreen', 'tabindex': '-1', 'title': 'Thana/UpoZilla'} }) }}
         {{ form_row(form.agentGroup) }}
 
+        {% if agent.agentType=='CHICK' %}
+            {{ form_row(form.deliveryPoint) }}
+        {% endif %}
+
         {{ form_row(form.user.email) }}
         {% if agent.agentType=='FEED' %}
         {{ form_row(form.itemTypes) }}

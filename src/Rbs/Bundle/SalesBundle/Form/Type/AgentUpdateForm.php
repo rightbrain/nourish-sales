@@ -6,7 +6,9 @@ use Rbs\Bundle\CoreBundle\Entity\Depo;
 use Rbs\Bundle\CoreBundle\Repository\DepoRepository;
 use Rbs\Bundle\CoreBundle\Repository\ItemTypeRepository;
 use Rbs\Bundle\SalesBundle\Entity\Agent;
+use Rbs\Bundle\SalesBundle\Entity\DeliveryPoint;
 use Rbs\Bundle\SalesBundle\Repository\AgentGroupRepository;
+use Rbs\Bundle\SalesBundle\Repository\DeliveryPointRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -97,6 +99,23 @@ class AgentUpdateForm extends AbstractType
                                 ->where('it.deletedAt IS NULL')
                                 ->orderBy('it.itemType', 'ASC');
                         },
+                    )
+                )
+                ->add(
+                    'deliveryPoint',
+                    'entity',
+                    array(
+                        'class'         => 'RbsSalesBundle:DeliveryPoint',
+                        'property'      => 'pointAddress',
+                        'required'      => false,
+                        'empty_value'   => 'Select Delivery Point',
+                        'empty_data'    => null,
+                        'query_builder' => function (DeliveryPointRepository $repository) {
+                            return $repository->createQueryBuilder('d')
+                                ->where('d.deletedAt IS NULL')
+                                ->andWhere('d.status=:status')->setParameter('status',1)
+                                ->orderBy('d.pointAddress', 'ASC');
+                        }
                     )
                 )
             ;

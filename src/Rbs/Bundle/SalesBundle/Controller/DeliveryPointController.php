@@ -28,7 +28,7 @@ class DeliveryPointController extends BaseController
     /**
      * @Route("/delivery-point/list", name="delivery_point_list")
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_USER_CHICK")
      */
     public function indexAction()
     {
@@ -43,7 +43,7 @@ class DeliveryPointController extends BaseController
     /**
      * @Route("/delivery_point_list_ajax", name="delivery_point_list_ajax", options={"expose"=true})
      * @Method("GET")
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_USER_CHICK")
      */
     public function listAjaxAction()
     {
@@ -67,7 +67,7 @@ class DeliveryPointController extends BaseController
      * @Template("RbsSalesBundle:DeliveryPoint:form.html.twig")
      * @param Request $request
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_USER_CHICK")
      */
     public function addAction(Request $request)
     {
@@ -96,7 +96,7 @@ class DeliveryPointController extends BaseController
      * @param Request $request
      * @param DeliveryPoint $deliveryPoint
      * @return array|\Symfony\Component\HttpFoundation\RedirectResponse|Response
-     * @JMS\Secure(roles="ROLE_ADMIN")
+     * @JMS\Secure(roles="ROLE_USER_CHICK")
      */
     public function editAction(Request $request, DeliveryPoint $deliveryPoint)
     {
