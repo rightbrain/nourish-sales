@@ -2,6 +2,7 @@
 
 namespace Rbs\Bundle\CoreBundle\Controller;
 
+use Rbs\Bundle\CoreBundle\Entity\Category;
 use Rbs\Bundle\SalesBundle\Entity\Sms;
 use Rbs\Bundle\SalesBundle\Helper\ChickOrderSmsParser;
 use Rbs\Bundle\SalesBundle\Helper\PaymentSmsParse;
@@ -324,6 +325,42 @@ class ApiController extends BaseController
             if ($smsApiKey == $request->headers->get('X-API-KEY')) {
                 $itemTypes = $this->getDoctrine()->getRepository('RbsCoreBundle:ItemType')->getActiveItemType();
                 $response= new Response(json_encode($itemTypes));
+
+            } else {
+                $response = new Response(json_encode(array("message" => 'Authentication Fail')), 401);
+            }
+        } else {
+            $response = new Response(json_encode(array("message" => 'Invalid Request')), 404);
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/api/item-category", name="api_item_category_list")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getItemCategoryListAction(Request $request)
+    {
+        $smsApiKey = "79b8428a0dea686430a7f20ccbe857bd";
+
+        if ('GET' === $request->getMethod()) {
+            if ($smsApiKey == $request->headers->get('X-API-KEY')) {
+                $categories = $this->getDoctrine()->getRepository('RbsCoreBundle:Category')->getAllActiveCategory();
+                $returnArray=array();
+                if($categories){
+                    /* @var Category $category*/
+                    foreach ($categories as $category) {
+                        $returnArray[$category->getId()]= array(
+                            'id'=>$category->getId(),
+                            'name'=>$category->getName()
+                        );
+                    }
+                }
+                $response= new Response(json_encode($returnArray));
 
             } else {
                 $response = new Response(json_encode(array("message" => 'Authentication Fail')), 401);
