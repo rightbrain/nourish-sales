@@ -178,11 +178,9 @@ class Agent
     private $agentType=self::AGENT_TYPE_FEED;
 
     /**
-     * @var DeliveryPoint
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="Rbs\Bundle\SalesBundle\Entity\DeliveryPoint")
-     * @ORM\JoinColumn(name="delivery_point", nullable=true)
-     *
+     * @ORM\Column(name="delivery_point", type="text", nullable=true)
      */
     private $deliveryPoint;
 
@@ -538,7 +536,7 @@ class Agent
     }
 
     /**
-     * @return DeliveryPoint
+     * @return string
      */
     public function getDeliveryPoint()
     {
@@ -546,12 +544,13 @@ class Agent
     }
 
     /**
-     * @param DeliveryPoint $deliveryPoint
+     * @param string $deliveryPoint
      */
     public function setDeliveryPoint($deliveryPoint)
     {
         $this->deliveryPoint = $deliveryPoint;
     }
+
 
 
 

@@ -101,23 +101,9 @@ class AgentUpdateForm extends AbstractType
                         },
                     )
                 )
-                ->add(
-                    'deliveryPoint',
-                    'entity',
-                    array(
-                        'class'         => 'RbsSalesBundle:DeliveryPoint',
-                        'property'      => 'pointAddress',
-                        'required'      => false,
-                        'empty_value'   => 'Select Delivery Point',
-                        'empty_data'    => null,
-                        'query_builder' => function (DeliveryPointRepository $repository) {
-                            return $repository->createQueryBuilder('d')
-                                ->where('d.deletedAt IS NULL')
-                                ->andWhere('d.status=:status')->setParameter('status',1)
-                                ->orderBy('d.pointAddress', 'ASC');
-                        }
-                    )
-                )
+                ->add('deliveryPoint', 'textarea', array(
+                    'required' => false
+                ))
             ;
         }
         if($agentType==Agent::AGENT_TYPE_FEED){

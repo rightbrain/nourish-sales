@@ -32,7 +32,7 @@
 <div class="main-content">
     {% set i=1 %}
     {% for order in vehicle.deliveries.orders %}
-    <div class="modal-body" style="{{ i%3!=0?'margin-bottom: 60px':''  }}">
+    <div class="modal-body" style="{{ i%3!=0?'margin-bottom: 50px':''  }}">
         <div class="row">
             <table width="100%" class="table table-full-width">
                 <tr>
@@ -46,9 +46,6 @@
                     <td class="col-md-6" style="vertical-align: top; width: 40%">
                         <h4 style="margin-bottom: 0px; padding-bottom: 0px;"><strong>Challan: {{ order.id }} / {{ order.deliveries[0].id }}</strong></h4>
                         <p style="margin: 5px 0 0; padding: 0px"><strong>Date: {{ order.createdAt|date('d-m-Y') }}</strong></p>
-                        {% if order.agent.deliveryPoint is defined and order.agent.deliveryPoint is not empty %}
-                            <p style="margin: 5px 0 0; padding: 0px;"><strong>Delivery Point: {{ order.agent.deliveryPoint.pointAddress|default('') }}</strong></p>
-                        {% endif %}
                     </td>
                 </tr>
             </table>
@@ -69,7 +66,7 @@
                         <table cellpadding="5px" border="1" collapse="0" cellspacing="0" width="100%" class="table table-bordered">
                             <thead>
                             <tr>
-                                <td style="border-top: .2ex solid #000; vertical-align: middle" colspan="10"><strong>Name & Address: {{ order.agent.user.profile.fullName }}, {{ order.agent.user.profile.address|default('') }}, {{ order.agent.user.upozilla.name|default('') }}, {{ order.agent.user.zilla.name|default('') }}; Mobile No: {{ order.agent.user.profile.cellphoneForMapping }}</strong></td>
+                                <td style="border-top: .2ex solid #000; vertical-align: middle" colspan="10"><strong>Name & Address: ({{ order.agent.agentCodeForDatatable }}) {{ order.agent.user.profile.fullName }}, {{ order.agent.user.profile.address|default('') }}, {{ order.agent.user.upozilla.name|default('') }}, {{ order.agent.user.zilla.name|default('') }}; Mobile No: {{ order.agent.user.profile.cellphoneForMapping }}</strong></td>
                             </tr>
                             <tr>
                                 <th>SL. No.</th>
@@ -131,6 +128,13 @@
                             </tr>
                             <tr>
                                 <td style="border: none">Money Receipt No.</td>
+                            </tr>
+                            <tr>
+                                <td align="center" style="border: none" colspan="2">
+                                    {% if order.agent is defined and order.agent.deliveryPoint is not empty %}
+                                        <strong>Delivery Point: {{ order.agent.deliveryPoint|default('') }}</strong>
+                                    {% endif %}
+                                </td>
                             </tr>
 
                         </table>
