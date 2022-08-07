@@ -471,7 +471,8 @@ class ApiController extends BaseController
 
         if ('GET' === $request->getMethod()) {
             if ($orderApiKey == $request->headers->get('X-API-KEY')) {
-                $agents = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getAgents();
+                $last7Days = $request->query->get('last7Days');
+                $agents = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getAgents($last7Days);
                 $response= new JsonResponse($agents, 200);
 
             } else {
