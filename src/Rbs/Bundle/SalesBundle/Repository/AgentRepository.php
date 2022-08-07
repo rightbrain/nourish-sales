@@ -159,7 +159,8 @@ class AgentRepository extends EntityRepository
 
 
     public function getAgents($last7Days=false){
-        $date = date('Y-m-d', strtotime("-7 days"));
+        $date = date('Y-m-d', strtotime("-4 days"));
+        $today = date('Y-m-d');
 
         $query = $this->createQueryBuilder('a')
             ->select('a.id','a.agentCodeForDatatable','a.agentType','a.createdAt','a.updatedAt')
@@ -177,9 +178,9 @@ class AgentRepository extends EntityRepository
             ->andWhere('u.userType = :AGENT')
             ->setParameter('AGENT', 'AGENT');
         if($last7Days){
-            $query->andWhere('a.updatedAt BETWEEN :n30days AND :today')
-                ->setParameter('today', date('Y-m-d h:i:s'))
-                ->setParameter('n30days', $date);
+            $query->andWhere('a.updatedAt BETWEEN :p7days AND :today')
+                ->setParameter('today', $today." 23:59:59")
+                ->setParameter('p7days', $date." 00:00:00");
         }
 
             $query->orderBy('a.agentCodeForDatatable','ASC');
