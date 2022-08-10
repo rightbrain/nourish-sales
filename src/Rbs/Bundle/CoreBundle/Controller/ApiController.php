@@ -486,4 +486,30 @@ class ApiController extends BaseController
 
         return $response;
     }
+
+    /**
+     * @Route("/api/depots", name="api_get_depots")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getDepotsAction(Request $request)
+    {
+        $orderApiKey = $this->getParameter('order_api_key');
+
+        if ('GET' === $request->getMethod()) {
+            if ($orderApiKey == $request->headers->get('X-API-KEY')) {
+                $depots = $this->getDoctrine()->getRepository('RbsCoreBundle:Depo')->getActiveDepotForApi();
+                $response= new JsonResponse($depots, 200);
+
+            } else {
+                $response = new JsonResponse(array("message" => 'Authentication Fail'), 401);
+            }
+        } else {
+            $response = new JsonResponse(array("message" => 'Invalid Request'), 404);
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
 }
