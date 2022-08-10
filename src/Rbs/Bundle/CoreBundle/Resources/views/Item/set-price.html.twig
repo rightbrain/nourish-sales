@@ -43,7 +43,7 @@
                                                 <input type="number" class="form-control input-xsmall mrp_amount">
                                             </div>
                                             <div class="col-md-5">
-                                                <button type="button" data-zone-name="{{ region.name|lower }}" class="btn btn-xs blue pull-left set-default-price-zone zone_{{ region.name|lower }}">
+                                                <button type="button" data-zone-name="zone_{{ region.id }}" class="btn btn-xs blue pull-left set-default-price-zone zone_{{ region.id }}">
                                                     ৳ Set Price
                                                 </button>
                                             </div>
@@ -52,7 +52,7 @@
                                     </tr>
                                     {% for index, location in locations %}
                                         {% if location.parentId==region.id %}
-                                            <tr class="form-group {{ region.name|lower }} district">
+                                            <tr class="form-group zone_{{ region.id }} district">
                                                 <td><label for="amount-{{ index }}">{{ location.name }}</label></td>
                                                 <td><input id="amount-{{ index }}" type="text" name="amount[{{ location.id }}]" value="{{ itemPrices[location.id]|default(0) }}" class="form-control input-xsmall amount"></td>
                                                 {% if item.itemType.itemType=='Chick' %}
