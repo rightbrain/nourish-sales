@@ -120,7 +120,7 @@ class DepoRepository extends EntityRepository
                 $returnArray[]=array(
                     'id'=>$result->getId(),
                     'name'=>$result->getName(),
-                    'type'=>$result->getDepotType(),
+                    'type'=>$result->getDepotType()?$result->getDepotType():'FEED',
                 );
             }
         }
