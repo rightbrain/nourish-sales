@@ -107,17 +107,21 @@ class DepoRepository extends EntityRepository
     {
         $query = $this->createQueryBuilder('d');
         $query->where('d.deletedAt IS NULL');
-        $query->andWhere('d.depotType = :feed or d.depotType IS NULL');
-        $query->setParameter('feed',Depo::DEPOT_TYPE_FEED);
+//        $query->andWhere('d.depotType = :feed or d.depotType IS NULL');
+//        $query->setParameter('feed',Depo::DEPOT_TYPE_FEED);
 
-        $query->orderBy('d.name', 'ASC');
+        $query->orderBy('d.id', 'ASC');
 
         $results = $query->getQuery()->getResult();
         $returnArray=array();
         if($results){
             /* @var Depo $result*/
             foreach ($results as $result) {
-                $returnArray[$result->getId()]=$result->getName();
+                $returnArray[]=array(
+                    'id'=>$result->getId(),
+                    'name'=>$result->getName(),
+                    'type'=>$result->getDepotType(),
+                );
             }
         }
         return $returnArray;
