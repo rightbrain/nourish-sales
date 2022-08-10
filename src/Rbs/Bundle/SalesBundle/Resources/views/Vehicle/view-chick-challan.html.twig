@@ -32,20 +32,20 @@
 <div class="main-content">
     {% set i=1 %}
     {% for order in vehicle.deliveries.orders %}
-    <div class="modal-body" style="{{ i%3!=0?'margin-bottom: 50px':''  }}">
+    <div class="modal-body" style="margin-top: 10px; {{ i%3!=0?'margin-bottom: 50px':''  }}">
         <div class="row">
-            <table width="100%" class="table table-full-width">
+            <table width="100%" class="table table-full-width" style="margin-bottom: 0;">
                 <tr>
                     <td class="col-md-6" style="vertical-align: top; width: 60%">
                         <h3 style="padding: 0;margin: 0">NOURISH POULTRY & HATCHERY LTD</h3>
-                        <p style="padding: 5px 0;margin: 0"><strong>Hatchery:</strong> {{ vehicle.depo.description|nl2br  }}
+                        <p style="padding: 2px 0;margin: 0"><strong>Hatchery:</strong> {{ vehicle.depo.description|nl2br  }}
                         </p>
-                        <p style="padding: 5px 0;margin: 0">Head Office: 39, Takia Center, Sector # 07, Uttara, Dhaka.</p>
-                        <p style="padding: 5px 0;margin: 0">Tel: 7913023-27, Fax: 7913022, Web: www.nourish.com.bd</p>
+                        <p style="padding: 2px 0;margin: 0">Head Office: 39, Takia Center, Sector # 07, Uttara, Dhaka.</p>
+                        <p style="padding: 2px 0;margin: 0">Tel: 7913023-27, Fax: 7913022, Web: www.nourish.com.bd</p>
                     </td>
                     <td class="col-md-6" style="vertical-align: top; width: 40%">
                         <h4 style="margin-bottom: 0px; padding-bottom: 0px;"><strong>Challan: {{ order.id }} / {{ order.deliveries[0].id }}</strong></h4>
-                        <p style="margin: 5px 0 0; padding: 0px"><strong>Date: {{ order.createdAt|date('d-m-Y') }}</strong></p>
+                        <p style="margin: 2px 0 0; padding: 0px"><strong>Date: {{ order.createdAt|date('d-m-Y') }}</strong></p>
                     </td>
                 </tr>
             </table>
@@ -55,8 +55,8 @@
                     <div class="portlet-title">
                         <table width="100%" class="table" style="margin-bottom: 0">
                             <tr>
-                                <td width="50%" style="border: none"><div class="col-md-6" style="text-align: center"><div class="caption" style="font-size: 18px;line-height: 18px;padding: 10px 0;"><strong>INVOICE HATCHERY</strong></div></div></td>
-                                <td width="50%" style="border: none"><div class="col-md-6"><div class="caption" style="font-size: 18px;line-height: 18px;padding: 10px 0;"><strong>{{ vehicle.depo.name  }}</strong></div></div></td>
+                                <td width="50%" style="border: none"><div class="col-md-6" style="text-align: center"><div class="caption" style="font-size: 18px;line-height: 18px;padding: 5px 0;"><strong>INVOICE HATCHERY</strong></div></div></td>
+                                <td width="50%" style="border: none"><div class="col-md-6"><div class="caption" style="font-size: 18px;line-height: 18px;padding: 5px 0;"><strong>{{ vehicle.depo.name  }}</strong></div></div></td>
                             </tr>
                         </table>
 
