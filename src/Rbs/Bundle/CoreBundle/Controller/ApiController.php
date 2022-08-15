@@ -512,4 +512,56 @@ class ApiController extends BaseController
 
         return $response;
     }
+
+    /**
+     * @Route("/api/banks", name="api_get_bank")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getBankAction(Request $request)
+    {
+        $orderApiKey = $this->getParameter('order_api_key');
+
+        if ('GET' === $request->getMethod()) {
+            if ($orderApiKey == $request->headers->get('X-API-KEY')) {
+                $banks = $this->getDoctrine()->getRepository('RbsCoreBundle:Bank')->getBankForApi();
+                $response= new JsonResponse($banks, 200);
+
+            } else {
+                $response = new JsonResponse(array("message" => 'Authentication Fail'), 401);
+            }
+        } else {
+            $response = new JsonResponse(array("message" => 'Invalid Request'), 404);
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/api/branches", name="api_get_branch")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getBankBranchAction(Request $request)
+    {
+        $orderApiKey = $this->getParameter('order_api_key');
+
+        if ('GET' === $request->getMethod()) {
+            if ($orderApiKey == $request->headers->get('X-API-KEY')) {
+                $bankBranches = $this->getDoctrine()->getRepository('RbsCoreBundle:BankBranch')->getBranchForApi();
+                $response= new JsonResponse($bankBranches, 200);
+
+            } else {
+                $response = new JsonResponse(array("message" => 'Authentication Fail'), 401);
+            }
+        } else {
+            $response = new JsonResponse(array("message" => 'Invalid Request'), 404);
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
 }

@@ -3,6 +3,7 @@
 namespace Rbs\Bundle\CoreBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Rbs\Bundle\CoreBundle\Entity\Bank;
 
 /**
  * BankRepository
@@ -12,4 +13,24 @@ use Doctrine\ORM\EntityRepository;
  */
 class BankRepository extends EntityRepository
 {
+
+    public function getBankForApi()
+    {
+        $query = $this->createQueryBuilder('bank');
+        $query->orderBy('bank.id', 'ASC');
+
+        $results = $query->getQuery()->getResult();
+        $returnArray=array();
+        if($results){
+            /* @var Bank $result*/
+            foreach ($results as $result) {
+                $returnArray[]=array(
+                    'id'=>$result->getId(),
+                    'name'=>$result->getName(),
+                    'slug'=>$result->getSlug(),
+                );
+            }
+        }
+        return $returnArray;
+    }
 }

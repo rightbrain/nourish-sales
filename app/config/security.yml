@@ -46,4 +46,6 @@ security:
         - { path: ^/api/item-category, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/agents, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/api/depots, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/banks, role: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/api/branches, role: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/, role: ROLE_USER }

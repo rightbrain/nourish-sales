@@ -51,4 +51,27 @@ class BankBranchRepository extends EntityRepository
         }
         return $data;
     }
+
+    public function getBranchForApi()
+    {
+        $data = array();
+        $qb = $this->createQueryBuilder('branch');
+        $qb->select("bank.name AS bankName, branch.name as branchName, branch.branchCode as branchCode, branch.id");
+        $qb->join('branch.bank', 'bank');
+        $qb->orderBy('branch.name', 'asc');
+        $results = $qb->getQuery()->getResult();
+
+        if($results){
+            foreach ($results as $row) {
+                $data[$row['id']] = array(
+                    'id'=> $row['id'],
+                    'branchName'=> trim($row['branchName']),
+                    'bankName'=> trim($row['bankName']),
+                    'code'=> $row['branchCode'],
+                    'codeBankBranchName'=> $row['branchCode']!=''?'('. $row['branchCode'].') '. $row['branchName'].' - '.$row['bankName']:$row['branchName'].' - '.$row['bankName'],
+                );
+            }
+        }
+        return $data;
+    }
 }
