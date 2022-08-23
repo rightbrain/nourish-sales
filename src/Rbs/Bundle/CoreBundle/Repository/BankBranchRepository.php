@@ -63,7 +63,7 @@ class BankBranchRepository extends EntityRepository
 
         if($results){
             foreach ($results as $row) {
-                $data[$row['id']] = array(
+                $data[] = array(
                     'id'=> $row['id'],
                     'branchName'=> trim($row['branchName']),
                     'bankName'=> trim($row['bankName']),

@@ -354,7 +354,7 @@ class ApiController extends BaseController
                 if($categories){
                     /* @var Category $category*/
                     foreach ($categories as $category) {
-                        $returnArray[$category->getId()]= array(
+                        $returnArray[]= array(
                             'id'=>$category->getId(),
                             'name'=>$category->getName()
                         );
