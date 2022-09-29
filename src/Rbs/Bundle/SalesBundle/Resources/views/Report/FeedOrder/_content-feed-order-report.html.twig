@@ -50,7 +50,7 @@
                         <td>{{ order.totalQuantity|number_format(2,'.',',')}}</td>
                         <td>{{ order.totalAmount|number_format(2,'.',',')}}</td>
                         <td>{{ paymentAmountViaOrders[order.id].totalAmount|default('')|number_format(2,'.',',') }}</td>
-                        <td>{{ order.remarks|default('') }}</td>
+                        <td style="word-break: break-word!important;">{{ order.remarks|default('') }}</td>
                     </tr>
                 {% endfor %}
                 <tr>
