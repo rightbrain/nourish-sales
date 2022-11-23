@@ -604,7 +604,7 @@ var Delivery = function()
                     element.closest('tr').find('.itemAdd').prop('disabled', true);
                     element.closest('tr').find('.itemQty').prop('disabled', true);
                     if(response.status==='success'){
-                        var itemQty = parseInt(totalApprovedAmount/response.price);
+                        var itemQty = (totalApprovedAmount/response.price).toFixed(0);
                         var stockAvailableInfo = parseInt(response.onHand) - parseInt(response.onHold);
                         element.closest('tr').find('.stock-available').text(stockAvailableInfo);
                         element.closest('tr').find('.itemQty').val(itemQty);
