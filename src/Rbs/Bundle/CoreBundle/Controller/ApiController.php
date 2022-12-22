@@ -21,6 +21,86 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
  */
 class ApiController extends BaseController
 {
+
+
+    /**
+     * @Route("/api/login", name="api_user_login", methods={"POST","GET"}, options={"expose"=true})
+     * @param Request $request
+     * @return JsonResponse|Response
+     */
+    public function login(Request $request)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $apiKey = $this->getParameter('order_api_key');
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $apiKey) {
+            $agentId = trim($request->request->get('agent_id'));
+//            $userType = trim($request->request->get('user_type'));
+            $findAgent = $this->getDoctrine()->getRepository('RbsSalesBundle:Agent')->getAgentByCode($agentId, $agentType='FEED');
+
+            if ($findAgent) {
+                $phoneNumber = $findAgent->getUser()&&$findAgent->getUser()->getProfile()?$findAgent->getUser()->getProfile()->getCellphoneForMapping():'';
+                    if ($phoneNumber=="") {
+                        $response = new Response();
+                        $response->headers->set('Content-Type', 'application/json');
+                        $response->setContent(json_encode(array(
+                            'message' => 'Mobile number does not found!',
+                            'status' => '404'
+                        )));
+                        $response->setStatusCode(Response::HTTP_NOT_FOUND);
+                        return $response;
+                    }
+                    $userMobile = str_replace('-', '', $phoneNumber);
+
+                    $otp = (string)mt_rand(1000, 9999);
+                    $message = 'Your OTP is ' . $otp . '.';
+
+                $smsSender = $this->get('rbs_erp.sales.service.smssender');
+                $smsSender->sendOtp($message, $phoneNumber);
+
+                    $data = array(
+                        'userId' => $findAgent->getUser()->getId(),
+                        'agentId' => $findAgent->getId(),
+                        'agentCode' => $findAgent->getAgentCodeForDatatable(),
+                        'username' => $findAgent->getUser()->getUsername(),
+                        'name' => $findAgent->getUser()->getProfile()->getFullName(),
+//                        'roles' => $findAgent->getUser()->getRoles(),
+                        'districtId' => $findAgent->getUser()&&$findAgent->getUser()->getZilla()?$findAgent->getUser()->getZilla()->getId():'',
+                        'districtName' => $findAgent->getUser()&&$findAgent->getUser()->getZilla()?$findAgent->getUser()->getZilla()->getName():'',
+                        'upozilaId' => $findAgent->getUser()?$findAgent->getUser()->getUpozilla()->getId():'',
+                        'upozilaName' => $findAgent->getUser()?$findAgent->getUser()->getUpozilla()->getName():'',
+                        'status' => '200',
+                        'otp' => $otp,
+                    );
+                    $response = new Response();
+                    $response->headers->set('Content-Type', 'application/json');
+                    $response->setContent(json_encode($data));
+                    $response->setStatusCode(Response::HTTP_OK);
+                    return $response;
+
+            } else {
+                $response = new Response();
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent(json_encode([
+                    'message' => 'Unregistered employee!',
+                    'status' => '401',
+                ]));
+                $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
+                return $response;
+            }
+        }
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode([
+            'message' => 'Invalid request!',
+            'status' => '405',
+        ]));
+        $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
+        return $response;
+    }
+
+
     /**
      * @Route("/api/sms_receive", name="api_sms_receive")
      * @param Request $request

@@ -209,4 +209,21 @@ class AgentRepository extends EntityRepository
         return $returnArray;
     }
 
+    public function getAgentByCode($code, $agentType)
+    {
+        $query = $this->createQueryBuilder('a');
+        $query->join('a.user', 'u');
+        $query->join('u.profile', 'p');
+        $query->where('u.userType = :AGENT');
+        $query->andWhere('a.agentCodeForDatatable = :code');
+        $query->andWhere('a.agentType =:agentType');
+        $query->andWhere('u.enabled = 1');
+        $query->andWhere('u.deletedAt IS NULL');
+        $query->setParameter('AGENT', User::AGENT);
+        $query->setParameter('code', $code);
+        $query->setParameter('agentType', $agentType);
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
+
 }

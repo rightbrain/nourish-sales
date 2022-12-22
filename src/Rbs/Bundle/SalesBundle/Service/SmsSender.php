@@ -27,4 +27,9 @@ class SmsSender
     {
         $this->smsGateWay->send($msg, $cellPhone);
     }
+
+    public function sendOtp($msg, $cellPhone)
+    {
+        $this->smsGateWay->send($msg, $cellPhone);
+    }
 }
