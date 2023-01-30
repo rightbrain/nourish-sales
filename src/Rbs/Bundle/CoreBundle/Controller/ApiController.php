@@ -100,6 +100,34 @@ class ApiController extends BaseController
         return $response;
     }
 
+    /**
+     * @Route("/api/order/create", name="api_order_create", methods={"POST","GET"}, options={"expose"=true})
+     * @param Request $request
+     * @return JsonResponse|Response
+     */
+    public function orderCreate(Request $request)
+    {
+        set_time_limit(0);
+        ignore_user_abort(true);
+        $apiKey = $this->getParameter('order_api_key');
+        if ($request->getMethod() == 'POST' && $request->headers->get('X-API-KEY') == $apiKey) {
+            $data = json_decode($request->getContent(), true);
+
+            return new JsonResponse($data);
+
+
+        }
+
+        $response = new Response();
+        $response->headers->set('Content-Type', 'application/json');
+        $response->setContent(json_encode(array(
+            'message' => 'Invalid request!',
+            'status' => '405'
+        )));
+        $response->setStatusCode(Response::HTTP_UNAUTHORIZED);
+        return $response;
+    }
+
 
     /**
      * @Route("/api/sms_receive", name="api_sms_receive")
