@@ -548,7 +548,6 @@ class ApiController extends BaseController
     public function getOrdersPendingDeliveryByDateAction(Request $request)
     {
         $orderApiKey = $this->getParameter('order_api_key');
-//        return new JsonResponse($orderApiKey, 200);
 
         $date = $request->query->get('request_date');
 
