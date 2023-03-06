@@ -1042,4 +1042,59 @@ class OrderRepository extends EntityRepository
         return $returnArray;
 
     }
+
+    public function getOrderPendingDeliveryByDateForApi($date){
+
+        $qp = $this->createQueryBuilder('o');
+        $qp->join('o.orderItems', 'oi');
+        $qp->join('o.agent', 'a');
+        $qp->join('a.user', 'u');
+        $qp->join('u.zilla', 'z');
+        $qp->join('oi.item', 'i');
+        $qp->leftJoin('o.deliveryItems', 'di');
+        $qp->select('o.id', 'o.createdAt');
+        $qp->addSelect('i.id AS iId');
+        $qp->addSelect('i.name AS iName');
+        $qp->addSelect('z.id AS districtId');
+        $qp->addSelect('z.name AS districtName');
+        $qp->addSelect('z.parentId AS regionId');
+        $qp->addSelect('SUM(oi.quantity) AS totalOrderQuantity');
+        $qp->addSelect('SUM(di.qty) AS totalDeliveryQuantity');
+        $qp->where('o.orderType = :orderType');
+        $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
+        $qp->andWhere('o.deliveryState IN (:deliveryState)');
+        $qp->setParameter('deliveryState', ['PARTIALLY_SHIPPED','READY']);
+
+        $startDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
+        $endDate = $date?date('Y-m-d', strtotime($date)):date('Y-m-d', strtotime("now"));
+        $qp->andWhere('o.createdAt >= :startDate');
+        $qp->andWhere('o.createdAt <= :endDate');
+        $qp->setParameter('startDate', $startDate.' 00:00:00');
+        $qp->setParameter('endDate', $endDate.' 23:59:59');
+
+        $qp->groupBy('z.id');
+        $qp->addGroupBy('i.id');
+        $qp->orderBy('z.name', 'ASC');
+        $results=$qp->getQuery()->getResult();
+        $returnArray= array();
+        if($results){
+            foreach ($results as $result) {
+                $totalOrderQty = $result['totalOrderQuantity']?$result['totalOrderQuantity']:0;
+                $totalDeliveryQty = $result['totalDeliveryQuantity'] && $result['totalDeliveryQuantity']>0?$result['totalDeliveryQuantity']:0;
+                $pendingQty = $totalOrderQty - $totalDeliveryQty;
+                $returnArray[] = array(
+                    'itemId'=>$result['iId'],
+                    'itemName'=>$result['iName'],
+                    'districtId'=>$result['districtId'],
+                    'districtName'=>$result['districtName'],
+                    'regionId'=>$result['regionId'],
+                    'totalQuantity'=>$pendingQty,
+                    'createdAt'=>$result['createdAt']->format('Y-m-d'),
+                );
+            }
+        }
+
+        return $returnArray;
+
+    }
 }

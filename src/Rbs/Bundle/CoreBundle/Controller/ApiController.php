@@ -539,6 +539,35 @@ class ApiController extends BaseController
 
         return $response;
     }
+
+    /**
+     * @Route("/api/orders/pending/delivery", name="api_orders_pending_delivery_by_date")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getOrdersPendingDeliveryByDateAction(Request $request)
+    {
+        $orderApiKey = $this->getParameter('order_api_key');
+//        return new JsonResponse($orderApiKey, 200);
+
+        $date = $request->query->get('request_date');
+
+        if ('GET' === $request->getMethod()) {
+            if ($orderApiKey == $request->headers->get('X-API-KEY')) {
+                $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getOrderPendingDeliveryByDateForApi($date);
+                $response= new JsonResponse($payments, 200);
+
+            } else {
+                $response = new JsonResponse(array("message" => 'Authentication Fail'), 401);
+            }
+        } else {
+            $response = new JsonResponse(array("message" => 'Invalid Request'), 404);
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
     /**
      * @Route("/api/order/details", name="api_order_details_by_region")
      * @param Request $request
