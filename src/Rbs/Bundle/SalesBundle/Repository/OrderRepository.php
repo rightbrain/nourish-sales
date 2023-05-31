@@ -1143,7 +1143,7 @@ class OrderRepository extends EntityRepository
                 $qp->andWhere('z.id IN (:districtIds)')->setParameter('districtIds', $arrayDistrictIds);
             }
 
-            $qp->groupBy('0i.id', 'o.id');
+            $qp->groupBy('oi.id', 'o.id');
             $qp->orderBy('z.name', 'ASC');
             $results = $qp->getQuery()->getResult();
 
