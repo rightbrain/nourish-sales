@@ -1163,6 +1163,8 @@ class OrderRepository extends EntityRepository
                         'regionId' => $result['regionId'],
                         'orderDate'=>$result['orderDate']->format('d-m-Y'),
                         'totalQuantity' => $pendingQty,
+                        'totalOrderQuantity' => $totalOrderQty,
+                        'totalDeliveryQuantity' => $totalDeliveryQty,
 //                    'createdAt'=>$result['createdAt']->format('Y-m-d'),
                     );
                 }
