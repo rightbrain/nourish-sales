@@ -1,6 +1,7 @@
 <?php
 namespace Rbs\Bundle\SalesBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Rbs\Bundle\CoreBundle\Entity\Item;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -30,6 +31,13 @@ class OrderItem
      * @ORM\JoinColumn(name="order_id", nullable=true, onDelete="CASCADE")
      */
     private $order;
+
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\DeliveryItem", mappedBy="orderItem"))
+     */
+    private $deliveryItems;
 
     /**
      * @var Item
@@ -130,6 +138,22 @@ class OrderItem
     public function setItem($item)
     {
         $this->item = $item;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getDeliveryItems()
+    {
+        return $this->deliveryItems;
+    }
+
+    /**
+     * @param ArrayCollection $deliveryItems
+     */
+    public function setDeliveryItems($deliveryItems)
+    {
+        $this->deliveryItems = $deliveryItems;
     }
 
     /**
