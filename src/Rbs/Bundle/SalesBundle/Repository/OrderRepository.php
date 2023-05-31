@@ -1051,7 +1051,7 @@ class OrderRepository extends EntityRepository
         $qp->join('a.user', 'u');
         $qp->join('u.zilla', 'z');
         $qp->join('oi.item', 'i');
-        $qp->leftJoin('o.deliveryItems', 'di');
+        $qp->leftJoin('oi.deliveryItems', 'di');
         $qp->select('o.id', 'o.createdAt');
         $qp->addSelect('i.id AS iId');
         $qp->addSelect('i.name AS iName');
