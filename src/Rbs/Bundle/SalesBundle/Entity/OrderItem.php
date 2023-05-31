@@ -35,7 +35,7 @@ class OrderItem
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\DeliveryItem", mappedBy="order"))
+     * @ORM\OneToMany(targetEntity="Rbs\Bundle\SalesBundle\Entity\DeliveryItem", mappedBy="orderItem"))
      */
     private $deliveryItems;
 
