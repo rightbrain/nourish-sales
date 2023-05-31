@@ -581,8 +581,37 @@ class ApiController extends BaseController
 
         if ('GET' === $request->getMethod()) {
             if ($orderApiKey == $request->headers->get('X-API-KEY')) {
-                $payments = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->getDeliveryQuantityDetailsByDateAndZoneWiseForApi($date, $districtIds);
-                $response= new JsonResponse($payments, 200);
+                $orderDetails = $this->getDoctrine()->getRepository('RbsSalesBundle:Delivery')->getDeliveryQuantityDetailsByDateAndZoneWiseForApi($date, $districtIds);
+                $response= new JsonResponse($orderDetails, 200);
+
+            } else {
+                $response = new JsonResponse(array("message" => 'Authentication Fail'), 401);
+            }
+        } else {
+            $response = new JsonResponse(array("message" => 'Invalid Request'), 404);
+        }
+
+        $response->headers->set('Content-Type', 'application/json');
+
+        return $response;
+    }
+
+    /**
+     * @Route("/api/order/pending/delivery/details", name="api_order_pending_delivery_details_by_region")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function getOrderPendingDeliveryDetailsByRegionAction(Request $request)
+    {
+        $orderApiKey = $this->getParameter('order_api_key');
+
+        $date = $request->query->get('request_date');
+        $districtIds = $request->query->get('district_id');
+
+        if ('GET' === $request->getMethod()) {
+            if ($orderApiKey == $request->headers->get('X-API-KEY')) {
+                $pendingOrderDetails = $this->getDoctrine()->getRepository('RbsSalesBundle:Order')->getOrderPendingDeliveryDetailsByDateForApi($date, $districtIds);
+                $response= new JsonResponse($pendingOrderDetails, 200);
 
             } else {
                 $response = new JsonResponse(array("message" => 'Authentication Fail'), 401);
