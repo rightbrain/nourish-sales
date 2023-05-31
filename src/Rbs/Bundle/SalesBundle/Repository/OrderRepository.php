@@ -1051,7 +1051,7 @@ class OrderRepository extends EntityRepository
         $qp->join('a.user', 'u');
         $qp->join('u.zilla', 'z');
         $qp->join('oi.item', 'i');
-        $qp->leftJoin('oi.deliveryItems', 'di');
+        $qp->leftJoin('o.deliveryItems', 'di');
         $qp->select('o.id', 'o.createdAt');
         $qp->addSelect('i.id AS iId');
         $qp->addSelect('i.name AS iName');
@@ -1116,7 +1116,7 @@ class OrderRepository extends EntityRepository
             $qp->join('u.profile', 'profile');
             $qp->join('u.zilla', 'z');
             $qp->join('oi.item', 'i');
-            $qp->leftJoin('oi.deliveryItems', 'di');
+            $qp->leftJoin('o.deliveryItems', 'di');
             $qp->select('o.id', 'o.createdAt');
             $qp->addSelect('i.id AS iId');
             $qp->addSelect('i.name AS iName');
@@ -1143,7 +1143,8 @@ class OrderRepository extends EntityRepository
                 $qp->andWhere('z.id IN (:districtIds)')->setParameter('districtIds', $arrayDistrictIds);
             }
 
-            $qp->groupBy('oi.id', 'o.id');
+            $qp->groupBy('o.id');
+            $qp->addGroupBy('i.id');
             $qp->orderBy('z.name', 'ASC');
             $results = $qp->getQuery()->getResult();
 
