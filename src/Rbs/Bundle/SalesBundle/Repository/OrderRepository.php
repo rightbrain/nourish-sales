@@ -1126,7 +1126,7 @@ class OrderRepository extends EntityRepository
             $qp->addSelect('z.name AS districtName');
             $qp->addSelect('z.parentId AS regionId');
             $qp->addSelect('oi.quantity AS totalOrderQuantity');
-            $qp->addSelect('di.qty AS totalDeliveryQuantity');
+            $qp->addSelect('SUM(di.qty) AS totalDeliveryQuantity');
             $qp->addSelect('o.createdAt AS orderDate');
             $qp->where('o.orderType = :orderType');
             $qp->setParameter('orderType', Order::ORDER_TYPE_FEED);
@@ -1143,8 +1143,8 @@ class OrderRepository extends EntityRepository
                 $qp->andWhere('z.id IN (:districtIds)')->setParameter('districtIds', $arrayDistrictIds);
             }
 
-            /*$qp->groupBy('z.id');
-            $qp->addGroupBy('i.id');*/
+            $qp->groupBy('o.id');
+            $qp->addGroupBy('i.id');
             $qp->orderBy('z.name', 'ASC');
             $results = $qp->getQuery()->getResult();
 
