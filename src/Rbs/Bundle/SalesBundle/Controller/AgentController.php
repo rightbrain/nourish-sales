@@ -114,9 +114,7 @@ class AgentController extends BaseController
     public function updateAction(Request $request, Agent $agent)
     {
         $profile = $agent->getUser()->getProfile();
-        $form = $this->createForm(new AgentUpdateForm($agent->isOpeningBalanceFlag()), $agent, array(
-            'attr' =>''
-        ));
+        $form = $this->createForm(new AgentUpdateForm($agent->isOpeningBalanceFlag()), $agent);
 
         if ('POST' === $request->getMethod()) {
             $form->handleRequest($request);
