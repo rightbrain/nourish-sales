@@ -17,7 +17,7 @@ use Xiidea\EasyAuditBundle\Annotation\ORMSubscribedEvents;
  * @ORM\Table(name="sales_agents")
  * @ORM\Entity(repositoryClass="Rbs\Bundle\SalesBundle\Repository\AgentRepository")
  * @ORMSubscribedEvents()
- * @UniqueEntity(fields={"agentType", "agentCodeForDatatable"})
+ * @UniqueEntity(fields={"agentType", "agentCodeForDatatable"} , message="Agent Id is unique.")
  */
 class Agent
 {
