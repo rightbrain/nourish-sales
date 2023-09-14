@@ -115,7 +115,7 @@ class AgentController extends BaseController
     {
         $profile = $agent->getUser()->getProfile();
         $form = $this->createForm(new AgentUpdateForm($agent->isOpeningBalanceFlag()), $agent, array(
-            'attr' => array('novalidate' => 'novalidate')
+            'attr' =>''
         ));
 
         if ('POST' === $request->getMethod()) {
