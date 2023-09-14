@@ -3,7 +3,7 @@
     <h4>Agent Profile Information</h4>
 
         {{ form_row(form.VIP) }}
-<div class="form-group">
+<div class="form-group {% if form.agentCodeForDatatable.vars.valid==false %}has-error{% endif %}">
     {{ form_label(form.agentCodeForDatatable, 'Agent ID', {'label_attr': {'class': 'col-sm-2 control-label'}}) }}
     <div class="col-sm-10">
         {{ form_widget(form.agentCodeForDatatable, {'attr': {'class': 'form-control'}}) }}
