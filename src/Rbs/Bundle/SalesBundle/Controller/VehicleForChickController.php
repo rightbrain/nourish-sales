@@ -429,7 +429,7 @@ class VehicleForChickController extends BaseController
         header('Content-Type: application/pdf');
 //        header("Content-Disposition: attachment; filename={$fileName}");
         echo $pdf;
-        return new Response('');
+        return new Response('success');
     }
 
 }

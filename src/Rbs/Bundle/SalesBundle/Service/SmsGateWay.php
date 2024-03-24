@@ -24,7 +24,8 @@ class SmsGateWay
 
     function send($msg, $phone){
         try {
-            $apiEndPoint = 'https://smpp.ajuratech.com:7790/sendtext';
+//            $apiEndPoint = 'https://smpp.ajuratech.com:7790/sendtext';
+            $apiEndPoint = 'https://smpp.revesms.com:7790/sendtext';
             $response = $this->client->request('GET', $apiEndPoint, array(
                 'query' => array(
                     'apikey' => $this->username,
