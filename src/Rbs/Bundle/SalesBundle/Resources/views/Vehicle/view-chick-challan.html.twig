@@ -39,16 +39,17 @@
     /*media print*/
     @media print {
        /*html, body margin*/
+
         html, body {
-            margin: 0;
-            padding: 0;
+            margin: 0!important;
+            padding: 0!important;
         }
-        .main-content {
-            margin: 0;
-            padding: 0;
+        .main-content, .modal-body {
+            margin: 0!important;
+            padding: 0!important;
         }
         .table tr th, .table tr td {
-            font-size: 14px !important;
+            font-size: 12px !important;
         }
         .table-bordered > thead > tr > th,
         .table-bordered > tbody > tr > th,
@@ -56,8 +57,9 @@
         .table-bordered > thead > tr > td,
         .table-bordered > tbody > tr > td,
         .table-bordered > tfoot > tr > td {
-            border-bottom: .2ex solid #000;
+            border-bottom: .1ex solid #000;
             font-size: 12px !important;
+            padding: 2px 5px!important;
         }
     }
 </style>
@@ -65,7 +67,7 @@
 <div class="main-content">
     {% set i=1 %}
     {% for order in vehicle.deliveries.orders %}
-        <div class="modal-body" style="margin-top: 5px; {{ i%2!=0?'margin-bottom: 40px':''  }}">
+        <div class="modal-body" style="margin-top: 5px; {{ i%3!=0?'margin-bottom: 40px':''  }}">
             <div class="row">
                 <table width="100%" class="table table-full-width" style="margin-bottom: 0;">
                     <tr>
@@ -178,7 +180,7 @@
                 </div>
             </div>
         </div>
-        {% if i%2==0 and not loop.last %}
+        {% if i%3==0 and not loop.last %}
             <div style="page-break-after: always"></div>
         {% endif %}
         {% set i=i+1 %}
