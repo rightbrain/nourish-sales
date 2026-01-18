@@ -57,6 +57,7 @@
         .table-bordered > tbody > tr > td,
         .table-bordered > tfoot > tr > td {
             border-bottom: .2ex solid #000;
+            font-size: 12px !important;
         }
     }
 </style>
@@ -64,12 +65,12 @@
 <div class="main-content">
     {% set i=1 %}
     {% for order in vehicle.deliveries.orders %}
-        <div class="modal-body" style="margin-top: -10px; {{ i%2!=0?'margin-bottom: 40px':''  }}">
+        <div class="modal-body" style="margin-top: 5px; {{ i%2!=0?'margin-bottom: 40px':''  }}">
             <div class="row">
                 <table width="100%" class="table table-full-width" style="margin-bottom: 0;">
                     <tr>
                         <td class="col-md-6" style="vertical-align: top; width: 60%">
-                            <h3 style="padding: 0;margin: 0">NOURISH POULTRY & HATCHERY LTD</h3>
+                            <h3 style="padding: 0;margin: 0; font-size: 16px;">NOURISH POULTRY & HATCHERY LTD</h3>
                             <p style="padding: 2px 0;margin: 0"><strong>Hatchery:</strong> {{ vehicle.depo.description|nl2br  }}
                             </p>
                             <p style="padding: 2px 0;margin: 0">Head Office: 39, Takia Center, Sector # 07, Uttara, Dhaka.</p>
@@ -87,8 +88,8 @@
                         <div class="portlet-title">
                             <table width="100%" class="table" style="margin-bottom: 0">
                                 <tr>
-                                    <td width="50%" style="border: none"><div class="col-md-6" style="text-align: center"><div class="caption" style="font-size: 16px;line-height: 18px;padding: 5px 0;"><strong>INVOICE HATCHERY</strong></div></div></td>
-                                    <td width="50%" style="border: none"><div class="col-md-6"><div class="caption" style="font-size: 16px;line-height: 18px;padding: 5px 0;"><strong>{{ vehicle.depo.name  }}</strong></div></div></td>
+                                    <td width="50%" style="border: none"><div class="col-md-6" style="text-align: center"><div class="caption" style="font-size: 14px;line-height: 18px;padding: 5px 0;"><strong>INVOICE HATCHERY</strong></div></div></td>
+                                    <td width="50%" style="border: none"><div class="col-md-6"><div class="caption" style="font-size: 14px;line-height: 18px;padding: 5px 0;"><strong>{{ vehicle.depo.name  }}</strong></div></div></td>
                                 </tr>
                             </table>
 
