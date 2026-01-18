@@ -36,61 +36,85 @@
     .table-bordered > tfoot > tr > td {
         border-bottom: .2ex solid #000;
     }
+    /*media print*/
+    @media print {
+       /*html, body margin*/
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+        .main-content {
+            margin: 0;
+            padding: 0;
+        }
+        .table tr th, .table tr td {
+            font-size: 14px !important;
+        }
+        .table-bordered > thead > tr > th,
+        .table-bordered > tbody > tr > th,
+        .table-bordered > tfoot > tr > th,
+        .table-bordered > thead > tr > td,
+        .table-bordered > tbody > tr > td,
+        .table-bordered > tfoot > tr > td {
+            border-bottom: .2ex solid #000;
+        }
+    }
 </style>
+<body>
 <div class="main-content">
     {% set i=1 %}
     {% for order in vehicle.deliveries.orders %}
-    <div class="modal-body" style="margin-top: 10px; {{ i%2!=0?'margin-bottom: 100px':''  }}">
-        <div class="row">
-            <table width="100%" class="table table-full-width" style="margin-bottom: 0;">
-                <tr>
-                    <td class="col-md-6" style="vertical-align: top; width: 60%">
-                        <h3 style="padding: 0;margin: 0">NOURISH POULTRY & HATCHERY LTD</h3>
-                        <p style="padding: 2px 0;margin: 0"><strong>Hatchery:</strong> {{ vehicle.depo.description|nl2br  }}
-                        </p>
-                        <p style="padding: 2px 0;margin: 0">Head Office: 39, Takia Center, Sector # 07, Uttara, Dhaka.</p>
-                        <p style="padding: 2px 0;margin: 0">Tel: 7913023-27, Fax: 7913022, Web: www.nourish.com.bd</p>
-                    </td>
-                    <td class="col-md-6" style="vertical-align: top; width: 40%">
-                        <h4 style="margin-bottom: 0px; padding-bottom: 0px;"><strong>Challan: {{ order.id }} / {{ order.deliveries[0].id }}</strong></h4>
-                        <p style="margin: 2px 0 0; padding: 0px"><strong>Date: {{ order.createdAt|date('d-m-Y') }}</strong></p>
-                    </td>
-                </tr>
-            </table>
+        <div class="modal-body" style="margin-top: -10px; {{ i%2!=0?'margin-bottom: 40px':''  }}">
+            <div class="row">
+                <table width="100%" class="table table-full-width" style="margin-bottom: 0;">
+                    <tr>
+                        <td class="col-md-6" style="vertical-align: top; width: 60%">
+                            <h3 style="padding: 0;margin: 0">NOURISH POULTRY & HATCHERY LTD</h3>
+                            <p style="padding: 2px 0;margin: 0"><strong>Hatchery:</strong> {{ vehicle.depo.description|nl2br  }}
+                            </p>
+                            <p style="padding: 2px 0;margin: 0">Head Office: 39, Takia Center, Sector # 07, Uttara, Dhaka.</p>
+                            <p style="padding: 2px 0;margin: 0">Tel: 7913023-27, Fax: 7913022, Web: www.nourish.com.bd</p>
+                        </td>
+                        <td class="col-md-6" style="vertical-align: top; width: 40%">
+                            <h4 style="margin-bottom: 0px; padding-bottom: 0px;"><strong>Challan: {{ order.id }} / {{ order.deliveries[0].id }}</strong></h4>
+                            <p style="margin: 2px 0 0; padding: 0px"><strong>Date: {{ order.createdAt|date('d-m-Y') }}</strong></p>
+                        </td>
+                    </tr>
+                </table>
 
-            <div class="col-md-12">
-                <div class="portlet">
-                    <div class="portlet-title">
-                        <table width="100%" class="table" style="margin-bottom: 0">
-                            <tr>
-                                <td width="50%" style="border: none"><div class="col-md-6" style="text-align: center"><div class="caption" style="font-size: 18px;line-height: 18px;padding: 5px 0;"><strong>INVOICE HATCHERY</strong></div></div></td>
-                                <td width="50%" style="border: none"><div class="col-md-6"><div class="caption" style="font-size: 18px;line-height: 18px;padding: 5px 0;"><strong>{{ vehicle.depo.name  }}</strong></div></div></td>
-                            </tr>
-                        </table>
+                <div class="col-md-12">
+                    <div class="portlet">
+                        <div class="portlet-title">
+                            <table width="100%" class="table" style="margin-bottom: 0">
+                                <tr>
+                                    <td width="50%" style="border: none"><div class="col-md-6" style="text-align: center"><div class="caption" style="font-size: 16px;line-height: 18px;padding: 5px 0;"><strong>INVOICE HATCHERY</strong></div></div></td>
+                                    <td width="50%" style="border: none"><div class="col-md-6"><div class="caption" style="font-size: 16px;line-height: 18px;padding: 5px 0;"><strong>{{ vehicle.depo.name  }}</strong></div></div></td>
+                                </tr>
+                            </table>
 
 
-                    </div>
-                    <div class="portlet-body">
-                        <table cellpadding="5px" border="1" collapse="0" cellspacing="0" width="100%" class="table table-bordered">
-                            <thead>
-                            <tr>
-                                <td style="border-top: .2ex solid #000; vertical-align: middle" colspan="10"><strong>Name & Address: ({{ order.agent.agentCodeForDatatable }}) {{ order.agent.user.profile.fullName }}, {{ order.agent.user.profile.address|default('') }}, {{ order.agent.user.upozilla.name|default('') }}, {{ order.agent.user.zilla.name|default('') }}; Mobile No: {{ order.agent.user.profile.cellphoneForMapping }}</strong></td>
-                            </tr>
-                            <tr>
-                                <th>SL. No.</th>
-                                <th>Item</th>
-                                <th>Actual (Qty)</th>
-                                <th>Box (Qty)</th>
-                                <th>Rate (MRP)</th>
-                                <th>Amount (Tk.)</th>
-                            </tr>
-                            </thead>
-                            <tbody class="orderItems">
-                            {% set totalQuentity = 0 %}
-                            {% set totalDeliveredQuantity = 0 %}
-                            {% set totalBonus = 0 %}
-                            {% set totalDamageQuantity = 0 %}
-                            {% set totalAmount = 0 %}
+                        </div>
+                        <div class="portlet-body">
+                            <table cellpadding="5px" border="1" collapse="0" cellspacing="0" width="100%" class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <td style="border-top: .2ex solid #000; vertical-align: middle" colspan="10"><strong>Name & Address: ({{ order.agent.agentCodeForDatatable }}) {{ order.agent.user.profile.fullName }}, {{ order.agent.user.profile.address|default('') }}, {{ order.agent.user.upozilla.name|default('') }}, {{ order.agent.user.zilla.name|default('') }}; Mobile No: {{ order.agent.user.profile.cellphoneForMapping }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <th>SL. No.</th>
+                                    <th>Item</th>
+                                    <th>Actual (Qty)</th>
+                                    <th>Box (Qty)</th>
+                                    <th>Rate (MRP)</th>
+                                    <th>Amount (Tk.)</th>
+                                </tr>
+                                </thead>
+                                <tbody class="orderItems">
+                                {% set totalQuentity = 0 %}
+                                {% set totalDeliveredQuantity = 0 %}
+                                {% set totalBonus = 0 %}
+                                {% set totalDamageQuantity = 0 %}
+                                {% set totalAmount = 0 %}
 
                                 {% for index, item in order.orderItems %}
                                     {% if item.quantity != 0 %}
@@ -103,22 +127,22 @@
                                         {% set totalBonus= totalBonus + item.bonusQuantity %}
                                         {% set totalDamageQuantity= totalDamageQuantity + item.damageQuantity %}
                                         {% set totalAmount= totalAmount+(partialQty*item.mrpPrice) %}
-                                            <tr>
-                                                <td>{{ index+1 }}</td>
-                                                <td>{{ item.item.getItemCodeName }}</td>
+                                        <tr>
+                                            <td>{{ index+1 }}</td>
+                                            <td>{{ item.item.getItemCodeName }}</td>
 
-                                                <td align="right" class="deliver">
-                                                    {{ partialQty }}
-                                                </td>
-                                                <td align="right">{{item.bonusQuantity }}</td>
-                                                <td align="right">{{ item.mrpPrice }}</td>
+                                            <td align="right" class="deliver">
+                                                {{ partialQty }}
+                                            </td>
+                                            <td align="right">{{item.bonusQuantity }}</td>
+                                            <td align="right">{{ item.mrpPrice }}</td>
 
-                                                <td align="right">{{partialQty*item.mrpPrice }}</td>
-                                            </tr>
+                                            <td align="right">{{partialQty*item.mrpPrice }}</td>
+                                        </tr>
                                     {% endif %}
                                 {% endfor %}
 
-                            </tbody>
+                                </tbody>
                                 <tr style="font-weight: bold" class="bold">
                                     <td></td>
                                     <td class="bold">Total</td>
@@ -127,38 +151,39 @@
                                     <td></td>
                                     <td align="right">{{ totalAmount }}</td>
                                 </tr>
-                        </table>
-                        <table width="100%" class="table" style="margin-bottom: 0">
+                            </table>
+                            <table width="100%" class="table" style="margin-bottom: 0">
 
-                            <tr>
-                                <td style="height: 35px; border: none">Contract No.</td>
-                                <td rowspan="2" style="text-align: left; border: none">Delivery By:</td>
-                            </tr>
-                            <tr>
-                                <td style="border: none">Money Receipt No.</td>
-                            </tr>
-                            <tr>
-                                <td align="center" style="border: none" colspan="2">
-                                    {% if order.agent is defined and order.agent.deliveryPoint is not empty %}
-                                        <strong>Delivery Point: {{ order.agent.deliveryPoint|default('') }}</strong>
-                                    {% endif %}
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td style="height: 35px; border: none">Contract No.</td>
+                                    <td rowspan="2" style="text-align: left; border: none">Delivery By:</td>
+                                </tr>
+                                <tr>
+                                    <td style="border: none">Money Receipt No.</td>
+                                </tr>
+                                <tr>
+                                    <td align="center" style="border: none" colspan="2">
+                                        {% if order.agent is defined and order.agent.deliveryPoint is not empty %}
+                                            <strong>Delivery Point: {{ order.agent.deliveryPoint|default('') }}</strong>
+                                        {% endif %}
+                                    </td>
+                                </tr>
 
-                        </table>
+                            </table>
 
+                        </div>
+                        {#<input type="hidden" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">#}
                     </div>
-                    {#<input type="hidden" id="delivery-id" name="delivery-id" value="{{ delivery.id }}">#}
                 </div>
             </div>
         </div>
-    </div>
         {% if i%2==0 and not loop.last %}
-        <div style="page-break-after: always"></div>
+            <div style="page-break-after: always"></div>
         {% endif %}
-    {% set i=i+1 %}
+        {% set i=i+1 %}
     {% endfor %}
 </div>
+</body>
 
 
 </html>
