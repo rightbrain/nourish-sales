@@ -40,7 +40,7 @@
 <div class="main-content">
     {% set i=1 %}
     {% for order in vehicle.deliveries.orders %}
-    <div class="modal-body" style="margin-top: 10px; {{ i%3!=0?'margin-bottom: 50px':''  }}">
+    <div class="modal-body" style="margin-top: 10px; {{ i%2!=0?'margin-bottom: 100px':''  }}">
         <div class="row">
             <table width="100%" class="table table-full-width" style="margin-bottom: 0;">
                 <tr>
@@ -153,7 +153,7 @@
             </div>
         </div>
     </div>
-        {% if i%3==0 and not loop.last %}
+        {% if i%2==0 and not loop.last %}
         <div style="page-break-after: always"></div>
         {% endif %}
     {% set i=i+1 %}
