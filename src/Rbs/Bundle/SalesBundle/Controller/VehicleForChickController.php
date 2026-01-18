@@ -411,13 +411,18 @@ class VehicleForChickController extends BaseController
     public function challan(Vehicle $vehicle)
     {
         $partialItems = $this->getDoctrine()->getRepository('RbsSalesBundle:DeliveryItem')->getPartialDeliveredItems($vehicle->getDeliveries());
-        $html = $this->renderView('RbsSalesBundle:Vehicle:view-chick-challan.html.twig', array(
+        /*$html = $this->renderView('RbsSalesBundle:Vehicle:view-chick-challan.html.twig', array(
             'vehicle'      => $vehicle,
             'partialItems'  => $partialItems,
         ));
 
-        $this->downloadPdf($html,'dailyDeliveryReportPdf.pdf');
+        $this->downloadPdf($html,'dailyDeliveryReportPdf.pdf');*/
 //        return $html;
+
+        return $this->render('RbsSalesBundle:Vehicle:view-chick-challan.html.twig', array(
+            'vehicle'      => $vehicle,
+            'partialItems'  => $partialItems,
+        ));
     }
 
 

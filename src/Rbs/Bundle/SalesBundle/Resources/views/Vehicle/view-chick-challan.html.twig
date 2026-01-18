@@ -14,7 +14,15 @@
     <meta content="" name="author"/>
 
     <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
+    <script>
+        window.onload = function () {
+            window.print();
 
+            setTimeout(function () {
+                window.close();
+            }, 500);
+        };
+    </script>
 </head>
 <style>
     .table tr th, .table tr td {
